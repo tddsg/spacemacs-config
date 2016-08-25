@@ -1,59 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Install some required packages
-
-(require 'package)
-(setq use-package-verbose t)
-
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-
-;; keep the installed packages in .emacs.d
-(setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
-(package-initialize)
-
-;; update the package metadata is the local cache is missing
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(eval-when-compile
-  (require 'use-package))
-(require 'diminish)
-(require 'bind-key)
-
-;; add my own modules
-(add-to-list 'load-path "~/.emacs.d/personal/modules")
-
-;; activate all the packages (in particular autoloads)
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-;; Always load newest byte code
-(setq load-prefer-newer t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Install initial package first
-
-(setq package-list '(use-package))
-
-(unless package-archive-contents (package-refresh-contents))
-
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Utilities functions for TDDSG mode
-
-(defconst tddsg-savefile-dir (expand-file-name "savefile" user-emacs-directory))
-
-(when (not (file-exists-p tddsg-personal-dir))
-  (make-directory tddsg-personal-dir))
-
-(defvar tddsg-default-mode-line mode-line-format)
-
 ;; select the current line
 (defun tddsg-select-current-line ()
   "Select current line"
@@ -61,17 +5,6 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-
-;; get the closet parent folder containing a Makefile
-(defun tddsg-get-closest-build-path (&optional (file "Makefile"))
-  "Get path of the closest parent folder that contains a Makefile"
-  (let ((root (expand-file-name "/"))) ; the win32 must reconsider it
-    (loop
-     for d = default-directory then (expand-file-name ".." d)
-     if (file-exists-p (expand-file-name file d))
-     return d
-     if (equal d root)
-     return nil)))
 
 ;; kill line backward
 (defun tddsg-kill-line-backwards ()
@@ -139,14 +72,61 @@
   (setq mode-line-format tddsg-default-mode-line)
   (force-mode-line-update))
 
+;; save as new file and open it without closing the old file
+(defun tddsg-save-file-as-and-open-file (filename &optional confirm)
+  "Save current buffer into file FILENAME and open it in a new buffer."
+  (interactive
+   (list (if buffer-file-name
+	     (read-file-name "Save as and open file: "
+			     nil nil nil nil)
+	   (read-file-name "Save as and open file: " default-directory
+			   (expand-file-name
+			    (file-name-nondirectory (buffer-name))
+			    default-directory)
+			   nil nil))
+	 (not current-prefix-arg)))
+  (or (null filename) (string-equal filename "")
+      (progn
+	;; If arg is just a directory,
+	;; use the default file name, but in that directory.
+	(if (file-directory-p filename)
+	    (setq filename (concat (file-name-as-directory filename)
+				   (file-name-nondirectory
+				    (or buffer-file-name (buffer-name))))))
+	(and confirm
+	     (file-exists-p filename)
+	     ;; NS does its own confirm dialog.
+	     (not (and (eq (framep-on-display) 'ns)
+		       (listp last-nonmenu-event)
+		       use-dialog-box))
+	     (or (y-or-n-p (format "File `%s' exists; overwrite? " filename))
+		 (error "Canceled")))
+        (write-region (point-min) (point-max) filename )
+        (find-file filename)))
+  (vc-find-file-hook))
 
+;;
+(defun tddsg-yank-current-word-to-minibuffer ()
+  "Get word at point in original buffer and insert it to minibuffer."
+  (interactive)
+  (let (word beg)
+    (with-current-buffer (window-buffer (minibuffer-selected-window))
+      (save-excursion
+        (skip-syntax-backward "w_")
+        (setq beg (point))
+        (skip-syntax-forward "w_")
+        (setq word (buffer-substring-no-properties beg (point)))))
+    (when word
+      (insert word))))
 
-
-;; define key for other minor mode
-(define-key isearch-mode-map (kbd "C-.") 'tddsg-yank-current-word-to-isearch-buffer)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Various configuration
-
-
+;;
+(defun tddsg-yank-current-word-to-isearch-buffer ()
+  "Pull current word from buffer into search string."
+  (interactive)
+  (save-excursion
+    (skip-syntax-backward "w_")
+    (isearch-yank-internal
+     (lambda ()
+       (skip-syntax-forward "w_")
+       (point)))))
 

@@ -32,6 +32,7 @@
 (defconst tddsg-packages
   '(
     comment-dwim-2
+    bufclone
     tuareg
     auctex
     latex-extra
@@ -46,7 +47,21 @@
     goto-chg
     paren
     autorevert
-    windmove)
+    windmove
+    transpose-frame
+    key-chord
+    super-save
+    flyspell
+    whitespace
+    move-text
+    company
+    anzu
+    dictionary
+    langtool
+    imenu-anywhere
+    crux
+    buffer-move
+    )
   "The list of Lisp packages required by the tddsg layer.
 
 Each entry is either:
@@ -74,6 +89,17 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+;; get the closet parent folder containing a Makefile
+(cl-defun tddsg-get-closest-build-path (&optional (file "Makefile"))
+  "Get path of the closest parent folder that contains a Makefile"
+  (let ((root (expand-file-name "/"))) ; the win32 must reconsider it
+    (loop
+     for d = default-directory then (expand-file-name ".." d)
+     if (file-exists-p (expand-file-name file d))
+     return d
+     if (equal d root)
+     return nil)))
+
 ;;; configuration for comment-dwim-2
 (defun tddsg/init-comment-dwim-2 ()
   (global-set-key (kbd "M-;") 'comment-dwim-2))
@@ -82,16 +108,25 @@ Each entry is either:
 (defun tddsg/init-ace-popup-menu ()
   (ace-popup-menu-mode 1))
 
+;;; configuration for super-save
+(defun tddsg/init-super-save ()
+  (super-save-mode 1))
+
+;;; configuration for ace-popup-menu
+(defun tddsg/init-transpose-frame ()
+  (global-set-key (kbd "M-m w t") 'transpose-frame))
+
 ;;; configuration for tuareg
 (defun tddsg/post-init-tuareg ()
   ;; setup environments
+  (use-package merlin-imenu :load-path "private/tddsg/")
+  (use-package smartparens-ocaml :load-path "private/tddsg/")
   (dolist (var (car (read-from-string
                      (shell-command-to-string "opam config env --sexp"))))
     (setenv (car var) (cadr var)))
   (setq exec-path (split-string (getenv "PATH") path-separator)
         opam-share (substring (shell-command-to-string
-                               "opam config var share 2> /dev/null")
-                              0 -1))
+                               "opam config var share 2> /dev/null") 0 -1))
   ;; fix syntax highlight of cs Prelude for OCaml
   (font-lock-add-keywords
    'tuareg-mode
@@ -183,5 +218,84 @@ Each entry is either:
 
 (defun tddsg/init-windmove ()
   (windmove-default-keybindings))
+
+(defun tddsg/init-key-chord ()
+  (setq key-chord-one-key-delay 0.18
+        key-chord-two-key-delay 0.1)
+  ;; reassign key-chords
+  (key-chord-define-global ",." 'helm-mini)
+  (key-chord-define-global "xz" 'helm-mini)
+  (key-chord-define-global "xz" 'helm-mini)
+  (key-chord-define-global "jj" 'avy-goto-word-1)
+  (key-chord-define-global "jl" 'avy-goto-word-1)
+  (key-chord-define-global "jk" 'previous-buffer)
+  (key-chord-define-global "kl" 'next-buffer)
+  (key-chord-define-global "ji" 'indent-according-to-mode)
+  (key-chord-define-global "JK" 'windmove-left)
+  (key-chord-define-global "KL" 'windmove-right)
+  (key-chord-define-global "JI" 'windmove-up)
+  (key-chord-define-global "IL" 'windmove-down))
+
+(defun tddsg/init-flyspell ()
+  (setq ispell-program-name "aspell" ; use aspell instead of ispell
+        ispell-extra-args '("--sug-mode=ultra")
+        ispell-dictionary "english"
+        prelude-flyspell nil)
+  (add-hook 'text-mode-hook #'flyspell-mode))
+
+(defun tddsg/init-whitespace ()
+  (dolist (hook '(prog-mode-hook text-mode-hook))
+    (add-hook hook #'whitespace-mode))
+  (add-hook 'before-save-hook #'whitespace-cleanup)
+  :config
+  (setq whitespace-line-column 80) ;; limit line length
+  ;; default of prelude
+  ;; (setq whitespace-style '(face tabs empty trailing lines-tail)) ;;
+  (setq whitespace-style '(face tabs trailing)))
+
+(defun tddsg/init-move-text ()
+  (global-set-key (kbd "M-S-<up>") 'move-text-up)
+  (global-set-key (kbd "M-S-<down>") 'move-text-down))
+
+(defun tddsg/post-init-company ()
+  (use-package company
+    :config 
+    (define-key company-active-map (kbd "M-n") nil)
+    (define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+    (define-key company-active-map (kbd "M-.") 'company-show-location)
+    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous)
+    ;; (setq company-idle-delay 200)         ;; set delay time by default
+    (global-company-mode)))
+
+(defun tddsg/init-anzu ()
+  (global-set-key  (kbd "M-%") 'anzu-query-replace)
+  (global-set-key  (kbd "C-M-%") 'anzu-query-replace-regexp)
+  (defadvice anzu-query-replace (around wrap-query-replace activate)
+    (save-excursion
+      (let ((start (point)))
+        ad-do-it
+        (goto-char (point-min))
+        ad-do-it)))
+  (global-anzu-mode))
+
+(defun tddsg/init-dictionary ()
+  (setq dictionary-use-single-buffer t))
+
+(defun tddsg/init-langtool ()
+  (setq langtool-default-language "en-US")
+  (setq langtool-language-tool-jar
+        "/home/trungtq/Programs/LanguageTool-2.6/languagetool-commandline.jar"))
+
+(defun tddsg/init-imenu-anywhere ())
+
+(defun tddsg/init-crux ()
+  (global-set-key (kbd "C-^") 'crux-top-join-line)
+  (global-set-key (kbd "C-_") 'join-line)
+  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  )
+
 
 ;;; packages.el ends here
