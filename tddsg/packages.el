@@ -32,7 +32,6 @@
 (defconst tddsg-packages
   '(
     comment-dwim-2
-    bufclone
     tuareg
     auctex
     latex-extra
@@ -59,8 +58,10 @@
     dictionary
     langtool
     imenu-anywhere
-    crux
     buffer-move
+    diminish
+    vline
+    crux
     )
   "The list of Lisp packages required by the tddsg layer.
 
@@ -89,6 +90,34 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; SOME FUNCTIONS
+
+(defun tddsg-shell-other-window (&optional buffer)
+  "Open a `shell' in a new window."
+  (interactive)
+  (let ((old-buf (current-buffer))
+        (current-prefix-arg 4) ;; allow using C-u
+        (shell-buf (call-interactively 'shell)))
+    (switch-to-buffer-other-window shell-buf)
+    (switch-to-buffer old-buf)
+    (other-window 1)))
+
+(defun tddsg-shell-current-window (&optional buffer)
+  "Open a `shell' in the current window."
+  (interactive)
+  (let ((old-buf (if (= (count-windows) 1) (current-buffer)
+                   (progn
+                     (other-window 1)
+                     (let ((buf (window-buffer))) (other-window -1) buf))))
+        (old-window (frame-selected-window))
+        (current-prefix-arg 4) ;; allow using C-u
+        (shell-buf (call-interactively 'shell)))
+    (switch-to-buffer old-buf)
+    (select-window old-window)
+    (switch-to-buffer shell-buf)))
+
 ;; get the closet parent folder containing a Makefile
 (cl-defun tddsg-get-closest-build-path (&optional (file "Makefile"))
   "Get path of the closest parent folder that contains a Makefile"
@@ -99,6 +128,182 @@ Each entry is either:
      return d
      if (equal d root)
      return nil)))
+
+;; select the current line
+(defun tddsg-mark-line ()
+  "Select current line"
+  (interactive)
+  (end-of-line)
+  (set-mark (line-beginning-position)))
+
+;; mark ring setting
+(defun tddsg-set-mark ()
+  (interactive)
+  (push-mark (point) t nil))
+
+;; unpop
+(defun tddsg-unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  (interactive)
+      (when mark-ring
+        (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+        (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+        (when (null (mark t)) (ding))
+        (setq mark-ring (nbutlast mark-ring))
+        (goto-char (marker-position (car (last mark-ring))))))
+
+;; save as new file and open it without closing the old file
+(defun tddsg-save-file-as-and-open-file (filename &optional confirm)
+  "Save current buffer into file FILENAME and open it in a new buffer."
+  (interactive
+   (list (if buffer-file-name
+	     (read-file-name "Save as and open file: "
+			     nil nil nil nil)
+	   (read-file-name "Save as and open file: " default-directory
+			   (expand-file-name
+			    (file-name-nondirectory (buffer-name))
+			    default-directory)
+			   nil nil))
+	 (not current-prefix-arg)))
+  (or (null filename) (string-equal filename "")
+      (progn
+	;; If arg is just a directory,
+	;; use the default file name, but in that directory.
+	(if (file-directory-p filename)
+	    (setq filename (concat (file-name-as-directory filename)
+				   (file-name-nondirectory
+				    (or buffer-file-name (buffer-name))))))
+	(and confirm
+	     (file-exists-p filename)
+	     ;; NS does its own confirm dialog.
+	     (not (and (eq (framep-on-display) 'ns)
+		       (listp last-nonmenu-event)
+		       use-dialog-box))
+	     (or (y-or-n-p (format "File `%s' exists; overwrite? " filename))
+		 (error "Canceled")))
+        (write-region (point-min) (point-max) filename )
+        (find-file filename)))
+  (vc-find-file-hook))
+
+;;
+(defun tddsg-yank-current-word-to-minibuffer ()
+  "Get word at point in original buffer and insert it to minibuffer."
+  (interactive)
+  (let (word beg)
+    (with-current-buffer (window-buffer (minibuffer-selected-window))
+      (save-excursion
+        (skip-syntax-backward "w_")
+        (setq beg (point))
+        (skip-syntax-forward "w_")
+        (setq word (buffer-substring-no-properties beg (point)))))
+    (when word
+      (insert word))))
+
+;;
+(defun tddsg-yank-current-word-to-isearch-buffer ()
+  "Pull current word from buffer into search string."
+  (interactive)
+  (save-excursion
+    (skip-syntax-backward "w_")
+    (isearch-yank-internal
+     (lambda ()
+       (skip-syntax-forward "w_")
+       (point)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SOME KEYBINDINGS
+
+(global-set-key (kbd "<home>") 'spacemacs/smart-move-beginning-of-line)
+(global-set-key (kbd "<detete>") 'delete-forward-char)
+(global-set-key (kbd "C-<left>") 'left-word)
+(global-set-key (kbd "C-<right>") 'right-word)
+
+(global-set-key (kbd "M-H") 'tddsg-mark-line)
+(global-set-key (kbd "C-x _") 'shrink-window)
+(global-set-key (kbd "C-x m") 'monky-status)
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x G") 'magit-diff)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "C-c C-w") 'tddsg-save-file-as-and-open-file)
+(global-set-key (kbd "C-c )") 'check-parens)
+(global-set-key (kbd "C-c C-SPC") 'tddsg-unpop-to-mark-command)
+
+(define-key isearch-mode-map (kbd "C-.") 'tddsg-yank-current-word-to-isearch-buffer)
+(define-key minibuffer-local-map (kbd "C-.") 'tddsg-yank-current-word-to-minibuffer)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CONFIGS
+
+;; visual interface setting
+(setq-default fill-column 80)
+(setq text-scale-mode-step 1.1)                     ; scale changing font size
+(setq frame-title-format                            ; frame title
+      '("" invocation-name " - "
+        (:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name)) "%b"))))
+
+;; mode paragraph setting
+(setq paragraph-separate "[ \t\f]*$"
+      paragraph-start "\f\\|[ \t]*$")
+
+;; mode electric-pair
+(electric-pair-mode t)
+
+;; automatically setting mark for certain commands
+(setq global-mark-ring-max 1000
+      mark-ring-max 200)
+(defadvice find-file (before set-mark activate) (tddsg-set-mark))
+(defadvice isearch-update (before set-mark activate) (tddsg-set-mark))
+(defadvice beginning-of-buffer (before set-mark activate) (tddsg-set-mark))
+(defadvice end-of-buffer (before set-mark activate) (tddsg-set-mark))
+(defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
+
+;; mode editing setting
+(delete-selection-mode t)                           ; delete selection by keypress
+(setq require-final-newline t)                      ; newline at end of file
+(defadvice newline                                  ; indent after new line
+    (after newline-after activate)
+  (indent-according-to-mode))
+
+;; some Emacs threshold
+(setq max-lisp-eval-depth 10000)
+(setq max-specpdl-size 10000)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LOCAL PACKAGES
+
+(use-package songbird-mode
+  :load-path "private/tddsg/"
+  :mode (("\\.slk\\'" . songbird-mode)
+         ("\\.ss\\'" . songbird-mode)
+         ("\\.sb\\'" . songbird-mode))
+  :config
+  (defun my-songbird-hook ()
+    ;; customize syntax table for slurping/barfing parentheses
+    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
+      (modify-syntax-entry symbol "'" songbird-syntax-table)))
+  (add-hook 'songbird-mode-hook 'my-songbird-hook 'append))
+
+;; buffer-clone
+(use-package buffer-clone
+  :load-path "private/tddsg/"
+  :config
+  (global-set-key (kbd "s-S-<left>") 'buf-clone-left)
+  (global-set-key (kbd "s-S-<right>") 'buf-clone-right)
+  (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
+  (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
+  (global-set-key (kbd "M-m b m h") 'buf-clone-left)
+  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
+  (global-set-key (kbd "M-m b c j") 'buf-clone-down))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; INIT PACKAGES
 
 ;;; configuration for comment-dwim-2
 (defun tddsg/init-comment-dwim-2 ()
@@ -183,6 +388,8 @@ Each entry is either:
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
 (defun tddsg/post-init-shell ()
+  (global-set-key (kbd "C-c m") 'tddsg-shell-other-window)
+  (global-set-key (kbd "C-c M-m") 'tddsg-shell-current-window)
   (defun my-shell-hook ()
     (local-set-key (kbd "C-j") 'newline))
   (add-hook 'shell-mode-hook 'my-shell-hook))
@@ -197,9 +404,10 @@ Each entry is either:
   (global-hi-lock-mode 1))
 
 (defun tddsg/post-init-helm ()
-  ;; (add-to-list 'helm-sources-using-default-as-input
-  ;;              'helm-source-grep-ag)
-  )
+  (global-set-key (kbd "M-[") 'helm-company)
+  (global-set-key (kbd "M-]") 'helm-dabbrev)
+  (global-set-key (kbd "M-m h o") 'helm-occur)
+  (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu))
 
 (defun tddsg/post-init-projectile ()
   (projectile-global-mode 1))
@@ -217,7 +425,11 @@ Each entry is either:
   (show-paren-mode t))
 
 (defun tddsg/init-windmove ()
-  (windmove-default-keybindings))
+  (windmove-default-keybindings)
+  (global-set-key (kbd "S-<left>") 'windmove-left)
+  (global-set-key (kbd "S-<right>") 'windmove-right)
+  (global-set-key (kbd "S-<up>") 'windmove-up)
+  (global-set-key (kbd "S-<down>") 'windmove-down))
 
 (defun tddsg/init-key-chord ()
   (setq key-chord-one-key-delay 0.18
@@ -236,11 +448,12 @@ Each entry is either:
   (key-chord-define-global "JI" 'windmove-up)
   (key-chord-define-global "IL" 'windmove-down))
 
-(defun tddsg/init-flyspell ()
+(defun tddsg/post-init-flyspell ()
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra")
         ispell-dictionary "english"
         prelude-flyspell nil)
+  (global-set-key (kbd "M-m S s") 'flyspell-mode)
   (add-hook 'text-mode-hook #'flyspell-mode))
 
 (defun tddsg/init-whitespace ()
@@ -257,15 +470,23 @@ Each entry is either:
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down))
 
+(defun tddsg/init-buffer-move ()
+  ;; buffer-move
+  (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
+  (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
+  (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
+  (global-set-key (kbd "C-s-S-<down>") 'buf-move-down))
+
 (defun tddsg/post-init-company ()
   (use-package company
-    :config 
+    :config
     (define-key company-active-map (kbd "M-n") nil)
     (define-key company-active-map (kbd "M-p") nil)
     (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
     (define-key company-active-map (kbd "M-.") 'company-show-location)
     (define-key company-active-map (kbd "C-n") #'company-select-next)
     (define-key company-active-map (kbd "C-p") #'company-select-previous)
+    (global-set-key (kbd "M-?") 'company-complete)
     ;; (setq company-idle-delay 200)         ;; set delay time by default
     (global-company-mode)))
 
@@ -280,7 +501,8 @@ Each entry is either:
         ad-do-it)))
   (global-anzu-mode))
 
-(defun tddsg/init-dictionary ()
+(defun tddsg/post-init-dictionary ()
+  (global-set-key (kbd "M-m s d") 'dictionary-search)
   (setq dictionary-use-single-buffer t))
 
 (defun tddsg/init-langtool ()
@@ -290,12 +512,30 @@ Each entry is either:
 
 (defun tddsg/init-imenu-anywhere ())
 
-(defun tddsg/init-crux ()
-  (global-set-key (kbd "C-^") 'crux-top-join-line)
-  (global-set-key (kbd "C-_") 'join-line)
-  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  )
+(defun tddsg/init-vline ())
 
+(defun tddsg/init-crux ()
+  (use-package crux
+    :config
+    (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
+    (global-set-key (kbd "C-^") 'crux-top-join-line)
+    (global-set-key (kbd "C-_") 'join-line)
+    (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+    (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)))
+
+(defun tddsg/post-init-diminish ()
+  (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
+  (eval-after-load "whitespace" '(diminish 'whitespace-mode " ␣"))
+  (eval-after-load "smartparens" '(diminish 'smartparens-mode " ♓"))
+  (eval-after-load "super-save" '(diminish 'super-save-mode " ⓢ"))
+  (eval-after-load "god-mode" '(diminish 'god-local-mode " ☼"))
+  (eval-after-load "which-key" '(diminish 'which-key-mode " ⌨"))
+  (eval-after-load "rainbow-mode" '(diminish 'rainbow-mode " ☔"))
+  (eval-after-load "autorevert" '(diminish 'auto-revert-mode " ↺"))
+  (eval-after-load "visual-line" (diminish 'visual-line-mode " ⤾"))
+  (eval-after-load "merlin" '(diminish 'merlin-mode " ☮"))
+  (eval-after-load "flycheck" '(diminish 'flycheck-mode " ✔"))
+  (eval-after-load "flyspell" '(diminish 'flyspell-mode " ✔"))
+  (eval-after-load "projectile" (diminish 'projectile-mode " π")))
 
 ;;; packages.el ends here
