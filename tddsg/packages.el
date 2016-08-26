@@ -289,6 +289,56 @@ Each entry is either:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CUSTOM THEMES
+
+(defcustom theme-overrides nil
+  "Association list of override faces to set for different custom themes.")
+
+(defun alist-set (alist-symbol key value)
+  "Set VALUE of a KEY in ALIST-SYMBOL."
+  (set alist-symbol
+        (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
+
+;; override some settings of the leuven theme
+(alist-set 'theme-overrides
+           'leuven
+           '((cursor ((t (:background "lime green"))))
+             (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
+             (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
+             (font-latex-sedate-face ((t (:foreground "green4"))))
+             (font-latex-subscript-face ((t (:height 0.96))))
+             (font-latex-superscript-face ((t (:height 0.96))))
+             (font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
+             (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
+             (font-lock-doc-face ((t (:foreground "#8959a8"))))
+             (font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
+             (font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
+             (font-lock-string-face ((t (:foreground "#3e999f"))))
+             (font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
+             (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
+             (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+             (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+             (powerline-active1 ((t (:inherit mode-line :background "#163365"))))))
+
+(defun tddsg-override-theme ()
+  (dolist (theme-settings theme-overrides)
+    (let ((theme (car theme-settings))
+          (faces (cadr theme-settings)))
+      (if (member theme custom-enabled-themes)
+          (dolist (face faces)
+            (custom-theme-set-faces theme face))))))
+
+;; load the theme
+(tddsg-override-theme)
+
+;; and defadvice load-theme function
+(defadvice load-theme (after theme-set-overrides activate)
+  "Set override faces for different custom themes."
+  (tddsg-override-theme))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT PACKAGES
 
 ;;; configuration for comment-dwim-2
@@ -580,53 +630,5 @@ Each entry is either:
   (global-set-key (kbd "M-m b c k") 'buf-clone-up)
   (global-set-key (kbd "M-m b c j") 'buf-clone-down))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; CUSTOM THEMES
-
-
-
-(defcustom theme-overrides nil
-  "Association list of override faces to set for different custom themes.")
-
-(defun alist-set (alist-symbol key value)
-  "Set VALUE of a KEY in ALIST-SYMBOL."
-  (set alist-symbol
-        (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
-
-;; override some settings of the leuven theme
-(alist-set 'theme-overrides
-           'leuven
-           '((cursor ((t (:background "lime green"))))
-             (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
-             (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
-             (font-latex-sedate-face ((t (:foreground "green4"))))
-             (font-latex-subscript-face ((t (:height 0.96))))
-             (font-latex-superscript-face ((t (:height 0.96))))
-             (font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
-             (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
-             (font-lock-doc-face ((t (:foreground "#8959a8"))))
-             (font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
-             (font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
-             (font-lock-string-face ((t (:foreground "#3e999f"))))
-             (font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
-             (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
-             (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
-             (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
-             (powerline-active1 ((t (:inherit mode-line :background "#163365"))))))
-
-(defun tddsg-override-theme ()
-  (dolist (theme-settings theme-overrides)
-    (let ((theme (car theme-settings))
-          (faces (cadr theme-settings)))
-      (if (member theme custom-enabled-themes)
-          (dolist (face faces)
-            (custom-theme-set-faces theme face))))))
-
-(tddsg-override-theme)
-
-(defadvice load-theme (after theme-set-overrides activate)
-  "Set override faces for different custom themes."
-  (tddsg-override-theme))
 
 ;;; packages.el ends here
