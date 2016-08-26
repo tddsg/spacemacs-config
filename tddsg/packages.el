@@ -33,6 +33,7 @@
   '(comment-dwim-2
     tuareg
     auctex
+    org
     latex-extra
     shell
     ace-popup-menu
@@ -242,6 +243,8 @@ Each entry is either:
 ;;; CONFIGS
 
 ;; visual interface setting
+(scroll-bar-mode 1)
+(set-scroll-bar-mode 'right)
 (setq-default fill-column 80)
 (setq text-scale-mode-step 1.1)                     ; scale changing font size
 (setq frame-title-format                            ; frame title
@@ -275,6 +278,9 @@ Each entry is either:
 ;; some Emacs threshold
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
+
+;; mode-line separator
+(setq powerline-default-separator 'wave)
 
 ;; fix page-up/page-down problems in smooth-scroll
 (setq scroll-conservatively 101
@@ -522,6 +528,15 @@ Each entry is either:
   (add-hook 'prog-mode-hook 'activate-column-marker)
   (add-hook 'text-mode-hook 'activate-column-marker))
 
+(defun tddsg/post-init-org ()
+  ;; unbind Shift + arrow
+  (defun my-org-hook ()
+    (define-key org-mode-map (kbd "S-<left>") nil)
+    (define-key org-mode-map (kbd "S-<right>") nil)
+    (define-key org-mode-map (kbd "S-<up>") nil)
+    (define-key org-mode-map (kbd "S-<down>") nil))
+  (add-hook 'org-mode-hook 'my-org-hook) 'append)
+
 (defun tddsg/init-diminish ()
   (require 'diminish)
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -564,5 +579,31 @@ Each entry is either:
   (global-set-key (kbd "M-m b c l") 'buf-clone-right)
   (global-set-key (kbd "M-m b c k") 'buf-clone-up)
   (global-set-key (kbd "M-m b c j") 'buf-clone-down))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CUSTOM THEMES
+
+;; custom leuven theme
+(custom-theme-set-faces
+ 'leuven
+ '(cursor ((t (:background "lime green"))))
+ '(font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
+ '(font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
+ '(font-latex-sedate-face ((t (:foreground "green4"))))
+ '(font-latex-subscript-face ((t (:height 0.96))))
+ '(font-latex-superscript-face ((t (:height 0.96))))
+ '(font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
+ '(font-lock-constant-face ((t (:foreground "dark goldenrod"))))
+ '(font-lock-doc-face ((t (:foreground "#8959a8"))))
+ '(font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
+ '(font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
+ '(font-lock-string-face ((t (:foreground "#3e999f"))))
+ '(font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
+ '(font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(powerline-active1 ((t (:inherit mode-line :background "#163365")))))
+
 
 ;;; packages.el ends here
