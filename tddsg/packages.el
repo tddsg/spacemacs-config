@@ -374,7 +374,7 @@ Each entry is either:
 
 (defun tddsg/init-smartparens ()
   (require 'smartparens)
-  (sp-use-smartparens-bindings)
+  (sp-use-paredit-bindings)
   (smartparens-global-mode t))
 
 (defun tddsg/post-init-yasnippet ()
