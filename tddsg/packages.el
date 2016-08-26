@@ -30,8 +30,7 @@
 ;;; Code:
 
 (defconst tddsg-packages
-  '(
-    comment-dwim-2
+  '(comment-dwim-2
     tuareg
     auctex
     latex-extra
@@ -219,6 +218,7 @@ Each entry is either:
 
 (global-set-key (kbd "<home>") 'spacemacs/smart-move-beginning-of-line)
 (global-set-key (kbd "<detete>") 'delete-forward-char)
+(global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
 (global-set-key (kbd "C-<left>") 'left-word)
 (global-set-key (kbd "C-<right>") 'right-word)
 
@@ -254,6 +254,8 @@ Each entry is either:
 
 ;; mode electric-pair
 (electric-pair-mode t)
+
+(ad-unadvise 'foo)
 
 ;; disable undo-tree
 
@@ -375,6 +377,10 @@ Each entry is either:
 (defun tddsg/init-smartparens ()
   (require 'smartparens)
   (sp-use-paredit-bindings)
+  (define-key smartparens-mode-map (kbd "C-<left>") nil)
+  (define-key smartparens-mode-map (kbd "C-<right>") nil)
+  (define-key smartparens-mode-map (kbd "M-s") nil)
+  (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   (smartparens-global-mode t))
 
 (defun tddsg/post-init-yasnippet ()
