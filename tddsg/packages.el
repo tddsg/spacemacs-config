@@ -276,6 +276,11 @@ Each entry is either:
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
 
+;; fix page-up/page-down problems in smooth-scroll
+(setq scroll-conservatively 101
+      scroll-margin 3
+      scroll-preserve-screen-position 't)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT PACKAGES
