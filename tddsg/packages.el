@@ -62,6 +62,7 @@
     vline
     crux
     undo-tree
+    column-marker
     (songbird :location local)
     (buffer-clone :location local)
     )
@@ -227,9 +228,9 @@ Each entry is either:
 (global-set-key (kbd "C-x m") 'monky-status)
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x G") 'magit-diff)
+(global-set-key (kbd "M-s p") 'check-parens)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-c C-w") 'tddsg-save-file-as-and-open-file)
-(global-set-key (kbd "C-c )") 'check-parens)
 (global-set-key (kbd "C-c C-SPC") 'tddsg-unpop-to-mark-command)
 
 (define-key isearch-mode-map (kbd "C-.") 'tddsg-yank-current-word-to-isearch-buffer)
@@ -255,11 +256,6 @@ Each entry is either:
 ;; mode electric-pair
 (electric-pair-mode t)
 
-(ad-unadvise 'foo)
-
-;; disable undo-tree
-
-
 ;; automatically setting mark for certain commands
 (setq global-mark-ring-max 1000
       mark-ring-max 200)
@@ -279,7 +275,6 @@ Each entry is either:
 ;; some Emacs threshold
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -445,13 +440,13 @@ Each entry is either:
   (add-hook 'text-mode-hook #'flyspell-mode))
 
 (defun tddsg/init-whitespace ()
+  (require 'whitespace)
   (dolist (hook '(prog-mode-hook text-mode-hook))
     (add-hook hook #'whitespace-mode))
   (add-hook 'before-save-hook #'whitespace-cleanup)
-  :config
   (setq whitespace-line-column 80) ;; limit line length
   ;; default of prelude
-  ;; (setq whitespace-style '(face tabs empty trailing lines-tail)) ;;
+  ;; (setq whitespace-style '(face tabs empty trailing lines-tail))
   (setq whitespace-style '(face tabs trailing)))
 
 (defun tddsg/init-move-text ()
@@ -513,6 +508,14 @@ Each entry is either:
   (global-set-key (kbd "C-_") 'join-line)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region))
+
+(defun tddsg/init-column-marker ()
+  (require 'column-marker)
+  (defun activate-column-marker ()
+    (interactive)
+    (column-marker-1 80))
+  (add-hook 'prog-mode-hook 'activate-column-marker)
+  (add-hook 'text-mode-hook 'activate-column-marker))
 
 (defun tddsg/init-diminish ()
   (require 'diminish)
