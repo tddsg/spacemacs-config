@@ -62,6 +62,9 @@
     diminish
     vline
     crux
+    undo-tree
+    (songbird :location local)
+    (buffer-clone :location local)
     )
   "The list of Lisp packages required by the tddsg layer.
 
@@ -252,6 +255,9 @@ Each entry is either:
 ;; mode electric-pair
 (electric-pair-mode t)
 
+;; disable undo-tree
+
+
 ;; automatically setting mark for certain commands
 (setq global-mark-ring-max 1000
       mark-ring-max 200)
@@ -272,34 +278,6 @@ Each entry is either:
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LOCAL PACKAGES
-
-(use-package songbird-mode
-  :load-path "private/tddsg/"
-  :mode (("\\.slk\\'" . songbird-mode)
-         ("\\.ss\\'" . songbird-mode)
-         ("\\.sb\\'" . songbird-mode))
-  :config
-  (defun my-songbird-hook ()
-    ;; customize syntax table for slurping/barfing parentheses
-    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
-      (modify-syntax-entry symbol "'" songbird-syntax-table)))
-  (add-hook 'songbird-mode-hook 'my-songbird-hook 'append))
-
-;; buffer-clone
-(use-package buffer-clone
-  :load-path "private/tddsg/"
-  :config
-  (global-set-key (kbd "s-S-<left>") 'buf-clone-left)
-  (global-set-key (kbd "s-S-<right>") 'buf-clone-right)
-  (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
-  (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "M-m b m h") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
-  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
-  (global-set-key (kbd "M-m b c j") 'buf-clone-down))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -394,7 +372,8 @@ Each entry is either:
     (local-set-key (kbd "C-j") 'newline))
   (add-hook 'shell-mode-hook 'my-shell-hook))
 
-(defun tddsg/post-init-smartparens ()
+(defun tddsg/init-smartparens ()
+  (require 'smartparens)
   (smartparens-global-mode t))
 
 (defun tddsg/post-init-yasnippet ()
@@ -432,6 +411,8 @@ Each entry is either:
   (global-set-key (kbd "S-<down>") 'windmove-down))
 
 (defun tddsg/init-key-chord ()
+  (require 'key-chord)
+  (key-chord-mode 1)
   (setq key-chord-one-key-delay 0.18
         key-chord-two-key-delay 0.1)
   ;; reassign key-chords
@@ -478,17 +459,16 @@ Each entry is either:
   (global-set-key (kbd "C-s-S-<down>") 'buf-move-down))
 
 (defun tddsg/post-init-company ()
-  (use-package company
-    :config
-    (define-key company-active-map (kbd "M-n") nil)
-    (define-key company-active-map (kbd "M-p") nil)
-    (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-    (define-key company-active-map (kbd "M-.") 'company-show-location)
-    (define-key company-active-map (kbd "C-n") #'company-select-next)
-    (define-key company-active-map (kbd "C-p") #'company-select-previous)
-    (global-set-key (kbd "M-?") 'company-complete)
-    ;; (setq company-idle-delay 200)         ;; set delay time by default
-    (global-company-mode)))
+  (require 'company)
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous)
+  (global-set-key (kbd "M-?") 'company-complete)
+  ;; (setq company-idle-delay 200)         ;; set delay time by default
+  (global-company-mode))
 
 (defun tddsg/init-anzu ()
   (global-set-key  (kbd "M-%") 'anzu-query-replace)
@@ -514,16 +494,21 @@ Each entry is either:
 
 (defun tddsg/init-vline ())
 
-(defun tddsg/init-crux ()
-  (use-package crux
-    :config
-    (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-    (global-set-key (kbd "C-^") 'crux-top-join-line)
-    (global-set-key (kbd "C-_") 'join-line)
-    (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-    (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)))
+(defun tddsg/init-undo-tree ()
+  (require 'undo-tree)
+  (global-set-key (kbd "C-/") 'undo)
+  (global-set-key (kbd "C-S-/") 'undo-tree-redo))
 
-(defun tddsg/post-init-diminish ()
+(defun tddsg/init-crux ()
+  (require 'crux)
+  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-^") 'crux-top-join-line)
+  (global-set-key (kbd "C-_") 'join-line)
+  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region))
+
+(defun tddsg/init-diminish ()
+  (require 'diminish)
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " ␣"))
   (eval-after-load "smartparens" '(diminish 'smartparens-mode " ♓"))
@@ -537,5 +522,32 @@ Each entry is either:
   (eval-after-load "flycheck" '(diminish 'flycheck-mode " ✔"))
   (eval-after-load "flyspell" '(diminish 'flyspell-mode " ✔"))
   (eval-after-load "projectile" (diminish 'projectile-mode " π")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LOCAL PACKAGES
+
+(defun tddsg/init-songbird ()
+  (require 'songbird)
+  (add-to-list 'auto-mode-alist '("\\.sb\\'" . songbird))
+  (add-to-list 'auto-mode-alist '("\\.ss\\'" . songbird))
+  (add-to-list 'auto-mode-alist '("\\.slk\\'" . songbird))
+  (defun my-songbird-hook ()
+    ;; customize syntax table for slurping/barfing parentheses
+    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
+      (modify-syntax-entry symbol "'" songbird-syntax-table)))
+  (add-hook 'songbird-hook 'my-songbird-hook 'append))
+
+;; buffer-clone
+(defun tddsg/init-buffer-clone ()
+  (require 'buffer-clone)
+  (global-set-key (kbd "s-S-<left>") 'buf-clone-left)
+  (global-set-key (kbd "s-S-<right>") 'buf-clone-right)
+  (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
+  (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
+  (global-set-key (kbd "M-m b m h") 'buf-clone-left)
+  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
+  (global-set-key (kbd "M-m b c j") 'buf-clone-down))
 
 ;;; packages.el ends here

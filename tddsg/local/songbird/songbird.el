@@ -1,4 +1,4 @@
-;;; songbird-mode.el
+;;; songbird.el
 
 ;; Copyright © July 2016, by Ta Quang Trung
 
@@ -62,7 +62,7 @@
         ))
 
 
-(defvar songbird-syntax-table nil "Syntax table for `songbird-mode'.")
+(defvar songbird-syntax-table nil "Syntax table for `songbird'.")
 (setq songbird-syntax-table
       (let ((syn-table (make-syntax-table)))
         ;; C++ style comment “// …”
@@ -74,8 +74,8 @@
         syn-table))
 
 ;;;###autoload
-(define-derived-mode songbird-mode prog-mode
-  "songbird mode"
+(define-derived-mode songbird prog-mode
+  "songbird"
   "Major mode for editing Songbird/Hip/Sleek files"
   :syntax-table songbird-syntax-table
 
@@ -83,22 +83,22 @@
   (setq font-lock-defaults '((songbird-font-lock-keywords)))
 
   ;; highlight syntax function and predicate
-  (font-lock-add-keywords 'songbird-mode
+  (font-lock-add-keywords 'songbird
                           '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
                              (1 font-lock-function-name-face)))
                           t)
   ;; higlight syntax for data structure declaration
-  (font-lock-add-keywords 'songbird-mode
+  (font-lock-add-keywords 'songbird
                           '(("data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{"
                              (1 font-lock-type-face)))
                           t)
   ;; higlight syntax for data structure formula
-  (font-lock-add-keywords 'songbird-mode
+  (font-lock-add-keywords 'songbird
                           '(("::\\([a-zA-Z0-9_']+\\)\\s-*\<"
                              (1 font-lock-type-face)))
                           t)
   ;; highlight syntax variable declaration
-  (font-lock-add-keywords 'songbird-mode ;
+  (font-lock-add-keywords 'songbird ;
                           '(("\\([a-zA-Z0-9_']+\\)\\s-+\\(\\([a-zA-Z0-9_']+\\)\\s-*\\)+;"
                              (1 font-lock-type-face)))
                           t)
@@ -111,7 +111,7 @@
   (set (make-local-variable 'comment-multi-line) nil)
   (set (make-local-variable 'comment-use-syntax) t)
 
-  (run-hooks 'songbird-mode-hook))
+  (run-hooks 'songbird-hook))
 
 ;; clear memory. no longer needed
 (setq songbird-keywords nil)
@@ -129,19 +129,19 @@
 
 
 (or (assoc "\\.sb$" auto-mode-alist)
-    (setq auto-mode-alist (cons '("\\.sb$" . songbird-mode) auto-mode-alist)))
+    (setq auto-mode-alist (cons '("\\.sb$" . songbird) auto-mode-alist)))
 
 (or (assoc "\\.slk$" auto-mode-alist)
-    (setq auto-mode-alist (cons '("\\.slk$" . songbird-mode) auto-mode-alist)))
+    (setq auto-mode-alist (cons '("\\.slk$" . songbird) auto-mode-alist)))
 
 (or (assoc "\\.ss$" auto-mode-alist)
-    (setq auto-mode-alist (cons '("\\.ss$" . songbird-mode) auto-mode-alist)))
+    (setq auto-mode-alist (cons '("\\.ss$" . songbird) auto-mode-alist)))
 
 ;; add the mode to the `features' list
-(provide 'songbird-mode)
+(provide 'songbird)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
 
-;;; songbird-mode.el ends here
+;;; songbird.el ends here
