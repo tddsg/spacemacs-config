@@ -305,15 +305,7 @@ Each entry is either:
   (defadvice previous-buffer (after update activate) (update-cursor))
   (defadvice next-buffer (after update activate) (update-cursor))
   (defadvice keyboard-quit (after update activate) (update-cursor))
-  ;; mode-line setting
-  (defvar mode-line-god-mode
-    '(:propertize
-      (:eval (if god-local-mode " G " " N "))
-      help-echo (if god-local-mode "God-mode is enabled" "God-mode is disable"))
-    "Mode line format for God-mod")
-  (put 'mode-line-god-mode 'risky-local-variable t)
   (defun my-god-hook ()
-    (add-to-list 'mode-line-format mode-line-god-mode)
     (update-cursor))
   (add-hook 'god-mode-enabled-hook 'my-god-hook)
   (add-hook 'god-mode-disabled-hook 'my-god-hook))

@@ -117,12 +117,6 @@
 
 ;;; INIT CONFIGS
 (defun tddsg/init-configs ()
-  ;; hooks
-  (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
-  (add-hook 'text-mode-hook 'tddsg-hook-text-mode)
-
   ;; visual interface setting
   (setq scroll-margin 5)
   (setq-default fill-column 80)
@@ -183,11 +177,17 @@
   (eval-after-load "merlin" '(diminish 'merlin-mode " ☮"))
   (eval-after-load "flycheck" '(diminish 'flycheck-mode " ✔"))
   (eval-after-load "flyspell" '(diminish 'flyspell-mode " ✔"))
-  (eval-after-load "projectile" '(diminish 'projectile-mode " π")))
+  (eval-after-load "projectile" '(diminish 'projectile-mode " π"))
+
+  ;; hooks, finally hook
+  (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
+  (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
+  (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
+  (add-hook 'text-mode-hook 'tddsg-hook-text-mode))
 
 ;;; INIT KEYS
 (defun tddsg/init-keys ()
-  (global-set-key (kbd "<home>") 'spacemacs/smart-move-beginning-of-line)
+  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<detete>") 'delete-forward-char)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
