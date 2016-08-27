@@ -1,3 +1,9 @@
+;;; package --- Summary
+
+;;; Commentary:
+
+;;; Code:
+
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
@@ -160,12 +166,14 @@
   (setq max-specpdl-size 10000)
 
   ;; mode-line setting
+  (require 'powerline)
   (setq powerline-default-separator 'wave)
 
-  ;; fix page-up/page-down problems in smooth-scroll
-  (setq scroll-conservatively 101
-        scroll-margin 3
-        scroll-preserve-screen-position 't)
+  ;; ;; fix page-up/page-down problems in smooth-scroll
+  (setq scroll-margin 5)
+  ;; (setq scroll-conservatively 101
+  ;;       scroll-margin 3
+  ;;       scroll-preserve-screen-position 't)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -230,17 +238,15 @@
   (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
 
-  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key shell-mode-map (kbd "C-j") 'newline)
   (define-key undo-tree-map (kbd "C-_") nil)
 
+  (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
   (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
   (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous)
-  )
+  (define-key company-active-map (kbd "C-p") #'company-select-previous))
