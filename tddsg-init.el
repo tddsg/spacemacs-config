@@ -115,12 +115,16 @@
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
 
+;;; INIT CONFIGS
 (defun tddsg/init-configs ()
-  ;; visual interface setting
+  ;; hooks
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
   (add-hook 'text-mode-hook 'tddsg-hook-text-mode)
+
+  ;; visual interface setting
+  (setq scroll-margin 5)
   (setq-default fill-column 80)
   (setq text-scale-mode-step 1.1)                     ; scale changing font size
   (setq frame-title-format                            ; frame title
@@ -131,13 +135,6 @@
   ;; mode paragraph setting
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
-
-  ;; mode electric-pair
-  (electric-pair-mode t)
-
-  ;; company mode
-  ;; (setq company-idle-delay 200)          ;; setdelaytimebydefault
-  (global-company-mode)
 
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
@@ -155,11 +152,14 @@
   (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
 
   ;; mode editing setting
+  (electric-pair-mode t)
   (delete-selection-mode t)                           ; delete selection by keypress
   (setq require-final-newline t)                      ; newline at end of file
   (defadvice newline                                  ; indent after new line
       (after newline-after activate)
     (indent-according-to-mode))
+  ;; (setq company-idle-delay 200)          ;; setdelaytimebydefault
+  (global-company-mode)
 
   ;; some Emacs threshold
   (setq max-lisp-eval-depth 10000)
@@ -168,12 +168,6 @@
   ;; mode-line setting
   (require 'powerline)
   (setq powerline-default-separator 'wave)
-
-  ;; ;; fix page-up/page-down problems in smooth-scroll
-  (setq scroll-margin 5)
-  ;; (setq scroll-conservatively 101
-  ;;       scroll-margin 3
-  ;;       scroll-preserve-screen-position 't)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -191,7 +185,7 @@
   (eval-after-load "flyspell" '(diminish 'flyspell-mode " ✔"))
   (eval-after-load "projectile" '(diminish 'projectile-mode " π")))
 
-
+;;; INIT KEYS
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'spacemacs/smart-move-beginning-of-line)
   (global-set-key (kbd "<detete>") 'delete-forward-char)
@@ -213,7 +207,7 @@
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x G") 'magit-diff)
 
-  (global-set-key (kbd "C-c C-w") 'tddsg/save-file-as-and-open-file)
+  (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
   (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c M-m") 'tddsg/shell-current-window)
@@ -250,3 +244,56 @@
   (define-key company-active-map (kbd "M-.") 'company-show-location)
   (define-key company-active-map (kbd "C-n") #'company-select-next)
   (define-key company-active-map (kbd "C-p") #'company-select-previous))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; INIT THEMES
+
+(defcustom tddsg-themes nil
+  "Association list of override faces to set for different custom themes.")
+
+(defun tddsg-read-custom-themes (alist-symbol key value)
+  "Set VALUE of a KEY in ALIST-SYMBOL."
+  (set alist-symbol
+        (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
+
+;; override some settings of the leuven theme
+(tddsg-read-custom-themes
+ 'tddsg-themes
+ ;; update leuven
+ 'leuven
+ '((cursor ((t (:background "lime green"))))
+   (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
+   (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
+   (font-latex-sedate-face ((t (:foreground "green4"))))
+   (font-latex-subscript-face ((t (:height 0.96))))
+   (font-latex-superscript-face ((t (:height 0.96))))
+   (font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
+   (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
+   (font-lock-doc-face ((t (:foreground "#8959a8"))))
+   (font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
+   (font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
+   (font-lock-string-face ((t (:foreground "#3e999f"))))
+   (font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
+   (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
+   (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+   (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+   (powerline-active1 ((t (:inherit mode-line :background "#163365")))))
+ ;; other themes
+ )
+
+(defun tddsg-override-theme ()
+  (dolist (theme-settings tddsg-themes)
+    (let ((theme (car theme-settings))
+          (faces (cadr theme-settings)))
+      (if (member theme custom-enabled-themes)
+          (dolist (face faces)
+            (custom-theme-set-faces theme face))))))
+
+(defun tddsg/init-themes ()
+  ;; load the theme
+  (tddsg-override-theme)
+  ;; and defadvice load-theme function
+  (defadvice load-theme (after theme-set-overrides activate)
+    "Set override faces for different custom themes."
+    (tddsg-override-theme)))
