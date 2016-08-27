@@ -59,6 +59,8 @@
     god-mode
     (songbird :location local)
     (buffer-clone :location local)
+    (merlin-imenu :location local)
+    (smartparens-ocaml :location local)
     )
   "The list of Lisp packages required by the tddsg layer.
 
@@ -169,9 +171,13 @@ Each entry is either:
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
 
+(defun tddsg/init-merlin-imenu ())
+
+(defun tddsg/init-smartparens-ocaml ()
+  (require 'smartparens-ocaml))
+
 (defun tddsg/post-init-tuareg ()
-  (use-package merlin-imenu :load-path "private/tddsg/")
-  (use-package smartparens-ocaml :load-path "private/tddsg/")
+  (require 'merlin-imenu)
   (dolist (var (car (read-from-string
                      (shell-command-to-string "opam config env --sexp"))))
     (setenv (car var) (cadr var)))
