@@ -223,6 +223,9 @@ Each entry is either:
 (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
 (global-set-key (kbd "C-<left>") 'left-word)
 (global-set-key (kbd "C-<right>") 'right-word)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
 
 (global-set-key (kbd "M-H") 'tddsg-mark-line)
 (global-set-key (kbd "C-x _") 'shrink-window)
@@ -430,8 +433,7 @@ Each entry is either:
     (local-set-key (kbd "C-j") 'newline))
   (add-hook 'shell-mode-hook 'my-shell-hook))
 
-(defun tddsg/init-smartparens ()
-  (require 'smartparens)
+(defun tddsg/post-init-smartparens ()
   (sp-use-paredit-bindings)
   (define-key smartparens-mode-map (kbd "C-<left>") nil)
   (define-key smartparens-mode-map (kbd "C-<right>") nil)
@@ -454,7 +456,7 @@ Each entry is either:
 (defun tddsg/post-init-projectile ()
   (projectile-global-mode 1))
 
-(defun tddsg/init-expand-region ()
+(defun tddsg/post-init-expand-region ()
   (global-set-key (kbd "C-=") 'er/expand-region))
 
 (defun tddsg/init-goto-chg ()
@@ -500,21 +502,18 @@ Each entry is either:
   (global-set-key (kbd "M-m S s") 'flyspell-mode)
   (add-hook 'text-mode-hook #'flyspell-mode))
 
-(defun tddsg/init-whitespace ()
-  (require 'whitespace)
+(defun tddsg/post-init-whitespace ()
   (dolist (hook '(prog-mode-hook text-mode-hook))
     (add-hook hook #'whitespace-mode))
   (add-hook 'before-save-hook #'whitespace-cleanup)
-  (setq whitespace-line-column 80) ;; limit line length
-  ;; default of prelude
-  ;; (setq whitespace-style '(face tabs empty trailing lines-tail))
+  (setq whitespace-line-column 80)
   (setq whitespace-style '(face tabs trailing)))
 
-(defun tddsg/init-move-text ()
+(defun tddsg/post-init-move-text ()
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down))
 
-(defun tddsg/init-buffer-move ()
+(defun tddsg/post-init-buffer-move ()
   ;; buffer-move
   (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
   (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
@@ -557,8 +556,7 @@ Each entry is either:
 
 (defun tddsg/init-vline ())
 
-(defun tddsg/init-undo-tree ()
-  (require 'undo-tree)
+(defun tddsg/post-init-undo-tree ()
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo))
 
@@ -587,8 +585,7 @@ Each entry is either:
     (define-key org-mode-map (kbd "S-<down>") nil))
   (add-hook 'org-mode-hook 'my-org-hook) 'append)
 
-(defun tddsg/init-diminish ()
-  (require 'diminish)
+(defun tddsg/post-init-diminish ()
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " ␣"))
   (eval-after-load "smartparens" '(diminish 'smartparens-mode " ♓"))
