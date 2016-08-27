@@ -64,6 +64,7 @@
     crux
     undo-tree
     column-marker
+    god-mode
     (songbird :location local)
     (buffer-clone :location local)
     )
@@ -246,8 +247,7 @@ Each entry is either:
 ;;; CONFIGS
 
 ;; visual interface setting
-(scroll-bar-mode 1)
-(set-scroll-bar-mode 'right)
+(global-linum-mode 1)
 (setq-default fill-column 80)
 (setq text-scale-mode-step 1.1)                     ; scale changing font size
 (setq frame-title-format                            ; frame title
@@ -282,7 +282,7 @@ Each entry is either:
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
 
-;; mode-line separator
+;; mode-line setting
 (setq powerline-default-separator 'wave)
 
 ;; fix page-up/page-down problems in smooth-scroll
@@ -483,15 +483,12 @@ Each entry is either:
   ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
   (key-chord-define-global "xz" 'helm-mini)
-  (key-chord-define-global "xz" 'helm-mini)
-  (key-chord-define-global "jj" 'avy-goto-word-1)
-  (key-chord-define-global "jl" 'avy-goto-word-1)
-  (key-chord-define-global "jk" 'previous-buffer)
-  (key-chord-define-global "kl" 'next-buffer)
+  (key-chord-define-global "JK" 'previous-buffer)
+  (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-according-to-mode)
-  (key-chord-define-global "JK" 'windmove-left)
-  (key-chord-define-global "KL" 'windmove-right)
-  (key-chord-define-global "JI" 'windmove-up)
+  (key-chord-define-global "jk" 'avy-goto-word-1)
+  (key-chord-define-global "jj" 'avy-goto-char-2)
+  (key-chord-define-global "jl" 'avy-goto-line)
   (key-chord-define-global "IL" 'windmove-down))
 
 (defun tddsg/post-init-flyspell ()
@@ -557,6 +554,7 @@ Each entry is either:
 (defun tddsg/init-vline ())
 
 (defun tddsg/post-init-undo-tree ()
+  (define-key undo-tree-map (kbd "C-_") nil)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo))
 
@@ -568,13 +566,53 @@ Each entry is either:
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region))
 
-(defun tddsg/init-column-marker ()
+(defun tddsg/post-init-column-marker ()
   (require 'column-marker)
-  (defun activate-column-marker ()
+  (defun tddsg-activate-column-marker ()
     (interactive)
-    (column-marker-1 80))
-  (add-hook 'prog-mode-hook 'activate-column-marker)
-  (add-hook 'text-mode-hook 'activate-column-marker))
+    (column-marker-3 80))
+  (add-hook 'prog-mode-hook 'tddsg-activate-column-marker)
+  (add-hook 'latex-mode-hook 'tddsg-activate-column-marker)
+  (add-hook 'text-mode-hook 'tddsg-activate-column-marker))
+
+(defun tddsg/init-god-mode ()
+  (require 'god-mode)
+  (require 'god-mode-isearch)
+  ;;; define switch key
+  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "z") 'repeat)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
+  (global-set-key (kbd "<escape>") 'god-local-mode)
+  ;;; update cursor
+  (defun update-cursor ()
+    (if god-local-mode
+        (set-cursor-color "purple")
+      (set-cursor-color "lime green")))
+  (defadvice other-window (after update activate) (update-cursor))
+  (defadvice windmove-do-window-select (after update activate) (update-cursor))
+  (defadvice split-window (after update activate) (update-cursor))
+  (defadvice set-buffer (after update activate) (update-cursor))
+  (defadvice switch-to-buffer (after update activate) (update-cursor))
+  (defadvice save-buffer (after update activate) (update-cursor))
+  (defadvice pop-to-buffer (after update activate) (update-cursor))
+  (defadvice previous-buffer (after update activate) (update-cursor))
+  (defadvice next-buffer (after update activate) (update-cursor))
+  (defadvice keyboard-quit (after update activate) (update-cursor))
+  ;; mode-line setting
+  (defvar mode-line-god-mode
+    '(:propertize
+      (:eval (if god-local-mode " G " " N "))
+      help-echo (if god-local-mode "God-mode is enabled" "God-mode is disable"))
+    "Mode line format for God-mod")
+  (put 'mode-line-god-mode 'risky-local-variable t)
+  (defun my-god-hook ()
+    (add-to-list 'mode-line-format mode-line-god-mode)
+    (update-cursor))
+  (add-hook 'god-mode-enabled-hook 'my-god-hook)
+  (add-hook 'god-mode-disabled-hook 'my-god-hook))
 
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow
