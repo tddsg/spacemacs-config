@@ -134,6 +134,10 @@ Each entry is either:
   (setq exec-path (split-string (getenv "PATH") path-separator)
         opam-share (substring (shell-command-to-string
                                "opam config var share 2> /dev/null") 0 -1))
+  ;; smartparens for ocaml
+  (require 'smartparens)
+  (sp-with-modes '(tuareg-mode)
+    (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
   ;; fix syntax highlight for OCaml
   (font-lock-add-keywords
    'tuareg-mode
@@ -180,11 +184,30 @@ Each entry is either:
              (output-dvi "xdvi")
              (output-pdf "Okular")
              (output-html "xdg-open")))))
+  ;; smartparens for latex
+  (require 'smartparens)
+  (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
+    (sp-local-pair "`" "'"
+                   :actions '(:rem autoskip)
+                   :skip-match 'sp-latex-skip-match-apostrophe
+                   :unless '(sp-latex-point-after-backslash))
+    (sp-local-pair "\\begin" "\\end" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\begin{enumerate}" "\\end{enumerate}" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair)))
+  ;; hook
   (defun my-latex-hook ()
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
-    (require 'smartparens-latex))
+    (require 'smartparens-latex)
+    (turn-on-auto-fill)
+    (abbrev-mode +1)
+    (show-smartparens-mode)
+    (smartparens-mode +1)
+    (latex-extra-mode))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
@@ -226,7 +249,6 @@ Each entry is either:
 
 (defun tddsg/init-key-chord ()
   (require 'key-chord)
-  (key-chord-mode 1)
   (setq key-chord-one-key-delay 0.18
         key-chord-two-key-delay 0.1)
   ;; reassign key-chords
@@ -238,7 +260,7 @@ Each entry is either:
   (key-chord-define-global "jk" 'avy-goto-word-1)
   (key-chord-define-global "jj" 'avy-goto-char-2)
   (key-chord-define-global "jl" 'avy-goto-line)
-  (key-chord-define-global "IL" 'windmove-down))
+  (key-chord-mode 1))
 
 (defun tddsg/post-init-whitespace ()
   (add-hook 'before-save-hook #'whitespace-cleanup)
@@ -281,15 +303,6 @@ Each entry is either:
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
-  (require 'god-mode-isearch)
-  ;;; define switch key
-  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "z") 'repeat)
-  (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
-  (global-set-key (kbd "<escape>") 'god-local-mode)
   ;;; update cursor
   (defun update-cursor ()
     (if god-local-mode
@@ -305,8 +318,7 @@ Each entry is either:
   (defadvice previous-buffer (after update activate) (update-cursor))
   (defadvice next-buffer (after update activate) (update-cursor))
   (defadvice keyboard-quit (after update activate) (update-cursor))
-  (defun my-god-hook ()
-    (update-cursor))
+  (defun my-god-hook () (update-cursor))
   (add-hook 'god-mode-enabled-hook 'my-god-hook)
   (add-hook 'god-mode-disabled-hook 'my-god-hook))
 

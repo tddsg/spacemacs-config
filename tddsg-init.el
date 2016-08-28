@@ -118,10 +118,12 @@
 ;;; INIT CONFIGS
 (defun tddsg/init-configs ()
   ;; visual interface setting
-  (setq scroll-margin 5)
+  (blink-cursor-mode 1)             ;; turn on blinking
+  (setq  blink-cursor-blinks 15)    ;; blink 15 times
+  (setq scroll-margin 5)            ;; top-bottom margin for scrolling
   (setq-default fill-column 80)
-  (setq text-scale-mode-step 1.1)                     ; scale changing font size
-  (setq frame-title-format                            ; frame title
+  (setq text-scale-mode-step 1.1)   ;; scale changing font size
+  (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
           (:eval (if (buffer-file-name)
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
@@ -147,12 +149,12 @@
 
   ;; mode editing setting
   (electric-pair-mode t)
-  (delete-selection-mode t)                           ; delete selection by keypress
-  (setq require-final-newline t)                      ; newline at end of file
-  (defadvice newline                                  ; indent after new line
+  (delete-selection-mode t)                ;; delete selection by keypress
+  (setq require-final-newline t)           ;; newline at end of file
+  (defadvice newline                       ;; indent after new line
       (after newline-after activate)
     (indent-according-to-mode))
-  ;; (setq company-idle-delay 200)          ;; setdelaytimebydefault
+  ;; (setq company-idle-delay 200)         ;; setdelaytimebydefault
   (global-company-mode)
 
   ;; some Emacs threshold
@@ -162,6 +164,13 @@
   ;; mode-line setting
   (require 'powerline)
   (setq powerline-default-separator 'wave)
+
+  ;;compilation
+  (setq compilation-ask-about-save nil)
+
+  ;;shell
+  (setq comint-prompt-read-only nil)
+  (defadvice shell (after linum activate) (linum-mode 1))
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -189,6 +198,7 @@
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<detete>") 'delete-forward-char)
+  (global-set-key (kbd "<escape>") 'god-local-mode)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
@@ -202,6 +212,7 @@
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
 
+  (global-set-key (kbd "C-x C-b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
@@ -236,6 +247,15 @@
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key shell-mode-map (kbd "C-j") 'newline)
   (define-key undo-tree-map (kbd "C-_") nil)
+
+  ;; god-mode
+  (require 'god-mode)
+  (require 'god-mode-isearch)
+  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
   (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
