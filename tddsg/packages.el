@@ -134,10 +134,6 @@ Each entry is either:
   (setq exec-path (split-string (getenv "PATH") path-separator)
         opam-share (substring (shell-command-to-string
                                "opam config var share 2> /dev/null") 0 -1))
-  ;; smartparens for ocaml
-  (require 'smartparens)
-  (sp-with-modes '(tuareg-mode)
-    (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
   ;; fix syntax highlight for OCaml
   (font-lock-add-keywords
    'tuareg-mode
@@ -184,19 +180,6 @@ Each entry is either:
              (output-dvi "xdvi")
              (output-pdf "Okular")
              (output-html "xdg-open")))))
-  ;; smartparens for latex
-  (require 'smartparens)
-  (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
-    (sp-local-pair "`" "'"
-                   :actions '(:rem autoskip)
-                   :skip-match 'sp-latex-skip-match-apostrophe
-                   :unless '(sp-latex-point-after-backslash))
-    (sp-local-pair "\\begin" "\\end" :post-handlers
-                   '(sp-latex-insert-spaces-inside-pair))
-    (sp-local-pair "\\begin{enumerate}" "\\end{enumerate}" :post-handlers
-                   '(sp-latex-insert-spaces-inside-pair))
-    (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers
-                   '(sp-latex-insert-spaces-inside-pair)))
   ;; hook
   (defun my-latex-hook ()
     (setq TeX-newline-function 'newline-and-indent
@@ -212,11 +195,28 @@ Each entry is either:
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
 (defun tddsg/post-init-smartparens ()
+  ;; bindings
   (sp-use-paredit-bindings)
   (define-key smartparens-mode-map (kbd "C-<left>") nil)
   (define-key smartparens-mode-map (kbd "C-<right>") nil)
   (define-key smartparens-mode-map (kbd "M-s") nil)
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
+  ;; smartparens for ocaml
+  (sp-with-modes '(tuareg-mode)
+    (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
+  ;; smartparens for latex
+  (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
+    (sp-local-pair "`" "'"
+                   :actions '(:rem autoskip)
+                   :skip-match 'sp-latex-skip-match-apostrophe
+                   :unless '(sp-latex-point-after-backslash))
+    (sp-local-pair "\\begin" "\\end" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\begin{enumerate}" "\\end{enumerate}" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair)))
+  ;; enable smartparens
   (smartparens-global-mode t))
 
 (defun tddsg/post-init-yasnippet ()
@@ -325,10 +325,14 @@ Each entry is either:
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow
   (defun my-org-hook ()
+    ;; disable keys
     (define-key org-mode-map (kbd "S-<left>") nil)
     (define-key org-mode-map (kbd "S-<right>") nil)
     (define-key org-mode-map (kbd "S-<up>") nil)
-    (define-key org-mode-map (kbd "S-<down>") nil))
+    (define-key org-mode-map (kbd "S-<down>") nil)
+    ;; indentation
+    (org-indent-mode t)
+    (setq indent-line-function 'indent-relative))
   (add-hook 'org-mode-hook 'my-org-hook) 'append)
 
 
@@ -355,8 +359,10 @@ Each entry is either:
   (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
   (global-set-key (kbd "M-m b m h") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
+  (global-set-key (k
+                   bd "M-m b c l") 'buf-clone-right)
   (global-set-key (kbd "M-m b c k") 'buf-clone-up)
   (global-set-key (kbd "M-m b c j") 'buf-clone-down))
 
 ;;; packages.el ends here
+
