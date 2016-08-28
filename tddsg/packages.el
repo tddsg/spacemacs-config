@@ -359,8 +359,7 @@ Each entry is either:
   (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
   (global-set-key (kbd "M-m b m h") 'buf-clone-left)
-  (global-set-key (k
-                   bd "M-m b c l") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
   (global-set-key (kbd "M-m b c k") 'buf-clone-up)
   (global-set-key (kbd "M-m b c j") 'buf-clone-down))
 
