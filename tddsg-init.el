@@ -99,7 +99,6 @@
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
-
 (defun tddsg-set-mark ()
   (interactive)
   (push-mark (point) t nil))
@@ -243,6 +242,19 @@
   (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
 
+  (global-set-key (kbd "C-M-1") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
+  (global-set-key (kbd "C-M-2") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
+  (global-set-key (kbd "C-M-3") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
+  (global-set-key (kbd "C-M-4") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
+  (global-set-key (kbd "C-M-5") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
+  (global-set-key (kbd "C-M-6") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
+  (global-set-key (kbd "C-M-7") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
+  (global-set-key (kbd "C-M-8") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
+  (global-set-key (kbd "C-M-9") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
+  (global-set-key (kbd "C-M-0") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
+  (global-set-key (kbd "C-M-+") 'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
+  (global-set-key (kbd "C-M--") 'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key shell-mode-map (kbd "C-j") 'newline)
@@ -317,3 +329,66 @@
   (defadvice load-theme (after theme-set-overrides activate)
     "Set override faces for different custom themes."
     (tddsg-override-theme)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; INIT SPACELINE
+
+(require 'spaceline-segments)
+
+;; reuse code from spaceline-config.el
+(defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
+  "Convenience function for the spacemacs and emacs themes."
+  (spaceline-install 'tddsg
+              `(,left
+                anzu
+                auto-compile
+                ,second-left
+                major-mode
+                (process :when active)
+                ((flycheck-error flycheck-warning flycheck-info)
+                 :when active)
+                (minor-modes :when active)
+                (mu4e-alert-segment :when active)
+                (erc-track :when active)
+                (version-control :when active)
+                (org-pomodoro :when active)
+                (org-clock :when active)
+                nyan-cat)
+
+              `(which-function
+                (python-pyvenv :fallback python-pyenv)
+                (battery :when active)
+                selection-info
+                input-method
+                ((buffer-encoding-abbrev))
+                (global :when active)
+                ,@additional-segments
+                buffer-position
+                hud))
+
+  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
+
+(defun tddsg--create-spaceline-final (&rest additional-segments)
+  "Install the modeline used by Spacemacs.
+
+ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
+`buffer-position'."
+  (apply 'tddsg--create-spaceline-theme
+         '((persp-name
+            workspace-number
+            window-number)
+           :fallback evil-state
+           :separator "|"
+           :face highlight-face)
+         '(buffer-modified
+           point-position
+           line-column
+           ;; buffer-size
+           buffer-id
+           remote-host)
+         additional-segments))
+
+(defun tddsg/init-spaceline ()
+  (tddsg--create-spaceline-final))
