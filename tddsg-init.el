@@ -390,9 +390,9 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            remote-host)
          additional-segments))
 
-(dolist (s '((tddsg-face-unmodified "SteelBlue" "Unmodified buffer face.")
+(dolist (s '((tddsg-face-unmodified "#608DCF" "Unmodified buffer face.")
              (tddsg-face-modified "DarkGoldenrod2" "Modified buffer face.")
-             (tddsg-face-read-only "SeaGreen" "Read-only buffer face.")))
+             (tddsg-face-read-only "#608DCF" "Read-only buffer face.")))
   (eval `(defface ,(nth 0 s)
            `((t (:background ,(nth 1 s)
                              :foreground "#3E3D31"
