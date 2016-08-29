@@ -341,32 +341,31 @@
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
   "Convenience function for the spacemacs and emacs themes."
   (spaceline-install 'tddsg
-              `(,left
-                anzu
-                auto-compile
-                ,second-left
-                major-mode
-                (process :when active)
-                ((flycheck-error flycheck-warning flycheck-info)
-                 :when active)
-                (minor-modes :when active)
-                (mu4e-alert-segment :when active)
-                (erc-track :when active)
-                (version-control :when active)
-                (org-pomodoro :when active)
-                (org-clock :when active)
-                nyan-cat)
-
-              `(which-function
-                (python-pyvenv :fallback python-pyenv)
-                (battery :when active)
-                selection-info
-                input-method
-                ((buffer-encoding-abbrev))
-                (global :when active)
-                ,@additional-segments
-                buffer-position
-                hud))
+                     `(,left
+                       anzu
+                       auto-compile
+                       ,second-left
+                       major-mode
+                       (process :when active)
+                       ((flycheck-error flycheck-warning flycheck-info)
+                        :when active)
+                       (minor-modes :when active)
+                       (mu4e-alert-segment :when active)
+                       (erc-track :when active)
+                       (version-control :when active)
+                       (org-pomodoro :when active)
+                       (org-clock :when active)
+                       nyan-cat)
+                     `(which-function
+                       (python-pyvenv :fallback python-pyenv)
+                       (battery :when active)
+                       selection-info
+                       input-method
+                       ((buffer-encoding-abbrev))
+                       (global :when active)
+                       ,@additional-segments
+                       buffer-position
+                       hud))
 
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
@@ -375,6 +374,7 @@
 
 ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
 `buffer-position'."
+  (require 'spaceline)
   (apply 'tddsg--create-spaceline-theme
          '((persp-name
             workspace-number
@@ -390,5 +390,28 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            remote-host)
          additional-segments))
 
+(dolist (s '((tddsg-face-unmodified "SteelBlue" "Unmodified buffer face.")
+             (tddsg-face-modified "DarkGoldenrod2" "Modified buffer face.")
+             (tddsg-face-read-only "SeaGreen" "Read-only buffer face.")))
+  (eval `(defface ,(nth 0 s)
+           `((t (:background ,(nth 1 s)
+                             :foreground "#3E3D31"
+                             :inherit 'mode-line)))
+           ,(nth 2 s)
+           :group 'tddsg)))
+
+
+(defun tddsg--spaceline-highlight-face ()
+  "Set the highlight face depending on the buffer modified status.
+Set `spaceline-highlight-face-func' to
+`tddsg--spaceline-highlight-face' to use this."
+  (cond
+   (buffer-read-only 'tddsg-face-read-only)
+   ((buffer-modified-p) 'tddsg-face-modified )
+   (t 'tddsg-face-unmodified)))
+
+
 (defun tddsg/init-spaceline ()
+  (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
+
