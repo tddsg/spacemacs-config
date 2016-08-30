@@ -40,6 +40,7 @@
     yasnippet
     hi-lock
     projectile
+    helm
     expand-region
     goto-chg
     paren
@@ -57,6 +58,7 @@
     crux
     column-marker
     god-mode
+    buffer-move
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -228,6 +230,20 @@ Each entry is either:
 (defun tddsg/post-init-projectile ()
   (projectile-global-mode 1))
 
+(defun tddsg/post-init-helm ()
+  (require 'helm)
+  ;; (setq helm-split-window-in-side-p           t
+  ;;       ;; helm-buffers-fuzzy-matching
+  ;;       helm-move-to-line-cycle-in-source     t
+  ;;       helm-ff-search-library-in-sexp        t
+  ;;       helm-ff-file-name-history-use-recentf t)
+  (add-to-list 'helm-sources-using-default-as-input
+               'helm-source-grep-ag)
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+  (setq projectile-completion-system 'helm)
+  (require 'helm-config)
+  (helm-mode 1))
+
 (defun tddsg/post-init-expand-region ()
   (global-set-key (kbd "C-=") 'er/expand-region))
 
@@ -246,6 +262,18 @@ Each entry is either:
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
   (global-set-key (kbd "S-<down>") 'windmove-down))
+
+;; buffer-clone
+(defun tddsg/init-buffer-move ()
+  (require 'buffer-move)
+  (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
+  (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
+  (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
+  (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
+  (global-set-key (kbd "M-m b m f") 'buf-move-left)
+  (global-set-key (kbd "M-m b m b") 'buf-move-right)
+  (global-set-key (kbd "M-m b m p") 'buf-move-up)
+  (global-set-key (kbd "M-m b m n") 'buf-move-down))
 
 (defun tddsg/init-key-chord ()
   (require 'key-chord)
@@ -358,10 +386,10 @@ Each entry is either:
   (global-set-key (kbd "s-S-<right>") 'buf-clone-right)
   (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "M-m b m h") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
-  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
-  (global-set-key (kbd "M-m b c j") 'buf-clone-down))
+  (global-set-key (kbd "M-m b c f") 'buf-clone-left)
+  (global-set-key (kbd "M-m b c b") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c p") 'buf-clone-up)
+  (global-set-key (kbd "M-m b c n") 'buf-clone-down))
 
 ;;; packages.el ends here
 

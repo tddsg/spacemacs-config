@@ -187,6 +187,7 @@
 
   ;;compilation
   (setq compilation-ask-about-save nil)
+  (setq compilation-window-height 10)
 
   ;;shell
   (setq comint-prompt-read-only nil)
@@ -238,6 +239,7 @@
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
 
+  (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x C-b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
@@ -260,11 +262,13 @@
   (global-set-key (kbd "M-[") 'helm-company)
   (global-set-key (kbd "M-]") 'helm-dabbrev)
 
+  (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
   (global-set-key (kbd "M-m S s") 'flyspell-mode)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
+  (require 'buffer-move)
   (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
   (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
@@ -280,8 +284,12 @@
   (global-set-key (kbd "C-M-8") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
   (global-set-key (kbd "C-M-9") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
   (global-set-key (kbd "C-M-0") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
+
   (global-set-key (kbd "C-M-+") 'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
   (global-set-key (kbd "C-M--") 'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+  (global-set-key (kbd "C-x M-<right>") 'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
+  (global-set-key (kbd "C-x M-<left>") 'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+
 
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
