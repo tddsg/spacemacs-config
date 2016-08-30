@@ -192,7 +192,8 @@
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
 
-  ;; TODO: fic-me package
+  ;; enable hl-todo
+  (global-hl-todo-mode 1)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
