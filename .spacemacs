@@ -254,7 +254,8 @@ you should place your code here."
   (tddsg/init-configs)
   (tddsg/init-keys)
   (tddsg/init-themes)
-  (tddsg/init-spaceline))
+  (tddsg/init-spaceline)
+  (tddsg/init-custom-vars))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -291,22 +292,6 @@ you should place your code here."
      ("#A75B00" . 70)
      ("#F309DF" . 85)
      ("#20240E" . 100))))
- '(hl-todo-keyword-faces
-   (quote
-    (("HOLD" . "red")
-     ("TODO" . "red")
-     ("NEXT" . "red")
-     ("OKAY" . "red")
-     ("DONT" . "red")
-     ("FAIL" . "red")
-     ("DONE" . "red")
-     ("NOTE" . "red")
-     ("HACK" . "red")
-     ("FIXME" . "red")
-     ("XXX" . "red")
-     ("XXXX" . "red")
-     ("???" . "red")
-     ("BUG" . "red"))))
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote

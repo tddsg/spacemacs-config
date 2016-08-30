@@ -461,3 +461,25 @@ Set `spaceline-highlight-face-func' to
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; INIT CUSTOM
+
+(defun tddsg/init-custom-vars ()
+  (custom-set-variables
+   '(hl-todo-keyword-faces
+     (quote
+      (("HOLD" . "red")
+       ("TODO" . "red")
+       ("NEXT" . "red")
+       ("OKAY" . "red")
+       ("DONT" . "red")
+       ("FAIL" . "red")
+       ("DONE" . "red")
+       ("NOTE" . "red")
+       ("HACK" . "red")
+       ("FIXME" . "red")
+       ("XXX" . "red")
+       ("XXXX" . "red")
+       ("???" . "red")
+       ("BUG" . "red"))))))
