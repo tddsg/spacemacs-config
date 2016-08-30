@@ -265,7 +265,9 @@
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
+  (global-set-key (kbd "M-m s d") 'dictionary-search)
   (global-set-key (kbd "M-m S s") 'flyspell-mode)
+  (global-set-key (kbd "M-m S l") 'langtool-check)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
   (require 'buffer-move)

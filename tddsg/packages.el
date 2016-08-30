@@ -307,8 +307,8 @@ Each entry is either:
         ad-do-it)))
   (global-anzu-mode))
 
-(defun tddsg/post-init-dictionary ()
-  (global-set-key (kbd "M-m s d") 'dictionary-search)
+(defun tddsg/init-dictionary ()
+  (require 'dictionary)
   (setq dictionary-use-single-buffer t))
 
 (defun tddsg/init-langtool ()
