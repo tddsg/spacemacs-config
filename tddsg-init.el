@@ -4,6 +4,10 @@
 
 ;;; Code:
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UTILITIES FUNCTIONS
+
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
@@ -66,6 +70,15 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
+;; TODO
+;; (defun tddsg/expand-region-or-mark-sexp ()
+;;   "Expand region or mark sexp"
+;;   (interactive)
+;;   (save-excursion
+;;     (if (w?)
+;;         (er/expand-region)
+;;       (mark-sexp))))
+
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
   (interactive)
@@ -114,7 +127,9 @@
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
+
 (defun tddsg/init-configs ()
   ;; visual interface setting
   (blink-cursor-mode 1)             ;; turn on blinking
@@ -193,7 +208,9 @@
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
   (add-hook 'text-mode-hook 'tddsg-hook-text-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
+
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<detete>") 'delete-forward-char)
@@ -278,7 +295,6 @@
   (define-key company-active-map (kbd "C-p") #'company-select-previous))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
 
 (defcustom tddsg-themes nil
@@ -331,7 +347,6 @@
     (tddsg-override-theme)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT SPACELINE
 
