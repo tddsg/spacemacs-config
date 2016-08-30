@@ -70,14 +70,20 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-;; TODO
-;; (defun tddsg/expand-region-or-mark-sexp ()
-;;   "Expand region or mark sexp"
-;;   (interactive)
-;;   (save-excursion
-;;     (if (w?)
-;;         (er/expand-region)
-;;       (mark-sexp))))
+(defun tddsg/smart-mark-sexp ()
+  "Expand region or mark sexp"
+  (interactive)
+  (let ((current-char (char-after)))
+    (cond ((= ?w (char-syntax current-char))
+           (call-interactively 'er/expand-region))
+          ((= ?_ (char-syntax current-char))
+           (call-interactively 'er/expand-region))
+          ((= ?\) (char-syntax current-char))
+           (progn
+             (forward-char)
+             (backward-sexp)
+             (call-interactively 'mark-sexp)))
+          (t (call-interactively 'mark-sexp)))))
 
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
@@ -219,6 +225,7 @@
   (global-set-key (kbd "<escape>") 'god-local-mode)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
+  (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
   (global-set-key (kbd "C-<right>") 'right-word)
   (global-set-key (kbd "C-+") 'text-scale-increase)
