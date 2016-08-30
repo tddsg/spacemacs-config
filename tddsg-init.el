@@ -186,6 +186,8 @@
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
 
+  ;; TODO: fic-me package
+
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " S"))
