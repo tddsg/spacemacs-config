@@ -111,7 +111,7 @@ values."
                                :size 16
                                :weight normal
                                :width normal
-                               :powerline-scale 1.2)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -254,7 +254,7 @@ you should place your code here."
   (tddsg/init-configs)
   (tddsg/init-keys)
   (tddsg/init-themes)
-  )
+  (tddsg/init-spaceline))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -266,7 +266,7 @@ you should place your code here."
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t t)
+ '(TeX-source-correlate-start-server t)
  '(TeX-view-program-list (quote (("Okular" "okular --unique %o#src:%n%b"))))
  '(TeX-view-program-selection
    (quote
@@ -279,6 +279,7 @@ you should place your code here."
  '(ansi-color-names-vector
    ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
  '(compilation-message-face (quote default))
+ '(evil-want-Y-yank-to-eol t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -290,6 +291,22 @@ you should place your code here."
      ("#A75B00" . 70)
      ("#F309DF" . 85)
      ("#20240E" . 100))))
+ '(hl-todo-keyword-faces
+   (quote
+    (("HOLD" . "red")
+     ("TODO" . "red")
+     ("NEXT" . "red")
+     ("OKAY" . "red")
+     ("DONT" . "red")
+     ("FAIL" . "red")
+     ("DONE" . "red")
+     ("NOTE" . "red")
+     ("HACK" . "red")
+     ("FIXME" . "red")
+     ("XXX" . "red")
+     ("XXXX" . "red")
+     ("???" . "red")
+     ("BUG" . "red"))))
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
@@ -318,7 +335,9 @@ you should place your code here."
      (320 . "#2896B5")
      (340 . "#2790C3")
      (360 . "#66D9EF"))))
- '(vc-annotate-very-old-color nil))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (unspecified "#272822" "#20240E" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

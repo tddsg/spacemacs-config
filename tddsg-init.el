@@ -122,6 +122,16 @@
   (interactive)
   (push-mark (point) t nil))
 
+(defun tddsg/enable-company-auto-suggest ()
+  (interactive)
+  (require 'company)
+  (setq company-idle-delay 0.3))
+
+(defun tddsg/disable-company-auto-suggest ()
+  (interactive)
+  (require 'company)
+  (setq company-idle-delay 300))
+
 (defun tddsg-hook-prog-text-mode ()
   (linum-mode 1)
   (column-marker-1 80)
@@ -174,7 +184,7 @@
   (defadvice newline                       ;; indent after new line
       (after newline-after activate)
     (indent-according-to-mode))
-  ;; (setq company-idle-delay 200)         ;; setdelaytimebydefault
+  ;; (setq company-idle-delay 200)         ;; set delay time by default
   (global-company-mode)
 
   ;; some Emacs threshold
