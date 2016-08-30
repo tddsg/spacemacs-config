@@ -250,6 +250,7 @@
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
