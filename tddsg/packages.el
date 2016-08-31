@@ -1,9 +1,9 @@
 ;;; packages.el --- tddsg layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2016 TDDSG
 ;;
-;; Author: trungtq <trungtq@polaris>
-;; URL: https://github.com/syl20bnr/spacemacs
+;; Author: trungtq <thedaydreamersg(*)g-m-a-i-l.com>
+;; URL: https://tddsg.github.io
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
