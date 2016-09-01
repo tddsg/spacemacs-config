@@ -149,7 +149,8 @@
 (defun tddsg/init-configs ()
   ;; visual interface setting
   (blink-cursor-mode 1)             ;; turn on blinking
-  (setq  blink-cursor-blinks 15)    ;; blink 15 times
+  (setq blink-cursor-blinks 15)     ;; blink 15 times
+  (set-face-background hl-line-face "honeydew")
   (setq scroll-margin 5)            ;; top-bottom margin for scrolling
   (setq-default fill-column 80)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
@@ -195,11 +196,11 @@
   (require 'powerline)
   (setq powerline-default-separator 'wave)
 
-  ;;compilation
+  ;; compilation
   (setq compilation-ask-about-save nil)
   (setq compilation-window-height 10)
 
-  ;;shell
+  ;; shell
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
 
@@ -236,6 +237,7 @@
   (global-set-key (kbd "<detete>") 'delete-forward-char)
   (global-set-key (kbd "<escape>") 'god-local-mode)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
+  (global-set-key (kbd "C-<backspace>") 'crux-kill-line-backwards)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
@@ -278,6 +280,7 @@
   (global-set-key (kbd "M-m s d") 'dictionary-search)
   (global-set-key (kbd "M-m S s") 'flyspell-mode)
   (global-set-key (kbd "M-m S l") 'langtool-check)
+  (global-set-key (kbd "M-m m s") 'shell)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
   (require 'buffer-move)
@@ -439,7 +442,7 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
 (dolist (s '((tddsg-face-unmodified "SteelBlue3" "Unmodified buffer face.")
              (tddsg-face-modified "DarkGoldenrod2" "Modified buffer face.")
              (tddsg-face-read-only "SteelBlue3" "Read-only buffer face.")))
-  (eval `(defface ,(nth 0 s)
+  (eval `(defface, (nth 0 s)
            `((t (:background ,(nth 1 s)
                              :foreground "#3E3D31"
                              :inherit 'mode-line)))

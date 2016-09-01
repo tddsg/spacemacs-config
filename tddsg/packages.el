@@ -59,11 +59,11 @@
     column-marker
     god-mode
     buffer-move
+    dired+
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
-    (smartparens-ocaml :location local)
-    )
+    (smartparens-ocaml :location local))
   "The list of Lisp packages required by the tddsg layer.
 
 Each entry is either:
@@ -176,7 +176,7 @@ Each entry is either:
    '(TeX-source-correlate-method (quote synctex))
    '(TeX-source-correlate-mode t)
    '(TeX-source-correlate-start-server t)
-   '(TeX-view-program-list (quote (("Okular" "okular --unique %o#src:%n%b"))))
+   ;; '(TeX-view-program-list (quote (("Okular" "okular --unique %o#src:%n%b"))))
    '(TeX-view-program-selection
      (quote ((engine-omega "dvips and gv")
              (output-dvi "xdvi")
@@ -188,8 +188,10 @@ Each entry is either:
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
     (require 'smartparens-latex)
+    (linum-mode 1)
     (turn-on-auto-fill)
     (abbrev-mode +1)
+    (column-marker-1 80)
     (show-smartparens-mode)
     (smartparens-mode +1)
     (latex-extra-mode))
@@ -315,7 +317,7 @@ Each entry is either:
   (require 'langtool)
   (setq langtool-default-language "en-US")
   (setq langtool-language-tool-jar
-        "/home/trungtq/Programs/LanguageTool-2.6/languagetool-commandline.jar"))
+        "/home/trungtq/Programs/LanguageTool-3.4/languagetool-commandline.jar"))
 
 (defun tddsg/init-imenu-anywhere ()
   (require 'imenu-anywhere))
@@ -328,6 +330,9 @@ Each entry is either:
 
 (defun tddsg/init-crux ()
   (require 'crux))
+
+(defun tddsg/init-dired+ ()
+  (require 'dired+))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
