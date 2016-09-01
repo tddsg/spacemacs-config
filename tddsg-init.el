@@ -132,6 +132,11 @@
   (require 'company)
   (setq company-idle-delay 300))
 
+(defun tddsg-buffer-focus ()
+  (if (derived-mode-p 'text-mode 'tuareg-mode)
+      (tddsg/disable-company-auto-suggest)
+    (tddsg/enable-company-auto-suggest)))
+
 (defun tddsg-hook-prog-text-mode ()
   (linum-mode 1)
   (column-marker-1 80)
@@ -142,6 +147,7 @@
 
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -177,6 +183,20 @@
   (defadvice beginning-of-buffer (before set-mark activate) (tddsg-set-mark))
   (defadvice end-of-buffer (before set-mark activate) (tddsg-set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
+
+  ;; advice on buffer focusing
+  (defadvice other-window (after update activate) (tddsg-buffer-focus))
+  (defadvice windmove-do-window-select (after update activate) (tddsg-buffer-focus))
+  (defadvice split-window (after update activate) (tddsg-buffer-focus))
+  (defadvice set-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice switch-to-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice save-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice pop-to-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice previous-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
+  (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
+
+
 
   ;; mode editing setting
   (electric-pair-mode t)
