@@ -340,13 +340,19 @@
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
+  ;; latex mode
+  (require 'latex-preview-pane)
+  (define-key TeX-mode-map (kbd "M-<return> p l") 'latex-preview-pane-mode)
+
+  ;; company mode
   (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
   (define-key company-active-map (kbd "C-n") #'company-select-next)
   (define-key company-active-map (kbd "C-p") #'company-select-previous))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
@@ -415,6 +421,7 @@
 ;; reuse code from spaceline-config.el
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
   "Convenience function for the spacemacs and emacs themes."
+  (require 'latex-preview-pane)
   (spaceline-install 'tddsg
                      `(,left
                        anzu
@@ -444,12 +451,31 @@
 
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
+;;; used for setting pdf-view page
+;;; FIXME: to be removed when spaceline is updated
+(declare-function pdf-view-current-page 'pdf-view)
+(declare-function pdf-cache-number-of-pages 'pdf-view)
+
+(defun tddsg--pdfview-page-number ()
+  (format "(%d/%d)"
+          (eval (pdf-view-current-page))
+          (pdf-cache-number-of-pages)))
+
+(spaceline-define-segment line-column
+  "The current line and column numbers, or `(current page/number of pages)`
+in pdf-view mode (enabled by the `pdf-tools' package)."
+  (if (eq 'pdf-view-mode major-mode)
+      (tddsg--pdfview-page-number)
+    "%l:%2c"))
+
+
 (defun tddsg--create-spaceline-final (&rest additional-segments)
   "Install the modeline used by Spacemacs.
 
 ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
 `buffer-position'."
   (require 'spaceline)
+  (require 'pdf-view)
   (apply 'tddsg--create-spaceline-theme
          '((persp-name
             workspace-number

@@ -60,6 +60,8 @@
     god-mode
     buffer-move
     dired+
+    pdf-tools
+    latex-preview-pane
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -176,12 +178,15 @@ Each entry is either:
    '(TeX-source-correlate-method (quote synctex))
    '(TeX-source-correlate-mode t)
    '(TeX-source-correlate-start-server t)
-   ;; '(TeX-view-program-list (quote (("Okular" "okular --unique %o#src:%n%b"))))
+   '(LaTeX-command "latex --synctex=1")
+   '(TeX-view-program-list
+     (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
    '(TeX-view-program-selection
      (quote ((engine-omega "dvips and gv")
              (output-dvi "xdvi")
-             (output-pdf "Okular")
+             (output-pdf "pdf-tools")
              (output-html "xdg-open")))))
+  (custom-set-variables )
   ;; hook
   (defun my-latex-hook ()
     (setq TeX-newline-function 'newline-and-indent
@@ -190,6 +195,7 @@ Each entry is either:
     (require 'smartparens-latex)
     (linum-mode 1)
     (turn-on-auto-fill)
+    (latex/auto-fill-mode)
     (abbrev-mode +1)
     (column-marker-1 80)
     (show-smartparens-mode)
@@ -333,6 +339,13 @@ Each entry is either:
 
 (defun tddsg/init-dired+ ()
   (require 'dired+))
+
+(defun tddsg/init-pdf-tools ()
+  (require 'pdf-tools)
+  (pdf-tools-install))
+
+(defun tddsg/init-latex-preview-pane ()
+  (require 'latex-preview-pane))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
