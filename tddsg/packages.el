@@ -171,6 +171,7 @@ Each entry is either:
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)
+
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
   (custom-set-variables
    '(TeX-save-query nil)
@@ -185,7 +186,6 @@ Each entry is either:
              (output-dvi "xdvi")
              (output-pdf "pdf-tools")
              (output-html "xdg-open")))))
-  (custom-set-variables )
   ;; hook
   (defun my-latex-hook ()
     (setq TeX-newline-function 'newline-and-indent
@@ -201,7 +201,8 @@ Each entry is either:
     (column-marker-1 80)
     (show-smartparens-mode)
     (smartparens-mode +1)
-    (latex-extra-mode))
+    (latex-extra-mode)
+    (local-set-key (kbd "<f9>") (kbd "C-c C-c C-j")))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
@@ -341,9 +342,9 @@ Each entry is either:
 (defun tddsg/init-dired+ ()
   (require 'dired+))
 
-(defun tddsg/init-pdf-tools ()
-  (require 'pdf-tools)
-  (pdf-tools-install))
+(defun tddsg/post-init-pdf-tools ()
+  (pdf-tools-install)
+  (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1)))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)

@@ -341,6 +341,12 @@
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
+  ;; Latex-mode
+  (require 'pdf-sync)
+  (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
+  (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
+
+
   ;; company mode
   (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
