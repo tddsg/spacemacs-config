@@ -196,7 +196,8 @@
   (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
   (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
 
-
+  ;; spacemacs
+  (setq shell-default-shell 'ansi-term)
 
   ;; mode editing setting
   (electric-pair-mode t)

@@ -61,7 +61,6 @@
     buffer-move
     dired+
     pdf-tools
-    latex-preview-pane
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -196,6 +195,7 @@ Each entry is either:
     (linum-mode 1)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
+    (pdf-sync-minor-mode)
     (abbrev-mode +1)
     (column-marker-1 80)
     (show-smartparens-mode)
@@ -343,9 +343,6 @@ Each entry is either:
 (defun tddsg/init-pdf-tools ()
   (require 'pdf-tools)
   (pdf-tools-install))
-
-(defun tddsg/init-latex-preview-pane ()
-  (require 'latex-preview-pane))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
