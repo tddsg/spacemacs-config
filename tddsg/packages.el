@@ -197,6 +197,7 @@ Each entry is either:
     (latex/auto-fill-mode)
     (pdf-sync-minor-mode)
     (abbrev-mode +1)
+    (set-fill-column 72)
     (column-marker-1 80)
     (show-smartparens-mode)
     (smartparens-mode +1)

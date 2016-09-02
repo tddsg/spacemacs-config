@@ -341,10 +341,6 @@
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
-  ;; latex mode
-  (require 'latex-preview-pane)
-  (define-key TeX-mode-map (kbd "M-<return> p l") 'latex-preview-pane-mode)
-
   ;; company mode
   (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
@@ -422,7 +418,6 @@
 ;; reuse code from spaceline-config.el
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
   "Convenience function for the spacemacs and emacs themes."
-  (require 'latex-preview-pane)
   (spaceline-install 'tddsg
                      `(,left
                        anzu
