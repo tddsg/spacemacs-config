@@ -135,7 +135,11 @@
 (defun tddsg-buffer-focus ()
   (if (derived-mode-p 'text-mode 'tuareg-mode)
       (tddsg/disable-company-auto-suggest)
-    (tddsg/enable-company-auto-suggest)))
+    (tddsg/enable-company-auto-suggest))
+  ;; (if (derived-mode-p 'pdf-view )
+  ;;     (blink-cursor-mode 0)
+  ;;   (blink-cursor-mode 1))
+  )
 
 (defun tddsg-hook-prog-text-mode ()
   (linum-mode 1)
@@ -154,7 +158,7 @@
 
 (defun tddsg/init-configs ()
   ;; visual interface setting
-  (blink-cursor-mode 1)             ;; turn on blinking
+  (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
   (set-face-background hl-line-face "honeydew")
   (setq scroll-margin 5)            ;; top-bottom margin for scrolling
@@ -373,7 +377,7 @@
  'tddsg-themes
  ;; update leuven
  'leuven
- '((cursor ((t (:background "lime green"))))
+ '((cursor ((t (:background "SkyBlue2"))))
    ;; latex font face
    (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
    (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
@@ -394,7 +398,10 @@
    (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
    (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
    (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
-   ;; mode-line
+   ;; others
+   (cursor ((t (:background "forest green"))))
+   (diredp-file-suffix ((t (:foreground "sienna"))))
+   (hl-line ((t (:background "honeydew2"))))
    (powerline-active1 ((t (:inherit mode-line :background "#163365")))))
  ;; other themes
  )

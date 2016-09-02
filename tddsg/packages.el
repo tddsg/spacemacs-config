@@ -352,7 +352,7 @@ Each entry is either:
   (defun update-cursor ()
     (if god-local-mode
         (set-cursor-color "purple")
-      (set-cursor-color "lime green")))
+      (set-cursor-color "forest green")))
   (defadvice other-window (after update activate) (update-cursor))
   (defadvice windmove-do-window-select (after update activate) (update-cursor))
   (defadvice split-window (after update activate) (update-cursor))
