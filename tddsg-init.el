@@ -432,6 +432,7 @@
    '(;; cursors & line
      (cursor ((t (:background "lime green"))))
      (diredp-file-suffix ((t (:foreground "sienna"))))
+     (diredp-file-name ((t nil)))
      ;; font
      (font-latex-subscript-face ((t (:height 0.96))))
      (font-latex-superscript-face ((t (:height 0.96))))
