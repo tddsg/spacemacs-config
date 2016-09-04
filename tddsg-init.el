@@ -5,6 +5,18 @@
 ;;; Code:
 
 
+(require 'smartparens)
+(require 'company)
+(require 'powerline)
+(require 'buffer-move)
+(require 'god-mode)
+(require 'god-mode-isearch)
+(require 'pdf-sync)
+(require 'spaceline-segments)
+(require 'spaceline)
+(require 'pdf-view)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITIES FUNCTIONS
 
@@ -70,6 +82,21 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
+(defun tddsg/mark-sexp ()
+  "Mark sexp using the smartparens package"
+  (interactive)
+  (let ((current-char (char-after)))
+    (if (= ?\) (char-syntax current-char))
+        (progn
+          (deactivate-mark)
+          (forward-char)
+          (backward-sexp)))
+    (if (region-active-p)
+        (sp-forward-sexp)
+      (progn
+        (set-mark-command nil)
+        (sp-forward-sexp 1)))))
+
 (defun tddsg/smart-mark-sexp ()
   "Expand region or mark sexp"
   (interactive)
@@ -78,12 +105,7 @@
            (call-interactively 'er/expand-region))
           ((= ?_ (char-syntax current-char))
            (call-interactively 'er/expand-region))
-          ((= ?\) (char-syntax current-char))
-           (progn
-             (forward-char)
-             (backward-sexp)
-             (call-interactively 'mark-sexp)))
-          (t (call-interactively 'mark-sexp)))))
+          (t (tddsg/mark-sexp)))))
 
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
@@ -124,26 +146,20 @@
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
-  (require 'company)
   (setq company-idle-delay 0.3))
 
 (defun tddsg/disable-company-auto-suggest ()
   (interactive)
-  (require 'company)
   (setq company-idle-delay 300))
 
 (defun tddsg-buffer-focus ()
   (if (derived-mode-p 'text-mode 'tuareg-mode)
       (tddsg/disable-company-auto-suggest)
-    (tddsg/enable-company-auto-suggest))
-  ;; (if (derived-mode-p 'pdf-view )
-  ;;     (blink-cursor-mode 0)
-  ;;   (blink-cursor-mode 1))
-  )
+    (tddsg/enable-company-auto-suggest)))
 
 (defun tddsg-hook-prog-text-mode ()
   (linum-mode 1)
-  (column-marker-1 80)
+  (column-marker-3 80)
   (whitespace-mode 1))
 
 (defun tddsg-hook-prog-mode ()
@@ -176,8 +192,7 @@
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra")
-        ispell-dictionary "english"
-        prelude-flyspell nil)
+        ispell-dictionary "english")
 
   ;; automatically setting mark for certain commands
   (setq global-mark-ring-max 1000
@@ -200,9 +215,6 @@
   (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
   (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
 
-  ;; spacemacs
-  (setq shell-default-shell 'ansi-term)
-
   ;; mode editing setting
   (electric-pair-mode t)
   (delete-selection-mode t)                ;; delete selection by keypress
@@ -218,16 +230,16 @@
   (setq max-specpdl-size 10000)
 
   ;; mode-line setting
-  (require 'powerline)
   (setq powerline-default-separator 'wave)
 
   ;; compilation
-  (setq compilation-ask-about-save nil)
-  (setq compilation-window-height 10)
+  (setq compilation-ask-about-save nil
+        compilation-window-height 10)
 
   ;; shell
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
+  (setq shell-default-shell 'ansi-term)
 
   ;; enable hl-todo
   (global-hl-todo-mode 1)
@@ -249,6 +261,8 @@
   (eval-after-load "projectile" '(diminish 'projectile-mode " π"))
 
   ;; hooks, finally hook
+  (add-hook 'LaTeX-mode-hook 'tddsg-hook-prog-text-mode)
+  (add-hook 'tex-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
@@ -285,11 +299,10 @@
 
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
-  (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
-  (global-set-key (kbd "C-c M-m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
+  (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)
   (global-set-key (kbd "M-/") 'hippie-expand)
@@ -303,12 +316,20 @@
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
   (global-set-key (kbd "M-m s d") 'dictionary-search)
-  (global-set-key (kbd "M-m S s") 'flyspell-mode)
-  (global-set-key (kbd "M-m S l") 'langtool-check)
+  (global-set-key (kbd "M-m S f m") 'flyspell-mode)
+  (global-set-key (kbd "M-m S f b") 'flyspell-buffer)
+  (global-set-key (kbd "M-m S i b") 'ispell-buffer)
+  (global-set-key (kbd "M-m S i c") 'ispell-continue)
+  (global-set-key (kbd "M-m S i k") 'ispell-kill-ispell)
   (global-set-key (kbd "M-m m s") 'shell)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
-  (require 'buffer-move)
+  (global-set-key (kbd "M-m L c") 'langtool-check)
+  (global-set-key (kbd "M-m L b") 'langtool-correct-buffer)
+  (global-set-key (kbd "M-m L d") 'langtool-check-done)
+  (global-set-key (kbd "M-m L n") 'langtool-goto-next-error)
+  (global-set-key (kbd "M-m L p") 'langtool-goto-previous-error)
+
   (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
   (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
@@ -337,8 +358,6 @@
   (define-key undo-tree-map (kbd "C-_") nil)
 
   ;; god-mode
-  (require 'god-mode)
-  (require 'god-mode-isearch)
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
@@ -346,13 +365,14 @@
   (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
   ;; Latex-mode
-  (require 'pdf-sync)
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
 
+  ;; pdf-tools
+  (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
+  (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
 
   ;; company mode
-  (require 'company)
   (define-key company-active-map (kbd "M-n") nil)
   (define-key company-active-map (kbd "M-p") nil)
   (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
@@ -373,38 +393,54 @@
         (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
 
 ;; override some settings of the leuven theme
-(tddsg-read-custom-themes
- 'tddsg-themes
- ;; update leuven
- 'leuven
- '((cursor ((t (:background "SkyBlue2"))))
-   ;; latex font face
-   (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
-   (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
-   (font-latex-sedate-face ((t (:foreground "green4"))))
-   (font-latex-subscript-face ((t (:height 0.96))))
-   (font-latex-superscript-face ((t (:height 0.96))))
-   (font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
-   (font-latex-sectioning-0-face ((t (:background "white smoke" :foreground "forest green" :overline t :weight bold :height 1.2))))
-   (font-latex-sectioning-1-face ((t (:background "white smoke" :foreground "steel blue" :overline t :weight bold :height 1.2))))
-   (font-latex-sectioning-2-face ((t (:background "#F0F0F0" :foreground "royal blue" :overline "#A7A7A7" :weight bold :height 1.1))))
-   ;; font lock face
-   (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
-   (font-lock-doc-face ((t (:foreground "#8959a8"))))
-   (font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
-   (font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
-   (font-lock-string-face ((t (:foreground "#3e999f"))))
-   (font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
-   (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
-   (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
-   (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
-   ;; others
-   (cursor ((t (:background "forest green"))))
-   (diredp-file-suffix ((t (:foreground "sienna"))))
-   (hl-line ((t (:background "honeydew2"))))
-   (powerline-active1 ((t (:inherit mode-line :background "#163365")))))
- ;; other themes
- )
+(defun tddsg-custom-theme-leuven ()
+  (tddsg-read-custom-themes
+   'tddsg-themes
+   'leuven
+   '(;; cursors & line
+     (cursor ((t (:background "lime green"))))
+     (hl-line ((t (:background "honeydew2"))))
+     ;; latex font face
+     (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
+     (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
+     (font-latex-sedate-face ((t (:foreground "green4"))))
+     (font-latex-subscript-face ((t (:height 0.96))))
+     (font-latex-superscript-face ((t (:height 0.96))))
+     (font-latex-verbatim-face ((t (:inherit nil :background "white" :foreground "light coral"))))
+     (font-latex-sectioning-0-face ((t (:background "white smoke" :foreground "forest green" :overline t :weight bold :height 1.2))))
+     (font-latex-sectioning-1-face ((t (:background "white smoke" :foreground "steel blue" :overline t :weight bold :height 1.2))))
+     (font-latex-sectioning-2-face ((t (:background "#F0F0F0" :foreground "royal blue" :overline "#A7A7A7" :weight bold :height 1.1))))
+     ;; font lock face
+     (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
+     (font-lock-doc-face ((t (:foreground "#8959a8"))))
+     (font-lock-function-name-face ((t (:foreground "dark orchid" :weight normal))))
+     (font-lock-keyword-face ((t (:foreground "blue" :weight normal))))
+     (font-lock-string-face ((t (:foreground "#3e999f"))))
+     (font-lock-type-face ((t (:foreground "MediumOrchid4" :weight normal))))
+     (font-lock-variable-name-face ((t (:foreground "DodgerBlue3" :weight normal))))
+     (company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+     (company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+     ;; others
+     (diredp-file-suffix ((t (:foreground "sienna"))))
+     (powerline-active1 ((t (:inherit mode-line :background "#163365")))))))
+
+;; override some settings of the spacemacs-dark theme
+(defun tddsg-custom-theme-spacemacs-dark ()
+  (tddsg-read-custom-themes
+   'tddsg-themes
+   'spacemacs-dark
+   '(;; cursors & line
+     (cursor ((t (:background "lime green"))))
+     (diredp-file-suffix ((t (:foreground "sienna"))))
+     ;; font
+     (font-latex-subscript-face ((t (:height 0.96))))
+     (font-latex-superscript-face ((t (:height 0.96))))
+     (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
+     (font-latex-sectioning-1-face ((t (:foreground "deep sky blue" :weight bold :height 1.4))))
+     (font-latex-sectioning-2-face ((t (:foreground "royal blue" :weight bold :height 1.2))))
+     (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
+     )))
+
 
 (defun tddsg-override-theme ()
   (dolist (theme-settings tddsg-themes)
@@ -415,7 +451,9 @@
             (custom-theme-set-faces theme face))))))
 
 (defun tddsg/init-themes ()
-  ;; load the theme
+  ;; load the custom theme
+  (tddsg-custom-theme-leuven)
+  (tddsg-custom-theme-spacemacs-dark)
   (tddsg-override-theme)
   ;; and defadvice load-theme function
   (defadvice load-theme (after theme-set-overrides activate)
@@ -426,7 +464,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT SPACELINE
 
-(require 'spaceline-segments)
 
 ;; reuse code from spaceline-config.el
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
@@ -483,8 +520,6 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
 
 ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
 `buffer-position'."
-  (require 'spaceline)
-  (require 'pdf-view)
   (apply 'tddsg--create-spaceline-theme
          '((persp-name
             workspace-number

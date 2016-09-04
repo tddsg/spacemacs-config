@@ -61,6 +61,7 @@
     buffer-move
     dired+
     pdf-tools
+    elmacro
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -197,8 +198,7 @@ Each entry is either:
     (latex/auto-fill-mode)
     (pdf-sync-minor-mode)
     (abbrev-mode +1)
-    (set-fill-column 72)
-    (column-marker-1 80)
+    (set-fill-column 75)
     (show-smartparens-mode)
     (smartparens-mode +1)
     (latex-extra-mode)
@@ -342,9 +342,15 @@ Each entry is either:
 (defun tddsg/init-dired+ ()
   (require 'dired+))
 
+(defun tddsg/init-elmacro ()
+  (require 'elmacro))
+
 (defun tddsg/post-init-pdf-tools ()
   (pdf-tools-install)
-  (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1)))
+  (setq pdf-view-resize-factor 1.05)
+  (custom-set-variables
+   '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
+  (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
@@ -352,7 +358,7 @@ Each entry is either:
   (defun update-cursor ()
     (if god-local-mode
         (set-cursor-color "purple")
-      (set-cursor-color "forest green")))
+      (set-cursor-color "lime green")))
   (defadvice other-window (after update activate) (update-cursor))
   (defadvice windmove-do-window-select (after update activate) (update-cursor))
   (defadvice split-window (after update activate) (update-cursor))

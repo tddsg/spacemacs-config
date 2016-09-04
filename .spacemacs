@@ -36,6 +36,7 @@ values."
      syntax-checking
      version-control
      semantic
+     pdf-tools
      latex
      ocaml
      haskell
@@ -104,14 +105,14 @@ values."
                          spacemacs-dark
                          monokai)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
-   dotspacemacs-colorize-cursor-according-to-state t
+   dotspacemacs-colorize-cursor-according-to-state nil
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("DejaVu Sans Mono"
                                :size 16
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -264,16 +265,17 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(LaTeX-command "latex --synctex=1")
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-source-correlate-start-server t)
- '(TeX-view-program-list (quote (("Okular" "okular --unique %o#src:%n%b"))))
+ '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
  '(TeX-view-program-selection
    (quote
     ((engine-omega "dvips and gv")
      (output-dvi "xdvi")
-     (output-pdf "Okular")
+     (output-pdf "pdf-tools")
      (output-html "xdg-open"))))
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
@@ -292,11 +294,28 @@ you should place your code here."
      ("#A75B00" . 70)
      ("#F309DF" . 85)
      ("#20240E" . 100))))
+ '(hl-todo-keyword-faces
+   (quote
+    (("HOLD" . "red")
+     ("TODO" . "red")
+     ("NEXT" . "red")
+     ("OKAY" . "red")
+     ("DONT" . "red")
+     ("FAIL" . "red")
+     ("DONE" . "red")
+     ("NOTE" . "red")
+     ("HACK" . "red")
+     ("FIXME" . "red")
+     ("XXX" . "red")
+     ("XXXX" . "red")
+     ("???" . "red")
+     ("BUG" . "red"))))
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
     (ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
+ '(popwin:popup-window-height 15)
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
@@ -327,4 +346,5 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(compilation-error ((t (:foreground "red" :weight bold)))))
