@@ -26,9 +26,10 @@
   (let ((old-buf (current-buffer))
         (current-prefix-arg 4) ;; allow using C-u
         (shell-buf (call-interactively 'shell)))
-    (switch-to-buffer-other-window shell-buf)
     (switch-to-buffer old-buf)
-    (other-window 1)))
+    (switch-to-buffer-other-window shell-buf)
+    ;; (switch-to-buffer-other-window old-buf)
+    ))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -234,7 +235,7 @@
 
   ;; compilation
   (setq compilation-ask-about-save nil
-        compilation-window-height 10)
+        compilation-window-height 15)
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -321,7 +322,8 @@
   (global-set-key (kbd "M-m S i b") 'ispell-buffer)
   (global-set-key (kbd "M-m S i c") 'ispell-continue)
   (global-set-key (kbd "M-m S i k") 'ispell-kill-ispell)
-  (global-set-key (kbd "M-m m s") 'shell)
+  (global-set-key (kbd "M-m m S") 'shell)
+  (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
   (global-set-key (kbd "M-m L c") 'langtool-check)
@@ -335,22 +337,59 @@
   (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
 
-  (global-set-key (kbd "C-M-1") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
-  (global-set-key (kbd "C-M-2") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
-  (global-set-key (kbd "C-M-3") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
-  (global-set-key (kbd "C-M-4") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
-  (global-set-key (kbd "C-M-5") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
-  (global-set-key (kbd "C-M-6") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
-  (global-set-key (kbd "C-M-7") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
-  (global-set-key (kbd "C-M-8") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
-  (global-set-key (kbd "C-M-9") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
-  (global-set-key (kbd "C-M-0") 'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
+  ;; workspaces transient
+  (global-set-key
+   (kbd "C-M-1")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
+  (global-set-key
+   (kbd "C-M-2")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
+  (global-set-key
+   (kbd "C-M-3")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
+  (global-set-key
+   (kbd "C-M-4")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
+  (global-set-key
+   (kbd "C-M-5")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
+  (global-set-key
+   (kbd "C-M-6")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
+  (global-set-key
+   (kbd "C-M-7")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
+  (global-set-key
+   (kbd "C-M-8")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
+  (global-set-key
+   (kbd "C-M-9")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
+  (global-set-key
+   (kbd "C-M-0")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
+  (global-set-key
+   (kbd "C-M-+")
+   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
+  (global-set-key
+   (kbd "C-M--")
+   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+  (global-set-key
+   (kbd "C-x M-<right>")
+   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
+  (global-set-key
+   (kbd "C-x M-<left>")
+   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
 
-  (global-set-key (kbd "C-M-+") 'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
-  (global-set-key (kbd "C-M--") 'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
-  (global-set-key (kbd "C-x M-<right>") 'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
-  (global-set-key (kbd "C-x M-<left>") 'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
-
+  ;; layout
+  (global-set-key (kbd "M-m l") nil)  ;; disable key "M-m l" first
+  (global-set-key (kbd "M-m l m") 'spacemacs/layouts-transient-state/body)
+  (global-set-key
+   (kbd "M-m l s")
+   'spacemacs/layouts-transient-state/persp-save-state-to-file-and-exit)
+  (global-set-key
+   (kbd "M-m l l")
+   'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
 
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
