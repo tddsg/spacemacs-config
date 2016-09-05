@@ -177,7 +177,6 @@
   ;; visual interface setting
   (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (set-face-background hl-line-face "honeydew")
   (setq scroll-margin 5)            ;; top-bottom margin for scrolling
   (setq-default fill-column 80)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
@@ -322,6 +321,7 @@
   (global-set-key (kbd "M-m S i b") 'ispell-buffer)
   (global-set-key (kbd "M-m S i c") 'ispell-continue)
   (global-set-key (kbd "M-m S i k") 'ispell-kill-ispell)
+  (global-set-key (kbd "M-m m t") 'ansi-term)
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
