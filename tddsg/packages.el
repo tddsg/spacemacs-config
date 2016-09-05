@@ -345,7 +345,7 @@ Each entry is either:
 (defun tddsg/init-elmacro ()
   (require 'elmacro))
 
-(defun tddsg/post-init-pdf-tools ()
+(defun tddsg/init-pdf-tools ()
   (pdf-tools-install)
   (setq pdf-view-resize-factor 1.05)
   (custom-set-variables
