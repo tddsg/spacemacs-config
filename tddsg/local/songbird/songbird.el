@@ -98,10 +98,10 @@
                              (1 font-lock-type-face)))
                           t)
   ;; highlight syntax variable declaration
-  (font-lock-add-keywords 'songbird ;
-                          '(("\\([a-zA-Z0-9_']+\\)\\s-+\\(\\([a-zA-Z0-9_']+\\)\\s-*\\)+;"
-                             (1 font-lock-type-face)))
-                          t)
+  ;; (font-lock-add-keywords 'songbird ;
+  ;;                         '(("\\([a-zA-Z0-9_']+\\)\\s-+\\(\\([a-zA-Z0-9_']+\\)\\s-*\\)+;"
+  ;;                            (1 font-lock-type-face)))
+  ;;                         t)
 
   (setq indent-tabs-mode nil)               ;; insert spaces instead of tabs
 
