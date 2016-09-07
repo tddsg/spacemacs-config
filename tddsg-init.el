@@ -15,6 +15,7 @@
 (require 'spaceline-segments)
 (require 'spaceline)
 (require 'pdf-view)
+(require 'pdf-tools)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
