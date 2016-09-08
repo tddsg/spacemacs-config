@@ -160,9 +160,12 @@ Each entry is either:
     (merlin-use-merlin-imenu)
     (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
+    (setq merlin-locate-in-new-window 'always)
     ;; customize syntax table for forward/backward slurping/barfing sexp
     (dolist (symbol (list ?, ?\; ?: ?+ ?- ?/ ?@ ?! ?> ?<))
       (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
+    ;; unbind some keys
+    (local-set-key (kbd "C-c C-i") nil)
     ;; customize compilation
     (local-set-key (kbd "C-c C-c") 'compile)
     (key-chord-define-local "xc" 'compile)
@@ -271,19 +274,36 @@ Each entry is either:
   (global-set-key (kbd "S-<left>") 'windmove-left)
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
-  (global-set-key (kbd "S-<down>") 'windmove-down))
+  (global-set-key (kbd "S-<down>") 'windmove-down)
+  (global-set-key (kbd "s-b") 'windmove-left)
+  (global-set-key (kbd "s-f") 'windmove-right)
+  (global-set-key (kbd "s-p") 'windmove-up)
+  (global-set-key (kbd "s-n") 'windmove-down))
 
 ;; buffer-clone
 (defun tddsg/init-buffer-move ()
   (require 'buffer-move)
-  (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
-  (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
-  (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
-  (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
-  (global-set-key (kbd "M-m b m f") 'buf-move-left)
-  (global-set-key (kbd "M-m b m b") 'buf-move-right)
-  (global-set-key (kbd "M-m b m p") 'buf-move-up)
-  (global-set-key (kbd "M-m b m n") 'buf-move-down))
+  (global-set-key (kbd "C-M-s-<left>") 'buf-move-left)
+  (global-set-key (kbd "C-M-s-<right>") 'buf-move-right)
+  (global-set-key (kbd "C-M-s-<up>") 'buf-move-up)
+  (global-set-key (kbd "C-M-s-<down>") 'buf-move-down)
+  (global-set-key (kbd "C-M-s-b") 'buf-move-left)
+  (global-set-key (kbd "C-M-s-f") 'buf-move-right)
+  (global-set-key (kbd "C-M-s-p") 'buf-move-up)
+  (global-set-key (kbd "C-M-s-n") 'buf-move-down))
+
+;; buffer-clone
+(defun tddsg/init-buffer-clone ()
+  (require 'buffer-clone)
+  (global-set-key (kbd "M-s-<left>") 'buf-clone-left)
+  (global-set-key (kbd "M-s-<right>") 'buf-clone-right)
+  (global-set-key (kbd "M-s-<up>") 'buf-clone-up)
+  (global-set-key (kbd "M-s-<down>") 'buf-clone-down)
+  (global-set-key (kbd "M-s-b") 'buf-clone-left)
+  (global-set-key (kbd "M-s-f") 'buf-clone-right)
+  (global-set-key (kbd "M-s-p") 'buf-clone-up)
+  (global-set-key (kbd "M-s-n") 'buf-clone-down))
+
 
 (defun tddsg/init-key-chord ()
   (require 'key-chord)
@@ -406,17 +426,6 @@ Each entry is either:
       (modify-syntax-entry symbol "'" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
 
-;; buffer-clone
-(defun tddsg/init-buffer-clone ()
-  (require 'buffer-clone)
-  (global-set-key (kbd "s-S-<left>") 'buf-clone-left)
-  (global-set-key (kbd "s-S-<right>") 'buf-clone-right)
-  (global-set-key (kbd "s-S-<up>") 'buf-clone-up)
-  (global-set-key (kbd "s-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "M-m b c f") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c b") 'buf-clone-right)
-  (global-set-key (kbd "M-m b c p") 'buf-clone-up)
-  (global-set-key (kbd "M-m b c n") 'buf-clone-down))
 
 ;;; packages.el ends here
 

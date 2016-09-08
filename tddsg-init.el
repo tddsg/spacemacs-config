@@ -241,8 +241,8 @@ If the new path's directories does not exist, create them."
   (global-company-mode)
 
   ;; some Emacs threshold
-  (setq max-lisp-eval-depth 10000)
-  (setq max-specpdl-size 10000)
+  (setq max-lisp-eval-depth 50000)
+  (setq max-specpdl-size 50000)
 
   ;; mode-line setting
   (setq powerline-default-separator 'wave)
@@ -318,6 +318,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
 
+  (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
+  (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
