@@ -132,6 +132,19 @@
        (skip-syntax-forward "w_")
        (point)))))
 
+
+(defun tddsg-create-backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+         ;; remove Windows driver letter in path, ➢ for example: “C:”
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
+         (backupFilePath (replace-regexp-in-string
+                          "//" "/" (concat backupRootDir filePath "~"))))
+    (make-directory (file-name-directory backupFilePath)
+                    (file-name-directory backupFilePath))
+    backupFilePath))
+
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   (interactive)
@@ -176,6 +189,7 @@
 
 (defun tddsg/init-configs ()
   ;; visual interface setting
+  (global-hl-todo-mode 1)           ;; highlight current line
   (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
   (setq scroll-margin 5)            ;; top-bottom margin for scrolling
@@ -242,8 +256,9 @@
   (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
 
-  ;; enable hl-todo
-  (global-hl-todo-mode 1)
+  ;; backup
+  (setq make-backup-files t)
+  (setq make-backup-file-name-function 'tddsg-create-backup-file-name)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -297,8 +312,12 @@
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x G") 'magit-diff)
-
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
+
+  (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
+  (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
+
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
