@@ -367,6 +367,9 @@ Each entry is either:
   (require 'elmacro))
 
 (defun tddsg/init-helm-dired-history ()
+  (require 'savehist)
+  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
+  (savehist-mode 1)
   (require 'helm-dired-history))
 
 (defun tddsg/init-pdf-tools ()

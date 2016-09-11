@@ -513,6 +513,12 @@ If the new path's directories does not exist, create them."
      (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
      )))
 
+(defun tddsg-custom-common-faces ()
+  (custom-set-faces
+   ;; smartparens
+   '(sp-pair-overlay-face ((t nil)))
+   '(sp-wrap-overlay-face ((t nil)))
+   '(sp-wrap-tag-overlay-face ((t nil)))))
 
 (defun tddsg-override-theme ()
   (dolist (theme-settings tddsg-themes)
@@ -524,6 +530,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-themes ()
   ;; load the custom theme
+  (tddsg-custom-common-faces)
   (tddsg-custom-theme-leuven)
   (tddsg-custom-theme-spacemacs-dark)
   (tddsg-override-theme)
