@@ -62,6 +62,7 @@
     dired+
     pdf-tools
     elmacro
+    helm-dired-history
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -364,6 +365,9 @@ Each entry is either:
 
 (defun tddsg/init-elmacro ()
   (require 'elmacro))
+
+(defun tddsg/init-helm-dired-history ()
+  (require 'helm-dired-history))
 
 (defun tddsg/init-pdf-tools ()
   (pdf-tools-install)

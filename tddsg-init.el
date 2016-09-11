@@ -183,6 +183,9 @@ If the new path's directories does not exist, create them."
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
 
+(defun tddsg-hook-shell-mode ()
+  (rainbow-delimiters-mode-enable))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -255,6 +258,7 @@ If the new path's directories does not exist, create them."
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
+  (add-hook 'shell-mode-hook 'tddsg-hook-shell-mode)
 
   ;; backup
   (setq make-backup-files t)
@@ -307,16 +311,22 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-x C-b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x G") 'magit-diff)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
+  (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
+  (global-set-key (kbd "C-x C-b") 'helm-mini)
+
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c r") 'projectile-replace)
+  (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
+  (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c M") 'shell)
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
