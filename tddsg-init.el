@@ -371,40 +371,40 @@ If the new path's directories does not exist, create them."
 
   ;; workspaces transient
   (global-set-key
-   (kbd "C-M-1")
+   (kbd "M-m 1")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
   (global-set-key
-   (kbd "C-M-2")
+   (kbd "M-m 2")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
   (global-set-key
-   (kbd "C-M-3")
+   (kbd "M-m 3")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
   (global-set-key
-   (kbd "C-M-4")
+   (kbd "M-m 4")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
   (global-set-key
-   (kbd "C-M-5")
+   (kbd "M-m 5")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
   (global-set-key
-   (kbd "C-M-6")
+   (kbd "M-m 6")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
   (global-set-key
-   (kbd "C-M-7")
+   (kbd "M-m 7")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
   (global-set-key
-   (kbd "C-M-8")
+   (kbd "M-m 8")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
   (global-set-key
-   (kbd "C-M-9")
+   (kbd "M-m 9")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
   (global-set-key
-   (kbd "C-M-0")
+   (kbd "M-m 0")
    'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
   (global-set-key
-   (kbd "C-M-+")
+   (kbd "M-m +")
    'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
   (global-set-key
-   (kbd "C-M--")
+   (kbd "M-m -")
    'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
   (global-set-key
    (kbd "C-x M-<right>")
