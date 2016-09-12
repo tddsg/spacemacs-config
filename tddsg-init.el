@@ -320,6 +320,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
   (global-set-key (kbd "C-x C-b") 'helm-mini)
 
+  (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
