@@ -33,6 +33,7 @@
   '(comment-dwim-2
     tuareg
     auctex
+    cc-mode
     org
     latex-extra
     ace-popup-menu
@@ -131,6 +132,13 @@ Each entry is either:
 (defun tddsg/init-smartparens-ocaml ()
   (require 'smartparens-ocaml))
 
+(defun tddsg/post-init-cc-mode ()
+  (local-set-key (kbd "C-c C-c") nil)
+  (setq c-default-style '((java-mode . "java")
+                          (awk-mode . "awk")
+                          (other . "user"))
+        c-basic-offset 4))
+
 (defun tddsg/post-init-tuareg ()
   (require 'merlin-imenu)
   (dolist (var (car (read-from-string
@@ -168,7 +176,6 @@ Each entry is either:
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
     ;; customize compilation
-    (local-set-key (kbd "C-c C-c") 'compile)
     (key-chord-define-local "xc" 'compile)
     (setq compile-command (format "make -k -C %s"
                                   (tddsg-get-closest-build-path))))

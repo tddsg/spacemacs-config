@@ -325,13 +325,14 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
+  (global-set-key (kbd "C-c g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c M") 'shell)
 
-  (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
+  (global-set-key (kbd "C-c C-g") 'helm-do-grep-ag)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
+  (global-set-key (kbd "C-c C-c") 'compile)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
