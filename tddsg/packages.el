@@ -246,15 +246,12 @@ Each entry is either:
 
 (defun tddsg/post-init-helm ()
   (require 'helm)
-  ;; (setq helm-split-window-in-side-p           t
-  ;;       ;; helm-buffers-fuzzy-matching
-  ;;       helm-move-to-line-cycle-in-source     t
-  ;;       helm-ff-search-library-in-sexp        t
-  ;;       helm-ff-file-name-history-use-recentf t)
   (add-to-list 'helm-sources-using-default-as-input
                'helm-source-grep-ag)
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (setq projectile-completion-system 'helm)
+  (setq projectile-completion-system 'helm
+        helm-ff-file-name-history-use-recentf t
+        helm-ff-transformer-show-only-basename nil)
   (require 'helm-config)
   (helm-mode 1))
 
