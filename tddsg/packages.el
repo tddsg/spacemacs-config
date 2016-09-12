@@ -169,7 +169,7 @@ Each entry is either:
     (merlin-use-merlin-imenu)
     (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
-    (setq merlin-locate-in-new-window 'always)
+    (setq merlin-locate-in-new-window 'diff)
     ;; customize syntax table for forward/backward slurping/barfing sexp
     (dolist (symbol (list ?, ?\; ?: ?+ ?- ?/ ?@ ?! ?> ?<))
       (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
