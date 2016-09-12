@@ -325,13 +325,14 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
+  (global-set-key (kbd "C-c g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c M") 'shell)
 
-  (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
+  (global-set-key (kbd "C-c C-g") 'helm-do-grep-ag)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
+  (global-set-key (kbd "C-c C-c") 'compile)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
@@ -514,6 +515,12 @@ If the new path's directories does not exist, create them."
      (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
      )))
 
+(defun tddsg-custom-common-faces ()
+  (custom-set-faces
+   ;; smartparens
+   '(sp-pair-overlay-face ((t nil)))
+   '(sp-wrap-overlay-face ((t nil)))
+   '(sp-wrap-tag-overlay-face ((t nil)))))
 
 (defun tddsg-override-theme ()
   (dolist (theme-settings tddsg-themes)
@@ -525,6 +532,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-themes ()
   ;; load the custom theme
+  (tddsg-custom-common-faces)
   (tddsg-custom-theme-leuven)
   (tddsg-custom-theme-spacemacs-dark)
   (tddsg-override-theme)

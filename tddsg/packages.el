@@ -33,6 +33,7 @@
   '(comment-dwim-2
     tuareg
     auctex
+    cc-mode
     org
     latex-extra
     ace-popup-menu
@@ -131,6 +132,13 @@ Each entry is either:
 (defun tddsg/init-smartparens-ocaml ()
   (require 'smartparens-ocaml))
 
+(defun tddsg/post-init-cc-mode ()
+  (local-set-key (kbd "C-c C-c") nil)
+  (setq c-default-style '((java-mode . "java")
+                          (awk-mode . "awk")
+                          (other . "user"))
+        c-basic-offset 4))
+
 (defun tddsg/post-init-tuareg ()
   (require 'merlin-imenu)
   (dolist (var (car (read-from-string
@@ -168,7 +176,6 @@ Each entry is either:
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
     ;; customize compilation
-    (local-set-key (kbd "C-c C-c") 'compile)
     (key-chord-define-local "xc" 'compile)
     (setq compile-command (format "make -k -C %s"
                                   (tddsg-get-closest-build-path))))
@@ -246,15 +253,12 @@ Each entry is either:
 
 (defun tddsg/post-init-helm ()
   (require 'helm)
-  ;; (setq helm-split-window-in-side-p           t
-  ;;       ;; helm-buffers-fuzzy-matching
-  ;;       helm-move-to-line-cycle-in-source     t
-  ;;       helm-ff-search-library-in-sexp        t
-  ;;       helm-ff-file-name-history-use-recentf t)
   (add-to-list 'helm-sources-using-default-as-input
                'helm-source-grep-ag)
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (setq projectile-completion-system 'helm)
+  (setq projectile-completion-system 'helm
+        helm-ff-file-name-history-use-recentf t
+        helm-ff-transformer-show-only-basename nil)
   (require 'helm-config)
   (helm-mode 1))
 
@@ -367,6 +371,9 @@ Each entry is either:
   (require 'elmacro))
 
 (defun tddsg/init-helm-dired-history ()
+  (require 'savehist)
+  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
+  (savehist-mode 1)
   (require 'helm-dired-history))
 
 (defun tddsg/init-pdf-tools ()
