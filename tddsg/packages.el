@@ -132,12 +132,13 @@ Each entry is either:
 (defun tddsg/init-smartparens-ocaml ()
   (require 'smartparens-ocaml))
 
-(defun tddsg/post-init-cc-mode ()
+;; Don't know why can't use post-init- for cc-mode. Must use init-
+(defun tddsg/init-cc-mode ()
   (local-set-key (kbd "C-c C-c") nil)
-  (setq c-default-style '((java-mode . "java")
-                          (awk-mode . "awk")
-                          (other . "user"))
-        c-basic-offset 4))
+  (defun my-c-mode-hook ()
+    (c-set-style "linux")
+    (setq c-basic-offset 4))
+  (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
   (require 'merlin-imenu)
