@@ -31,6 +31,7 @@
 
 (defconst tddsg-packages
   '(comment-dwim-2
+    noflet
     tuareg
     auctex
     cc-mode
@@ -67,6 +68,7 @@
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
+    (merlin-eldoc :location local)
     (smartparens-ocaml :location local))
   "The list of Lisp packages required by the tddsg layer.
 
@@ -118,6 +120,9 @@ Each entry is either:
 (defun tddsg/init-comment-dwim-2 ()
   (require 'comment-dwim-2))
 
+(defun tddsg/init-noflet ()
+  (require 'noflet))
+
 (defun tddsg/init-transpose-frame ()
   (require 'transpose-frame))
 
@@ -127,7 +132,13 @@ Each entry is either:
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
 
-(defun tddsg/init-merlin-imenu ())
+(defun tddsg/init-merlin-imenu ()
+  (with-eval-after-load 'merlin
+    (require 'merlin-imenu)))
+
+(defun tddsg/init-merlin-eldoc ()
+  (with-eval-after-load 'merlin
+    (require 'merlin-eldoc)))
 
 (defun tddsg/init-smartparens-ocaml ()
   (require 'smartparens-ocaml))
@@ -141,6 +152,7 @@ Each entry is either:
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
+  (require 'merlin-eldoc)
   (require 'merlin-imenu)
   (dolist (var (car (read-from-string
                      (shell-command-to-string "opam config env --sexp"))))
@@ -176,6 +188,7 @@ Each entry is either:
       (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
+    (local-set-key (kbd "M-.") 'merlin-locate)
     ;; customize compilation
     (key-chord-define-local "xc" 'compile)
     (setq compile-command (format "make -k -C %s"

@@ -161,7 +161,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
-  (setq company-idle-delay 0.3))
+  (setq company-idle-delay 0.5))
 
 (defun tddsg/disable-company-auto-suggest ()
   (interactive)
@@ -366,11 +366,6 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m L n") 'langtool-goto-next-error)
   (global-set-key (kbd "M-m L p") 'langtool-goto-previous-error)
 
-  (global-set-key (kbd "C-s-S-<left>") 'buf-move-left)
-  (global-set-key (kbd "C-s-S-<right>") 'buf-move-right)
-  (global-set-key (kbd "C-s-S-<up>") 'buf-move-up)
-  (global-set-key (kbd "C-s-S-<down>") 'buf-move-down)
-
   ;; workspaces transient
   (global-set-key
    (kbd "M-m 1")
@@ -515,9 +510,12 @@ If the new path's directories does not exist, create them."
      (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
      )))
 
-(defun tddsg-custom-common-faces ()
+(defun tddsg-custom-common ()
+  ;; custom variables
+  (custom-set-variables
+   '(sp-highlight-wrap-overlay nil))
+  ;; custom faces
   (custom-set-faces
-   ;; smartparens
    '(sp-pair-overlay-face ((t nil)))
    '(sp-wrap-overlay-face ((t nil)))
    '(sp-wrap-tag-overlay-face ((t nil)))))
@@ -532,7 +530,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-themes ()
   ;; load the custom theme
-  (tddsg-custom-common-faces)
+  (tddsg-custom-common)
   (tddsg-custom-theme-leuven)
   (tddsg-custom-theme-spacemacs-dark)
   (tddsg-override-theme)
