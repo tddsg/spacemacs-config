@@ -186,6 +186,15 @@ If the new path's directories does not exist, create them."
 (defun tddsg-hook-shell-mode ()
   (rainbow-delimiters-mode-enable))
 
+(defun tddsg-refresh-echo-area ()
+  (message (current-message)))
+
+(add-hook 'pre-command-hook 'tddsg-refresh-echo-area nil t)
+
+(remove-hook 'pre-command-hook 'tddsg-refresh-echo-area t)
+
+(remove-hook 'post-command-hook 'tddsg-refresh-echo-area t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -215,6 +224,7 @@ If the new path's directories does not exist, create them."
   ;; automatically setting mark for certain commands
   (setq global-mark-ring-max 1000
         mark-ring-max 200)
+  (setq set-mark-command-repeat-pop t)
   (defadvice find-file (before set-mark activate) (tddsg-set-mark))
   (defadvice isearch-update (before set-mark activate) (tddsg-set-mark))
   (defadvice beginning-of-buffer (before set-mark activate) (tddsg-set-mark))
@@ -293,10 +303,12 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "<detete>") 'delete-forward-char)
   (global-set-key (kbd "<escape>") 'god-local-mode)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
-  (global-set-key (kbd "C-<backspace>") 'crux-kill-line-backwards)
+  (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
+  (global-set-key (kbd "C-<delete>") 'kill-word)
+  (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+  (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
@@ -331,7 +343,7 @@ If the new path's directories does not exist, create them."
 
   (global-set-key (kbd "C-c C-g") 'helm-do-grep-ag)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
-  (global-set-key (kbd "C-c C-SPC") 'tddsg/unpop-to-mark-command)
+  (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
   (global-set-key (kbd "C-c C-c") 'compile)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
@@ -402,6 +414,42 @@ If the new path's directories does not exist, create them."
    'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
   (global-set-key
    (kbd "M-m -")
+   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+  (global-set-key
+   (kbd "s-1")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
+  (global-set-key
+   (kbd "s-2")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
+  (global-set-key
+   (kbd "s-3")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
+  (global-set-key
+   (kbd "s-4")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
+  (global-set-key
+   (kbd "s-5")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
+  (global-set-key
+   (kbd "s-6")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
+  (global-set-key
+   (kbd "s-7")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
+  (global-set-key
+   (kbd "s-8")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
+  (global-set-key
+   (kbd "s-9")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
+  (global-set-key
+   (kbd "s-0")
+   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
+  (global-set-key
+   (kbd "s-+")
+   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
+  (global-set-key
+   (kbd "s--")
    'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
   (global-set-key
    (kbd "C-x M-<right>")

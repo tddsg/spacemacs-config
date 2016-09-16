@@ -152,7 +152,6 @@ Each entry is either:
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
-  (require 'merlin-eldoc)
   (require 'merlin-imenu)
   (dolist (var (car (read-from-string
                      (shell-command-to-string "opam config env --sexp"))))
@@ -176,10 +175,19 @@ Each entry is either:
   (defun enable-ocp-indent ()
     (interactive)
     (setq indent-line-function 'ocp-indent-line))
+  (defun merlin-locate-this-window ()
+    (interactive)
+    (setq merlin-locate-in-new-window 'never)
+    (call-interactively 'merlin-locate))
+  (defun merlin-locate-other-window ()
+    (interactive)
+    (setq merlin-locate-in-new-window 'always)
+    (call-interactively 'merlin-locate))
   (defun my-tuareg-hook ()
     (interactive)
     (merlin-mode)
     (merlin-use-merlin-imenu)
+    (eldoc-mode -1)
     (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
     (setq merlin-locate-in-new-window 'diff)
@@ -188,7 +196,11 @@ Each entry is either:
       (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
-    (local-set-key (kbd "M-.") 'merlin-locate)
+    (global-set-key (kbd "C-c l") nil)
+    (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
+    (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)
+    (define-key merlin-mode-map (kbd "M-.") 'merlin-locate-this-window)
+    (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window)
     ;; customize compilation
     (key-chord-define-local "xc" 'compile)
     (setq compile-command (format "make -k -C %s"
@@ -231,7 +243,7 @@ Each entry is either:
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
-(defun tddsg/post-init-smartparens ()
+(defun tddsg/init-smartparens ()
   ;; bindings
   (sp-use-paredit-bindings)
   (define-key smartparens-mode-map (kbd "C-<left>") nil)
@@ -362,8 +374,12 @@ Each entry is either:
 
 (defun tddsg/init-langtool ()
   (require 'langtool)
-  (setq langtool-default-language "en-US")
-  (setq langtool-language-tool-jar
+  (setq langtool-default-language "en-US"
+        langtool-disabled-rules '("WHITESPACE_RULE"
+                                  "EN_UNPAIRED_BRACKETS"
+                                  "COMMA_PARENTHESIS_WHITESPACE"
+                                  "EN_QUOTES")
+        langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool-3.4/languagetool-commandline.jar"))
 
 (defun tddsg/init-imenu-anywhere ()
