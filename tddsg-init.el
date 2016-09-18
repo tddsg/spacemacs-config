@@ -183,7 +183,16 @@ If the new path's directories does not exist, create them."
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
 
+(defun tddsg-fix-comint-window-size ()
+  "Change process window size."
+  (when (derived-mode-p 'comint-mode)
+    (let ((process (get-buffer-process (current-buffer))))
+      (when process
+        (set-process-window-size process (window-height) (window-width))))))
+
 (defun tddsg-hook-shell-mode ()
+  (add-hook 'window-configuration-change-hook
+            'tddsg-fix-comint-window-size nil t)
   (rainbow-delimiters-mode-enable))
 
 (defun tddsg-refresh-echo-area ()
