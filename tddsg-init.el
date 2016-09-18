@@ -317,6 +317,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C--") 'text-scale-decrease)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'crux-top-join-line)
   (global-set-key (kbd "C-_") 'join-line)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
@@ -487,6 +488,9 @@ If the new path's directories does not exist, create them."
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+
+  ;; flyspell
+  (define-key flyspell-mode-map (kbd "C-;") nil)
 
   ;; company mode
   (define-key company-active-map (kbd "M-n") nil)
