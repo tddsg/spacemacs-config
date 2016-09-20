@@ -145,21 +145,23 @@ If the new path's directories does not exist, create them."
                     (file-name-directory backupFilePath))
     backupFilePath))
 
-;; get the closest parent folder containing a Makefile
-(cl-defun tddsg-get-closest-build-path (&optional (file "Makefile"))
-  "Get path of the closest parent folder that contains a Makefile"
-  (let ((root (expand-file-name "/"))) ; the win32 must reconsider it
-    (loop
-     for d = default-directory then (expand-file-name ".." d)
-     if (file-exists-p (expand-file-name file d))
-     return d
-     if (equal d root)
-     return nil)))
-
+;; call compile to the closest parent folder containing a Makefile
 (defun tddsg/compile ()
   (interactive)
-  (setq compile-command (format "make -k -C %s" (tddsg-get-closest-build-path)))
-  (call-interactively 'compile))
+  (cl-labels
+      ((find-make-file-dir
+        (cur-dir root-dir make-file)
+        (cond ((string= cur-dir root-dir) "")
+              ((file-exists-p (expand-file-name make-file cur-dir)) cur-dir)
+              (t (find-make-file-dir (expand-file-name ".." cur-dir)
+                                     root-dir
+                                     make-file)))))
+    (let ((cur-dir default-directory)
+          (root-dir "/")
+          (make-file "Makefile"))
+      (setq compile-command (format "make -k -C %s"
+                                    (find-make-file-dir cur-dir root-dir make-file)))
+      (call-interactively 'compile))))
 
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -283,6 +285,9 @@ If the new path's directories does not exist, create them."
   (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg-hook-shell-mode)
+
+  ;; smartparens
+  (smartparens-global-mode)
 
   ;; backup
   (setq make-backup-files t)

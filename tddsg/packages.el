@@ -130,7 +130,6 @@ Each entry is either:
 ;; Don't know why can't use post-init- for cc-mode. Must use init-
 (defun tddsg/init-cc-mode ()
   (defun my-c-mode-hook ()
-    (local-set-key (kbd "C-c C-c") 'compile)
     (c-set-style "linux")
     (setq c-basic-offset 4))
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
@@ -180,6 +179,7 @@ Each entry is either:
       (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
+    (local-set-key (kbd "C-c C-c") nil)
     (global-set-key (kbd "C-c l") nil)
     (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
     (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)
