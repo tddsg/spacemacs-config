@@ -156,6 +156,11 @@ If the new path's directories does not exist, create them."
      if (equal d root)
      return nil)))
 
+(defun tddsg/compile ()
+  (interactive)
+  (setq compile-command (format "make -k -C %s" (tddsg-get-closest-build-path)))
+  (call-interactively 'compile))
+
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   (interactive)
@@ -189,9 +194,7 @@ If the new path's directories does not exist, create them."
   (whitespace-mode 1))
 
 (defun tddsg-hook-prog-mode ()
-  (flycheck-mode 1)
-  (setq compile-command) (format "make -k -C %s"
-                                 (tddsg-get-closest-build-path)))
+  (flycheck-mode 1))
 
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
@@ -356,7 +359,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c C-g") 'helm-do-grep-ag)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
-  (global-set-key (kbd "C-c C-c") 'compile)
+  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
