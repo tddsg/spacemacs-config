@@ -156,11 +156,16 @@ If the new path's directories does not exist, create them."
               (t (find-make-file-dir (expand-file-name ".." cur-dir)
                                      root-dir
                                      make-file)))))
-    (let ((cur-dir default-directory)
-          (root-dir "/")
-          (make-file "Makefile"))
-      (setq compile-command (format "make -k -C %s"
-                                    (find-make-file-dir cur-dir root-dir make-file)))
+    (let* ((cur-dir default-directory)
+           (root-dir "/")
+           (make-file "Makefile")
+           (new-command
+            (if (and (>  (length compile-command) 4)
+                     (string= (substring compile-command 0 4) "make"))
+                (format "make -k -C %s"
+                        (find-make-file-dir cur-dir root-dir make-file))
+              compile-command)))
+      (setq compile-command new-command)
       (call-interactively 'compile))))
 
 (defun tddsg/unpop-to-mark-command ()
