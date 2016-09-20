@@ -97,22 +97,6 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; SOME FUNCTIONS
-
-
-;; get the closet parent folder containing a Makefile
-(cl-defun tddsg-get-closest-build-path (&optional (file "Makefile"))
-  "Get path of the closest parent folder that contains a Makefile"
-  (let ((root (expand-file-name "/"))) ; the win32 must reconsider it
-    (loop
-     for d = default-directory then (expand-file-name ".." d)
-     if (file-exists-p (expand-file-name file d))
-     return d
-     if (equal d root)
-     return nil)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT PACKAGES
@@ -145,8 +129,8 @@ Each entry is either:
 
 ;; Don't know why can't use post-init- for cc-mode. Must use init-
 (defun tddsg/init-cc-mode ()
-  (local-set-key (kbd "C-c C-c") nil)
   (defun my-c-mode-hook ()
+    (local-set-key (kbd "C-c C-c") 'compile)
     (c-set-style "linux")
     (setq c-basic-offset 4))
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
@@ -200,16 +184,11 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
     (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)
     (define-key merlin-mode-map (kbd "M-.") 'merlin-locate-this-window)
-    (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window)
-    ;; customize compilation
-    (key-chord-define-local "xc" 'compile)
-    (setq compile-command (format "make -k -C %s"
-                                  (tddsg-get-closest-build-path))))
+    (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)
-
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
   (custom-set-variables
    '(TeX-save-query nil)
@@ -266,7 +245,7 @@ Each entry is either:
     (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
-  (smartparens-global-mode t))
+  (smartparens-global-mode 1))
 
 (defun tddsg/post-init-yasnippet ()
   (yas-global-mode t))
@@ -342,7 +321,7 @@ Each entry is either:
         key-chord-two-key-delay 0.1)
   ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
-  (key-chord-define-global "xz" 'helm-mini)
+  (key-chord-define-global "df" 'helm-mini)
   (key-chord-define-global "JK" 'previous-buffer)
   (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-according-to-mode)

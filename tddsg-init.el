@@ -145,6 +145,17 @@ If the new path's directories does not exist, create them."
                     (file-name-directory backupFilePath))
     backupFilePath))
 
+;; get the closest parent folder containing a Makefile
+(cl-defun tddsg-get-closest-build-path (&optional (file "Makefile"))
+  "Get path of the closest parent folder that contains a Makefile"
+  (let ((root (expand-file-name "/"))) ; the win32 must reconsider it
+    (loop
+     for d = default-directory then (expand-file-name ".." d)
+     if (file-exists-p (expand-file-name file d))
+     return d
+     if (equal d root)
+     return nil)))
+
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   (interactive)
@@ -178,7 +189,9 @@ If the new path's directories does not exist, create them."
   (whitespace-mode 1))
 
 (defun tddsg-hook-prog-mode ()
-  (flycheck-mode 1))
+  (flycheck-mode 1)
+  (setq compile-command) (format "make -k -C %s"
+                                 (tddsg-get-closest-build-path)))
 
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
@@ -194,16 +207,6 @@ If the new path's directories does not exist, create them."
   (add-hook 'window-configuration-change-hook
             'tddsg-fix-comint-window-size nil t)
   (rainbow-delimiters-mode-enable))
-
-(defun tddsg-refresh-echo-area ()
-  (message (current-message)))
-
-(add-hook 'pre-command-hook 'tddsg-refresh-echo-area nil t)
-
-(remove-hook 'pre-command-hook 'tddsg-refresh-echo-area t)
-
-(remove-hook 'post-command-hook 'tddsg-refresh-echo-area t)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -254,10 +257,9 @@ If the new path's directories does not exist, create them."
 
   ;; mode editing setting
   (electric-pair-mode t)
-  (delete-selection-mode t)                ;; delete selection by keypress
-  (setq require-final-newline t)           ;; newline at end of file
-  (defadvice newline                       ;; indent after new line
-      (after newline-after activate)
+  (delete-selection-mode t)                            ;; delete selection by keypress
+  (setq require-final-newline t)                       ;; newline at end of file
+  (defadvice newline (after newline-after activate)    ;; indent after new line
     (indent-according-to-mode))
   ;; (setq company-idle-delay 200)         ;; set delay time by default
   (global-company-mode)
@@ -480,6 +482,7 @@ If the new path's directories does not exist, create them."
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key shell-mode-map (kbd "C-j") 'newline)
+  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
   (define-key undo-tree-map (kbd "C-_") nil)
 
   ;; god-mode
