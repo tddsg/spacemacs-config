@@ -321,7 +321,6 @@ Each entry is either:
         key-chord-two-key-delay 0.1)
   ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
-  (key-chord-define-global "df" 'helm-mini)
   (key-chord-define-global "JK" 'previous-buffer)
   (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-according-to-mode)
