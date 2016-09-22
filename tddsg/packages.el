@@ -280,40 +280,15 @@ Each entry is either:
   (show-paren-mode t))
 
 (defun tddsg/init-windmove ()
-  (windmove-default-keybindings)
-  (global-set-key (kbd "S-<left>") 'windmove-left)
-  (global-set-key (kbd "S-<right>") 'windmove-right)
-  (global-set-key (kbd "S-<up>") 'windmove-up)
-  (global-set-key (kbd "S-<down>") 'windmove-down)
-  (global-set-key (kbd "s-b") 'windmove-left)
-  (global-set-key (kbd "s-f") 'windmove-right)
-  (global-set-key (kbd "s-p") 'windmove-up)
-  (global-set-key (kbd "s-n") 'windmove-down))
+  (windmove-default-keybindings))
 
 ;; buffer-clone
 (defun tddsg/post-init-buffer-move ()
-  (require 'buffer-move)
-  (global-set-key (kbd "C-M-s-<left>") 'buf-move-left)
-  (global-set-key (kbd "C-M-s-<right>") 'buf-move-right)
-  (global-set-key (kbd "C-M-s-<up>") 'buf-move-up)
-  (global-set-key (kbd "C-M-s-<down>") 'buf-move-down)
-  (global-set-key (kbd "C-M-s-b") 'buf-move-left)
-  (global-set-key (kbd "C-M-s-f") 'buf-move-right)
-  (global-set-key (kbd "C-M-s-p") 'buf-move-up)
-  (global-set-key (kbd "C-M-s-n") 'buf-move-down))
+  (require 'buffer-move))
 
 ;; buffer-clone
 (defun tddsg/init-buffer-clone ()
-  (require 'buffer-clone)
-  (global-set-key (kbd "M-s-<left>") 'buf-clone-left)
-  (global-set-key (kbd "M-s-<right>") 'buf-clone-right)
-  (global-set-key (kbd "M-s-<up>") 'buf-clone-up)
-  (global-set-key (kbd "M-s-<down>") 'buf-clone-down)
-  (global-set-key (kbd "M-s-b") 'buf-clone-left)
-  (global-set-key (kbd "M-s-f") 'buf-clone-right)
-  (global-set-key (kbd "M-s-p") 'buf-clone-up)
-  (global-set-key (kbd "M-s-n") 'buf-clone-down))
-
+  (require 'buffer-clone))
 
 (defun tddsg/init-key-chord ()
   (require 'key-chord)

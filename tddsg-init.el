@@ -462,6 +462,28 @@ If the new path's directories does not exist, create them."
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
+  (define-key god-local-mode-map (kbd "z") 'repeat)
+  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+
+  ;; windmove
+  (global-set-key (kbd "S-<left>") 'windmove-left)
+  (global-set-key (kbd "S-<right>") 'windmove-right)
+  (global-set-key (kbd "S-<up>") 'windmove-up)
+  (global-set-key (kbd "S-<down>") 'windmove-down)
+  (global-set-key (kbd "M-B") 'windmove-left)
+  (global-set-key (kbd "M-F") 'windmove-right)
+  (global-set-key (kbd "M-P") 'windmove-up)
+  (global-set-key (kbd "M-N") 'windmove-down)
+
+  ;; buffer-move
+  (global-set-key (kbd "C-M-s-<left>") 'buf-clone-left)
+  (global-set-key (kbd "C-M-s-<right>") 'buf-clone-right)
+  (global-set-key (kbd "C-M-s-<up>") 'buf-clone-up)
+  (global-set-key (kbd "C-M-s-<down>") 'buf-clone-down)
+  (global-set-key (kbd "C-M-s-b") 'buf-clone-left)
+  (global-set-key (kbd "C-M-s-f") 'buf-clone-right)
+  (global-set-key (kbd "C-M-s-p") 'buf-clone-up)
+  (global-set-key (kbd "C-M-s-n") 'buf-clone-down)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
