@@ -226,13 +226,18 @@ If the new path's directories does not exist, create them."
   (global-hl-todo-mode 1)           ;; highlight current line
   (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (setq scroll-margin 5)            ;; top-bottom margin for scrolling
   (setq-default fill-column 80)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
   (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
           (:eval (if (buffer-file-name)
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
+
+  ;; scrolling
+  (smooth-scrolling-mode nil)    ;; disable smooth-scrolling
+  (setq scroll-conservatively 200
+        scroll-margin 5
+        scroll-preserve-screen-position 't)
 
   ;; mode paragraph setting
   (setq paragraph-separate "[ \t\f]*$"
