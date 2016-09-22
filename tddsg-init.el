@@ -234,7 +234,7 @@ If the new path's directories does not exist, create them."
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
 
   ;; scrolling
-  (smooth-scrolling-mode nil)    ;; disable smooth-scrolling
+  (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
   (setq scroll-conservatively 200
         scroll-margin 5
         scroll-preserve-screen-position 't)
@@ -474,6 +474,10 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-F") 'windmove-right)
   (global-set-key (kbd "M-P") 'windmove-up)
   (global-set-key (kbd "M-N") 'windmove-down)
+  (global-set-key (kbd "s-b") 'windmove-left)
+  (global-set-key (kbd "s-f") 'windmove-right)
+  (global-set-key (kbd "s-p") 'windmove-up)
+  (global-set-key (kbd "s-f") 'windmove-down)
 
   ;; buffer-move
   (global-set-key (kbd "C-M-s-<left>") 'buf-clone-left)
@@ -484,6 +488,10 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-M-s-f") 'buf-clone-right)
   (global-set-key (kbd "C-M-s-p") 'buf-clone-up)
   (global-set-key (kbd "C-M-s-n") 'buf-clone-down)
+  (global-set-key (kbd "C-s-b") 'buf-clone-left)
+  (global-set-key (kbd "C-s-f") 'buf-clone-right)
+  (global-set-key (kbd "C-s-p") 'buf-clone-up)
+  (global-set-key (kbd "C-s-n") 'buf-clone-down)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
