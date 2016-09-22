@@ -298,6 +298,9 @@ If the new path's directories does not exist, create them."
   (setq make-backup-files t)
   (setq make-backup-file-name-function 'tddsg-create-backup-file-name)
 
+  ;; evil mode
+  (setq-default evil-cross-lines t)
+
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " S"))
@@ -327,7 +330,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  ;; (global-set-key (kbd "<escape>") 'god-local-mode)
+  (global-set-key (kbd "<escape>") 'god-local-mode)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -404,84 +407,32 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m L p") 'langtool-goto-previous-error)
 
   ;; workspaces transient
-  (global-set-key
-   (kbd "M-m 1")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
-  (global-set-key
-   (kbd "M-m 2")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
-  (global-set-key
-   (kbd "M-m 3")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
-  (global-set-key
-   (kbd "M-m 4")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
-  (global-set-key
-   (kbd "M-m 5")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
-  (global-set-key
-   (kbd "M-m 6")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
-  (global-set-key
-   (kbd "M-m 7")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
-  (global-set-key
-   (kbd "M-m 8")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
-  (global-set-key
-   (kbd "M-m 9")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
-  (global-set-key
-   (kbd "M-m 0")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
-  (global-set-key
-   (kbd "M-m +")
-   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
-  (global-set-key
-   (kbd "M-m -")
-   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
-  (global-set-key
-   (kbd "s-1")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit)
-  (global-set-key
-   (kbd "s-2")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit)
-  (global-set-key
-   (kbd "s-3")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit)
-  (global-set-key
-   (kbd "s-4")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit)
-  (global-set-key
-   (kbd "s-5")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-5-and-exit)
-  (global-set-key
-   (kbd "s-6")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-6-and-exit)
-  (global-set-key
-   (kbd "s-7")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-7-and-exit)
-  (global-set-key
-   (kbd "s-8")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-8-and-exit)
-  (global-set-key
-   (kbd "s-9")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-9-and-exit)
-  (global-set-key
-   (kbd "s-0")
-   'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-0-and-exit)
-  (global-set-key
-   (kbd "s-+")
-   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
-  (global-set-key
-   (kbd "s--")
-   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
-  (global-set-key
-   (kbd "C-x M-<right>")
-   'spacemacs/workspaces-transient-state/eyebrowse-next-window-config)
-  (global-set-key
-   (kbd "C-x M-<left>")
-   'spacemacs/workspaces-transient-state/eyebrowse-prev-window-config)
+  (global-set-key (kbd "M-m 1") 'eyebrowse-switch-to-window-config-1)
+  (global-set-key (kbd "M-m 2") 'eyebrowse-switch-to-window-config-2)
+  (global-set-key (kbd "M-m 3") 'eyebrowse-switch-to-window-config-3)
+  (global-set-key (kbd "M-m 4") 'eyebrowse-switch-to-window-config-4)
+  (global-set-key (kbd "M-m 5") 'eyebrowse-switch-to-window-config-5)
+  (global-set-key (kbd "M-m 6") 'eyebrowse-switch-to-window-config-6)
+  (global-set-key (kbd "M-m 7") 'eyebrowse-switch-to-window-config-7)
+  (global-set-key (kbd "M-m 8") 'eyebrowse-switch-to-window-config-8)
+  (global-set-key (kbd "M-m 9") 'eyebrowse-switch-to-window-config-9)
+  (global-set-key (kbd "M-m 0") 'eyebrowse-switch-to-window-config-0)
+  (global-set-key (kbd "M-m +") 'eyebrowse-next-window-config)
+  (global-set-key (kbd "M-m -") 'eyebrowse-prev-window-config)
+  (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
+  (global-set-key (kbd "s-2") 'eyebrowse-switch-to-window-config-2)
+  (global-set-key (kbd "s-3") 'eyebrowse-switch-to-window-config-3)
+  (global-set-key (kbd "s-4") 'eyebrowse-switch-to-window-config-4)
+  (global-set-key (kbd "s-5") 'eyebrowse-switch-to-window-config-5)
+  (global-set-key (kbd "s-6") 'eyebrowse-switch-to-window-config-6)
+  (global-set-key (kbd "s-7") 'eyebrowse-switch-to-window-config-7)
+  (global-set-key (kbd "s-8") 'eyebrowse-switch-to-window-config-8)
+  (global-set-key (kbd "s-9") 'eyebrowse-switch-to-window-config-9)
+  (global-set-key (kbd "s-0") 'eyebrowse-switch-to-window-config-0)
+  (global-set-key (kbd "s-+") 'eyebrowse-next-window-config)
+  (global-set-key (kbd "s--") 'eyebrowse-prev-window-config)
+  (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
+  (global-set-key (kbd "C-x M-<left>") 'eyebrowse-prev-window-config)
 
   ;; layout
   (global-set-key (kbd "M-m l") nil)  ;; disable key "M-m l" first
@@ -500,11 +451,12 @@ If the new path's directories does not exist, create them."
   (define-key undo-tree-map (kbd "C-_") nil)
 
   ;; god-mode
-  ;; (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-  ;; (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  ;; (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  ;; (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  ;; (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "C-z") 'god-local-mode)
+  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
@@ -516,6 +468,21 @@ If the new path's directories does not exist, create them."
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
+
+  ;; evil mode
+  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
+    'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>")
+    'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>")
+    'evil-next-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>")
+    'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
+  (define-key evil-motion-state-map (kbd "C-^") nil)
+  (define-key evil-motion-state-map (kbd "C-_") nil)
+  (define-key evil-motion-state-map (kbd "C-z") nil)
+  (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
   (define-key company-active-map (kbd "M-n") nil)
