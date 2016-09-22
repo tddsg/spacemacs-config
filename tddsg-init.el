@@ -330,7 +330,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-keys ()
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "<escape>") 'god-local-mode)
+  (global-set-key (kbd "<escape>") 'god-mode-all)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -453,10 +453,10 @@ If the new path's directories does not exist, create them."
   ;; god-mode
   (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-local-mode)
+  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "<escape>") 'god-local-mode)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
