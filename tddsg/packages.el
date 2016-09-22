@@ -325,7 +325,6 @@ Each entry is either:
   (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-according-to-mode)
   (key-chord-define-global "jk" 'avy-goto-word-1)
-  (key-chord-define-global "jj" 'avy-goto-char-2)
   (key-chord-define-global "jl" 'avy-goto-line)
   (key-chord-mode 1))
 
