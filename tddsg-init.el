@@ -235,7 +235,8 @@ If the new path's directories does not exist, create them."
 
   ;; scrolling
   (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
-  (setq scroll-conservatively 200
+  (setq redisplay-dont-pause t
+        scroll-conservatively 10000
         scroll-margin 5
         scroll-preserve-screen-position 't)
 
