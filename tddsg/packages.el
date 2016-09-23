@@ -131,7 +131,8 @@ Each entry is either:
 (defun tddsg/init-cc-mode ()
   (defun my-c-mode-hook ()
     (c-set-style "linux")
-    (setq c-basic-offset 4))
+    (setq c-basic-offset 4)
+    (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
