@@ -407,6 +407,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-o") 'spacemacs/toggle-maximize-buffer)
   (global-set-key (kbd "s-w") 'delete-window)
   (global-set-key (kbd "s-m") 'helm-mini)
+  (global-set-key (kbd "s-g") 'magit-status)
   (global-set-key (kbd "s-u") 'winner-undo)
   (global-set-key (kbd "s-r") 'winner-redo)
   (global-set-key (kbd "s-v") 'split-window-right)
