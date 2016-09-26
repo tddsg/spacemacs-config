@@ -374,17 +374,18 @@ If the new path's directories does not exist, create them."
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
   (global-set-key (kbd "C-x C-b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-c g") 'helm-projectile-grep)
+  (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
   (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c M") 'shell)
 
-  (global-set-key (kbd "C-c C-g") 'helm-do-grep-ag)
+  (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
@@ -406,7 +407,9 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-v") 'split-window-right)
   (global-set-key (kbd "s-o") 'spacemacs/toggle-maximize-buffer)
   (global-set-key (kbd "s-w") 'delete-window)
-  (global-set-key (kbd "s-m") 'helm-mini)
+  (global-set-key (kbd "s-z") 'helm-mini)
+  (global-set-key (kbd "s-a") 'mark-whole-buffer)
+  (global-set-key (kbd "s-\\") 'goto-last-change)
   (global-set-key (kbd "s-g") 'magit-status)
   (global-set-key (kbd "s-u") 'winner-undo)
   (global-set-key (kbd "s-r") 'winner-redo)
@@ -545,12 +548,13 @@ If the new path's directories does not exist, create them."
   (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
+  ;; (define-key company-active-map (kbd "C-n") nil)
+  ;; (define-key company-active-map (kbd "C-p") nil)
+  (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
-  (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous))
+  ;; (define-key company-active-map (kbd "M-n") #'company-select-next)
+  ;; (define-key company-active-map (kbd "M-p") #'company-select-previous)
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -605,6 +609,16 @@ If the new path's directories does not exist, create them."
      (cursor ((t (:background "lime green"))))
      (diredp-file-suffix ((t (:foreground "sienna"))))
      (diredp-file-name ((t nil)))
+     ;; hilock
+     '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
+     '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
+     '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
+     '(hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
+     '(hi-red-b ((t (:foreground "red1" :weight bold))))
+     '(hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
+     ;; isearch
+     '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
+     '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
      ;; font
      (font-latex-subscript-face ((t (:height 0.96))))
      (font-latex-superscript-face ((t (:height 0.96))))
