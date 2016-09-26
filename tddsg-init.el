@@ -93,8 +93,7 @@
           (deactivate-mark)
           (forward-char)
           (backward-sexp)))
-    (if (region-active-p)
-        (sp-forward-sexp)
+    (if (region-active-p) (sp-forward-sexp)
       (progn
         (set-mark-command nil)
         (sp-forward-sexp 1)))))
@@ -108,6 +107,16 @@
           ((= ?_ (char-syntax current-char))
            (call-interactively 'er/expand-region))
           (t (tddsg/mark-sexp)))))
+
+(defun tddsg/mark-paragraph ()
+  "Mark the paragraph"
+  (interactive)
+  (if (region-active-p) (forward-paragraph 1)
+    (progn
+      (backward-paragraph)
+      (if (looking-at "[[:space:]]*$") (next-line 1))
+      (set-mark-command nil)
+      (forward-paragraph 1))))
 
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
@@ -389,6 +398,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-;") 'comment-dwim-2)
   (global-set-key (kbd "M-?") 'company-complete)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
+  (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
   (global-set-key (kbd "M-[") 'helm-company)
   (global-set-key (kbd "M-]") 'helm-dabbrev)
 
