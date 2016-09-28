@@ -118,6 +118,38 @@
       (set-mark-command nil)
       (forward-paragraph 1))))
 
+(defun tddsg/helm-do-ag ()
+  "Helm ag with the current default directory"
+  (interactive)
+  (helm-do-ag (expand-file-name default-directory)))
+
+(defun tddsg/join-with-beneath-line ()
+  "Join the current line to the line beneath it."
+  (interactive)
+  (delete-indentation 1)
+  (let ((current-char (char-after)))
+    (if (or (= ?w (char-syntax current-char))
+            (= ?_ (char-syntax current-char))
+            (= ?\" (char-syntax current-char))
+            (= ?\( (char-syntax current-char))
+            (= ?< (char-syntax current-char))
+            (= ?/ (char-syntax current-char)))
+        (just-one-space))))
+
+(defun tddsg/join-to-above-line ()
+  "Join the current line to the line above it."
+  (interactive)
+  (delete-indentation)
+  (delete-horizontal-space)
+  (let ((current-char (char-after)))
+    (if (or (= ?w (char-syntax current-char))
+            (= ?_ (char-syntax current-char))
+            (= ?\" (char-syntax current-char))
+            (= ?\( (char-syntax current-char))
+            (= ?< (char-syntax current-char))
+            (= ?/ (char-syntax current-char)))
+        (just-one-space))))
+
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
   (interactive)
@@ -316,6 +348,9 @@ If the new path's directories does not exist, create them."
   ;; evil mode
   (setq-default evil-cross-lines t)
 
+  ;; helm
+  (setq helm-ag-insert-at-point 'symbol)
+
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " S"))
@@ -360,8 +395,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-;") 'iedit-mode)
-  (global-set-key (kbd "C-^") 'crux-top-join-line)
-  (global-set-key (kbd "C-_") 'join-line)
+  (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
+  (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
 
@@ -381,7 +416,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-c g") 'helm-do-grep-ag)
+  (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c M") 'shell)
 
