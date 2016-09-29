@@ -118,10 +118,13 @@
       (set-mark-command nil)
       (forward-paragraph 1))))
 
-(defun tddsg/helm-do-ag ()
-  "Helm ag with the current default directory"
-  (interactive)
-  (helm-do-ag (expand-file-name default-directory)))
+(defun tddsg/helm-do-ag (arg)
+  "Search by Helm-Ag in the current directory, \
+or in a custom directory when prefix-argument is given (C-u)"
+  (interactive "P")
+  (if (null arg)
+      (helm-do-ag (expand-file-name default-directory))
+    (call-interactively 'helm-do-ag)))
 
 (defun tddsg/join-with-beneath-line ()
   "Join the current line to the line beneath it."
