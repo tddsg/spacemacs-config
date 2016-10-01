@@ -355,9 +355,14 @@ If the new path's directories does not exist, create them."
   ;; evil mode
   (setq-default evil-cross-lines t)
 
+  ;; dired
+  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
+  (setq dired-guess-shell-alist-user
+        '(("\\.pdf\\'" "okular &")
+          ("\\.txt\\'" "gedit")))
+
   ;; helm
   (setq helm-ag-insert-at-point 'symbol)
-  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -405,6 +410,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "C-\\") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
 
