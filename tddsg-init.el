@@ -630,6 +630,10 @@ If the new path's directories does not exist, create them."
      (font-latex-sectioning-0-face ((t (:background "white smoke" :foreground "forest green" :overline t :weight bold :height 1.2))))
      (font-latex-sectioning-1-face ((t (:background "white smoke" :foreground "steel blue" :overline t :weight bold :height 1.2))))
      (font-latex-sectioning-2-face ((t (:background "#F0F0F0" :foreground "royal blue" :overline "#A7A7A7" :weight bold :height 1.1))))
+     ;; dired mode
+     (diredp-compressed-file-name ((t (:foreground "royal blue"))))
+     (diredp-compressed-file-suffix ((t (:foreground "royal blue"))))
+     (diredp-ignored-file-name ((t (:foreground "peru"))))
      ;; font lock face
      (font-lock-constant-face ((t (:foreground "dark goldenrod"))))
      (font-lock-doc-face ((t (:foreground "#8959a8"))))
@@ -651,8 +655,12 @@ If the new path's directories does not exist, create them."
    'spacemacs-dark
    '(;; cursors & line
      (cursor ((t (:background "lime green"))))
+     ;; dired
      (diredp-file-suffix ((t (:foreground "sienna"))))
      (diredp-file-name ((t nil)))
+     (diredp-compressed-file-name ((t (:foreground "royal blue"))))
+     (diredp-compressed-file-suffix ((t (:foreground "royal blue"))))
+     (diredp-ignored-file-name ((t (:foreground "powder blue"))))
      ;; hilock
      '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
      '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
