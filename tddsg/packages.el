@@ -172,6 +172,7 @@ Each entry is either:
     (merlin-mode)
     (merlin-use-merlin-imenu)
     (eldoc-mode -1)
+    (yas-minor-mode -1)
     (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
     (setq merlin-locate-in-new-window 'diff)
@@ -185,7 +186,9 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
     (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)
     (define-key merlin-mode-map (kbd "M-.") 'merlin-locate-this-window)
-    (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window))
+    (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window)
+    (define-key merlin-mode-map (kbd "M-,") 'merlin-error-next)
+    (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
 (defun tddsg/post-init-auctex ()
@@ -295,14 +298,6 @@ Each entry is either:
   (require 'key-chord)
   (setq key-chord-one-key-delay 0.18
         key-chord-two-key-delay 0.1)
-  ;; reassign key-chords
-  (key-chord-define-global ",." 'helm-mini)
-  (key-chord-define-global "JK" 'previous-buffer)
-  (key-chord-define-global "KL" 'next-buffer)
-  (key-chord-define-global "ji" 'indent-according-to-mode)
-  (key-chord-define-global "jj" 'avy-goto-char-2)
-  (key-chord-define-global "jk" 'avy-goto-word-1)
-  (key-chord-define-global "jl" 'avy-goto-line)
   (key-chord-mode 1))
 
 (defun tddsg/post-init-whitespace ()

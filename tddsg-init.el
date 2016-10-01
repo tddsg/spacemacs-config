@@ -411,8 +411,11 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
-  (global-set-key (kbd "C-x C-b") 'helm-mini)
+  (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+  (global-set-key (kbd "C-x C-z") nil)
+  (global-set-key (kbd "C-z") nil)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
@@ -445,7 +448,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-v") 'split-window-right)
   (global-set-key (kbd "s-o") 'spacemacs/toggle-maximize-buffer)
   (global-set-key (kbd "s-w") 'delete-window)
-  (global-set-key (kbd "s-z") 'helm-mini)
+  (global-set-key (kbd "s-x") 'helm-mini)
   (global-set-key (kbd "s-a") 'mark-whole-buffer)
   (global-set-key (kbd "s-\\") 'goto-last-change)
   (global-set-key (kbd "s-g") 'magit-status)
@@ -544,20 +547,16 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-S-<right>") 'buf-clone-right)
   (global-set-key (kbd "C-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "C-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "C-s-b") 'buf-clone-left)
-  (global-set-key (kbd "C-s-f") 'buf-clone-right)
-  (global-set-key (kbd "C-s-p") 'buf-clone-up)
-  (global-set-key (kbd "C-s-n") 'buf-clone-down)
+  (global-set-key (kbd "M-m b c h") 'buf-clone-left)
+  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
+  (global-set-key (kbd "M-m b c j") 'buf-clone-down)
 
   ;; buffer-move
   (global-set-key (kbd "C-M-S-<left>") 'buf-move-left)
   (global-set-key (kbd "C-M-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-M-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-M-S-<down>") 'buf-move-down)
-  (global-set-key (kbd "C-M-s-b") 'buf-move-left)
-  (global-set-key (kbd "C-M-s-f") 'buf-move-right)
-  (global-set-key (kbd "C-M-s-p") 'buf-move-up)
-  (global-set-key (kbd "C-M-s-n") 'buf-move-down)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
@@ -586,12 +585,19 @@ If the new path's directories does not exist, create them."
   (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
-  ;; (define-key company-active-map (kbd "C-n") nil)
-  ;; (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
-  ;; (define-key company-active-map (kbd "M-n") #'company-select-next)
-  ;; (define-key company-active-map (kbd "M-p") #'company-select-previous)
+
+   ;; reassign key-chords
+  (key-chord-define-global ",." 'helm-mini)
+  (key-chord-define-global "zx" 'helm-mini)
+  (key-chord-define-global "xs" 'save-buffer)
+  (key-chord-define-global "JK" 'previous-buffer)
+  (key-chord-define-global "KL" 'next-buffer)
+  (key-chord-define-global "ji" 'indent-according-to-mode)
+  (key-chord-define-global "jj" 'avy-goto-char-2)
+  (key-chord-define-global "jk" 'avy-goto-word-1)
+  (key-chord-define-global "jl" 'avy-goto-line)
   )
 
 
