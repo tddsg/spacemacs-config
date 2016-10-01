@@ -102,13 +102,13 @@ Each entry is either:
 ;;; INIT PACKAGES
 
 (defun tddsg/init-comment-dwim-2 ()
-  (require 'comment-dwim-2))
+  (use-package comment-dwim-2))
 
 (defun tddsg/init-noflet ()
-  (require 'noflet))
+  (use-package noflet))
 
 (defun tddsg/init-transpose-frame ()
-  (require 'transpose-frame))
+  (use-package transpose-frame))
 
 (defun tddsg/init-ace-popup-menu ()
   (ace-popup-menu-mode 1))
@@ -118,14 +118,14 @@ Each entry is either:
 
 (defun tddsg/init-merlin-imenu ()
   (with-eval-after-load 'merlin
-    (require 'merlin-imenu)))
+    (use-package merlin-imenu)))
 
 (defun tddsg/init-merlin-eldoc ()
   (with-eval-after-load 'merlin
-    (require 'merlin-eldoc)))
+    (use-package merlin-eldoc)))
 
 (defun tddsg/init-smartparens-ocaml ()
-  (require 'smartparens-ocaml))
+  (use-package smartparens-ocaml))
 
 ;; Don't know why can't use post-init- for cc-mode. Must use init-
 (defun tddsg/init-cc-mode ()
@@ -288,11 +288,11 @@ Each entry is either:
 
 ;; buffer-clone
 (defun tddsg/post-init-buffer-move ()
-  (require 'buffer-move))
+  (use-package buffer-move))
 
 ;; buffer-clone
 (defun tddsg/init-buffer-clone ()
-  (require 'buffer-clone))
+  (use-package buffer-clone))
 
 (defun tddsg/init-key-chord ()
   (require 'key-chord)
@@ -332,28 +332,25 @@ Each entry is either:
         "/home/trungtq/Programs/LanguageTool-3.4/languagetool-commandline.jar"))
 
 (defun tddsg/init-imenu-anywhere ()
-  (require 'imenu-anywhere))
+  (use-package imenu-anywhere))
 
 (defun tddsg/init-vline ()
-  (require 'vline))
+  (use-package vline))
 
 (defun tddsg/init-column-marker ()
-  (require 'column-marker))
+  (use-package column-marker))
 
 (defun tddsg/init-crux ()
-  (require 'crux))
-
-(defun tddsg/init-dired+ ()
-  (require 'dired+))
+  (use-package crux))
 
 (defun tddsg/init-elmacro ()
-  (require 'elmacro))
+  (use-package elmacro))
+
+(defun tddsg/init-dired+ ()
+  (use-package dired+))
 
 (defun tddsg/init-helm-dired-history ()
-  (require 'savehist)
-  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
-  (savehist-mode 1)
-  (require 'helm-dired-history))
+  (use-package helm-dired-history))
 
 (defun tddsg/init-pdf-tools ()
   (pdf-tools-install)

@@ -78,6 +78,10 @@
         (find-file filename)))
   (vc-find-file-hook))
 
+(defun tddsg/dired-home ()
+  (interactive)
+  (dired "~/"))
+
 (defun tddsg/mark-line ()
   "Select current line"
   (interactive)
@@ -353,6 +357,7 @@ If the new path's directories does not exist, create them."
 
   ;; helm
   (setq helm-ag-insert-at-point 'symbol)
+  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
 
   ;; diminish
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
@@ -569,6 +574,9 @@ If the new path's directories does not exist, create them."
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
 
+  ;; dired mode
+  (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
+
   ;; evil mode
   (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
     'evil-next-visual-line)
@@ -656,11 +664,14 @@ If the new path's directories does not exist, create them."
    '(;; cursors & line
      (cursor ((t (:background "lime green"))))
      ;; dired
-     (diredp-file-suffix ((t (:foreground "sienna"))))
-     (diredp-file-name ((t nil)))
-     (diredp-compressed-file-name ((t (:foreground "royal blue"))))
-     (diredp-compressed-file-suffix ((t (:foreground "royal blue"))))
-     (diredp-ignored-file-name ((t (:foreground "powder blue"))))
+     (diredp-compressed-file-name ((t (:foreground "burlywood"))))
+     (diredp-compressed-file-suffix ((t (:foreground "yellow green"))))
+     (diredp-dir-name ((t (:foreground "medium sea green" :weight bold))))
+     (diredp-file-name ((t (:foreground "burlywood"))))
+     (diredp-file-suffix ((t (:foreground "powder blue"))))
+     (diredp-ignored-file-name ((t nil)))
+     (diredp-link-priv ((t (:foreground "dodger blue"))))
+     (diredp-symlink ((t (:foreground "dodger blue"))))
      ;; hilock
      '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
      '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
