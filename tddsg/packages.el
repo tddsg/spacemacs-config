@@ -287,7 +287,7 @@ Each entry is either:
   (windmove-default-keybindings))
 
 ;; buffer-clone
-(defun tddsg/post-init-buffer-move ()
+(defun tddsg/init-buffer-move ()
   (use-package buffer-move))
 
 ;; buffer-clone
