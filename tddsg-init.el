@@ -50,30 +50,30 @@
   "Save current buffer into file FILENAME and open it in a new buffer."
   (interactive
    (list (if buffer-file-name
-	     (read-file-name "Save as and open file: "
-			     nil nil nil nil)
-	   (read-file-name "Save as and open file: " default-directory
-			   (expand-file-name
-			    (file-name-nondirectory (buffer-name))
-			    default-directory)
-			   nil nil))
-	 (not current-prefix-arg)))
+             (read-file-name "Save as and open file: "
+                             nil nil nil nil)
+           (read-file-name "Save as and open file: " default-directory
+                           (expand-file-name
+                            (file-name-nondirectory (buffer-name))
+                            default-directory)
+                           nil nil))
+         (not current-prefix-arg)))
   (or (null filename) (string-equal filename "")
       (progn
-	;; If arg is just a directory,
-	;; use the default file name, but in that directory.
-	(if (file-directory-p filename)
-	    (setq filename (concat (file-name-as-directory filename)
-				   (file-name-nondirectory
-				    (or buffer-file-name (buffer-name))))))
-	(and confirm
-	     (file-exists-p filename)
-	     ;; NS does its own confirm dialog.
-	     (not (and (eq (framep-on-display) 'ns)
-		       (listp last-nonmenu-event)
-		       use-dialog-box))
-	     (or (y-or-n-p (format "File `%s' exists; overwrite? " filename))
-		 (error "Canceled")))
+        ;; If arg is just a directory,
+        ;; use the default file name, but in that directory.
+        (if (file-directory-p filename)
+            (setq filename (concat (file-name-as-directory filename)
+                                   (file-name-nondirectory
+                                    (or buffer-file-name (buffer-name))))))
+        (and confirm
+             (file-exists-p filename)
+             ;; NS does its own confirm dialog.
+             (not (and (eq (framep-on-display) 'ns)
+                       (listp last-nonmenu-event)
+                       use-dialog-box))
+             (or (y-or-n-p (format "File `%s' exists; overwrite? " filename))
+                 (error "Canceled")))
         (write-region (point-min) (point-max) filename )
         (find-file filename)))
   (vc-find-file-hook))
@@ -602,13 +602,17 @@ If the new path's directories does not exist, create them."
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
 
-   ;; reassign key-chords
+  ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
   (key-chord-define-global "zx" 'helm-mini)
   (key-chord-define-global "xs" 'save-buffer)
-  (key-chord-define-global "JK" 'previous-buffer)
-  (key-chord-define-global "KL" 'next-buffer)
-  (key-chord-define-global "ji" 'indent-according-to-mode)
+  (key-chord-define-global "NK" 'previous-buffer)
+  (key-chord-define-global "MK" 'next-buffer)
+  (key-chord-define-global "JK" 'windmove-left)
+  (key-chord-define-global "LK" 'windmove-right)
+  (key-chord-define-global "JI" 'windmove-up)
+  (key-chord-define-global "LI" 'windmove-down)
+  (key-chord-define-global "ji" 'indent-region)
   (key-chord-define-global "jj" 'avy-goto-char-2)
   (key-chord-define-global "jk" 'avy-goto-word-1)
   (key-chord-define-global "jl" 'avy-goto-line)
