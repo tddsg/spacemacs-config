@@ -151,7 +151,7 @@ Each entry is either:
      ("\\<\\(struct\\|mutable\\|begin\\|end\\)\\>" . font-lock-keyword-face)
      ("\\<\\(sig\\|val\\|functor\\|raise\\)\\>" . font-lock-keyword-face)
      ("\\<\\(class\\|object\\|method\\|inherit\\)\\>" . font-lock-keyword-face)
-     ("\\<\\(external\\)\\>" . font-lock-keyword-face)
+     ("\\<\\(external\\|virtual\\)\\>" . font-lock-keyword-face)
      ("\\<[A-Z][A-Za-z0-9_']*\\>" . font-lock-constant-face)))
   (defun disable-ocp-indent ()
     (interactive)

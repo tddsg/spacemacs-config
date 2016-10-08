@@ -117,7 +117,7 @@
   (interactive)
   (if (region-active-p) (forward-paragraph 1)
     (progn
-      (backward-paragraph)
+      (backward-paragraph 1)
       (if (looking-at "[[:space:]]*$") (next-line 1))
       (set-mark-command nil)
       (forward-paragraph 1))))
@@ -281,6 +281,9 @@ If the new path's directories does not exist, create them."
           (:eval (if (buffer-file-name)
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
 
+  ;; windows setting
+  (setq window-combination-resize nil)   ;; stop Emacs from automatically resize windows
+
   ;; scrolling
   (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
   (setq redisplay-dont-pause t
@@ -405,6 +408,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-<right>") 'right-word)
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "C-`") 'goto-last-change)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-;") 'iedit-mode)
@@ -459,8 +463,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-2") 'split-window-below)
   (global-set-key (kbd "s-3") 'split-window-right)
   (global-set-key (kbd "s-4") 'delete-window)
-  (global-set-key (kbd "s-`") 'goto-last-change)
   (global-set-key (kbd "s-s") 'save-some-buffers)
+  (global-set-key (kbd "s-c") 'tddsg/compile)
   (global-set-key (kbd "s-x") 'helm-mini)
   (global-set-key (kbd "s-a") 'mark-whole-buffer)
   (global-set-key (kbd "s-g") 'magit-status)
@@ -535,34 +539,30 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
   (global-set-key (kbd "S-<down>") 'windmove-down)
-  (global-set-key (kbd "s-b") 'windmove-left)
-  (global-set-key (kbd "s-f") 'windmove-right)
-  (global-set-key (kbd "s-p") 'windmove-up)
-  (global-set-key (kbd "s-n") 'windmove-down)
-
-  ;; buffer-clone
-  (global-set-key (kbd "C-S-<left>") 'buf-clone-left)
-  (global-set-key (kbd "C-S-<right>") 'buf-clone-right)
-  (global-set-key (kbd "C-S-<up>") 'buf-clone-up)
-  (global-set-key (kbd "C-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "C-s-b") 'buf-clone-left)
-  (global-set-key (kbd "C-s-f") 'buf-clone-right)
-  (global-set-key (kbd "C-s-p") 'buf-clone-up)
-  (global-set-key (kbd "C-M-s-n") 'buf-clone-down)
-  (global-set-key (kbd "M-m b c h") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c l") 'buf-clone-right)
-  (global-set-key (kbd "M-m b c k") 'buf-clone-up)
-  (global-set-key (kbd "M-m b c j") 'buf-clone-down)
+  (global-set-key (kbd "s-7") 'windmove-left)
+  (global-set-key (kbd "s-8") 'windmove-down)
+  (global-set-key (kbd "s-9") 'windmove-up)
+  (global-set-key (kbd "s-0") 'windmove-right)
 
   ;; buffer-move
-  (global-set-key (kbd "C-M-S-<left>") 'buf-move-left)
-  (global-set-key (kbd "C-M-S-<right>") 'buf-move-right)
-  (global-set-key (kbd "C-M-S-<up>") 'buf-move-up)
-  (global-set-key (kbd "C-M-S-<down>") 'buf-move-down)
-  (global-set-key (kbd "C-M-s-b") 'buf-move-left)
-  (global-set-key (kbd "C-M-s-f") 'buf-move-right)
-  (global-set-key (kbd "C-M-s-p") 'buf-move-up)
-  (global-set-key (kbd "C-M-s-n") 'buf-move-down)
+  (global-set-key (kbd "C-S-<left>") 'buf-move-left)
+  (global-set-key (kbd "C-S-<right>") 'buf-move-right)
+  (global-set-key (kbd "C-S-<up>") 'buf-move-up)
+  (global-set-key (kbd "C-S-<down>") 'buf-move-down)
+  (global-set-key (kbd "C-s-7") 'buf-move-left)
+  (global-set-key (kbd "C-s-8") 'buf-move-down)
+  (global-set-key (kbd "C-s-9") 'buf-move-up)
+  (global-set-key (kbd "C-s-0") 'buf-move-right)
+
+  ;; buffer-clone
+  (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
+  (global-set-key (kbd "C-M-S-<right>") 'buf-clone-right)
+  (global-set-key (kbd "C-M-S-<up>") 'buf-clone-up)
+  (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
+  (global-set-key (kbd "C-M-s-7") 'buf-clone-left)
+  (global-set-key (kbd "C-M-s-8") 'buf-clone-down)
+  (global-set-key (kbd "C-M-s-9") 'buf-clone-up)
+  (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
