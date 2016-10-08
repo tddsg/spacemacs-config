@@ -303,7 +303,7 @@ Each entry is either:
 (defun tddsg/post-init-whitespace ()
   (add-hook 'before-save-hook #'whitespace-cleanup)
   (setq whitespace-line-column 80)
-  (setq whitespace-style '(face tabs trailing)))
+  (setq whitespace-style '(face tabs)))
 
 
 (defun tddsg/init-anzu ()
