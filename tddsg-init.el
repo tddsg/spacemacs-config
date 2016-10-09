@@ -295,6 +295,11 @@ If the new path's directories does not exist, create them."
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
 
+  ;; save
+  ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+
+
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra")
@@ -603,13 +608,12 @@ If the new path's directories does not exist, create them."
   ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
   (key-chord-define-global "zx" 'helm-mini)
-  (key-chord-define-global "xs" 'save-buffer)
   (key-chord-define-global "NK" 'previous-buffer)
   (key-chord-define-global "MK" 'next-buffer)
   (key-chord-define-global "JK" 'windmove-left)
   (key-chord-define-global "LK" 'windmove-right)
-  (key-chord-define-global "JI" 'windmove-up)
-  (key-chord-define-global "LI" 'windmove-down)
+  (key-chord-define-global "<>" 'windmove-up)
+  (key-chord-define-global "M<" 'windmove-down)
   (key-chord-define-global "ji" 'indent-region)
   (key-chord-define-global "jj" 'avy-goto-char-2)
   (key-chord-define-global "jk" 'avy-goto-word-1)
