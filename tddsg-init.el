@@ -891,11 +891,14 @@ BUFFER."
         (destructuring-bind (master-win popup-win win-map)
             (let ((size (if (popwin:position-horizontal-p position) width height))
                   (adjust popwin:adjust-other-windows))
-              ;; (popwin:create-popup-window size position adjust)       ; <-- original line
-              (let* ((orig-window (selected-window))                     ; <-- modifications
-                     (new-window (split-window orig-window nil 'below)))  ; <--
-                (set-window-buffer new-window buffer)                    ; <--
-                (list orig-window new-window nil))                       ; <--
+              ;; <-- original line
+              ;; (popwin:create-popup-window size position adjust)
+              ;; <-- new code
+              (let* ((popup-win-height (- popwin:popup-window-height))
+                     (orig-window (selected-window))
+                     (new-window (split-window orig-window popup-win-height 'below)))
+                (set-window-buffer new-window buffer)
+                (list orig-window new-window nil))
               )
           (setq popwin:popup-window popup-win
                 popwin:master-window master-win
