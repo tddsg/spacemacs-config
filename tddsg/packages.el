@@ -221,8 +221,7 @@ Each entry is either:
     (set-fill-column 75)
     (show-smartparens-mode)
     (smartparens-mode +1)
-    (latex-extra-mode)
-    (local-set-key (kbd "<f9>") (kbd "C-c C-c C-j")))
+    (latex-extra-mode))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
@@ -419,4 +418,3 @@ Each entry is either:
 
 
 ;;; packages.el ends here
-

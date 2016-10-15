@@ -16,6 +16,7 @@
 (require 'spaceline)
 (require 'pdf-view)
 (require 'pdf-tools)
+(require 'face-remap)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -156,6 +157,36 @@ or in a custom directory when prefix-argument is given (C-u)"
             (= ?< (char-syntax current-char))
             (= ?/ (char-syntax current-char)))
         (just-one-space))))
+
+(defun tddsg/just-one-space ()
+  "Just one space in a region or in the current location."
+  (interactive)
+  (if (region-active-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region (region-beginning) (region-end))
+          (goto-char (point-min))
+          (while (re-search-forward "\\s-+" nil t)
+            (replace-match " "))))
+    (just-one-space)))
+
+
+(defun tddsg/kill-ring-save (arg)
+  "Save the current region (or line) to the `kill-ring'
+after stripping extra whitespace and new lines"
+  (interactive "P")
+  (if (null arg)
+      (call-interactively 'kill-ring-save)
+    (if (region-active-p)
+        (let* ((begin (region-beginning))
+               (end (region-end))
+               (text (buffer-substring-no-properties begin end))
+               (text (replace-regexp-in-string "\n" " " text))
+               (text (replace-regexp-in-string "\\s-+" " " text))
+               (text (string-trim text)))
+          (kill-new text)
+          (deactivate-mark))
+      (call-interactively 'kill-ring-save))))
 
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
@@ -455,6 +486,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
+  (global-set-key (kbd "M-SPC") 'tddsg/just-one-space)
+  (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)
   (global-set-key (kbd "M-/") 'hippie-expand)
@@ -577,6 +610,9 @@ If the new path's directories does not exist, create them."
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
 
+  ;; Tuareg mode
+  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
+
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
@@ -609,12 +645,8 @@ If the new path's directories does not exist, create them."
   ;; reassign key-chords
   (key-chord-define-global ",." 'helm-mini)
   (key-chord-define-global "zx" 'helm-mini)
-  (key-chord-define-global "NK" 'previous-buffer)
-  (key-chord-define-global "MK" 'next-buffer)
-  (key-chord-define-global "JK" 'windmove-left)
-  (key-chord-define-global "LK" 'windmove-right)
-  (key-chord-define-global "<>" 'windmove-up)
-  (key-chord-define-global "M<" 'windmove-down)
+  (key-chord-define-global "JK" 'previous-buffer)
+  (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-region)
   (key-chord-define-global "jj" 'avy-goto-char-2)
   (key-chord-define-global "jk" 'avy-goto-word-1)
