@@ -188,6 +188,21 @@ after stripping extra whitespace and new lines"
           (deactivate-mark))
       (call-interactively 'kill-ring-save))))
 
+(defun tddsg/pdf-view-kill-ring-save (arg)
+  "Save the current region (or line) to the `kill-ring'
+after stripping extra whitespace and new lines"
+  (interactive "P")
+  (if (null arg)
+      (call-interactively 'pdf-view-kill-ring-save)
+    (pdf-view-assert-active-region)
+    (let* ((text (pdf-view-active-region-text))
+           (text (mapconcat 'identity text " "))
+           (text (replace-regexp-in-string "\n" " " text))
+           (text (replace-regexp-in-string "\\s-+" " " text))
+           (text (string-trim text)))
+      (pdf-view-deactivate-region)
+      (kill-new text))))
+
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
   (interactive)
@@ -446,6 +461,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
   (global-set-key (kbd "C-`") 'goto-last-change)
+  (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-;") 'iedit-mode)
@@ -616,6 +632,7 @@ If the new path's directories does not exist, create them."
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+  (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
