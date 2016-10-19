@@ -127,9 +127,20 @@
   "Search by Helm-Ag in the current directory, \
 or in a custom directory when prefix-argument is given (C-u)"
   (interactive "P")
-  (if (null arg)
-      (helm-do-ag (expand-file-name default-directory))
-    (call-interactively 'helm-do-ag)))
+  (let ((text (if (region-active-p)
+                  (let* ((begin (region-beginning))
+                         (end (region-end))
+                         (text (buffer-substring-no-properties begin end))
+                         (text (string-trim text))
+                         (text (replace-regexp-in-string " " "\\\\ " text)))
+                    text)
+                (thing-at-point 'word))))
+    (progn
+      (if (null arg)
+          (progn
+            (message "TEXT: %s" text)
+            (helm-do-ag (expand-file-name default-directory) text))
+        (call-interactively 'helm-do-ag)))))
 
 (defun tddsg/join-with-beneath-line ()
   "Join the current line to the line beneath it."
@@ -909,6 +920,7 @@ Set `spaceline-highlight-face-func' to
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
 
+;;; popwin mode
 (require 'popwin)
 (defun* popwin:popup-buffer (buffer
                              &key
@@ -975,3 +987,11 @@ BUFFER."
     (select-window popwin:popup-window))
   (run-hooks 'popwin:after-popup-hook)
   popwin:popup-window)
+
+;;; customize helm-ag
+(defsubst helm-ag--marked-input ()
+  (when (use-region-p)
+    (let* ((text (buffer-substring-no-properties (region-beginning) (region-end)))
+           (text (replace-regexp-in-string " " "\\\\ " text)))
+      (deactivate-mark)
+      text)))
