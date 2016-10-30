@@ -119,6 +119,8 @@
   (if (region-active-p) (forward-paragraph 1)
     (progn
       (backward-paragraph 1)
+      (beginning-of-line)
+      (beginning-of-line)
       (if (looking-at "[[:space:]]*$") (next-line 1))
       (set-mark-command nil)
       (forward-paragraph 1))))

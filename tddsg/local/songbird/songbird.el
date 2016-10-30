@@ -33,7 +33,7 @@
         "lemma_infer" "lemma_safe"
         "checkentail" "checkentail_exact" "checkentail_inexact"
         "check_nondet" "checksat" "checkeq"
-        "inferentail" "unify" ))
+        "inferentail" "inferrels" "unify" ))
 (setq songbird-types
       '("float" "int" "bool" "void" "string"))
 (setq songbird-constants
