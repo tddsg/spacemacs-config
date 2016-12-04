@@ -915,7 +915,8 @@ Set `spaceline-highlight-face-func' to
        ("XXX" . "red")
        ("XXXX" . "red")
        ("???" . "red")
-       ("BUG" . "red"))))))
+       ("BUG" . "red")
+       ("OK" . "red"))))))
 
 
 
