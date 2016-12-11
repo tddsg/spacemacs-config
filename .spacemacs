@@ -35,7 +35,6 @@ values."
      spell-checking
      syntax-checking
      version-control
-     eyebrowse
      spacemacs-layouts
      semantic
      pdf-tools
@@ -294,6 +293,7 @@ you should place your code here."
      ("#A75B00" . 70)
      ("#F309DF" . 85)
      ("#20240E" . 100))))
+ '(hl-sexp-background-color "#efebe9")
  '(hl-todo-keyword-faces
    (quote
     (("HOLD" . "red")
@@ -353,6 +353,9 @@ you should place your code here."
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  '(compilation-error ((t (:foreground "red" :weight bold))))
  '(compilation-warning ((t (:inherit warning :weight bold))))
+ '(diredp-compressed-file-name ((t (:foreground "royal blue"))))
+ '(diredp-compressed-file-suffix ((t (:foreground "royal blue"))))
+ '(diredp-ignored-file-name ((t (:foreground "powder blue"))))
  '(sp-pair-overlay-face ((t nil)))
  '(sp-wrap-overlay-face ((t nil)))
  '(sp-wrap-tag-overlay-face ((t nil))))

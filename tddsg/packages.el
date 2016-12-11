@@ -191,6 +191,9 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
+(defun tddsg/init-latex-extra ()
+  (use-package latex-extra))
+
 (defun tddsg/post-init-auctex ()
   (require 'tex)
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
@@ -351,7 +354,7 @@ Each entry is either:
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
 
-(defun tddsg/init-pdf-tools ()
+(defun tddsg/post-init-pdf-tools ()
   (pdf-tools-install)
   (setq pdf-view-resize-factor 1.05)
   (custom-set-variables
