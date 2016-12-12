@@ -281,7 +281,9 @@ you should place your code here."
  '(ansi-color-names-vector
    ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
  '(compilation-message-face (quote default))
+ '(electric-pair-open-newline-between-pairs nil)
  '(evil-want-Y-yank-to-eol t)
+ '(helm-ag-insert-at-point (quote symbol))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -309,7 +311,8 @@ you should place your code here."
      ("XXX" . "red")
      ("XXXX" . "red")
      ("???" . "red")
-     ("BUG" . "red"))))
+     ("BUG" . "red")
+     ("OK" . "red"))))
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
