@@ -27,7 +27,7 @@
       '("if" "else" "while" "return" "break" "catch" "try" "with" "static"
         "global" "or" "and" "exists" "forall" "ref" "class" "extends"
         "this" "throws" "raise"
-        "data" "axiom" "relation"
+        "data" "axiom" "relation" "expect"
         "pred" "pred_prim" "pred_prop" "inv"
         "lemma" "lemma_prop" "lemma_split" "lemma_test" "lemma_unsafe"
         "lemma_infer" "lemma_safe"
@@ -37,7 +37,7 @@
 (setq songbird-types
       '("float" "int" "bool" "void" "string"))
 (setq songbird-constants
-      '("null" "nil" "true" "false" "emp"))
+      '("null" "nil" "true" "false" "unknown" "emp"))
 ;;; TODO: somehow, defining function syntax doesn't work here.
 ;;; Currently, it is directly defined inside the syntax table.
 ;; (setq songbird-functions
