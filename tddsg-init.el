@@ -605,6 +605,19 @@ If the new path's directories does not exist, create them."
   (define-key god-local-mode-map (kbd "z") 'repeat)
   (define-key god-local-mode-map (kbd "i") 'god-local-mode)
 
+  ;; magit
+  (define-key magit-mode-map (kbd "M-1") nil)
+  (define-key magit-mode-map (kbd "M-2") nil)
+  (define-key magit-mode-map (kbd "M-3") nil)
+  (define-key magit-mode-map (kbd "M-4") nil)
+  (define-key magit-mode-map (kbd "M-5") nil)
+  (define-key magit-mode-map (kbd "M-6") nil)
+  (define-key magit-mode-map (kbd "M-7") nil)
+  (define-key magit-mode-map (kbd "M-8") nil)
+  (define-key magit-mode-map (kbd "M-9") nil)
+  (define-key magit-mode-map (kbd "M-0") nil)
+
+
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
   (global-set-key (kbd "S-<right>") 'windmove-right)
