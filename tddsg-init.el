@@ -22,6 +22,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITIES FUNCTIONS
 
+(defun tddsg/blank-line-p ()
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[ \t]*$")))
+
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
@@ -183,6 +188,19 @@ or in a custom directory when prefix-argument is given (C-u)"
             (replace-match " "))))
     (just-one-space)))
 
+(defun tddsg/just-one-space-or-line ()
+  "Just one space or one line in a region or in the current location."
+  (interactive)
+  (if (region-active-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region (region-beginning) (region-end))
+          (goto-char (point-min))
+          (while (re-search-forward "\\s-+" nil t)
+            (replace-match " "))))
+    (if (tddsg/blank-line-p)
+        (delete-blank-lines)
+      (just-one-space))))
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -515,7 +533,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-SPC") 'tddsg/just-one-space)
+  (global-set-key (kbd "M-SPC") 'tddsg/just-one-space-or-line)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)
