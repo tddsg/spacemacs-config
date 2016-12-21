@@ -27,6 +27,9 @@
     (beginning-of-line)
     (looking-at "[ \t]*$")))
 
+(defun tddsg/blank-char-p (ch)
+  (or (equal (string ch) " ") (equal (string ch) "\\t")))
+
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
@@ -188,7 +191,25 @@ or in a custom directory when prefix-argument is given (C-u)"
             (replace-match " "))))
     (just-one-space)))
 
-(defun tddsg/just-one-space-or-line ()
+(defun tddsg/delete-spaces ()
+  "Delete space if there is only 1 space,
+replace all spaces by 1 if there is more than 1"
+  (interactive)
+  (if (region-active-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region (region-beginning) (region-end))
+          (goto-char (point-min))
+          (while (re-search-forward "\\s-+" nil t)
+            (replace-match " "))))
+    (if (tddsg/blank-char-p (preceding-char)) (forward-char -1))
+    (if (tddsg/blank-char-p (following-char))
+        (if (or (tddsg/blank-char-p (preceding-char))
+                (tddsg/blank-char-p (char-after (+ (point) 1))))
+            (just-one-space)
+          (delete-char 1)))))
+
+(defun tddsg/delete-spaces-or-blank-lines ()
   "Just one space or one line in a region or in the current location."
   (interactive)
   (if (region-active-p)
@@ -200,7 +221,7 @@ or in a custom directory when prefix-argument is given (C-u)"
             (replace-match " "))))
     (if (tddsg/blank-line-p)
         (delete-blank-lines)
-      (just-one-space))))
+      (tddsg/delete-spaces))))
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -533,7 +554,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-SPC") 'tddsg/just-one-space-or-line)
+  (global-set-key (kbd "M-SPC") 'tddsg/delete-spaces-or-blank-lines)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)
