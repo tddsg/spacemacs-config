@@ -191,9 +191,10 @@ or in a custom directory when prefix-argument is given (C-u)"
             (replace-match " "))))
     (just-one-space)))
 
-(defun tddsg/delete-spaces ()
-  "Delete space if there is only 1 space,
-replace all spaces by 1 if there is more than 1"
+(defun tddsg/one-space ()
+  "Delete the space if there is only 1 space,
+replace all spaces by 1 if there is more than 1,
+insert a new space if there is none"
   (interactive)
   (if (region-active-p)
       (save-excursion
@@ -207,9 +208,10 @@ replace all spaces by 1 if there is more than 1"
         (if (or (tddsg/blank-char-p (preceding-char))
                 (tddsg/blank-char-p (char-after (+ (point) 1))))
             (just-one-space)
-          (delete-char 1)))))
+          (delete-char 1))
+      (just-one-space))))
 
-(defun tddsg/delete-spaces-or-blank-lines ()
+(defun tddsg/one-space-or-blank-line ()
   "Just one space or one line in a region or in the current location."
   (interactive)
   (if (region-active-p)
@@ -221,7 +223,7 @@ replace all spaces by 1 if there is more than 1"
             (replace-match " "))))
     (if (tddsg/blank-line-p)
         (delete-blank-lines)
-      (tddsg/delete-spaces))))
+      (tddsg/one-space))))
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -554,7 +556,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-SPC") 'tddsg/delete-spaces-or-blank-lines)
+  (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-s p") 'check-parens)

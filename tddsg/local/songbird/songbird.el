@@ -27,7 +27,7 @@
       '("if" "else" "while" "return" "break" "catch" "try" "with" "static"
         "global" "or" "and" "exists" "forall" "ref" "class" "extends"
         "this" "throws" "raise"
-        "data" "axiom" "relation" "expect"
+        "data" "axiom" "relation" "expect" "simplify"
         "pred" "pred_prim" "pred_prop" "inv"
         "lemma" "lemma_prop" "lemma_split" "lemma_test" "lemma_unsafe"
         "lemma_infer" "lemma_safe"
