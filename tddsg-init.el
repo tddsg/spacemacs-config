@@ -400,6 +400,8 @@ If the new path's directories does not exist, create them."
   ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
+  ;; zoom
+  (require 'zoom-frm)
 
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
@@ -512,8 +514,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
   (global-set-key (kbd "C-<right>") 'right-word)
-  (global-set-key (kbd "C-+") 'text-scale-increase)
-  (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "C-+") 'zoom-in)
+  (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-`") 'goto-last-change)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-/") 'undo)
