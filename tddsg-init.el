@@ -583,7 +583,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-c") 'tddsg/compile)
   (global-set-key (kbd "s-b") 'helm-mini)
   (global-set-key (kbd "s-j") 'avy-goto-word-1)
-  (global-set-key (kbd "s-J") 'avy-goto-word-0)
+  (global-set-key (kbd "s-h") 'avy-goto-word-0)
   (global-set-key (kbd "s-p") 'previous-buffer)
   (global-set-key (kbd "s-n") 'next-buffer)
   (global-set-key (kbd "s-i") 'indent-region)
