@@ -582,6 +582,11 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "s-s") 'save-some-buffers)
   (global-set-key (kbd "s-c") 'tddsg/compile)
   (global-set-key (kbd "s-b") 'helm-mini)
+  (global-set-key (kbd "s-j") 'avy-goto-word-1)
+  (global-set-key (kbd "s-J") 'avy-goto-word-0)
+  (global-set-key (kbd "s-p") 'previous-buffer)
+  (global-set-key (kbd "s-n") 'next-buffer)
+  (global-set-key (kbd "s-i") 'indent-region)
   (global-set-key (kbd "s-a") 'mark-whole-buffer)
   (global-set-key (kbd "s-g") 'magit-status)
   (global-set-key (kbd "s-z") (kbd "C-g"))
@@ -729,14 +734,7 @@ If the new path's directories does not exist, create them."
   (define-key company-active-map (kbd "M-.") 'company-show-location)
 
   ;; reassign key-chords
-  (key-chord-define-global ",." 'helm-mini)
-  (key-chord-define-global "zx" 'helm-mini)
-  (key-chord-define-global "JK" 'previous-buffer)
-  (key-chord-define-global "KL" 'next-buffer)
   (key-chord-define-global "ji" 'indent-region)
-  (key-chord-define-global "jj" 'avy-goto-char-2)
-  (key-chord-define-global "jk" 'avy-goto-word-1)
-  (key-chord-define-global "jl" 'avy-goto-line)
   )
 
 
