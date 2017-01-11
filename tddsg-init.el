@@ -911,7 +911,9 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
   (apply 'tddsg--create-spaceline-theme
          '((persp-name
             workspace-number
-            window-number)
+            window-number
+            projectile-root
+            )
            :fallback evil-state
            :separator "|"
            :face highlight-face)
@@ -923,9 +925,12 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            remote-host)
          additional-segments))
 
-(dolist (s '((tddsg-face-unmodified "SteelBlue3" "Unmodified buffer face.")
-             (tddsg-face-modified "DarkGoldenrod2" "Modified buffer face.")
-             (tddsg-face-read-only "SteelBlue3" "Read-only buffer face.")))
+(dolist (s '((tddsg-face-unmodified "SteelBlue3"
+                                    "Unmodified buffer face.")
+             (tddsg-face-modified "DarkGoldenrod2"
+                                  "Modified buffer face.")
+             (tddsg-face-read-only "SteelBlue3"
+                                   "Read-only buffer face.")))
   (eval `(defface, (nth 0 s)
            `((t (:background ,(nth 1 s)
                              :foreground "#3E3D31"
