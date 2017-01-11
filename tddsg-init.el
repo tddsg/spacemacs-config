@@ -862,13 +862,15 @@ If the new path's directories does not exist, create them."
                        auto-compile
                        ,second-left
                        major-mode
+                       (projectile-root :when active)
+                       (version-control :when active)
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
+                       ((buffer-encoding-abbrev))
                        (minor-modes :when active)
                        (mu4e-alert-segment :when active)
                        (erc-track :when active)
-                       (version-control :when active)
                        (org-pomodoro :when active)
                        (org-clock :when active)
                        nyan-cat)
@@ -877,7 +879,6 @@ If the new path's directories does not exist, create them."
                        (battery :when active)
                        selection-info
                        input-method
-                       ((buffer-encoding-abbrev))
                        (global :when active)
                        ,@additional-segments
                        buffer-position
@@ -911,9 +912,7 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
   (apply 'tddsg--create-spaceline-theme
          '((persp-name
             workspace-number
-            window-number
-            projectile-root
-            )
+            window-number)
            :fallback evil-state
            :separator "|"
            :face highlight-face)
