@@ -343,6 +343,16 @@ If the new path's directories does not exist, create them."
       (tddsg/disable-company-auto-suggest)
     (tddsg/enable-company-auto-suggest)))
 
+(defun tddsg-hook-change-major-mode ()
+  ;; change some weird keys
+  (keyboard-translate ?\C-\[ ?\H-\[)
+  (keyboard-translate ?\C-i ?\H-i)
+  (keyboard-translate ?\C-m ?\H-m)
+  (global-set-key [?\H-\[] 'previous-buffer)
+  (global-set-key (kbd "C-]") 'next-buffer)
+  (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-i] 'indent-region))
+
 (defun tddsg-hook-prog-text-mode ()
   (linum-mode 1)
   (column-marker-3 80)
@@ -365,7 +375,6 @@ If the new path's directories does not exist, create them."
   (add-hook 'window-configuration-change-hook
             'tddsg-fix-comint-window-size nil t)
   (rainbow-delimiters-mode-enable))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -497,12 +506,14 @@ If the new path's directories does not exist, create them."
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
-  (add-hook 'text-mode-hook 'tddsg-hook-text-mode))
+  (add-hook 'text-mode-hook 'tddsg-hook-text-mode)
+  (add-hook 'change-major-mode-hook 'tddsg-hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
 
 (defun tddsg/init-keys ()
+  ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
@@ -517,6 +528,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-+") 'zoom-in)
   (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-`") 'goto-last-change)
+  (global-set-key (kbd "C-j") 'avy-goto-word-1)
+  (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
@@ -639,7 +652,6 @@ If the new path's directories does not exist, create them."
 
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
-  (define-key shell-mode-map (kbd "C-j") 'newline)
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
   (define-key undo-tree-map (kbd "C-_") nil)
 
