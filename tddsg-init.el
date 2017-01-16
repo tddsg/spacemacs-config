@@ -579,6 +579,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M--") 'delete-window)
+  (global-set-key (kbd "M-+") 'delete-other-windows)
+  (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-_") 'split-window-below)
   (global-set-key (kbd "M-|") 'split-window-right)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
