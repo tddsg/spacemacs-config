@@ -755,6 +755,8 @@ If the new path's directories does not exist, create them."
 
   ;; smartparens
   (define-key smartparens-mode-map (kbd "M-s") nil)
+  (define-key smartparens-mode-map (kbd "C-{") nil)
+  (define-key smartparens-mode-map (kbd "C-}") nil)
 
   ;; evil mode
   (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
