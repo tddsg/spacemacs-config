@@ -516,13 +516,9 @@ If the new path's directories does not exist, create them."
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
-  (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
+
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
-  (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
-  (global-set-key (kbd "M-<delete>") 'kill-word)
-  (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
-  (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-<left>") 'left-word)
   (global-set-key (kbd "C-<right>") 'right-word)
   (global-set-key (kbd "C-+") 'zoom-in)
@@ -531,14 +527,21 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
+  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-{") 'winner-undo)
+  (global-set-key (kbd "C-}") 'winner-redo)
   (global-set-key (kbd "C-/") 'undo)
-  (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-\\") 'goto-last-change)
-  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
+
+  (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
+  (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
+  (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
+  (global-set-key (kbd "C-M-(") 'sp-backward-barf-sexp)
+  (global-set-key (kbd "C-M-)") 'sp-forward-barf-sexp)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
@@ -560,28 +563,43 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c i") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
-  (global-set-key (kbd "C-c m") 'tddsg/shell-other-window)
-  (global-set-key (kbd "C-c M") 'shell)
+  (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
+  (global-set-key (kbd "C-c M") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c m") 'shell)
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
 
+  (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
+  (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+  (global-set-key (kbd "M-<delete>") 'kill-word)
+  (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
+  (global-set-key (kbd "M-s") 'save-buffer)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "M-/") 'hippie-expand)
+  (global-set-key (kbd "M--") 'delete-window)
+  (global-set-key (kbd "M-+") 'delete-other-windows)
+  (global-set-key (kbd "M--") 'delete-window)
+  (global-set-key (kbd "M-_") 'split-window-below)
+  (global-set-key (kbd "M-|") 'split-window-right)
+  (global-set-key (kbd "M-\\") 'sp-splice-sexp)
+  (global-set-key (kbd "M-;") 'comment-dwim-2)
+  (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "M-q") 'goto-last-change)
+  (global-set-key (kbd "M-H") 'tddsg/mark-line)
+  (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
+  (global-set-key (kbd "M-[") 'windmove-left)
+  (global-set-key (kbd "M-]") 'windmove-right)
+  (global-set-key (kbd "M-{") 'windmove-up)
+  (global-set-key (kbd "M-}") 'windmove-down)
+  (global-set-key (kbd "M-:") 'backward-paragraph)
+  (global-set-key (kbd "M-\"") 'forward-paragraph)
+
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
-  (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-s p") 'check-parens)
-  (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "M-?") 'company-complete)
-  (global-set-key (kbd "M-H") 'tddsg/mark-line)
-  (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
-  (global-set-key (kbd "M-[") 'helm-company)
-  (global-set-key (kbd "M-]") 'helm-dabbrev)
 
   (global-set-key (kbd "s-`") 'delete-window)
   (global-set-key (kbd "s-1") 'spacemacs/toggle-maximize-buffer)
@@ -650,10 +668,18 @@ If the new path's directories does not exist, create them."
    (kbd "M-m l l")
    'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
 
+  ;; isearch
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
+
+  ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
+
+  ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
+
+  ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
+  (define-key undo-tree-map (kbd "M-_") nil)
 
   ;; god-mode
   (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
@@ -714,6 +740,7 @@ If the new path's directories does not exist, create them."
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
+  (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
@@ -725,6 +752,11 @@ If the new path's directories does not exist, create them."
 
   ;; dired mode
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
+
+  ;; smartparens
+  (define-key smartparens-mode-map (kbd "M-s") nil)
+  (define-key smartparens-mode-map (kbd "C-{") nil)
+  (define-key smartparens-mode-map (kbd "C-}") nil)
 
   ;; evil mode
   (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
