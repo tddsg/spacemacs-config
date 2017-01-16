@@ -565,7 +565,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
   (global-set-key (kbd "C-c M") 'tddsg/shell-other-window)
-  (global-set-key (kbd "C-c m") 'shell)
+  (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c C-i") 'helm-imenu-anywhere)
