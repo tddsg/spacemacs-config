@@ -344,6 +344,9 @@ you should place your code here."
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
  '(sp-highlight-wrap-overlay nil)
+ '(super-save-triggers
+   (quote
+    ("switch-to-buffer" "other-window" "windmove-up" "windmove-down" "windmove-left" "windmove-right" "select-window-by-number")))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -365,9 +368,7 @@ you should place your code here."
      (320 . "#2896B5")
      (340 . "#2790C3")
      (360 . "#66D9EF"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (unspecified "#272822" "#20240E" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+ '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
