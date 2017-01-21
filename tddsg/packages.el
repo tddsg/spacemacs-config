@@ -246,6 +246,10 @@ Each entry is either:
                    :unless '(sp-latex-point-after-backslash))
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\If" "\\EndIf" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\For" "\\EndFor" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\begin{enumerate}" "\\end{enumerate}" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers

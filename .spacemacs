@@ -266,7 +266,26 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(LaTeX-begin-regexp "begin\\b\\|\\[\\|If\\b\\|For\\b")
  '(LaTeX-command "latex --synctex=1")
+ '(LaTeX-end-regexp "end\\b\\|\\]\\|\\EndIf\\b\\|EndFor\\b")
+ '(LaTeX-indent-environment-list
+   (quote
+    (("verbatim" current-indentation)
+     ("verbatim*" current-indentation)
+     ("tabular")
+     ("tabular*")
+     ("align")
+     ("align*")
+     ("array")
+     ("eqnarray")
+     ("eqnarray*")
+     ("displaymath")
+     ("equation")
+     ("equation*")
+     ("picture")
+     ("tabbing"))))
+ '(LaTeX-paragraph-commands (quote ("\\If" "\\State")))
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
@@ -358,8 +377,6 @@ you should place your code here."
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  '(compilation-error ((t (:foreground "red" :weight bold))))
  '(compilation-warning ((t (:inherit warning :weight bold))))
- '(font-latex-subscript-face ((t nil)))
- '(font-latex-superscript-face ((t nil)))
  '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
  '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
  '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
