@@ -590,7 +590,6 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
   (global-set-key (kbd "M-?") 'company-complete)
-  (global-set-key (kbd "M-q") 'goto-last-change)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
   (global-set-key (kbd "M-[") 'windmove-left)
@@ -740,6 +739,8 @@ If the new path's directories does not exist, create them."
   ;; Latex-mode
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
+  (define-key TeX-mode-map (kbd "C-j") nil)
+  (define-key LaTeX-mode-map (kbd "C-j") nil)
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
