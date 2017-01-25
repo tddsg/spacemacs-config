@@ -128,6 +128,8 @@
     (progn
       (beginning-of-line)
       (backward-paragraph 1)
+      (next-line)
+      (backward-paragraph 1)
       (beginning-of-line)
       (if (looking-at "[[:space:]]*$") (next-line 1))
       (set-mark-command nil)

@@ -223,8 +223,7 @@ Each entry is either:
     (abbrev-mode +1)
     (set-fill-column 75)
     (show-smartparens-mode)
-    (smartparens-mode +1)
-    (latex-extra-mode))
+    (smartparens-mode +1))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append))
 
