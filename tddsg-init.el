@@ -97,25 +97,6 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-;; (defun tddsg/smart-mark-sexp ()
-;;   "Mark sexp using the smartparens package"
-;;   (interactive)
-;;   (if (region-active-p)
-;;       (progn
-;;         (sp-forward-sexp 1)
-;;         (deactivate-mark)
-;;         (set-mark-command nil)
-;;         (sp-beginning-of-sexp)
-;;         )
-;;     (progn
-;;       (deactivate-mark)
-;;       (sp-beginning-of-sexp)
-;;       (set-mark-command nil)
-;;       ;; (activate-mark)
-;;       (sp-end-of-sexp)
-;;       )))
-
-
 (defun tddsg/mark-sexp ()
   "Mark sexp using the smartparens package"
   (interactive)
