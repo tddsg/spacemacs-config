@@ -97,6 +97,25 @@
   (end-of-line)
   (set-mark (line-beginning-position)))
 
+;; (defun tddsg/smart-mark-sexp ()
+;;   "Mark sexp using the smartparens package"
+;;   (interactive)
+;;   (if (region-active-p)
+;;       (progn
+;;         (sp-forward-sexp 1)
+;;         (deactivate-mark)
+;;         (set-mark-command nil)
+;;         (sp-beginning-of-sexp)
+;;         )
+;;     (progn
+;;       (deactivate-mark)
+;;       (sp-beginning-of-sexp)
+;;       (set-mark-command nil)
+;;       ;; (activate-mark)
+;;       (sp-end-of-sexp)
+;;       )))
+
+
 (defun tddsg/mark-sexp ()
   "Mark sexp using the smartparens package"
   (interactive)
@@ -114,12 +133,20 @@
 (defun tddsg/smart-mark-sexp ()
   "Expand region or mark sexp"
   (interactive)
+  (cond ((= (mark) (point))
+         (message "mark = point " ))
+        ((< (mark) (point))
+         (message "mark < point " ))
+        (t (message "mark > point " )))
   (let ((current-char (char-after)))
-    (cond ((= ?w (char-syntax current-char))
-           (call-interactively 'er/expand-region))
-          ((= ?_ (char-syntax current-char))
-           (call-interactively 'er/expand-region))
-          (t (tddsg/mark-sexp)))))
+    (cond ((or (= ?w (char-syntax current-char))
+               (= ?_ (char-syntax current-char)))
+           (progn
+             (if (not (region-active-p)) (backward-word))
+             (call-interactively 'er/expand-region)))
+          (t (progn
+               (if (< (point) (mark)) (set-mark-command nil))
+               (call-interactively  'tddsg/mark-sexp))))))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph"
@@ -127,11 +154,15 @@
   (if (region-active-p) (forward-paragraph 1)
     (progn
       (beginning-of-line)
+      (beginning-of-line)
       (backward-paragraph 1)
       (next-line)
       (backward-paragraph 1)
       (beginning-of-line)
+      (beginning-of-line)
       (if (looking-at "[[:space:]]*$") (next-line 1))
+      (beginning-of-line)
+      (beginning-of-line)
       (set-mark-command nil)
       (forward-paragraph 1))))
 
