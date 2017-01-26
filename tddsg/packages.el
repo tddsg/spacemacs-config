@@ -364,7 +364,8 @@ Each entry is either:
    '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E"))))
   (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1))
   (defun my-pdf-view-hook ()
-    (if (not  (bound-and-true-p pdf-view-midnight-minor-mode))
+    (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
+             (not  (bound-and-true-p pdf-view-midnight-minor-mode)))
         (pdf-view-midnight-minor-mode)))
   (add-hook 'pdf-view-mode-hook 'my-pdf-view-hook))
 
