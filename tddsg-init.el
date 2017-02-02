@@ -402,7 +402,7 @@ If the new path's directories does not exist, create them."
   (global-hl-todo-mode 1)           ;; highlight current line
   (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (setq-default fill-column 80)
+  (setq-default fill-column 75)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
   (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
@@ -476,6 +476,10 @@ If the new path's directories does not exist, create them."
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 15)
+
+  ;; long lines
+  (set-default 'truncate-lines nil)   ;; disable truncate line
+  (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 
   ;; shell
   (setq comint-prompt-read-only nil)
