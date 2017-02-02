@@ -9,8 +9,6 @@
 (require 'company)
 (require 'powerline)
 (require 'buffer-move)
-(require 'god-mode)
-(require 'god-mode-isearch)
 (require 'pdf-sync)
 (require 'spaceline-segments)
 (require 'spaceline)
@@ -512,7 +510,6 @@ If the new path's directories does not exist, create them."
   (eval-after-load "whitespace-mode" '(diminish 'whitespace-mode " R"))
   (eval-after-load "smartparens" '(diminish 'smartparens-mode " ♓"))
   (eval-after-load "super-save" '(diminish 'super-save-mode " ⓢ"))
-  (eval-after-load "god-mode" '(diminish 'god-local-mode " ☼"))
   (eval-after-load "which-key" '(diminish 'which-key-mode " ⌨"))
   (eval-after-load "rainbow-mode" '(diminish 'rainbow-mode " ☔"))
   (eval-after-load "autorevert" '(diminish 'auto-revert-mode " ↺"))
@@ -537,7 +534,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg/init-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "<escape>") 'god-mode-all)
+  ;; (global-set-key (kbd "<escape>") 'god-mode-all)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -680,16 +677,6 @@ If the new path's directories does not exist, create them."
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
 
-  ;; god-mode
-  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
-  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
-  (define-key god-local-mode-map (kbd "z") 'repeat)
-  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
-
   ;; magit
   (require 'magit)
   (define-key magit-mode-map (kbd "M-1") nil)
@@ -772,7 +759,7 @@ If the new path's directories does not exist, create them."
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
   (define-key evil-motion-state-map (kbd "C-z") nil)
-  (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
+  ;; (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)

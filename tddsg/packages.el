@@ -59,7 +59,6 @@
     vline
     crux
     column-marker
-    god-mode
     buffer-move
     dired+
     pdf-tools
@@ -368,31 +367,6 @@ Each entry is either:
              (not  (bound-and-true-p pdf-view-midnight-minor-mode)))
         (pdf-view-midnight-minor-mode)))
   (add-hook 'pdf-view-mode-hook 'my-pdf-view-hook))
-
-(defun tddsg/init-god-mode ()
-  (require 'god-mode)
-  ;;; update cursor
-  (defun update-cursor ()
-    (if god-local-mode
-        (set-cursor-color "purple")
-      (set-cursor-color "lime green")))
-  ;; (defadvice other-window (after update activate) (update-cursor))
-  ;; (defadvice windmove-do-window-select (after update activate) (update-cursor))
-  ;; (defadvice windmove-left (after update activate) (update-cursor))
-  ;; (defadvice windmove-right (after update activate) (update-cursor))
-  ;; (defadvice windmove-up (after update activate) (update-cursor))
-  ;; (defadvice windmove-down (after update activate) (update-cursor))
-  ;; (defadvice split-window (after update activate) (update-cursor))
-  ;; (defadvice set-buffer (after update activate) (update-cursor))
-  ;; (defadvice switch-to-buffer (after update activate) (update-cursor))
-  ;; (defadvice save-buffer (after update activate) (update-cursor))
-  ;; (defadvice pop-to-buffer (after update activate) (update-cursor))
-  ;; (defadvice previous-buffer (after update activate) (update-cursor))
-  ;; (defadvice next-buffer (after update activate) (update-cursor))
-  ;; (defadvice keyboard-quit (after update activate) (update-cursor))
-  (defun my-god-mode-hook () (interactive) (update-cursor))
-  (add-hook 'god-mode-enabled-hook 'my-god-mode-hook)
-  (add-hook 'god-mode-disabled-hook 'my-god-mode-hook))
 
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow
