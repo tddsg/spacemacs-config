@@ -435,6 +435,9 @@ If the new path's directories does not exist, create them."
   ;; zoom
   (require 'zoom-frm)
 
+  ;; visual line mode
+  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra")
@@ -635,11 +638,12 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
-  (global-set-key (kbd "M-m L c") 'langtool-check)
-  (global-set-key (kbd "M-m L b") 'langtool-correct-buffer)
-  (global-set-key (kbd "M-m L d") 'langtool-check-done)
-  (global-set-key (kbd "M-m L n") 'langtool-goto-next-error)
-  (global-set-key (kbd "M-m L p") 'langtool-goto-previous-error)
+  (global-set-key (kbd "M-m l c") 'langtool-check)
+  (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
+  (global-set-key (kbd "M-m l d") 'langtool-check-done)
+  (global-set-key (kbd "M-m l n") 'langtool-goto-next-error)
+  (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
+  (global-set-key (kbd "M-m l v") 'visual-line-mode)
 
   ;; workspaces transient
   (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
