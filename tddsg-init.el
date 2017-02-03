@@ -390,6 +390,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg-hook-shell-mode ()
   (add-hook 'window-configuration-change-hook
             'tddsg-fix-comint-window-size nil t)
+  (visual-line-mode 1)
   (rainbow-delimiters-mode-enable))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -638,6 +639,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
+  (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m l c") 'langtool-check)
   (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
   (global-set-key (kbd "M-m l d") 'langtool-check-done)
@@ -698,6 +700,16 @@ If the new path's directories does not exist, create them."
   (define-key magit-mode-map (kbd "M-8") nil)
   (define-key magit-mode-map (kbd "M-9") nil)
   (define-key magit-mode-map (kbd "M-0") nil)
+  (define-key magit-status-mode-map (kbd "M-1") nil)
+  (define-key magit-status-mode-map (kbd "M-2") nil)
+  (define-key magit-status-mode-map (kbd "M-3") nil)
+  (define-key magit-status-mode-map (kbd "M-4") nil)
+  (define-key magit-status-mode-map (kbd "M-5") nil)
+  (define-key magit-status-mode-map (kbd "M-6") nil)
+  (define-key magit-status-mode-map (kbd "M-7") nil)
+  (define-key magit-status-mode-map (kbd "M-8") nil)
+  (define-key magit-status-mode-map (kbd "M-9") nil)
+  (define-key magit-status-mode-map (kbd "M-0") nil)
 
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
@@ -733,7 +745,7 @@ If the new path's directories does not exist, create them."
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "C-j") nil)
-  (define-key LaTeX-mode-map (kbd "C-j") nil)
+  ;; (define-key LaTeX-mode-map (kbd "C-j") nil)
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))

@@ -36,7 +36,6 @@
     auctex
     cc-mode
     org
-    latex-extra
     ace-popup-menu
     smartparens
     yasnippet
@@ -189,9 +188,6 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "M-,") 'merlin-error-next)
     (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
-
-(defun tddsg/init-latex-extra ()
-  (use-package latex-extra))
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)
