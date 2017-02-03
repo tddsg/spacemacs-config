@@ -396,6 +396,13 @@ If the new path's directories does not exist, create them."
 ;;; INIT CONFIGS
 
 (defun tddsg/init-configs ()
+  ;; setting for laptop asus
+  (if (string= (system-name) "pisces")
+      (progn
+        (set-default 'truncate-lines t)   ;; disable truncate line
+        (setq golden-ratio-adjust-factor 0.9)
+        (golden-ratio-mode)))
+
   ;; visual interface setting
   (global-hl-todo-mode 1)           ;; highlight current line
   (blink-cursor-mode 0)             ;; turn on blinking
@@ -474,10 +481,6 @@ If the new path's directories does not exist, create them."
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 15)
-
-  ;; long lines
-  (set-default 'truncate-lines nil)   ;; disable truncate line
-  (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -665,10 +668,12 @@ If the new path's directories does not exist, create them."
    'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
 
   ;; isearch
-  (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
+  (define-key isearch-mode-map (kbd "C-.")
+    'tddsg/yank-current-word-to-isearch-buffer)
 
   ;; minibuffer
-  (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
+  (define-key minibuffer-local-map (kbd "C-.")
+    'tddsg/yank-current-word-to-minibuffer)
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)

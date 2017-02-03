@@ -304,7 +304,9 @@ you should place your code here."
  '(compilation-message-face (quote default))
  '(electric-pair-open-newline-between-pairs nil)
  '(evil-want-Y-yank-to-eol t)
- '(helm-ag-insert-at-point (quote symbol))
+ '(golden-ratio-adjust-factor 0.9)
+ '(golden-ratio-mode nil)
+ '(helm-ag-insert-at-point (quote symbol) t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
