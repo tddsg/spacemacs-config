@@ -350,6 +350,12 @@ If the new path's directories does not exist, create them."
   (interactive)
   (setq company-idle-delay 300))
 
+(defun tddsg/toggle-hide-mode-line ()
+  (interactive)
+  (if (bound-and-true-p mode-line-format)
+      (setq mode-line-format nil)
+    (setq mode-line-format (default-value 'mode-line-format))))
+
 (defun tddsg-buffer-focus ()
   (if (derived-mode-p 'text-mode 'tuareg-mode)
       (tddsg/disable-company-auto-suggest)
@@ -637,6 +643,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m m t") 'ansi-term)
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
+  (global-set-key (kbd "M-m m l") 'tddsg/toggle-hide-mode-line)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
@@ -936,7 +943,6 @@ If the new path's directories does not exist, create them."
                        ,@additional-segments
                        buffer-position
                        hud))
-
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 ;;; used for setting pdf-view page
