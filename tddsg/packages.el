@@ -329,7 +329,7 @@ Each entry is either:
                                   "COMMA_PARENTHESIS_WHITESPACE"
                                   "EN_QUOTES")
         langtool-language-tool-jar
-        "/home/trungtq/Programs/LanguageTool-3.4/languagetool-commandline.jar"))
+        "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
 
 (defun tddsg/init-imenu-anywhere ()
   (use-package imenu-anywhere))
@@ -358,11 +358,35 @@ Each entry is either:
   (custom-set-variables
    '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E"))))
   (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1))
+  (defun hide-cursor ()
+    (setq cursor-type nil))
+  (defadvice pdf-view-next-line-or-next-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-next-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-next-page-command (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-previous-line-or-previous-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-previous-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-previous-page-command (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-scroll-down-or-previous-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-scroll-up-or-next-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-reset-slice (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-set-slice (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-redisplay (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-maybe-redisplay-resized-windows (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-display-image (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-display-page (after hide-cursor activate) (hide-cursor))
+  (defadvice pdf-view-display-region (after hide-cursor activate) (hide-cursor))
   (defun my-pdf-view-hook ()
+    (hide-cursor)
     (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
              (not  (bound-and-true-p pdf-view-midnight-minor-mode)))
         (pdf-view-midnight-minor-mode)))
-  (add-hook 'pdf-view-mode-hook 'my-pdf-view-hook))
+  (add-hook 'pdf-view-mode-hook 'my-pdf-view-hook)
+  (add-hook 'select-window
+            (lambda ()
+              (if (string= major-mode "pdf-view-mode")
+                  (hide-cursor))
+                             ))
+  )
 
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow

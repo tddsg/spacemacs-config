@@ -16,6 +16,11 @@
 (require 'pdf-tools)
 (require 'face-remap)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UTILITIES FUNCTIONS
+
+(setq tddsg-cursor-color "lime green")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITIES FUNCTIONS
@@ -357,7 +362,9 @@ If the new path's directories does not exist, create them."
     (setq mode-line-format (default-value 'mode-line-format))))
 
 (defun tddsg-buffer-focus ()
-  (if (derived-mode-p 'text-mode 'tuareg-mode)
+  (if (string= major-mode "pdf-view-mode")
+      (setq cursor-type nil))
+  (if (derived-mode-p 'text-mode 'tuareg-mode 'latex-mode 'tex-mode)
       (tddsg/disable-company-auto-suggest)
     (tddsg/enable-company-auto-suggest)))
 
@@ -461,16 +468,16 @@ If the new path's directories does not exist, create them."
   (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
 
   ;; advice on buffer focusing
-  (defadvice other-window (after update activate) (tddsg-buffer-focus))
-  (defadvice windmove-do-window-select (after update activate) (tddsg-buffer-focus))
-  (defadvice split-window (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice other-window (after update activate) (tddsg-buffer-focus))
+  (defadvice select-window (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice split-window (after update activate) (tddsg-buffer-focus))
   (defadvice set-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice switch-to-buffer (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice switch-to-buffer (after update activate) (tddsg-buffer-focus))
   (defadvice save-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice pop-to-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice previous-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice pop-to-buffer (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice previous-buffer (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
+  ;; (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
 
   ;; mode editing setting
   (electric-pair-mode t)
