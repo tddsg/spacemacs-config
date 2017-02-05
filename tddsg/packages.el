@@ -207,6 +207,9 @@ Each entry is either:
              (output-html "xdg-open")))))
   ;; hook
   (defun my-latex-hook ()
+    ;; set tex master file
+    (if (eq TeX-master t)
+        (setq TeX-master (concat (projectile-project-root) "main.tex")))
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
