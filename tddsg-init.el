@@ -581,6 +581,8 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-(") 'sp-backward-barf-sexp)
   (global-set-key (kbd "C-M-)") 'sp-forward-barf-sexp)
+  (global-set-key (kbd "C-M-_") 'flip-frame)
+  (global-set-key (kbd "C-M-+") 'flop-frame)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
@@ -622,6 +624,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-_") 'split-window-below)
   (global-set-key (kbd "M-|") 'split-window-right)
+  (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
   (global-set-key (kbd "M-?") 'company-complete)

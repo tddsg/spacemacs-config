@@ -223,7 +223,8 @@ Each entry is either:
     (show-smartparens-mode)
     (smartparens-mode +1))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
-  (add-hook 'tex-mode-hook 'my-latex-hook 'append))
+  (add-hook 'tex-mode-hook 'my-latex-hook 'append)
+  (add-hook 'TeX-mode-hook 'my-latex-hook 'append))
 
 (defun tddsg/post-init-smartparens ()
   ;; bindings
