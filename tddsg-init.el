@@ -361,13 +361,6 @@ If the new path's directories does not exist, create them."
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
-(defun tddsg-buffer-focus ()
-  (if (string= major-mode "pdf-view-mode")
-      (setq cursor-type nil))
-  (if (derived-mode-p 'text-mode 'tuareg-mode 'latex-mode 'tex-mode)
-      (tddsg/disable-company-auto-suggest)
-    (tddsg/enable-company-auto-suggest)))
-
 (defun tddsg-hook-change-major-mode ()
   ;; change some weird keys
   (keyboard-translate ?\C-\[ ?\H-\[)
@@ -467,17 +460,29 @@ If the new path's directories does not exist, create them."
   (defadvice end-of-buffer (before set-mark activate) (tddsg-set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
 
-  ;; advice on buffer focusing
-  ;; (defadvice other-window (after update activate) (tddsg-buffer-focus))
-  (defadvice select-window (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice split-window (after update activate) (tddsg-buffer-focus))
-  (defadvice set-buffer (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice switch-to-buffer (after update activate) (tddsg-buffer-focus))
-  (defadvice save-buffer (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice pop-to-buffer (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice previous-buffer (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice next-buffer (after update activate) (tddsg-buffer-focus))
-  ;; (defadvice keyboard-quit (after update activate) (tddsg-buffer-focus))
+  ;; advice to enable or disable company auto suggest
+  (defun advice-company-auto-suggest (orig-func &rest args)
+    (apply orig-func args)
+    (if (derived-mode-p 'text-mode
+                        'tuareg-mode
+                        'latex-mode
+                        'tex-mode)
+        (tddsg/disable-company-auto-suggest)
+      (tddsg/enable-company-auto-suggest)))
+  (dolist (func (list 'set-buffer
+                      'save-buffer
+                      'select-window))
+    (advice-add func :around #'advice-company-auto-suggest))
+
+
+  ;; advice to show or hide cursor
+  (defun advice-hide-cursor (orig-func &rest args)
+    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
+    (apply orig-func args)
+    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
+  (dolist (func (list 'windmove-do-window-select
+                      'select-window))
+    (advice-add func :around #'advice-hide-cursor))
 
   ;; mode editing setting
   (electric-pair-mode t)
@@ -733,10 +738,6 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
   (global-set-key (kbd "S-<down>") 'windmove-down)
-  (global-set-key (kbd "s-7") 'windmove-left)
-  (global-set-key (kbd "s-8") 'windmove-down)
-  (global-set-key (kbd "s-9") 'windmove-up)
-  (global-set-key (kbd "s-0") 'windmove-right)
 
   ;; buffer-move
   (global-set-key (kbd "C-S-<left>") 'buf-move-left)
