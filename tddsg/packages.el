@@ -362,15 +362,16 @@ Each entry is either:
   (custom-set-variables
    '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E"))))
   (defun custom-pdf-view ()
-    (setq cursor-type nil)  ;; hide cursor
-    ;; use pdf-midnight-mode
-    (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
-             (not (bound-and-true-p pdf-view-midnight-minor-mode)))
-        (pdf-view-midnight-minor-mode))
-    ;; disable pdf-midnight-mode
-    (if (and (eq spacemacs--cur-theme 'leuven)
-             (bound-and-true-p pdf-view-midnight-minor-mode))
-        (pdf-view-midnight-minor-mode -1)))
+    (if (string= major-mode "pdf-view-mode")
+        (setq cursor-type nil)  ;; hide cursor
+      ;; use pdf-midnight-mode
+      (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
+               (not (bound-and-true-p pdf-view-midnight-minor-mode)))
+          (pdf-view-midnight-minor-mode))
+      ;; disable pdf-midnight-mode
+      (if (and (eq spacemacs--cur-theme 'leuven)
+               (bound-and-true-p pdf-view-midnight-minor-mode))
+          (pdf-view-midnight-minor-mode -1))))
   (defun advice-pdf-view-func (orig-func &rest args)
     (apply orig-func args)
     (custom-pdf-view))
@@ -388,9 +389,13 @@ Each entry is either:
                       'pdf-view-maybe-redisplay-resized-windows
                       'pdf-view-display-image
                       'pdf-view-display-page
+                      'mwheel-scroll
                       'pdf-view-display-region))
     (advice-add func :around #'advice-pdf-view-func))
-  (defadvice pdf-sync-forward-search (after search activate) (other-window 1))
+  (defadvice pdf-sync-forward-search (after search activate)
+    (progn
+      (other-window 1)
+      (setq cursor-type nil)))
   (add-hook 'pdf-view-mode-hook 'custom-pdf-view))
 
 (defun tddsg/post-init-org ()
