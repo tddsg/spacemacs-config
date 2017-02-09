@@ -361,30 +361,36 @@ Each entry is either:
   (setq pdf-view-resize-factor 1.05)
   (custom-set-variables
    '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E"))))
-  (defadvice pdf-sync-forward-search (after jump-to-pdf activate) (other-window 1))
   (defun custom-pdf-view ()
-    (setq cursor-type nil)
-    (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
-           (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
-               (pdf-view-midnight-minor-mode)))
-          ((eq spacemacs--cur-theme 'leuven)
-           (if (bound-and-true-p pdf-view-midnight-minor-mode)
-               (pdf-view-midnight-minor-mode -1)))))
-  (defadvice pdf-view-next-line-or-next-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-next-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-next-page-command (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-previous-line-or-previous-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-previous-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-previous-page-command (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-scroll-down-or-previous-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-scroll-up-or-next-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-reset-slice (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-set-slice (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-redisplay (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-maybe-redisplay-resized-windows (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-display-image (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-display-page (after custom-pdf-view activate) (custom-pdf-view))
-  (defadvice pdf-view-display-region (after custom-pdf-view activate) (custom-pdf-view))
+    (setq cursor-type nil)  ;; hide cursor
+    ;; use pdf-midnight-mode
+    (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
+             (not (bound-and-true-p pdf-view-midnight-minor-mode)))
+        (pdf-view-midnight-minor-mode))
+    ;; disable pdf-midnight-mode
+    (if (and (eq spacemacs--cur-theme 'leuven)
+             (bound-and-true-p pdf-view-midnight-minor-mode))
+        (pdf-view-midnight-minor-mode -1)))
+  (defun advice-pdf-view-func (orig-func &rest args)
+    (apply orig-func args)
+    (custom-pdf-view))
+  (dolist (func (list 'pdf-view-next-line-or-next-page
+                      'pdf-view-next-page
+                      'pdf-view-next-page-command
+                      'pdf-view-previous-line-or-previous-page
+                      'pdf-view-previous-page
+                      'pdf-view-previous-page-command
+                      'pdf-view-scroll-down-or-previous-page
+                      'pdf-view-scroll-up-or-next-page
+                      'pdf-view-reset-slice
+                      'pdf-view-set-slice
+                      'pdf-view-redisplay
+                      'pdf-view-maybe-redisplay-resized-windows
+                      'pdf-view-display-image
+                      'pdf-view-display-page
+                      'pdf-view-display-region))
+    (advice-add func :around #'advice-pdf-view-func))
+  (defadvice pdf-sync-forward-search (after search activate) (other-window 1))
   (add-hook 'pdf-view-mode-hook 'custom-pdf-view))
 
 (defun tddsg/post-init-org ()
