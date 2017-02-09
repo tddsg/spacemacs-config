@@ -409,6 +409,11 @@ If the new path's directories does not exist, create them."
         (set-default 'truncate-lines t)   ;; disable truncate line
         (setq golden-ratio-adjust-factor 0.9)
         (golden-ratio-mode)))
+  ;; setting for lab pc
+  (if (string= (system-name) "leo")
+      (progn
+        (setq golden-ratio-adjust-factor 1.618)
+        (golden-ratio-mode)))
 
   ;; visual interface setting
   (global-hl-todo-mode 1)           ;; highlight current line
@@ -460,20 +465,9 @@ If the new path's directories does not exist, create them."
   (defadvice end-of-buffer (before set-mark activate) (tddsg-set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
 
-  ;; advice to enable or disable company auto suggest
-  (defun advice-company-auto-suggest (orig-func &rest args)
-    (apply orig-func args)
-    (if (derived-mode-p 'text-mode
-                        'tuareg-mode
-                        'latex-mode
-                        'tex-mode)
-        (tddsg/disable-company-auto-suggest)
-      (tddsg/enable-company-auto-suggest)))
-  (dolist (func (list 'set-buffer
-                      'save-buffer
-                      'select-window))
-    (advice-add func :around #'advice-company-auto-suggest))
-
+  ;; disable company auto suggest
+  (setq company-idle-delay 300)
+  (setq company-tooltip-idle-delay 300)
 
   ;; advice to show or hide cursor
   (defun advice-hide-cursor (orig-func &rest args)
