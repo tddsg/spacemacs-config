@@ -238,6 +238,11 @@ Each entry is either:
     (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
   ;; smartparens for latex
   (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
+    (dolist (symbol (list ?#))
+      (progn
+        (modify-syntax-entry symbol "'" tex-mode-syntax-table)
+        (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
+        (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
     (sp-local-pair "`" "'"
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe

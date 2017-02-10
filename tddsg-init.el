@@ -409,17 +409,17 @@ If the new path's directories does not exist, create them."
 ;;; INIT CONFIGS
 
 (defun tddsg/init-configs ()
-  ;; setting for laptop asus
-  (if (string= (system-name) "pisces")
-      (progn
-        (set-default 'truncate-lines t)   ;; disable truncate line
-        (setq golden-ratio-adjust-factor 0.9)
-        (golden-ratio-mode)))
-  ;; setting for lab pc
-  (if (string= (system-name) "leo")
-      (progn
-        (setq golden-ratio-adjust-factor 1.618)
-        (golden-ratio-mode)))
+  ;; specific setting for each machines
+  (cond ((string= (system-name) "pisces")
+         (progn
+           (set-default 'truncate-lines t)   ;; disable truncate line
+           (setq golden-ratio-adjust-factor 0.9)
+           (golden-ratio-mode)))
+        ((or (string= (system-name) "leo")
+             (string= (system-name) "polaris"))
+         (progn
+           (setq golden-ratio-adjust-factor 1.618)
+           (golden-ratio-mode))))
 
   ;; visual interface setting
   (global-hl-todo-mode 1)           ;; highlight current line
