@@ -98,7 +98,7 @@
   "Duplicate files to the current folder by adding suffix \" - COPY\"."
   (interactive)
   ;; TODO: how to deal with file names having no \".\". For example: TODO files
-  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 - (COPY).\\2 "))
+  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 - (COPY).\\2"))
 
 (defun tddsg/mark-line ()
   "Select current line"
