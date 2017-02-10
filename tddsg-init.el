@@ -133,7 +133,7 @@
                (call-interactively  'tddsg/mark-sexp))))))
 
 (defun tddsg/mark-paragraph ()
-  "Mark the paragraph"
+  "Mark the paragraph."
   (interactive)
   (if (region-active-p) (forward-paragraph 1)
     (progn
@@ -150,9 +150,15 @@
       (set-mark-command nil)
       (forward-paragraph 1))))
 
+(defun tddsg/comment-paragraph ()
+  "Comment the paragraph."
+  (interactive)
+  (tddsg/mark-paragraph)
+  (call-interactively 'comment-dwim-2))
+
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
-or in a custom directory when prefix-argument is given (C-u)"
+or in a custom directory when prefix-argument is given (C-u)."
   (interactive "P")
   (let ((text (if (region-active-p)
                   (let* ((begin (region-beginning))
@@ -582,6 +588,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-M-)") 'sp-forward-barf-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
+  (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x _") 'shrink-window)
