@@ -414,11 +414,13 @@ If the new path's directories does not exist, create them."
          (progn
            (set-default 'truncate-lines t)   ;; disable truncate line
            (setq golden-ratio-adjust-factor 0.9)
+           (setq golden-ratio-balance nil)
            (golden-ratio-mode)))
         ((or (string= (system-name) "leo")
              (string= (system-name) "polaris"))
          (progn
            (setq golden-ratio-adjust-factor 1.618)
+           (setq golden-ratio-balance nil)
            (golden-ratio-mode))))
 
   ;; visual interface setting
