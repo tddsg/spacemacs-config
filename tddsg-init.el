@@ -94,6 +94,12 @@
   (interactive)
   (dired "~/"))
 
+(defun tddsg/dired-duplicate-files ()
+  "Duplicate files to the current folder by adding suffix \" - COPY\"."
+  (interactive)
+  ;; TODO: how to deal with file names having no \".\". For example: TODO files
+  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 - (COPY).\\2 "))
+
 (defun tddsg/mark-line ()
   "Select current line"
   (interactive)
@@ -367,6 +373,28 @@ If the new path's directories does not exist, create them."
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
+(defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
+  "Toggle shell scroll to the last line on output."
+  (interactive)
+  (if comint-scroll-to-bottom-on-output
+      (setq comint-scroll-to-bottom-on-output nil)
+    (setq comint-scroll-to-bottom-on-output t)))
+
+(require 'golden-ratio)
+(defun tddsg/toggle-golden-ratio-balance ()
+  "Toggle balance other windows in golden ratio mode."
+  (interactive)
+  (if golden-ratio-balance
+      (setq golden-ratio-balance nil)
+    (setq golden-ratio-balance t)))
+
+(defun tddsg/toggle-golden-ratio-balance ()
+  "Toggle balance other windows in golden ratio mode."
+  (interactive)
+  (if golden-ratio-balance
+      (setq golden-ratio-balance nil)
+    (setq golden-ratio-balance t)))
+
 (defun tddsg-hook-change-major-mode ()
   ;; change some weird keys
   (keyboard-translate ?\C-\[ ?\H-\[)
@@ -392,18 +420,18 @@ If the new path's directories does not exist, create them."
 (defun tddsg-hook-text-mode ()
   (flyspell-mode 1))
 
+(defun tddsg-hook-shell-mode ()
+  (add-hook 'window-configuration-change-hook
+            'tddsg-fix-comint-window-size nil t)
+  (visual-line-mode 1)
+  (rainbow-delimiters-mode-enable))
+
 (defun tddsg-fix-comint-window-size ()
   "Change process window size."
   (when (derived-mode-p 'comint-mode)
     (let ((process (get-buffer-process (current-buffer))))
       (when process
         (set-process-window-size process (window-height) (window-width))))))
-
-(defun tddsg-hook-shell-mode ()
-  (add-hook 'window-configuration-change-hook
-            'tddsg-fix-comint-window-size nil t)
-  (visual-line-mode 1)
-  (rainbow-delimiters-mode-enable))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -708,6 +736,8 @@ If the new path's directories does not exist, create them."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
+  (define-key shell-mode-map (kbd "C-c C-s")
+    'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
@@ -782,6 +812,7 @@ If the new path's directories does not exist, create them."
 
   ;; dired mode
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
+  (define-key dired-mode-map (kbd "M-C") 'tddsg/dired-duplicate-files)
 
   ;; smartparens
   (define-key smartparens-mode-map (kbd "M-s") nil)
