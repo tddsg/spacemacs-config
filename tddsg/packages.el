@@ -213,7 +213,12 @@ Each entry is either:
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
-    (require 'smartparens-latex)
+    ;; change syntax table to work with smartparens
+    (dolist (symbol (list ?#))
+      (progn
+        (modify-syntax-entry symbol "'" tex-mode-syntax-table)
+        (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
+        (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
     (linum-mode 1)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
@@ -237,12 +242,10 @@ Each entry is either:
   (sp-with-modes '(tuareg-mode)
     (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
   ;; smartparens for latex
-  (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
-    (dolist (symbol (list ?#))
-      (progn
-        (modify-syntax-entry symbol "'" tex-mode-syntax-table)
-        (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
-        (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
+  (sp-with-modes '(tex-mode
+                   plain-tex-mode
+                   latex-mode
+                   LaTeX-mode)
     (sp-local-pair "`" "'"
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe
@@ -252,10 +255,6 @@ Each entry is either:
     (sp-local-pair "\\If" "\\EndIf" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\For" "\\EndFor" :post-handlers
-                   '(sp-latex-insert-spaces-inside-pair))
-    (sp-local-pair "\\begin{enumerate}" "\\end{enumerate}" :post-handlers
-                   '(sp-latex-insert-spaces-inside-pair))
-    (sp-local-pair "\\begin{itemize}" "\\end{itemize}" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
   (smartparens-global-mode 1))
