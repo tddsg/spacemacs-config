@@ -576,7 +576,7 @@ If the new path's directories does not exist, create them."
   (eval-after-load "abbrev" '(diminish 'abbrev-mode " ↹"))
   (eval-after-load "whitespace" '(diminish 'whitespace-mode " S"))
   (eval-after-load "whitespace-mode" '(diminish 'whitespace-mode " R"))
-  (eval-after-load "smartparens" '(diminish 'smartparens-mode " ♓"))
+  (eval-after-load "smartparens-mode" '(diminish 'smartparens-mode " ⒫"))
   (eval-after-load "super-save" '(diminish 'super-save-mode " ⓢ"))
   (eval-after-load "which-key" '(diminish 'which-key-mode " ⓦ"))
   (eval-after-load "rainbow-mode" '(diminish 'rainbow-mode " ☔"))
