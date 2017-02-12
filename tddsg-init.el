@@ -53,11 +53,7 @@
   (keyboard-translate ?\C-m ?\H-m)
   (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
   (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
-  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
-  (global-set-key [?\H-M] 'helm-mini)
-  (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key [?\H-I] 'helm-imenu)
-  (global-set-key [?\H-i] 'helm-imenu))
+  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M")))
 
 (defun tddsg--hook-prog-text-mode ()
   (linum-mode 1)
@@ -73,7 +69,7 @@
 (defun tddsg--hook-shell-mode ()
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
-  (visual-line-mode 1)
+  (toggle-truncate-lines -1)
   (rainbow-delimiters-mode-enable))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -516,14 +512,28 @@ If the new path's directories does not exist, create them."
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
 
-  ;; advice to show or hide cursor
-  (defun advice-hide-cursor (orig-func &rest args)
+  ;; advice changing window
+  (defun advice-window-change (orig-func &rest args)
+    (toggle-truncate-lines 1)
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
     (apply orig-func args)
+    (toggle-truncate-lines -1)
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'windmove-do-window-select
-                      'select-window))
-    (advice-add func :around #'advice-hide-cursor))
+                      'select-window-by-number
+                      'other-window
+                      ;; 'select-window ;; this causes buffer overflow
+                      ))
+    (advice-add func :around #'advice-window-change))
+
+  ;; advice changing buffer
+  (defun advice-buffer-change (orig-func &rest args)
+    (apply orig-func args)
+    (toggle-truncate-lines -1)
+    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
+  (dolist (func (list 'helm-find-files
+                      'helm-mini))
+    (advice-add func :around #'advice-buffer-change)) ;
 
   ;; mode editing setting
   (electric-pair-mode t)
@@ -644,6 +654,11 @@ If the new path's directories does not exist, create them."
 
   (global-set-key (kbd "C-x C-z") nil)
   (global-set-key (kbd "C-z") nil)
+
+  (global-set-key [?\H-M] 'helm-mini)
+  (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-I] 'helm-semantic-or-imenu)
+  (global-set-key [?\H-i] 'helm-semantic-or-imenu)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c i") 'helm-imenu-anywhere)
