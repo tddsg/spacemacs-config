@@ -51,13 +51,12 @@
   (keyboard-translate ?\C-\[ ?\H-\[)
   (keyboard-translate ?\C-i ?\H-i)
   (keyboard-translate ?\C-m ?\H-m)
-  (keyboard-translate ?\C-I ?\H-I)
-  (keyboard-translate ?\C-M ?\H-M)
-  (global-set-key [?\H-\[] 'previous-buffer)
-  (global-set-key (kbd "C-]") 'next-buffer)
+  (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
+  (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
+  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
   (global-set-key [?\H-M] 'helm-mini)
-  (global-set-key [?\H-I] 'helm-imenu)
   (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-I] 'helm-imenu)
   (global-set-key [?\H-i] 'helm-imenu))
 
 (defun tddsg--hook-prog-text-mode ()
@@ -618,8 +617,6 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-o") 'helm-occur)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "C-{") 'winner-undo)
-  (global-set-key (kbd "C-}") 'winner-redo)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
@@ -630,8 +627,6 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
-  (global-set-key (kbd "C-M-(") 'sp-backward-barf-sexp)
-  (global-set-key (kbd "C-M-)") 'sp-forward-barf-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
@@ -681,12 +676,16 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-?") 'company-complete)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
-  (global-set-key (kbd "M-[") 'windmove-left)
-  (global-set-key (kbd "M-]") 'windmove-right)
-  (global-set-key (kbd "M-{") 'windmove-up)
-  (global-set-key (kbd "M-}") 'windmove-down)
-  (global-set-key (kbd "M-:") 'backward-paragraph)
-  (global-set-key (kbd "M-\"") 'forward-paragraph)
+
+  (global-set-key (kbd "H-[") 'windmove-left)
+  (global-set-key (kbd "C-]") 'windmove-right)
+  (global-set-key (kbd "M-[") 'windmove-up)
+  (global-set-key (kbd "M-]") 'windmove-down)
+
+  (global-set-key (kbd "H-M-[") 'previous-buffer)
+  (global-set-key (kbd "C-M-]") 'next-buffer)
+  (global-set-key (kbd "C-M-{") 'winner-undo)
+  (global-set-key (kbd "C-M-}") 'winner-redo)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
@@ -832,8 +831,6 @@ If the new path's directories does not exist, create them."
 
   ;; smartparens
   (define-key smartparens-mode-map (kbd "M-s") nil)
-  (define-key smartparens-mode-map (kbd "C-{") nil)
-  (define-key smartparens-mode-map (kbd "C-}") nil)
 
   ;; evil mode
   (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
