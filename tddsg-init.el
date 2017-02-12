@@ -578,7 +578,7 @@ If the new path's directories does not exist, create them."
         '(("\\.pdf\\'" "okular &")
           ("\\.txt\\'" "gedit")))
 
-  ;; helm
+  ;; helm ag insert symbol at point
   (setq helm-ag-insert-at-point 'symbol)
 
   ;; diminish
