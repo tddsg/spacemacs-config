@@ -452,10 +452,11 @@ If the new path's directories does not exist, create them."
            (golden-ratio-mode))))
 
   ;; visual interface setting
+  (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight current line
   (blink-cursor-mode 0)             ;; turn on blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (setq-default fill-column 75)
+  (setq-default fill-column 75)     ;; max size of a line for fill-or-unfill
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
   (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
@@ -969,24 +970,24 @@ If the new path's directories does not exist, create them."
                        major-mode
                        (projectile-root :when active)
                        (version-control :when active)
+                       (minor-modes :when active)
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
-                       ((buffer-encoding-abbrev))
-                       (minor-modes :when active)
                        (mu4e-alert-segment :when active)
                        (erc-track :when active)
                        (org-pomodoro :when active)
                        (org-clock :when active)
                        nyan-cat)
-                     `(which-function
+                     `(global
+                       which-function
                        (python-pyvenv :fallback python-pyenv)
                        (battery :when active)
                        selection-info
-                       input-method
-                       (global :when active)
                        ,@additional-segments
-                       buffer-position
+                       input-method
+                       (buffer-encoding-abbrev :when active)
+                       (buffer-position :when active)
                        hud))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
