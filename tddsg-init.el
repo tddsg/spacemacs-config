@@ -514,10 +514,10 @@ If the new path's directories does not exist, create them."
 
   ;; advice changing window
   (defun advice-window-change (orig-func &rest args)
-    (toggle-truncate-lines 1)
+    (if (string= (system-name) "pisces") (toggle-truncate-lines 1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
     (apply orig-func args)
-    (toggle-truncate-lines -1)
+    (if (string= (system-name) "pisces") (toggle-truncate-lines -1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'windmove-do-window-select
                       'select-window-by-number
@@ -529,7 +529,7 @@ If the new path's directories does not exist, create them."
   ;; advice changing buffer
   (defun advice-buffer-change (orig-func &rest args)
     (apply orig-func args)
-    (toggle-truncate-lines -1)
+    (if  (string= (system-name) "pisces") (toggle-truncate-lines -1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
@@ -624,7 +624,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-`") 'goto-last-change)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
-  (global-set-key (kbd "C-o") 'helm-occur)
+  (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-/") 'undo)
@@ -635,6 +635,7 @@ If the new path's directories does not exist, create them."
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-M-O") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
@@ -661,7 +662,6 @@ If the new path's directories does not exist, create them."
   (global-set-key [?\H-i] 'helm-semantic-or-imenu)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
-  (global-set-key (kbd "C-c i") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
