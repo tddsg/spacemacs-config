@@ -16,22 +16,74 @@
 (require 'pdf-tools)
 (require 'face-remap)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; UTILITIES FUNCTIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; VARIABLES
 
 (setq tddsg-cursor-color "lime green")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; UTILITIES FUNCTIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PRIVATE FUNCTIONS
 
-(defun tddsg/blank-line-p ()
+(defun tddsg--blank-line-p ()
   (save-excursion
     (beginning-of-line)
     (looking-at "[ \t]*$")))
 
-(defun tddsg/blank-char-p (ch)
+(defun tddsg--blank-char-p (ch)
   (or (equal (string ch) " ") (equal (string ch) "\\t")))
+
+(defun tddsg--set-mark ()
+  (push-mark (point) t nil))
+
+(defun tddsg--fix-comint-window-size ()
+  "Change process window size."
+  (when (derived-mode-p 'comint-mode)
+    (let ((process (get-buffer-process (current-buffer))))
+      (when process
+        (set-process-window-size process (window-height) (window-width))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; HOOK FUNCTIONS
+
+(defun tddsg--hook-change-major-mode ()
+  ;; change some weird keys
+  (keyboard-translate ?\C-\[ ?\H-\[)
+  (keyboard-translate ?\C-i ?\H-i)
+  (keyboard-translate ?\C-m ?\H-m)
+  (keyboard-translate ?\C-I ?\H-I)
+  (keyboard-translate ?\C-M ?\H-M)
+  (global-set-key [?\H-\[] 'previous-buffer)
+  (global-set-key (kbd "C-]") 'next-buffer)
+  (global-set-key [?\H-M] 'helm-mini)
+  (global-set-key [?\H-I] 'indent-region)
+  (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-i] 'indent-region))
+
+(defun tddsg--hook-prog-text-mode ()
+  (linum-mode 1)
+  (column-marker-3 80)
+  (whitespace-mode 1))
+
+(defun tddsg--hook-prog-mode ()
+  (flycheck-mode 1))
+
+(defun tddsg--hook-text-mode ()
+  (flyspell-mode 1))
+
+(defun tddsg--hook-shell-mode ()
+  (add-hook 'window-configuration-change-hook
+            'tddsg--fix-comint-window-size nil t)
+  (visual-line-mode 1)
+  (rainbow-delimiters-mode-enable))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; INTERACTIVE FUNCTIONS
+
+(defun tddsg/show-path-current-buffer ()
+  "Show path of the current buffer."
+  (interactive)
+  (message "Current path: %s" (buffer-file-name)))
 
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
@@ -232,10 +284,10 @@ insert a new space if there is none"
           (goto-char (point-min))
           (while (re-search-forward "\\s-+" nil t)
             (replace-match " "))))
-    (if (tddsg/blank-char-p (preceding-char)) (forward-char -1))
-    (if (tddsg/blank-char-p (following-char))
-        (if (or (tddsg/blank-char-p (preceding-char))
-                (tddsg/blank-char-p (char-after (+ (point) 1))))
+    (if (tddsg--blank-char-p (preceding-char)) (forward-char -1))
+    (if (tddsg--blank-char-p (following-char))
+        (if (or (tddsg--blank-char-p (preceding-char))
+                (tddsg--blank-char-p (char-after (+ (point) 1))))
             (just-one-space)
           (delete-char 1))
       (just-one-space))))
@@ -250,7 +302,7 @@ insert a new space if there is none"
           (goto-char (point-min))
           (while (re-search-forward "\\s-+" nil t)
             (replace-match " "))))
-    (if (tddsg/blank-line-p)
+    (if (tddsg--blank-line-p)
         (delete-blank-lines)
       (tddsg/one-space))))
 
@@ -355,10 +407,6 @@ If the new path's directories does not exist, create them."
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
-(defun tddsg-set-mark ()
-  (interactive)
-  (push-mark (point) t nil))
-
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -395,43 +443,6 @@ If the new path's directories does not exist, create them."
       (setq golden-ratio-balance nil)
     (setq golden-ratio-balance t)))
 
-(defun tddsg-hook-change-major-mode ()
-  ;; change some weird keys
-  (keyboard-translate ?\C-\[ ?\H-\[)
-  (keyboard-translate ?\C-i ?\H-i)
-  (keyboard-translate ?\C-m ?\H-m)
-  (keyboard-translate ?\C-I ?\H-I)
-  (keyboard-translate ?\C-M ?\H-M)
-  (global-set-key [?\H-\[] 'previous-buffer)
-  (global-set-key (kbd "C-]") 'next-buffer)
-  (global-set-key [?\H-M] 'helm-mini)
-  (global-set-key [?\H-I] 'indent-region)
-  (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key [?\H-i] 'indent-region))
-
-(defun tddsg-hook-prog-text-mode ()
-  (linum-mode 1)
-  (column-marker-3 80)
-  (whitespace-mode 1))
-
-(defun tddsg-hook-prog-mode ()
-  (flycheck-mode 1))
-
-(defun tddsg-hook-text-mode ()
-  (flyspell-mode 1))
-
-(defun tddsg-hook-shell-mode ()
-  (add-hook 'window-configuration-change-hook
-            'tddsg-fix-comint-window-size nil t)
-  (visual-line-mode 1)
-  (rainbow-delimiters-mode-enable))
-
-(defun tddsg-fix-comint-window-size ()
-  "Change process window size."
-  (when (derived-mode-p 'comint-mode)
-    (let ((process (get-buffer-process (current-buffer))))
-      (when process
-        (set-process-window-size process (window-height) (window-width))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -496,11 +507,11 @@ If the new path's directories does not exist, create them."
   (setq global-mark-ring-max 1000
         mark-ring-max 200)
   (setq set-mark-command-repeat-pop t)
-  (defadvice find-file (before set-mark activate) (tddsg-set-mark))
-  (defadvice isearch-update (before set-mark activate) (tddsg-set-mark))
-  (defadvice beginning-of-buffer (before set-mark activate) (tddsg-set-mark))
-  (defadvice end-of-buffer (before set-mark activate) (tddsg-set-mark))
-  (defadvice merlin-locate (before set-mark activate) (tddsg-set-mark))
+  (defadvice find-file (before set-mark activate) (tddsg--set-mark))
+  (defadvice isearch-update (before set-mark activate) (tddsg--set-mark))
+  (defadvice beginning-of-buffer (before set-mark activate) (tddsg--set-mark))
+  (defadvice end-of-buffer (before set-mark activate) (tddsg--set-mark))
+  (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
 
   ;; disable company auto suggest
   (setq company-idle-delay 300)
@@ -539,7 +550,7 @@ If the new path's directories does not exist, create them."
   (setq comint-prompt-read-only nil)
   (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
-  (add-hook 'shell-mode-hook 'tddsg-hook-shell-mode)
+  (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
 
   ;; smartparens
   (smartparens-global-mode)
@@ -576,13 +587,13 @@ If the new path's directories does not exist, create them."
   (eval-after-load "projectile" '(diminish 'projectile-mode " π"))
 
   ;; hooks, finally hook
-  (add-hook 'LaTeX-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'tex-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'prog-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'text-mode-hook 'tddsg-hook-prog-text-mode)
-  (add-hook 'prog-mode-hook 'tddsg-hook-prog-mode)
-  (add-hook 'text-mode-hook 'tddsg-hook-text-mode)
-  (add-hook 'change-major-mode-hook 'tddsg-hook-change-major-mode))
+  (add-hook 'LaTeX-mode-hook 'tddsg--hook-prog-text-mode)
+  (add-hook 'tex-mode-hook 'tddsg--hook-prog-text-mode)
+  (add-hook 'prog-mode-hook 'tddsg--hook-prog-text-mode)
+  (add-hook 'text-mode-hook 'tddsg--hook-prog-text-mode)
+  (add-hook 'prog-mode-hook 'tddsg--hook-prog-mode)
+  (add-hook 'text-mode-hook 'tddsg--hook-text-mode)
+  (add-hook 'change-major-mode-hook 'tddsg--hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
@@ -678,6 +689,7 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
 
+  (global-set-key (kbd "M-m f p") 'tddsg/show-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
