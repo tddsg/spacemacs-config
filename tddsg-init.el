@@ -991,53 +991,37 @@ If the new path's directories does not exist, create them."
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
 
-(defun tddsg--make-file-path ()
+(defun tddsg--header-file-path ()
   "Create the header line, located at the top of each buffer."
   (let* ((full-header (abbreviate-file-name buffer-file-name))
-         (header (file-name-directory tddsg/full-header))
+         (header (file-name-directory full-header))
          (drop-str "[...]"))
-    (if (> (length tddsg/full-header)
+    (if (> (length full-header)
            (window-body-width))
         (if (> (length header)
                (window-body-width))
             (progn
-              (concat (with-face drop-str
-                                 :background "blue"
-                                 :weight 'bold
-                                 )
-                      (with-face (substring tddsg/header
+              (concat (with-face drop-str :background "blue" :weight 'bold)
+                      (with-face (substring header
                                             (+ (- (length header)
                                                   (window-body-width))
                                                (length drop-str))
                                             (length header))
-                                 ;; :background "red"
-                                 :weight 'bold
-                                 )))
-          (concat (with-face header
-                             ;; :background "red"
-                             :foreground "#8fb28f"
-                             :weight 'bold
-                             )))
-      (concat (with-face header
-                         ;; :background "green"
-                         ;; :foreground "black"
-                         :weight 'bold
-                         :foreground "#8fb28f"
-                         )
+                                 :weight 'bold)))
+          (concat (with-face header :foreground "#8fb28f" :weight 'bold)))
+      (concat (with-face header :weight 'bold :foreground "#8fb28f")
               (with-face (file-name-nondirectory buffer-file-name)
-                         :weight 'bold
-                         ;; :background "red"
-                         )))))
+                         :weight 'bold)))))
+
 
 (defun tddsg--update-header-line ()
-  (setq header-line-format
-        '("" ;; invocation-name
-          (:eval
-           (concat (if (buffer-file-name)
-                        (tddsg--make-file-path)
-                     "%b")
-                   ""
-                   )))))
+  (if (not (string-equal "*" (substring (buffer-name) 0 1)))
+      ;; update only user-buffer
+      (setq header-line-format
+            '("" ;; invocation-name
+              (:eval
+               (concat (if (buffer-file-name)
+                           (tddsg--header-file-path) "%b")))))))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
