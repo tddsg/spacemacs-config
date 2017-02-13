@@ -1005,7 +1005,7 @@ If the new path's directories does not exist, create them."
                                           (length header))
                                :foreground "cyan" :weight 'bold))
           (concat (with-face header :foreground "LightSkyBlue" :weight 'bold)))
-      (concat "♘ "
+      (concat "⚝ "
               (with-face header :weight 'bold :foreground "LightSkyBlue")
               (with-face (file-name-nondirectory buffer-file-name)
                          :foreground "SandyBrown"
@@ -1013,7 +1013,8 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
-  (if (projectile-project-name)
+  (if (and (not (string= (projectile-project-name) ""))
+           (not (string= (projectile-project-name) "-")))
       (concat "♖ "
               (with-face (projectile-project-name) :foreground "OrangeRed")
               " ")
