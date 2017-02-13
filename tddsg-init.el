@@ -19,7 +19,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
-(setq tddsg-cursor-color "lime green")
+(setq tddsg--cursor-color "lime green")
+
+(setq tddsg--auto-truncate-lines t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,6 +44,21 @@
     (let ((process (get-buffer-process (current-buffer))))
       (when process
         (set-process-window-size process (window-height) (window-width))))))
+
+(defun tddsg--create-backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+         ;; remove Windows driver letter in path, ➢ for example: “C:”
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
+         (backupFilePath (replace-regexp-in-string
+                          "//" "/" (concat backupRootDir filePath "~"))))
+    (make-directory (file-name-directory backupFilePath)
+                    (file-name-directory backupFilePath))
+    backupFilePath))
+
+(defun tddsg--is-small-screen ()
+  (string= (system-name) "pisces"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
@@ -357,18 +374,6 @@ after stripping extra whitespace and new lines"
        (point)))))
 
 
-(defun tddsg-create-backup-file-name (fpath)
-  "Return a new file path of a given file path.
-If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
-         ;; remove Windows driver letter in path, ➢ for example: “C:”
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
-         (backupFilePath (replace-regexp-in-string
-                          "//" "/" (concat backupRootDir filePath "~"))))
-    (make-directory (file-name-directory backupFilePath)
-                    (file-name-directory backupFilePath))
-    backupFilePath))
-
 ;; call compile to the closest parent folder containing a Makefile
 (defun tddsg/compile ()
   (interactive)
@@ -410,6 +415,13 @@ If the new path's directories does not exist, create them."
   (interactive)
   (setq company-idle-delay 300))
 
+(defun tddsg/toggle-auto-truncate-lines ()
+  "Toggle auto truncate lines."
+  (interactive)
+  (if tddsg--auto-truncate-lines
+      (setq tddsg--auto-truncate-lines nil)
+    (setq tddsg--auto-truncate-lines t)))
+
 (defun tddsg/toggle-hide-mode-line ()
   (interactive)
   (if (bound-and-true-p mode-line-format)
@@ -450,18 +462,17 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-configs ()
   ;; specific setting for each machines
-  (cond ((string= (system-name) "pisces")
-         (progn
-           (set-default 'truncate-lines t)   ;; disable truncate line
-           (setq golden-ratio-adjust-factor 0.9)
-           (setq golden-ratio-balance nil)
-           (golden-ratio-mode)))
-        ((or (string= (system-name) "leo")
-             (string= (system-name) "polaris"))
-         (progn
-           (setq golden-ratio-adjust-factor 1.618)
-           (setq golden-ratio-balance nil)
-           (golden-ratio-mode))))
+  (if (tddsg--is-small-screen)
+      (progn
+        (set-default 'truncate-lines t)   ;; disable truncate line
+        (setq tddsg--auto-truncate-lines t)
+        (setq golden-ratio-adjust-factor 0.9)
+        (setq golden-ratio-balance nil)
+        (golden-ratio-mode))
+    (progn
+      (setq golden-ratio-adjust-factor 1.618)
+      (setq golden-ratio-balance nil)
+      (golden-ratio-mode)))
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
@@ -520,10 +531,10 @@ If the new path's directories does not exist, create them."
 
   ;; advice changing window
   (defun advice-window-change (orig-func &rest args)
-    (if (string= (system-name) "pisces") (toggle-truncate-lines 1))
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
     (apply orig-func args)
-    (if (string= (system-name) "pisces") (toggle-truncate-lines -1))
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines -1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'windmove-do-window-select
                       'select-window-by-number
@@ -535,7 +546,7 @@ If the new path's directories does not exist, create them."
   ;; advice changing buffer
   (defun advice-buffer-change (orig-func &rest args)
     (apply orig-func args)
-    (if  (string= (system-name) "pisces") (toggle-truncate-lines -1))
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
@@ -573,7 +584,7 @@ If the new path's directories does not exist, create them."
   ;; backup
   (setq make-backup-files t)
 
-  (setq make-backup-file-name-function 'tddsg-create-backup-file-name)
+  (setq make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; evil mode
   (setq-default evil-cross-lines t)
@@ -886,14 +897,14 @@ If the new path's directories does not exist, create them."
 (defcustom tddsg-themes nil
   "Association list of override faces to set for different custom themes.")
 
-(defun tddsg-read-custom-themes (alist-symbol key value)
+(defun tddsg--read-custom-themes (alist-symbol key value)
   "Set VALUE of a KEY in ALIST-SYMBOL."
   (set alist-symbol
        (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
 
 ;; override some settings of the leuven theme
-(defun tddsg-custom-theme-leuven ()
-  (tddsg-read-custom-themes
+(defun tddsg--custom-theme-leuven ()
+  (tddsg--read-custom-themes
    'tddsg-themes
    'leuven
    '(;; cursors & line
@@ -928,8 +939,8 @@ If the new path's directories does not exist, create them."
      (powerline-active1 ((t (:inherit mode-line :background "#163365")))))))
 
 ;; override some settings of the spacemacs-dark theme
-(defun tddsg-custom-theme-spacemacs-dark ()
-  (tddsg-read-custom-themes
+(defun tddsg--custom-theme-spacemacs-dark ()
+  (tddsg--read-custom-themes
    'tddsg-themes
    'spacemacs-dark
    '(;; cursors & line
@@ -962,7 +973,7 @@ If the new path's directories does not exist, create them."
      (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
      )))
 
-(defun tddsg-custom-common ()
+(defun tddsg--custom-common ()
   ;; custom variables
   (custom-set-variables
    '(sp-highlight-wrap-overlay nil))
@@ -972,7 +983,7 @@ If the new path's directories does not exist, create them."
    '(sp-wrap-overlay-face ((t nil)))
    '(sp-wrap-tag-overlay-face ((t nil)))))
 
-(defun tddsg-override-theme ()
+(defun tddsg--override-theme ()
   (dolist (theme-settings tddsg-themes)
     (let ((theme (car theme-settings))
           (faces (cadr theme-settings)))
@@ -982,14 +993,14 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/init-themes ()
   ;; load the custom theme
-  (tddsg-custom-common)
-  (tddsg-custom-theme-leuven)
-  (tddsg-custom-theme-spacemacs-dark)
-  (tddsg-override-theme)
+  (tddsg--custom-common)
+  (tddsg--custom-theme-leuven)
+  (tddsg--custom-theme-spacemacs-dark)
+  (tddsg--override-theme)
   ;; and defadvice load-theme function
   (defadvice load-theme (after theme-set-overrides activate)
     "Set override faces for different custom themes."
-    (tddsg-override-theme)))
+    (tddsg--override-theme)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
