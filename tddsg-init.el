@@ -63,14 +63,11 @@ If the new path's directories does not exist, create them."
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
-  (if (string-match "finished" string)
-      (run-with-timer 5 nil 'delete-window (get-buffer-window buffer t))
-    (progn
-      ;; show compilation window when compiling error
-      (get-buffer-window buffer t)
-      (if popwin:popup-window
-          (set-window-buffer popwin:popup-window buffer)
-        (popwin:popup-buffer buffer :noselect t)))))
+  ;; show compilation window when finish
+  (get-buffer-window buffer t)
+  (if popwin:popup-window
+      (set-window-buffer popwin:popup-window buffer)
+    (popwin:popup-buffer buffer :noselect t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
