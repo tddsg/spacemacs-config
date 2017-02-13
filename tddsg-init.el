@@ -666,8 +666,6 @@ If the new path's directories does not exist, create them."
 
   (global-set-key [?\H-M] 'helm-mini)
   (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key [?\H-I] 'helm-semantic-or-imenu)
-  (global-set-key [?\H-i] 'helm-semantic-or-imenu)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
