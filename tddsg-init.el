@@ -1063,7 +1063,6 @@ If the new path's directories does not exist, create them."
                        auto-compile
                        ,second-left
                        major-mode
-                       (projectile-root :when active)
                        (version-control :when active)
                        (minor-modes :when active)
                        (process :when active)
