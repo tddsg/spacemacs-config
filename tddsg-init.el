@@ -992,23 +992,32 @@ If the new path's directories does not exist, create them."
   `(propertize ,str 'face (list ,@properties)))
 
 (defun tddsg--header-file-path ()
-  "Create the header line, located at the top of each buffer."
+  "Create file path for the header line."
   (let* ((full-header (abbreviate-file-name buffer-file-name))
          (header (file-name-directory full-header))
          (drop-str "[...]"))
     (if (> (length full-header) (window-body-width))
         (if (> (length header) (window-body-width))
-          (concat (with-face drop-str :foreground "cyan" :weight 'bold)
-                  (with-face (substring header
-                                        (+ (- (length header) (window-body-width))
-                                           (length drop-str))
-                                        (length header))
-                             :foreground "cyan" :weight 'bold))
-          (concat (with-face header :foreground "#8fb28f" :weight 'bold)))
-      (concat (with-face header :weight 'bold :foreground "#8fb28f")
+            (concat (with-face drop-str :foreground "cyan" :weight 'bold)
+                    (with-face (substring header
+                                          (+ (- (length header) (window-body-width))
+                                             (length drop-str))
+                                          (length header))
+                               :foreground "cyan" :weight 'bold))
+          (concat (with-face header :foreground "LightSkyBlue" :weight 'bold)))
+      (concat "♘ "
+              (with-face header :weight 'bold :foreground "LightSkyBlue")
               (with-face (file-name-nondirectory buffer-file-name)
                          :foreground "SandyBrown"
                          :weight 'bold)))))
+
+(defun tddsg--header-project-path ()
+  "Create project path for the header line."
+  (if (projectile-project-name)
+      (concat "♖ "
+              (with-face (projectile-project-name) :foreground "OrangeRed")
+              " ")
+    ""))
 
 ;; set font of header line
 (custom-set-faces
@@ -1019,7 +1028,7 @@ If the new path's directories does not exist, create them."
     (((class color grayscale) (background light))
      :background "grey90" :foreground "grey20" :box nil)
     (((class color grayscale) (background dark))
-     :background "#212026" :foreground "blue" :box nil)
+     :background "#212026" :foreground "gainsboro" :box nil)
     (((class mono) (background light))
      :background "white" :foreground "black"
      :inverse-video nil :box nil :underline t)
@@ -1027,16 +1036,14 @@ If the new path's directories does not exist, create them."
      :background "black" :foreground "white"
      :inverse-video nil :box nil :underline t))))
 
-
-
 (defun tddsg--update-header-line ()
   (if (not (string-equal "*" (substring (buffer-name) 0 1)))
       ;; update only user-buffer
       (setq header-line-format
             '("" ;; invocation-name
               (:eval
-               (concat (if (buffer-file-name)
-                           (tddsg--header-file-path) "%b")))))))
+               (concat (tddsg--header-project-path)
+                       (tddsg--header-file-path)))))))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
