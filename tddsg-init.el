@@ -996,22 +996,37 @@ If the new path's directories does not exist, create them."
   (let* ((full-header (abbreviate-file-name buffer-file-name))
          (header (file-name-directory full-header))
          (drop-str "[...]"))
-    (if (> (length full-header)
-           (window-body-width))
-        (if (> (length header)
-               (window-body-width))
-            (progn
-              (concat (with-face drop-str :background "blue" :weight 'bold)
-                      (with-face (substring header
-                                            (+ (- (length header)
-                                                  (window-body-width))
-                                               (length drop-str))
-                                            (length header))
-                                 :weight 'bold)))
+    (if (> (length full-header) (window-body-width))
+        (if (> (length header) (window-body-width))
+          (concat (with-face drop-str :foreground "cyan" :weight 'bold)
+                  (with-face (substring header
+                                        (+ (- (length header) (window-body-width))
+                                           (length drop-str))
+                                        (length header))
+                             :foreground "cyan" :weight 'bold))
           (concat (with-face header :foreground "#8fb28f" :weight 'bold)))
       (concat (with-face header :weight 'bold :foreground "#8fb28f")
               (with-face (file-name-nondirectory buffer-file-name)
+                         :foreground "SandyBrown"
                          :weight 'bold)))))
+
+;; set font of header line
+(custom-set-faces
+ '(header-line
+   ((default :inherit mode-line)
+    (((type tty))
+     :foreground "black" :background "yellow" :inverse-video nil)
+    (((class color grayscale) (background light))
+     :background "grey90" :foreground "grey20" :box nil)
+    (((class color grayscale) (background dark))
+     :background "#212026" :foreground "blue" :box nil)
+    (((class mono) (background light))
+     :background "white" :foreground "black"
+     :inverse-video nil :box nil :underline t)
+    (((class mono) (background dark))
+     :background "black" :foreground "white"
+     :inverse-video nil :box nil :underline t))))
+
 
 
 (defun tddsg--update-header-line ()
