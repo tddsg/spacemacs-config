@@ -606,6 +606,8 @@ If the new path's directories does not exist, create them."
   (spacemacs|diminish flyspell-mode " ✔")
   (spacemacs|diminish holy-mode " ☼")
   (spacemacs|diminish projectile-mode " ♖")
+  (spacemacs|diminish compilation-minor-mode "⚡⚡⚡COMPILING⚡⚡⚡")
+  (spacemacs|diminish compilation-in-progress "⚡⚡⚡COMPILING⚡⚡⚡")
 
   ;; hooks, finally hook
   (add-hook 'LaTeX-mode-hook 'tddsg--hook-prog-text-mode)
@@ -887,7 +889,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg-read-custom-themes (alist-symbol key value)
   "Set VALUE of a KEY in ALIST-SYMBOL."
   (set alist-symbol
-        (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
+       (cons (list key value) (assq-delete-all key (eval alist-symbol)))))
 
 ;; override some settings of the leuven theme
 (defun tddsg-custom-theme-leuven ()
