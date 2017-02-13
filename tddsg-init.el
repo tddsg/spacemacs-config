@@ -1099,7 +1099,7 @@ after stripping extra whitespace and new lines"
                        ,second-left
                        major-mode
                        (version-control :when active)
-                       (minor-modes :when active)
+                       minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
