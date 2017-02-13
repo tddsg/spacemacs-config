@@ -1005,7 +1005,7 @@ If the new path's directories does not exist, create them."
                                           (length header))
                                :foreground "cyan" :weight 'bold))
           (concat (with-face header :foreground "LightSkyBlue" :weight 'bold)))
-      (concat "⚝ "
+      (concat "▷ "
               (with-face header :weight 'bold :foreground "LightSkyBlue")
               (with-face (file-name-nondirectory buffer-file-name)
                          :foreground "SandyBrown"
