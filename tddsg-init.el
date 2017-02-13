@@ -1006,7 +1006,7 @@ If the new path's directories does not exist, create them."
                        (org-pomodoro :when active)
                        (org-clock :when active)
                        nyan-cat)
-                     `(global
+                     `((global :when (not active))
                        which-function
                        (python-pyvenv :fallback python-pyenv)
                        (battery :when active)
