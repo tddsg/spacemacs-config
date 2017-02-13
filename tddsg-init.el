@@ -1044,13 +1044,10 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--create-header-line ()
   "Create the header line of a buffer."
-  ;; update only user-buffer
-  (if (not (string-equal "*" (substring (buffer-name) 0 1)))
-      '("" ;; invocation-name
-        (:eval
-         (concat (tddsg--header-project-path)
-                 (tddsg--header-file-path))))
-    nil))
+  '("" ;; invocation-name
+    (:eval
+     (concat (tddsg--header-project-path)
+             (tddsg--header-file-path)))))
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
@@ -1058,14 +1055,16 @@ If the new path's directories does not exist, create them."
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (not (eq window (selected-window)))
+       (if (and (not (eq window (selected-window)))
+                (not (string-equal "*" (substring (buffer-name) 0 1))))
            (setq header-line-format nil))))
    (window-list))
   ;; activate header-line of the buffer in the active window
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (eq window (selected-window))
+       (if (and (eq window (selected-window))
+                (not (string-equal "*" (substring (buffer-name) 0 1))))
            (setq header-line-format (tddsg--create-header-line)))))
    (window-list)))
 
