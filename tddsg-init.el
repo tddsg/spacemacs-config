@@ -416,6 +416,12 @@ If the new path's directories does not exist, create them."
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
+(defun tddsg/toggle-hide-header-line ()
+  (interactive)
+  (if (bound-and-true-p header-line-format)
+      (setq header-line-format nil)
+    (setq header-line-format (default-value 'header-line-format))))
+
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
@@ -721,8 +727,9 @@ If the new path's directories does not exist, create them."
   (global-set-key (kbd "M-m m t") 'ansi-term)
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
-  (global-set-key (kbd "M-m m l") 'tddsg/toggle-hide-mode-line)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
+  (global-set-key (kbd "M-m T l") 'tddsg/toggle-hide-mode-line)
+  (global-set-key (kbd "M-m T h") 'tddsg/toggle-hide-header-line)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m l c") 'langtool-check)
@@ -1040,7 +1047,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg--update-header-line ()
   (if (not (string-equal "*" (substring (buffer-name) 0 1)))
       ;; update only user-buffer
-      (setq header-line-format
+      (setq-default header-line-format
             '("" ;; invocation-name
               (:eval
                (concat (tddsg--header-project-path)
