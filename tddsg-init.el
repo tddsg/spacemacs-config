@@ -96,6 +96,7 @@ If the new path's directories does not exist, create them."
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
   (toggle-truncate-lines -1)
+  (visual-line-mode 1)
   (rainbow-delimiters-mode-enable))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -463,6 +464,7 @@ after stripping extra whitespace and new lines"
         (setq golden-ratio-balance nil)
         (golden-ratio-mode))
     (progn
+      (setq tddsg--auto-truncate-lines nil)
       (setq golden-ratio-adjust-factor 1.618)
       (setq golden-ratio-balance nil)
       (golden-ratio-mode)))
