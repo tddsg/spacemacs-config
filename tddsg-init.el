@@ -1044,15 +1044,32 @@ If the new path's directories does not exist, create them."
      :background "black" :foreground "white"
      :inverse-video nil :box nil :underline t))))
 
+(defun tddsg--create-header-line ()
+  "Create the header line of a buffer."
+  ;; update only user-buffer
+  (if (not (string-equal "*" (substring (buffer-name) 0 1)))
+      '("" ;; invocation-name
+        (:eval
+         (concat (tddsg--header-project-path)
+                 (tddsg--header-file-path))))
+    nil))
+
 (defun tddsg--update-header-line ()
-  (setq-default header-line-format
-                ;; update only user-buffer
-                (if (not (string-equal "*" (substring (buffer-name) 0 1)))
-                    '("" ;; invocation-name
-                      (:eval
-                       (concat (tddsg--header-project-path)
-                               (tddsg--header-file-path))))
-                  nil)))
+  "Update header line of the active buffer and remove from all other."
+  ;; remove  header-line of all buffers
+  (mapc
+   (lambda (window)
+     (with-current-buffer (window-buffer window)
+       (if (not (eq window (selected-window)))
+           (setq header-line-format nil))))
+   (window-list))
+  ;; activate header-line of the buffer in the active window
+  (mapc
+   (lambda (window)
+     (with-current-buffer (window-buffer window)
+       (if (eq window (selected-window))
+           (setq header-line-format (tddsg--create-header-line)))))
+   (window-list)))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
