@@ -1045,13 +1045,14 @@ If the new path's directories does not exist, create them."
      :inverse-video nil :box nil :underline t))))
 
 (defun tddsg--update-header-line ()
-  (if (not (string-equal "*" (substring (buffer-name) 0 1)))
-      ;; update only user-buffer
-      (setq-default header-line-format
-            '("" ;; invocation-name
-              (:eval
-               (concat (tddsg--header-project-path)
-                       (tddsg--header-file-path)))))))
+  (setq-default header-line-format
+                ;; update only user-buffer
+                (if (not (string-equal "*" (substring (buffer-name) 0 1)))
+                    '("" ;; invocation-name
+                      (:eval
+                       (concat (tddsg--header-project-path)
+                               (tddsg--header-file-path))))
+                  nil)))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
