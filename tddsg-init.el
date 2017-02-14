@@ -133,6 +133,22 @@ If the new path's directories does not exist, create them."
     (select-window old-window)
     (switch-to-buffer shell-buf)))
 
+(defun tddsg/term (&optional buffer)
+  "Open a `term' in the current window."
+  (interactive)
+  (let ((old-buf (if (= (count-windows) 1) (current-buffer)
+                   (progn
+                     (other-window 1)
+                     (let ((buf (window-buffer))) (other-window -1) buf))))
+        (old-window (frame-selected-window))
+        (current-prefix-arg 4) ;; allow using C-u
+        ;; (shell-buf (call-interactively 'term "/bin/bash"))
+        (shell-buf (term "/bin/bash"))
+        )
+    (switch-to-buffer old-buf)
+    (select-window old-window)
+    (switch-to-buffer shell-buf)))
+
 (defun tddsg/save-file-as-and-open-file (filename &optional confirm)
   "Save current buffer into file FILENAME and open it in a new buffer."
   (interactive
@@ -525,19 +541,25 @@ after stripping extra whitespace and new lines"
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
 
-  ;; advice changing window
-  (defun advice-window-change (orig-func &rest args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
+  ;; hide cursor when necessary on changing window
+  (defun tddsg--hide-cursor (orig-func &rest args)
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines -1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'windmove-do-window-select
+                      'select-window))
+    (advice-add func :around #'tddsg--hide-cursor))
+
+  ;; auto truncate lines when necessary on changing window
+  (defun tddsg--truncate-lines (orig-func &rest args)
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
+    (apply orig-func args)
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines -1)))
+  ;; do not advice 'select-window since this causes buffer overflow
+  (dolist (func (list 'windmove-do-window-select
                       'select-window-by-number
-                      'other-window
-                      ;; 'select-window ;; this causes buffer overflow
-                      ))
-    (advice-add func :around #'advice-window-change))
+                      'other-window))
+    (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advice changing buffer
   (defun advice-buffer-change (orig-func &rest args)
@@ -685,6 +707,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
   (global-set-key (kbd "C-c M") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
+  (global-set-key (kbd "C-c t") 'tddsg/term)
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
