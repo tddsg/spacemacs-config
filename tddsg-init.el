@@ -16,7 +16,7 @@
 (require 'pdf-tools)
 (require 'face-remap)
 (require 'magit-gitflow)
-(require 'whitespace-mode)
+(require 'whitespace)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
@@ -1092,15 +1092,36 @@ after stripping extra whitespace and new lines"
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
+;; (defun tddsg--update-header-line ()
+;;   "Update header line of the active buffer and remove from all other."
+;;   ;; remove  header-line of all buffers
+;;   (mapc
+;;    (lambda (window)
+;;      (with-current-buffer (window-buffer window)
+;;        (if (and (not (eq window (selected-window)))
+;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
+;;            (setq header-line-format nil))))
+;;    (window-list))
+;;   ;; activate header-line of the buffer in the active window
+;;   (mapc
+;;    (lambda (window)
+;;      (with-current-buffer (window-buffer window)
+;;        (if (and (eq window (selected-window))
+;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
+;;            (setq header-line-format (tddsg--create-header-line)))))
+;;    (window-list)))
+
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
-  ;; remove  header-line of all buffers
+  ;; dim header-line of inactive buffers
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (and (not (eq window (selected-window)))
-                (not (string-equal "*" (substring (buffer-name) 0 1))))
-           (setq header-line-format nil))))
+       (cond ((string-equal "*" (substring (buffer-name) 0 1)) ())
+             ((not (eq window (selected-window)))
+              (setq header-line-format
+                    `(:propertize ,(tddsg--create-header-line)
+                                  face (list :foreground "grey55")))))))
    (window-list))
   ;; activate header-line of the buffer in the active window
   (mapc
