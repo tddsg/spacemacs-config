@@ -15,6 +15,7 @@
 (require 'pdf-view)
 (require 'pdf-tools)
 (require 'face-remap)
+(require 'magit-gitflow)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
@@ -601,10 +602,10 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish which-key-mode "")
   (spacemacs|diminish yas-minor-mode "")
+  (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish abbrev-mode " ↹")
   (spacemacs|diminish smartparens-mode " ♓")
   (spacemacs|diminish rainbow-mode " ☔")
-  (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish visual-line-mode " ↩")
   (spacemacs|diminish merlin-mode " ⚝")
   (spacemacs|diminish utop-minor-mode " ⚻")
