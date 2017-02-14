@@ -16,6 +16,7 @@
 (require 'pdf-tools)
 (require 'face-remap)
 (require 'magit-gitflow)
+(require 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
@@ -632,13 +633,15 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish which-key-mode "")
   (spacemacs|diminish yas-minor-mode "")
+  (spacemacs|diminish utop-minor-mode "")
+  (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish abbrev-mode " ↹")
   (spacemacs|diminish smartparens-mode " ♓")
   (spacemacs|diminish rainbow-mode " ☔")
+  (spacemacs|diminish auto-fill-function " ↪")
   (spacemacs|diminish visual-line-mode " ↩")
   (spacemacs|diminish merlin-mode " ⚝")
-  (spacemacs|diminish utop-minor-mode " ⚻")
   (spacemacs|diminish magit-gitflow-mode " ♒")
   (spacemacs|diminish flycheck-mode " ⚐")
   (spacemacs|diminish flyspell-mode " ✔")
@@ -1044,25 +1047,24 @@ after stripping extra whitespace and new lines"
          (drop-str "[...]"))
     (if (> (length full-header) (window-body-width))
         (if (> (length header) (window-body-width))
-            (concat (with-face drop-str :foreground "cyan" :weight 'bold)
+            (concat (with-face drop-str :foreground "DeepSkyBlue3")
                     (with-face (substring header
                                           (+ (- (length header) (window-body-width))
                                              (length drop-str))
                                           (length header))
-                               :foreground "cyan" :weight 'bold))
-          (concat (with-face header :foreground "LightSkyBlue" :weight 'bold)))
+                               :foreground "DeepSkyBlue3"))
+          (concat (with-face header :foreground "DeepSkyBlue3")))
       (concat "▷ "
-              (with-face header :weight 'bold :foreground "LightSkyBlue")
+              (with-face header :foreground "DeepSkyBlue3")
               (with-face (file-name-nondirectory buffer-file-name)
-                         :foreground "SandyBrown"
-                         :weight 'bold)))))
+                         :foreground "DarkOrange3")))))
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
   (if (and (not (string= (projectile-project-name) ""))
            (not (string= (projectile-project-name) "-")))
       (concat "♖ "
-              (with-face (projectile-project-name) :foreground "OrangeRed")
+              (with-face (projectile-project-name) :foreground "DarkOrange3")
               " ")
     ""))
 

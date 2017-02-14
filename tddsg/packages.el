@@ -426,9 +426,10 @@ Each entry is either:
   ;; customize syntax table for forward/backward slurping/barfing sexp
   (defun my-songbird-hook ()
     ;; customize syntax table for slurping/barfing parentheses
-    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<
-                          ?( ?) ?{ ?} ?[ ?]))
-      (modify-syntax-entry symbol "'" songbird-syntax-table)))
+    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
+      (modify-syntax-entry symbol "'" songbird-syntax-table))
+    (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
+      (modify-syntax-entry symbol "_" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
 
 
