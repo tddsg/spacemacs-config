@@ -22,7 +22,7 @@
 
 (setq tddsg--cursor-color "lime green")
 
-(setq tddsg--auto-truncate-lines t)
+(setq tddsg--auto-truncate-lines nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -679,7 +679,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
-  (global-set-key (kbd "C-\\") 'goto-last-change)
+  (global-set-key (kbd "C-\\") 'indent-region)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
