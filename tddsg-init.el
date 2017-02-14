@@ -61,14 +61,22 @@ If the new path's directories does not exist, create them."
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
 
+(defun tddsg--list-exists (check xs)
+  (if xs (if (funcall check (car xs)) t
+           (tddsg--list-exists check (cdr xs)))
+    nil))
+
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
   ;; show compilation window when finish
   (get-buffer-window buffer t)
-  (if popwin:popup-window
-      (set-window-buffer popwin:popup-window buffer)
-    (popwin:popup-buffer buffer :noselect t)))
+  (cond (popwin:popup-window
+         (set-window-buffer popwin:popup-window buffer))
+        ((not (tddsg--list-exists
+               (lambda (window) (eq buffer (window-buffer window)))
+               (window-list)))
+         (popwin:popup-buffer buffer :noselect t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
