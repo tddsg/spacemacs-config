@@ -635,6 +635,7 @@ after stripping extra whitespace and new lines"
   (setq make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; evil mode
+  (evil-mode -1)
   (setq-default evil-cross-lines t)
 
   ;; dired
