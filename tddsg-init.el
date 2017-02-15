@@ -67,6 +67,11 @@ If the new path's directories does not exist, create them."
            (tddsg--list-exists check (cdr xs)))
     nil))
 
+(defun tddsg--list-forall (check xs)
+  (if xs (if (not (funcall check (car xs))) nil
+           (tddsg--list-exists check (cdr xs)))
+    t))
+
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
@@ -1099,24 +1104,36 @@ after stripping extra whitespace and new lines"
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
+;; list of buffer prefixes that the header-line is hidden
+(defcustom tddsg--excluded-buffer-prefix (list "*helm"))
+
+(defun tddsg--header-exclude-p (buffer-name)
+  (tddsg--list-exists (lambda (prefix)
+                        (string-match-p (regexp-quote prefix) buffer-name))
+                      tddsg--excluded-buffer-prefix))
+
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
   ;; dim header-line of inactive buffers
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (not (eq window (selected-window)))
-           (setq header-line-format
-                 `(:propertize ,(tddsg--create-header-line)
-                               face (list :foreground "grey55"))))))
+       (cond ((tddsg--header-exclude-p (buffer-name)) ())
+             ((not (eq window (selected-window)))
+              (setq header-line-format
+                    `(:propertize ,(tddsg--create-header-line)
+                                  face (list :foreground "grey55")))))))
    (window-list))
   ;; activate header-line of the buffer in the active window
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (eq window (selected-window))
+       (if (and (not (tddsg--header-exclude-p (buffer-name)))
+                (eq window (selected-window)))
            (setq header-line-format (tddsg--create-header-line)))))
    (window-list)))
+
+;; (not (string-equal "*" (substring (buffer-name) 0 1)))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
