@@ -462,9 +462,13 @@ after stripping extra whitespace and new lines"
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
-  (if comint-scroll-to-bottom-on-output
-      (setq comint-scroll-to-bottom-on-output nil)
-    (setq comint-scroll-to-bottom-on-output t)))
+  (if (derived-mode-p 'shell-mode)
+      (cond (comint-scroll-to-bottom-on-output
+             (setq comint-scroll-to-bottom-on-output nil)
+             (setq mode-name "Shell ≋"))
+            (t
+             (setq comint-scroll-to-bottom-on-output t)
+             (setq mode-name "Shell")))))
 
 (require 'golden-ratio)
 (defun tddsg/toggle-golden-ratio-balance ()
@@ -1104,8 +1108,9 @@ after stripping extra whitespace and new lines"
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
-;; list of buffer prefixes that the header-line is hidden
-(defcustom tddsg--excluded-buffer-prefix (list "*helm"))
+;; List of buffer prefixes that the header-line is hidden
+(defvar tddsg--excluded-buffer-prefix (list "*helm"
+                                            "*spacemacs*"))
 
 (defun tddsg--header-exclude-p (buffer-name)
   (tddsg--list-exists (lambda (prefix)
@@ -1133,7 +1138,6 @@ after stripping extra whitespace and new lines"
            (setq header-line-format (tddsg--create-header-line)))))
    (window-list)))
 
-;; (not (string-equal "*" (substring (buffer-name) 0 1)))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
