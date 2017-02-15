@@ -1042,22 +1042,29 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg--header-file-path ()
   "Create file path for the header line."
-  (let* ((full-header (abbreviate-file-name buffer-file-name))
-         (header (file-name-directory full-header))
-         (drop-str "[...]"))
-    (if (> (length full-header) (window-body-width))
-        (if (> (length header) (window-body-width))
-            (concat (with-face drop-str :foreground "DeepSkyBlue3")
-                    (with-face (substring header
-                                          (+ (- (length header) (window-body-width))
-                                             (length drop-str))
-                                          (length header))
-                               :foreground "DeepSkyBlue3"))
-          (concat (with-face header :foreground "DeepSkyBlue3")))
+  (let* ((file-path (if buffer-file-name
+                        (abbreviate-file-name buffer-file-name)
+                      (buffer-name)))
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (file-name  (if buffer-file-name
+                         (file-name-nondirectory buffer-file-name)
+                       (buffer-name)))
+         (drop-str "[...]")
+         (display-width (- (window-body-width) (length drop-str) 3
+                           (length (projectile-project-name)))))
+    (if (> (length file-path) display-width)
+        (if (> (length file-name) display-width)
+            (concat "▷ " (with-face file-name :foreground "DarkOrange3"))
+          (concat "▷ "
+                  (with-face (substring dir-name 0 (- display-width
+                                                      (length file-name)))
+                             :foreground "DeepSkyBlue3")
+                  (with-face drop-str :foreground "DeepSkyBlue3")
+                  (with-face file-name :foreground "DarkOrange3")))
       (concat "▷ "
-              (with-face header :foreground "DeepSkyBlue3")
-              (with-face (file-name-nondirectory buffer-file-name)
-                         :foreground "DarkOrange3")))))
+              (with-face dir-name :foreground "DeepSkyBlue3")
+              (with-face file-name :foreground "DarkOrange3")))))
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
@@ -1092,43 +1099,22 @@ after stripping extra whitespace and new lines"
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
-;; (defun tddsg--update-header-line ()
-;;   "Update header line of the active buffer and remove from all other."
-;;   ;; remove  header-line of all buffers
-;;   (mapc
-;;    (lambda (window)
-;;      (with-current-buffer (window-buffer window)
-;;        (if (and (not (eq window (selected-window)))
-;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
-;;            (setq header-line-format nil))))
-;;    (window-list))
-;;   ;; activate header-line of the buffer in the active window
-;;   (mapc
-;;    (lambda (window)
-;;      (with-current-buffer (window-buffer window)
-;;        (if (and (eq window (selected-window))
-;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
-;;            (setq header-line-format (tddsg--create-header-line)))))
-;;    (window-list)))
-
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
   ;; dim header-line of inactive buffers
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (cond ((string-equal "*" (substring (buffer-name) 0 1)) ())
-             ((not (eq window (selected-window)))
-              (setq header-line-format
-                    `(:propertize ,(tddsg--create-header-line)
-                                  face (list :foreground "grey55")))))))
+       (if (not (eq window (selected-window)))
+           (setq header-line-format
+                 `(:propertize ,(tddsg--create-header-line)
+                               face (list :foreground "grey55"))))))
    (window-list))
   ;; activate header-line of the buffer in the active window
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (and (eq window (selected-window))
-                (not (string-equal "*" (substring (buffer-name) 0 1))))
+       (if (eq window (selected-window))
            (setq header-line-format (tddsg--create-header-line)))))
    (window-list)))
 
