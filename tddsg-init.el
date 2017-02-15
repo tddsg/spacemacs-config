@@ -657,7 +657,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish utop-minor-mode "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
-  (spacemacs|diminish god-local-mode " ☢")
+  (spacemacs|diminish god-local-mode " ⚡☢⚡☢⚡")
   (spacemacs|diminish abbrev-mode " ↹")
   (spacemacs|diminish smartparens-mode " ♓")
   (spacemacs|diminish rainbow-mode " ☔")

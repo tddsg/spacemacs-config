@@ -367,6 +367,12 @@ Each entry is either:
   (defun update-cursor ()
     (if god-global-mode (set-cursor-color "purple")
       (set-cursor-color "lime green")))
+  (defun advice-update-cursor (orig-func &rest args)
+    (apply orig-func args)
+    (update-cursor))
+  (dolist (func (list 'windmove-do-window-select
+                      'select-window))
+    (advice-add func :around #'advice-update-cursor))
   (defun my-god-mode-hook () (interactive) (update-cursor))
   (add-hook 'god-mode-enabled-hook 'my-god-mode-hook)
   (add-hook 'god-mode-disabled-hook 'my-god-mode-hook))
