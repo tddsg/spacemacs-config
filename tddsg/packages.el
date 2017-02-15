@@ -35,6 +35,7 @@
     tuareg
     auctex
     cc-mode
+    god-mode
     org
     ace-popup-menu
     smartparens
@@ -359,6 +360,16 @@ Each entry is either:
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
+
+(defun tddsg/init-god-mode ()
+  (require 'god-mode)
+  ;;; update cursor
+  (defun update-cursor ()
+    (if god-global-mode (set-cursor-color "purple")
+      (set-cursor-color "lime green")))
+  (defun my-god-mode-hook () (interactive) (update-cursor))
+  (add-hook 'god-mode-enabled-hook 'my-god-mode-hook)
+  (add-hook 'god-mode-disabled-hook 'my-god-mode-hook))
 
 (defun tddsg/post-init-pdf-tools ()
   (pdf-tools-install)

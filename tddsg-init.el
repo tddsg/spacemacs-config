@@ -17,7 +17,8 @@
 (require 'face-remap)
 (require 'magit-gitflow)
 (require 'whitespace)
-
+(require 'god-mode)
+(require 'god-mode-isearch)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
@@ -655,6 +656,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish utop-minor-mode "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
+  (spacemacs|diminish god-local-mode " ☢")
   (spacemacs|diminish abbrev-mode " ↹")
   (spacemacs|diminish smartparens-mode " ♓")
   (spacemacs|diminish rainbow-mode " ☔")
@@ -684,7 +686,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/init-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  ;; (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "<escape>") 'god-mode)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -866,6 +868,16 @@ after stripping extra whitespace and new lines"
   (define-key magit-status-mode-map (kbd "M-9") nil)
   (define-key magit-status-mode-map (kbd "M-0") nil)
 
+  ;; god-mode
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "C-z") 'god-mode)
+  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-mode)
+  (define-key god-local-mode-map (kbd "z") 'repeat)
+  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
   (global-set-key (kbd "S-<right>") 'windmove-right)
@@ -896,7 +908,7 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "C-j") nil)
-  ;; (define-key LaTeX-mode-map (kbd "C-j") nil)
+  (eval-after-load 'latex '(define-key LaTeX-mode-map (kbd "C-j") nil))
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
@@ -930,7 +942,7 @@ after stripping extra whitespace and new lines"
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
   (define-key evil-motion-state-map (kbd "C-z") nil)
-  ;; (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
+  (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
