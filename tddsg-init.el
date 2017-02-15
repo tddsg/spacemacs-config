@@ -580,13 +580,13 @@ after stripping extra whitespace and new lines"
     (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advice changing buffer
-  (defun advice-buffer-change (orig-func &rest args)
+  (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
     (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
-    (advice-add func :around #'advice-buffer-change)) ;
+    (advice-add func :around #'tddsg--enable-truncate-lines)) ;
 
   ;; mode editing setting
   (electric-pair-mode t)
@@ -603,6 +603,16 @@ after stripping extra whitespace and new lines"
 
   ;; mode-line setting
   (setq powerline-default-separator 'wave)
+
+  ;; isearch
+  (defun tddsg--isearch-show-case-fold (orig-func &rest args)
+    (apply orig-func args)
+    (if isearch-case-fold-search
+        (spacemacs|diminish isearch-mode "⚡ISearch[ci]⚡")
+      (spacemacs|diminish isearch-mode "⚡ISearch[CS]⚡")))
+  (advice-add 'isearch-mode :around #'tddsg--isearch-show-case-fold)
+  (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
+  (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
 
   ;; compilation
   (setq compilation-ask-about-save nil
