@@ -938,7 +938,9 @@ after stripping extra whitespace and new lines"
   (tddsg--read-custom-themes
    'tddsg-themes
    'leuven
-   '(;; cursors & line
+   '((bold ((t (:foreground "salmon4" :weight bold))))
+     (bold-italic ((t (:foreground "salmon4" :slant italic :weight bold))))
+     ;; cursors & line
      (cursor ((t (:background "lime green"))))
      (hl-line ((t (:background "honeydew2"))))
      ;; latex font face
