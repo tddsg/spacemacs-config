@@ -660,7 +660,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish rainbow-mode " ☔")
   (spacemacs|diminish auto-fill-function " ↪")
   (spacemacs|diminish visual-line-mode " ↩")
-  (spacemacs|diminish merlin-mode " ⚝")
+  (spacemacs|diminish merlin-mode " ♏")
   (spacemacs|diminish magit-gitflow-mode " ♒")
   (spacemacs|diminish flycheck-mode " ⚐")
   (spacemacs|diminish flyspell-mode " ✔")
