@@ -67,6 +67,11 @@ If the new path's directories does not exist, create them."
            (tddsg--list-exists check (cdr xs)))
     nil))
 
+(defun tddsg--list-forall (check xs)
+  (if xs (if (not (funcall check (car xs))) nil
+           (tddsg--list-exists check (cdr xs)))
+    t))
+
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
@@ -457,9 +462,13 @@ after stripping extra whitespace and new lines"
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
-  (if comint-scroll-to-bottom-on-output
-      (setq comint-scroll-to-bottom-on-output nil)
-    (setq comint-scroll-to-bottom-on-output t)))
+  (if (derived-mode-p 'shell-mode)
+      (cond (comint-scroll-to-bottom-on-output
+             (setq comint-scroll-to-bottom-on-output nil)
+             (setq mode-name "Shell ≋"))
+            (t
+             (setq comint-scroll-to-bottom-on-output t)
+             (setq mode-name "Shell")))))
 
 (require 'golden-ratio)
 (defun tddsg/toggle-golden-ratio-balance ()
@@ -571,13 +580,13 @@ after stripping extra whitespace and new lines"
     (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advice changing buffer
-  (defun advice-buffer-change (orig-func &rest args)
+  (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
     (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
-    (advice-add func :around #'advice-buffer-change)) ;
+    (advice-add func :around #'tddsg--enable-truncate-lines)) ;
 
   ;; mode editing setting
   (electric-pair-mode t)
@@ -594,6 +603,16 @@ after stripping extra whitespace and new lines"
 
   ;; mode-line setting
   (setq powerline-default-separator 'wave)
+
+  ;; isearch
+  (defun tddsg--isearch-show-case-fold (orig-func &rest args)
+    (apply orig-func args)
+    (if isearch-case-fold-search
+        (spacemacs|diminish isearch-mode "⚡ISearch[ci]⚡")
+      (spacemacs|diminish isearch-mode "⚡ISearch[CS]⚡")))
+  (advice-add 'isearch-mode :around #'tddsg--isearch-show-case-fold)
+  (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
+  (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
 
   ;; compilation
   (setq compilation-ask-about-save nil
@@ -641,7 +660,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish rainbow-mode " ☔")
   (spacemacs|diminish auto-fill-function " ↪")
   (spacemacs|diminish visual-line-mode " ↩")
-  (spacemacs|diminish merlin-mode " ⚝")
+  (spacemacs|diminish merlin-mode " ♏")
   (spacemacs|diminish magit-gitflow-mode " ♒")
   (spacemacs|diminish flycheck-mode " ⚐")
   (spacemacs|diminish flyspell-mode " ✔")
@@ -1044,22 +1063,29 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg--header-file-path ()
   "Create file path for the header line."
-  (let* ((full-header (abbreviate-file-name buffer-file-name))
-         (header (file-name-directory full-header))
-         (drop-str "[...]"))
-    (if (> (length full-header) (window-body-width))
-        (if (> (length header) (window-body-width))
-            (concat (with-face drop-str :foreground "DeepSkyBlue3")
-                    (with-face (substring header
-                                          (+ (- (length header) (window-body-width))
-                                             (length drop-str))
-                                          (length header))
-                               :foreground "DeepSkyBlue3"))
-          (concat (with-face header :foreground "DeepSkyBlue3")))
+  (let* ((file-path (if buffer-file-name
+                        (abbreviate-file-name buffer-file-name)
+                      (buffer-name)))
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (file-name  (if buffer-file-name
+                         (file-name-nondirectory buffer-file-name)
+                       (buffer-name)))
+         (drop-str "[...]")
+         (display-width (- (window-body-width) (length drop-str) 3
+                           (length (projectile-project-name)))))
+    (if (> (length file-path) display-width)
+        (if (> (length file-name) display-width)
+            (concat "▷ " (with-face file-name :foreground "DarkOrange3"))
+          (concat "▷ "
+                  (with-face (substring dir-name 0 (- display-width
+                                                      (length file-name)))
+                             :foreground "DeepSkyBlue3")
+                  (with-face drop-str :foreground "DeepSkyBlue3")
+                  (with-face file-name :foreground "DarkOrange3")))
       (concat "▷ "
-              (with-face header :foreground "DeepSkyBlue3")
-              (with-face (file-name-nondirectory buffer-file-name)
-                         :foreground "DarkOrange3")))))
+              (with-face dir-name :foreground "DeepSkyBlue3")
+              (with-face file-name :foreground "DarkOrange3")))))
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
@@ -1094,24 +1120,14 @@ after stripping extra whitespace and new lines"
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
-;; (defun tddsg--update-header-line ()
-;;   "Update header line of the active buffer and remove from all other."
-;;   ;; remove  header-line of all buffers
-;;   (mapc
-;;    (lambda (window)
-;;      (with-current-buffer (window-buffer window)
-;;        (if (and (not (eq window (selected-window)))
-;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
-;;            (setq header-line-format nil))))
-;;    (window-list))
-;;   ;; activate header-line of the buffer in the active window
-;;   (mapc
-;;    (lambda (window)
-;;      (with-current-buffer (window-buffer window)
-;;        (if (and (eq window (selected-window))
-;;                 (not (string-equal "*" (substring (buffer-name) 0 1))))
-;;            (setq header-line-format (tddsg--create-header-line)))))
-;;    (window-list)))
+;; List of buffer prefixes that the header-line is hidden
+(defvar tddsg--excluded-buffer-prefix (list "*helm"
+                                            "*spacemacs*"))
+
+(defun tddsg--header-exclude-p (buffer-name)
+  (tddsg--list-exists (lambda (prefix)
+                        (string-match-p (regexp-quote prefix) buffer-name))
+                      tddsg--excluded-buffer-prefix))
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
@@ -1119,7 +1135,7 @@ after stripping extra whitespace and new lines"
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (cond ((string-equal "*" (substring (buffer-name) 0 1)) ())
+       (cond ((tddsg--header-exclude-p (buffer-name)) ())
              ((not (eq window (selected-window)))
               (setq header-line-format
                     `(:propertize ,(tddsg--create-header-line)
@@ -1129,10 +1145,11 @@ after stripping extra whitespace and new lines"
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
-       (if (and (eq window (selected-window))
-                (not (string-equal "*" (substring (buffer-name) 0 1))))
+       (if (and (not (tddsg--header-exclude-p (buffer-name)))
+                (eq window (selected-window)))
            (setq header-line-format (tddsg--create-header-line)))))
    (window-list)))
+
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook
