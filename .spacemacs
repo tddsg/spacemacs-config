@@ -18,6 +18,10 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     csv
+     python
+     html
+     javascript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -41,9 +45,7 @@ values."
      latex
      ocaml
      haskell
-     python
-     tddsg
-     )
+     tddsg)
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -285,7 +287,6 @@ you should place your code here."
      ("equation*")
      ("picture")
      ("tabbing"))))
- '(LaTeX-paragraph-commands (quote ("\\If" "\\State")))
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)

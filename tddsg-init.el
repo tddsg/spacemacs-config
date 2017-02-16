@@ -764,10 +764,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
 
-  (global-set-key (kbd "H-[") 'windmove-left)
-  (global-set-key (kbd "C-]") 'windmove-right)
-  (global-set-key (kbd "M-[") 'windmove-up)
-  (global-set-key (kbd "M-]") 'windmove-down)
+  (global-set-key (kbd "M-[") 'windmove-left)
+  (global-set-key (kbd "M-]") 'windmove-right)
+  (global-set-key (kbd "H-[") 'windmove-up)
+  (global-set-key (kbd "C-]") 'windmove-down)
 
   (global-set-key (kbd "H-M-[") 'previous-buffer)
   (global-set-key (kbd "C-M-]") 'next-buffer)

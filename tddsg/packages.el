@@ -371,7 +371,9 @@ Each entry is either:
     (apply orig-func args)
     (update-cursor))
   (dolist (func (list 'windmove-do-window-select
-                      'select-window))
+                      'select-window
+                      'god-mode-isearch-activate
+                      'god-mode-isearch-disable))
     (advice-add func :around #'advice-update-cursor))
   (defun my-god-mode-hook () (interactive) (update-cursor))
   (add-hook 'god-mode-enabled-hook 'my-god-mode-hook)
