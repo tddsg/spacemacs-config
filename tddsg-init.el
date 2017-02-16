@@ -41,6 +41,12 @@
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
 
+(defun tddsg--projectile-p ()
+  "Check if a projectile exists in the current buffer."
+  (and projectile-mode
+       (not (string= (projectile-project-name) ""))
+       (not (string= (projectile-project-name) "-"))))
+
 (defun tddsg--fix-comint-window-size ()
   "Change process window size."
   (when (derived-mode-p 'comint-mode)
@@ -95,7 +101,11 @@ If the new path's directories does not exist, create them."
   (keyboard-translate ?\C-m ?\H-m)
   (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
   (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
-  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M")))
+  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
+  ;; change personal dictionary of ispell
+  (if (tddsg--projectile-p)
+      (setq ispell-personal-dictionary (concat (projectile-project-root)
+                                               "user.dict"))))
 
 (defun tddsg--hook-prog-text-mode ()
   (linum-mode 1)
@@ -544,11 +554,9 @@ after stripping extra whitespace and new lines"
   ;; spell
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra")
-        ispell-dictionary "english")
+        ispell-dictionary "english"
+        ispell-personal-dictionary "~/.emacs.d/user.dict")
 
-  ;; automatically setting mark for certain commands
-  (setq global-mark-ring-max 1000
-        mark-ring-max 200)
   (setq set-mark-command-repeat-pop t)
   (defadvice find-file (before set-mark activate) (tddsg--set-mark))
   (defadvice isearch-update (before set-mark activate) (tddsg--set-mark))
@@ -1031,7 +1039,7 @@ after stripping extra whitespace and new lines"
      '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
      '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
      ;; font
-     (font-latex-sedate-face ((t (:foreground "SpringGreen3" :weight bold))))
+     (font-latex-sedate-face ((t (:foreground "PaleGreen4" :weight normal))))
      (font-latex-subscript-face ((t (:height 0.96))))
      (font-latex-superscript-face ((t (:height 0.96))))
      (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
@@ -1104,8 +1112,7 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
-  (if (and (not (string= (projectile-project-name) ""))
-           (not (string= (projectile-project-name) "-")))
+  (if (tddsg--projectile-p)
       (concat "♖ "
               (with-face (projectile-project-name) :foreground "DarkOrange3")
               " ")
