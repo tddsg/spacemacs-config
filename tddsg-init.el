@@ -481,39 +481,23 @@ after stripping extra whitespace and new lines"
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
-(require 'golden-ratio)
-(defun tddsg/toggle-golden-ratio-balance ()
-  "Toggle balance other windows in golden ratio mode."
-  (interactive)
-  (if golden-ratio-balance
-      (setq golden-ratio-balance nil)
-    (setq golden-ratio-balance t)))
-
-(defun tddsg/toggle-golden-ratio-balance ()
-  "Toggle balance other windows in golden ratio mode."
-  (interactive)
-  (if golden-ratio-balance
-      (setq golden-ratio-balance nil)
-    (setq golden-ratio-balance t)))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
 (defun tddsg/init-configs ()
   ;; specific setting for each machines
-  (if (tddsg--is-small-screen)
-      (progn
-        (set-default 'truncate-lines t)   ;; disable truncate line
-        (setq tddsg--auto-truncate-lines t)
-        (setq golden-ratio-adjust-factor 0.9)
-        (setq golden-ratio-balance nil)
-        (golden-ratio-mode))
-    (progn
-      (setq tddsg--auto-truncate-lines nil)
-      (setq golden-ratio-adjust-factor 1.618)
-      (setq golden-ratio-balance nil)
-      (golden-ratio-mode)))
+  (require 'golden-ratio)
+  (cond ((tddsg--is-small-screen)
+         (set-default 'truncate-lines t)   ;; disable truncate line
+         (setq tddsg--auto-truncate-lines t)
+         (setq golden-ratio-adjust-factor 0.9)
+         (setq golden-ratio-balance nil)
+         (golden-ratio-mode))
+        (t
+         (setq tddsg--auto-truncate-lines nil)
+         (setq golden-ratio-adjust-factor 1.618)
+         (setq golden-ratio-balance nil)
+         (golden-ratio-mode)))
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
@@ -601,7 +585,7 @@ after stripping extra whitespace and new lines"
   (electric-pair-mode t)
   (delete-selection-mode t)                            ;; delete selection by keypress
   (setq require-final-newline t)                       ;; newline at end of file
-  (defadvice newline (after newline-after activate)    ;; indent after new line
+  (defadvice newline (after newline-after activate)    ;;  after new line
     (indent-according-to-mode))
   ;; (setq company-idle-delay 200)         ;; set delay time by default
   (global-company-mode)
@@ -659,7 +643,6 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish whitespace-mode "")
   (spacemacs|diminish super-save-mode "")
   (spacemacs|diminish company-mode "")
-  (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish which-key-mode "")
   (spacemacs|diminish yas-minor-mode "")
   (spacemacs|diminish utop-minor-mode "")
