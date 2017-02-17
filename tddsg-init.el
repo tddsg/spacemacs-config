@@ -4,6 +4,10 @@
 
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LOAD FILES
+(load-file "~/.emacs.d/private/tddsg/local/golden-ratio/golden-ratio.el")
+
 
 (require 'smartparens)
 (require 'company)
@@ -19,6 +23,7 @@
 (require 'whitespace)
 (require 'god-mode)
 (require 'god-mode-isearch)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
@@ -486,7 +491,6 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg/init-configs ()
   ;; specific setting for each machines
-  (require 'golden-ratio)
   (cond ((tddsg--is-small-screen)
          (set-default 'truncate-lines t)   ;; disable truncate line
          (setq tddsg--auto-truncate-lines t)

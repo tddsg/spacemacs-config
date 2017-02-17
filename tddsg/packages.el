@@ -66,7 +66,6 @@
     helm-dired-history
     (songbird :location local)
     (buffer-clone :location local)
-    (golden-ratio :location local)
     (merlin-imenu :location local)
     ;; (merlin-eldoc :location local)
     (smartparens-ocaml :location local))
@@ -451,19 +450,5 @@ Each entry is either:
     (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
       (modify-syntax-entry symbol "_" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
-
-(defun tddsg/post-init-golden-ratio ()
-  (require 'golden-ratio)
-  (golden-ratio-mode)
-  ;; (if (tddsg--is-small-screen)
-  ;;     (progn
-  ;;       (setq golden-ratio-adjust-factor 0.9)
-  ;;       (setq golden-ratio-balance nil)
-  ;;       (golden-ratio-mode))
-  ;;   (progn
-  ;;     (setq golden-ratio-adjust-factor 1.618)
-  ;;     (setq golden-ratio-balance nil)
-  ;;     (golden-ratio-mode)))
-  )
 
 ;;; packages.el ends here
