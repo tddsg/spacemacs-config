@@ -556,14 +556,6 @@ after stripping extra whitespace and new lines"
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
 
-  ;; hide cursor when necessary on changing window
-  (defun tddsg--hide-cursor (orig-func &rest args)
-    (apply orig-func args)
-    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
-  (dolist (func (list 'windmove-do-window-select
-                      'select-window))
-    (advice-add func :around #'tddsg--hide-cursor))
-
   ;; auto truncate lines when necessary on changing window
   (defun tddsg--truncate-lines (orig-func &rest args)
     (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
@@ -578,8 +570,7 @@ after stripping extra whitespace and new lines"
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
-    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
+    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
     (advice-add func :around #'tddsg--enable-truncate-lines)) ;
@@ -903,8 +894,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; Latex-mode
-  (define-key TeX-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
+  (define-key TeX-mode-map (kbd "<f5>") '(lambda ()
+                                           (interactive)
+                                           (TeX-command "LaTeX" 'TeX-master-file' -1)))
   (define-key TeX-mode-map (kbd "C-j") nil)
   (eval-after-load 'latex '(define-key LaTeX-mode-map (kbd "C-j") nil))
 
