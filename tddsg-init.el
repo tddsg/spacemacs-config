@@ -650,6 +650,8 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish yas-minor-mode "")
   (spacemacs|diminish utop-minor-mode "")
   (spacemacs|diminish golden-ratio-mode "")
+  (spacemacs|diminish with-editor-mode "")
+  (spacemacs|diminish server-buffer-clients "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish god-local-mode " ⚡☢⚡☢⚡")
