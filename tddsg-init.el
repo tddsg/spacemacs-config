@@ -739,7 +739,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
   (global-set-key (kbd "C-c t") 'tddsg/term)
 
-  (global-set-key (kbd "C-c C-g") 'helm-projectile-grep)
+  (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
 
