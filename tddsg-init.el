@@ -558,7 +558,6 @@ after stripping extra whitespace and new lines"
 
   ;; hide cursor when necessary on changing window
   (defun tddsg--hide-cursor (orig-func &rest args)
-    (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil))
     (apply orig-func args)
     (if (derived-mode-p 'pdf-view-mode) (setq cursor-type nil)))
   (dolist (func (list 'windmove-do-window-select
@@ -650,6 +649,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish which-key-mode "")
   (spacemacs|diminish yas-minor-mode "")
   (spacemacs|diminish utop-minor-mode "")
+  (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish god-local-mode " ⚡☢⚡☢⚡")
