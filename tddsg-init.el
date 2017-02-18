@@ -579,8 +579,7 @@ after stripping extra whitespace and new lines"
   (electric-pair-mode t)
   (delete-selection-mode t)                            ;; delete selection by keypress
   (setq require-final-newline t)                       ;; newline at end of file
-  (defadvice newline (after newline-after activate)    ;;  after new line
-    (indent-according-to-mode))
+  (defadvice newline (after indent activate) (indent-according-to-mode))
   ;; (setq company-idle-delay 200)         ;; set delay time by default
   (global-company-mode)
 
@@ -590,6 +589,11 @@ after stripping extra whitespace and new lines"
 
   ;; mode-line setting
   (setq powerline-default-separator 'wave)
+
+  ;; golden-ratio
+  (defadvice keyboard-quit (after golden-ratio activate) (golden-ratio 1))
+  (defadvice flyspell-correct-word-before-point (after golden-ratio activate)
+    (golden-ratio 1))
 
   ;; isearch
   (defun tddsg--isearch-show-case-fold (orig-func &rest args)
@@ -791,6 +795,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
 
+  (global-set-key (kbd "M-s c") 'spacemacs/evil-search-clear-highlight)
+
   ;; workspaces transient
   (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
   (global-set-key (kbd "s-2") 'eyebrowse-switch-to-window-config-2)
@@ -893,13 +899,18 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-s-9") 'buf-clone-up)
   (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
-  ;; Latex-mode
+  ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
-  (define-key TeX-mode-map (kbd "<f5>") '(lambda ()
-                                           (interactive)
-                                           (TeX-command "LaTeX" 'TeX-master-file' -1)))
+  (define-key TeX-mode-map (kbd "<f5>")
+    '(lambda ()
+       (interactive)
+       (TeX-command "LaTeX" 'TeX-master-file' -1)))
   (define-key TeX-mode-map (kbd "C-j") nil)
-  (eval-after-load 'latex '(define-key LaTeX-mode-map (kbd "C-j") nil))
+  (eval-after-load 'latex
+    '(progn
+       (define-key LaTeX-mode-map (kbd "<tab>") 'flyspell-correct-word-before-point)
+       (define-key LaTeX-mode-map (kbd "C-j") nil)
+       (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
@@ -1266,6 +1277,13 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/init-custom-vars ()
   (custom-set-variables
+   '(golden-ratio-exclude-buffer-names
+     (quote
+      ("*which-key*"
+       "*LV*"
+       "*NeoTree*"
+       "*ace-popup-menu*"
+       "*compilation*")))
    '(hl-todo-keyword-faces
      (quote
       (("HOLD" . "red")
