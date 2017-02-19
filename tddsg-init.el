@@ -1307,7 +1307,8 @@ Set `spaceline-highlight-face-func' to
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
 
-;;; popwin mode
+;;;;; POPWIN mode
+
 (require 'popwin)
 (defun* popwin:popup-buffer (buffer
                              &key
@@ -1382,3 +1383,40 @@ BUFFER."
            (text (replace-regexp-in-string " " "\\\\ " text)))
       (deactivate-mark)
       text)))
+
+
+;;;;; PDF-VIEW MODE
+
+(require 'pdf-view)
+(defun pdf-view-next-page-command (&optional n)
+  (declare (interactive-only pdf-view-next-page))
+  (interactive "p")
+  (unless n (setq n 1))
+  (when (> (+ (pdf-view-current-page) n)
+           (pdf-cache-number-of-pages))
+    (user-error "Last page"))
+  (when (< (+ (pdf-view-current-page) n) 1)
+    (user-error "First page"))
+  (let* ((pdf-view-inhibit-redisplay t)
+         (wdn-height (window-height (selected-window)))
+         (lines-to-move (cond ((> n 0) (- wdn-height 4))
+                              ((< n 0) (- 4 wdn-height))
+                              (t 0))))
+    (when (= (window-vscroll) (image-next-line lines-to-move))
+      (pdf-view-goto-page (+ (pdf-view-current-page) n))
+      (if (> n 0) (image-bob) (image-eob))))
+  (force-mode-line-update)
+  (sit-for 0)
+  (when pdf-view--next-page-timer
+    (cancel-timer pdf-view--next-page-timer)
+    (setq pdf-view--next-page-timer nil))
+  (if (or (not (input-pending-p))
+          (and (> n 0)
+               (= (pdf-view-current-page)
+                  (pdf-cache-number-of-pages)))
+          (and (< n 0)
+               (= (pdf-view-current-page) 1)))
+      (pdf-view-redisplay)
+    (setq pdf-view--next-page-timer
+          (run-with-idle-timer 0.001 nil 'pdf-view-redisplay
+                               (selected-window)))))
