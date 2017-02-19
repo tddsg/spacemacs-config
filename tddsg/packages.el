@@ -251,6 +251,7 @@ Each entry is either:
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe
                    :unless '(sp-latex-point-after-backslash))
+    (sp-local-pair "$" "$" :post-handlers '())
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\If" "\\EndIf" :post-handlers
@@ -395,7 +396,7 @@ Each entry is either:
              (bound-and-true-p pdf-view-midnight-minor-mode))
         (pdf-view-midnight-minor-mode -1)))
   (defun advice-pdf-view-func (orig-func &rest args)
-    ;; (custom-pdf-view)
+    (custom-pdf-view)
     (apply orig-func args))
   (dolist (func (list 'pdf-view-next-line-or-next-page
                       'pdf-view-next-page

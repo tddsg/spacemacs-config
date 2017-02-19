@@ -23,6 +23,7 @@
 (require 'whitespace)
 (require 'god-mode)
 (require 'god-mode-isearch)
+(require 'expand-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
@@ -78,6 +79,23 @@ If the new path's directories does not exist, create them."
     (make-directory (file-name-directory backupFilePath)
                     (file-name-directory backupFilePath))
     backupFilePath))
+
+(defun tddsg--latex-compile ()
+  (interactive)
+  (save-buffer)
+  (setq TeX-after-compilation-finished-functions nil)
+  (TeX-command "LaTeX" 'TeX-master-file -1))
+
+(defun tddsg--latex-compile-sync-forward ()
+  (interactive)
+  (cond ((buffer-modified-p)
+         (save-buffer)
+         (setq TeX-after-compilation-finished-functions
+               (lambda (file)
+                  (select-window (selected-window))
+                  (call-interactively 'pdf-sync-forward-search)))
+         (TeX-command "LaTeX" 'TeX-master-file -1))
+        (t (call-interactively 'pdf-sync-forward-search))))
 
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
@@ -919,12 +937,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; LaTeX-mode
-  (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
-  (define-key TeX-mode-map (kbd "<f5>")
-    '(lambda ()
-       (interactive)
-       (save-buffer)
-       (TeX-command "LaTeX" 'TeX-master-file -1)))
+  (define-key TeX-mode-map (kbd "<f5>") 'tddsg--latex-compile)
+  (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (eval-after-load 'latex
     '(progn
