@@ -573,10 +573,18 @@ after stripping extra whitespace and new lines"
     (apply orig-func args)
     (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines -1)))
   ;; do not advice 'select-window since this causes buffer overflow
-  ;; (dolist (func (list 'windmove-do-window-select
-  ;;                     'select-window-by-number
-  ;;                     'other-window))
-  ;;   (advice-add func :around #'tddsg--truncate-lines))
+  (dolist (func (list 'windmove-do-window-select
+                      'select-window-by-number
+                      'other-window))
+    (advice-add func :around #'tddsg--truncate-lines))
+
+  ;; advise golden-ratio-mode
+  (defun tddsg--golden-ratio (orig-func &rest args)
+    (apply orig-func args)
+    (if (and (derived-mode-p 'pdf-view-mode)
+             (bound-and-true-p golden-ratio-mode))
+        (golden-ratio)))
+  (advice-add 'select-window :around #'tddsg--golden-ratio)
 
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
@@ -1450,15 +1458,10 @@ BUFFER."
         (pdf-util-assert-pdf-window)
         (pdf-view-goto-page page)
         (let ((top (* y1 (cdr (pdf-view-image-size)))))
-          ;;; <-- old code
-          ;; (pdf-util-tooltip-arrow (round top))
-          ;;; <-- begin of my new code
           (run-with-idle-timer 0.1 nil
                                (lambda (window top)
-                                   (select-window window)
-                                   (pdf-util-tooltip-arrow (round top) 20))
-                               (selected-window) top)
-          ;;; --> end of my new code
-          ))
+                                 (select-window window)
+                                 (pdf-util-tooltip-arrow (round top) 20))
+                               (selected-window) top)))
       (with-current-buffer buffer
         (run-hooks 'pdf-sync-forward-hook)))))
