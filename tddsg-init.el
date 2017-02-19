@@ -46,6 +46,10 @@
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
 
+(defun tddsg--auto-truncate-lines-p ()
+  (and tddsg--auto-truncate-lines
+       (not (derived-mode-p 'pdf-view-mode))))
+
 (defun tddsg--toggle-truncate-lines (arg)
   (let ((inhibit-message t))
     (toggle-truncate-lines arg)))
@@ -463,9 +467,12 @@ after stripping extra whitespace and new lines"
 (defun tddsg/toggle-auto-truncate-lines ()
   "Toggle auto truncate lines."
   (interactive)
-  (if tddsg--auto-truncate-lines
-      (setq tddsg--auto-truncate-lines nil)
-    (setq tddsg--auto-truncate-lines t)))
+  (cond (tddsg--auto-truncate-lines
+         (message "Disable auto truncate lines")
+         (setq tddsg--auto-truncate-lines nil))
+        (t
+         (message "Enable auto truncate lines")
+         (setq tddsg--auto-truncate-lines t))))
 
 (defun tddsg/toggle-hide-mode-line ()
   (interactive)
@@ -562,19 +569,19 @@ after stripping extra whitespace and new lines"
 
   ;; auto truncate lines when necessary on changing window
   (defun tddsg--truncate-lines (orig-func &rest args)
-    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines 1))
+    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines 1))
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines -1)))
+    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines -1)))
   ;; do not advice 'select-window since this causes buffer overflow
-  (dolist (func (list 'windmove-do-window-select
-                      'select-window-by-number
-                      'other-window))
-    (advice-add func :around #'tddsg--truncate-lines))
+  ;; (dolist (func (list 'windmove-do-window-select
+  ;;                     'select-window-by-number
+  ;;                     'other-window))
+  ;;   (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines 1)))
+    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines 1)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
     (advice-add func :around #'tddsg--enable-truncate-lines)) ;
@@ -908,7 +915,8 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f5>")
     '(lambda ()
        (interactive)
-       (TeX-command "LaTeX" 'TeX-master-file' -1)))
+       (save-buffer)
+       (TeX-command "LaTeX" 'TeX-master-file -1)))
   (define-key TeX-mode-map (kbd "C-j") nil)
   (eval-after-load 'latex
     '(progn
@@ -1392,6 +1400,8 @@ BUFFER."
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)
+
+;;;;; customize to allow page-up/page-down by window-size
 (defun pdf-view-next-page-command (&optional n)
   (declare (interactive-only pdf-view-next-page))
   (interactive "p")
@@ -1401,6 +1411,7 @@ BUFFER."
     (user-error "Last page"))
   (when (< (+ (pdf-view-current-page) n) 1)
     (user-error "First page"))
+  ;;; <-- new code is inserted here
   (let* ((pdf-view-inhibit-redisplay t)
          (wdn-height (window-height (selected-window)))
          (lines-to-move (cond ((> n 0) (- wdn-height 4))
@@ -1409,6 +1420,7 @@ BUFFER."
     (when (= (window-vscroll) (image-next-line lines-to-move))
       (pdf-view-goto-page (+ (pdf-view-current-page) n))
       (if (> n 0) (image-bob) (image-eob))))
+  ;;; --> end of new code
   (force-mode-line-update)
   (sit-for 0)
   (when pdf-view--next-page-timer
@@ -1424,3 +1436,29 @@ BUFFER."
     (setq pdf-view--next-page-timer
           (run-with-idle-timer 0.001 nil 'pdf-view-redisplay
                                (selected-window)))))
+
+;;;;; customize to jump to the pdf-view window and display tooltip
+(defun pdf-sync-forward-search (&optional line column)
+  "Display the PDF location corresponding to LINE, COLUMN."
+  (interactive)
+  (cl-destructuring-bind (pdf page _x1 y1 _x2 _y2)
+      (pdf-sync-forward-correlate line column)
+    (let ((buffer (or (find-buffer-visiting pdf)
+                      (find-file-noselect pdf))))
+      (with-selected-window (display-buffer
+                             buffer pdf-sync-forward-display-action)
+        (pdf-util-assert-pdf-window)
+        (pdf-view-goto-page page)
+        (let ((top (* y1 (cdr (pdf-view-image-size)))))
+          ;;; <-- old code
+          ;; (pdf-util-tooltip-arrow (round top))
+          ;;; <-- begin of my new code
+          (run-with-idle-timer 0.1 nil
+                               (lambda (window top)
+                                   (select-window window)
+                                   (pdf-util-tooltip-arrow (round top) 20))
+                               (selected-window) top)
+          ;;; --> end of my new code
+          ))
+      (with-current-buffer buffer
+        (run-hooks 'pdf-sync-forward-hook)))))
