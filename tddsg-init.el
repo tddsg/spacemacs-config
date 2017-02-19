@@ -46,6 +46,10 @@
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
 
+(defun tddsg--toggle-truncate-lines (arg)
+  (let ((inhibit-message t))
+    (toggle-truncate-lines arg)))
+
 (defun tddsg--projectile-p ()
   "Check if a projectile exists in the current buffer."
   (and projectile-mode
@@ -558,9 +562,9 @@ after stripping extra whitespace and new lines"
 
   ;; auto truncate lines when necessary on changing window
   (defun tddsg--truncate-lines (orig-func &rest args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1))
+    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines 1))
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines -1)))
+    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines -1)))
   ;; do not advice 'select-window since this causes buffer overflow
   (dolist (func (list 'windmove-do-window-select
                       'select-window-by-number
@@ -570,7 +574,7 @@ after stripping extra whitespace and new lines"
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
-    (if tddsg--auto-truncate-lines (toggle-truncate-lines 1)))
+    (if tddsg--auto-truncate-lines (tddsg--toggle-truncate-lines 1)))
   (dolist (func (list 'helm-find-files
                       'helm-mini))
     (advice-add func :around #'tddsg--enable-truncate-lines)) ;
