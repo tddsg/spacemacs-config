@@ -88,14 +88,12 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--latex-compile-sync-forward ()
   (interactive)
-  (cond ((buffer-modified-p)
-         (save-buffer)
-         (setq TeX-after-compilation-finished-functions
-               (lambda (file)
-                  (select-window (selected-window))
-                  (call-interactively 'pdf-sync-forward-search)))
-         (TeX-command "LaTeX" 'TeX-master-file -1))
-        (t (call-interactively 'pdf-sync-forward-search))))
+  (save-buffer)
+  (setq TeX-after-compilation-finished-functions
+        (lambda (file)
+          (select-window (selected-window))
+          (call-interactively 'pdf-sync-forward-search)))
+  (TeX-command "LaTeX" 'TeX-master-file -1))
 
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
@@ -775,6 +773,7 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c s") 'swiper)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
@@ -878,6 +877,9 @@ after stripping extra whitespace and new lines"
   (define-key isearch-mode-map (kbd "C-.")
     'tddsg/yank-current-word-to-isearch-buffer)
 
+  (define-key swiper-map (kbd "C-.")
+    'tddsg/yank-current-word-to-minibuffer)
+
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.")
     'tddsg/yank-current-word-to-minibuffer)
@@ -957,6 +959,7 @@ after stripping extra whitespace and new lines"
   (eval-after-load 'latex
     '(progn
        (define-key LaTeX-mode-map (kbd "<tab>") 'flyspell-correct-word-before-point)
+       (define-key LaTeX-mode-map (kbd "<backtab>") 'flyspell-correct-previous-word-generic)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
@@ -967,6 +970,8 @@ after stripping extra whitespace and new lines"
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+  (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
+  (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
 
   ;; flyspell
