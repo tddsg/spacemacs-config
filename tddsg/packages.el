@@ -64,6 +64,9 @@
     pdf-tools
     elmacro
     helm-dired-history
+    ivy
+    swiper
+    swiper-helm
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -361,6 +364,15 @@ Each entry is either:
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
+
+(defun tddsg/init-ivy ()
+  (use-package ivy))
+
+(defun tddsg/init-swiper ()
+  (use-package swiper))
+
+(defun tddsg/init-swiper-helm ()
+  (use-package swiper-helm))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)

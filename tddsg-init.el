@@ -88,14 +88,12 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--latex-compile-sync-forward ()
   (interactive)
-  (cond ((buffer-modified-p)
-         (save-buffer)
-         (setq TeX-after-compilation-finished-functions
-               (lambda (file)
-                  (select-window (selected-window))
-                  (call-interactively 'pdf-sync-forward-search)))
-         (TeX-command "LaTeX" 'TeX-master-file -1))
-        (t (call-interactively 'pdf-sync-forward-search))))
+  (save-buffer)
+  (setq TeX-after-compilation-finished-functions
+        (lambda (file)
+          (select-window (selected-window))
+          (call-interactively 'pdf-sync-forward-search)))
+  (TeX-command "LaTeX" 'TeX-master-file -1))
 
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
@@ -272,12 +270,24 @@ If the new path's directories does not exist, create them."
   (interactive)
   (let ((current-char (char-after))
         (previous-char (char-before)))
-    (cond ((and (memq (char-syntax previous-char) '(?w ?_))
-                (memq (char-syntax current-char) '(?w ?_)))
-           (if (not (region-active-p)) (backward-word))
-           (call-interactively 'er/expand-region))
-          (t (if (< (point) (mark)) (set-mark-command nil))
-             (call-interactively  'tddsg/mark-sexp)))))
+    (if (memq (char-syntax current-char) '(?w ?_))
+        (if (and (not (null previous-char))
+                 (memq (char-syntax previous-char) '(?w ?_))
+                 (not (region-active-p)))
+            (progn (backward-word)
+                   (call-interactively 'er/expand-region))
+          (call-interactively 'er/expand-region))
+      (if (< (point) (mark)) (set-mark-command nil))
+      (call-interactively  'tddsg/mark-sexp))
+    ;; (cond ((memq (char-syntax current-char) '(?w ?_))
+    ;;        (and (memq (char-syntax previous-char) '(?w ?_))
+    ;;             (not (null previous-char))
+    ;;             )
+    ;;        (if (not (region-active-p)) (backward-word))
+    ;;        (call-interactively 'er/expand-region))
+    ;;       (t (if (< (point) (mark)) (set-mark-command nil))
+    ;;          (call-interactively  'tddsg/mark-sexp)))
+    ))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -597,12 +607,12 @@ after stripping extra whitespace and new lines"
     (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advise golden-ratio-mode
-  (defun tddsg--golden-ratio (orig-func &rest args)
-    (apply orig-func args)
-    (if (and (derived-mode-p 'pdf-view-mode)
-             (bound-and-true-p golden-ratio-mode))
-        (golden-ratio)))
-  (advice-add 'select-window :around #'tddsg--golden-ratio)
+  ;; (defun tddsg--golden-ratio (orig-func &rest args)
+  ;;   (apply orig-func args)
+  ;;   (if (and (derived-mode-p 'pdf-view-mode)
+  ;;            (bound-and-true-p golden-ratio-mode))
+  ;;       (golden-ratio)))
+  ;; (advice-add 'select-window :around #'tddsg--golden-ratio)
 
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
@@ -760,9 +770,12 @@ after stripping extra whitespace and new lines"
 
   (global-set-key [?\H-M] 'helm-mini)
   (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-i] 'swiper)
+  (global-set-key [?\H-I] 'swiper)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c s") 'swiper)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
@@ -821,6 +834,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
+  (global-set-key (kbd "M-m w o") 'flop-frame)
+  (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m T l") 'tddsg/toggle-hide-mode-line)
   (global-set-key (kbd "M-m T h") 'tddsg/toggle-hide-header-line)
 
@@ -863,6 +878,9 @@ after stripping extra whitespace and new lines"
   ;; isearch
   (define-key isearch-mode-map (kbd "C-.")
     'tddsg/yank-current-word-to-isearch-buffer)
+
+  (define-key swiper-map (kbd "C-.")
+    'tddsg/yank-current-word-to-minibuffer)
 
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.")
@@ -943,6 +961,7 @@ after stripping extra whitespace and new lines"
   (eval-after-load 'latex
     '(progn
        (define-key LaTeX-mode-map (kbd "<tab>") 'flyspell-correct-word-before-point)
+       (define-key LaTeX-mode-map (kbd "<backtab>") 'flyspell-correct-previous-word-generic)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
@@ -953,6 +972,8 @@ after stripping extra whitespace and new lines"
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+  (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
+  (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
 
   ;; flyspell
@@ -1317,6 +1338,7 @@ Set `spaceline-highlight-face-func' to
        "*NeoTree*"
        "*ace-popup-menu*"
        "*compilation*")))
+   '(pdf-view-continuous nil)
    '(hl-todo-keyword-faces
      (quote
       (("HOLD" . "red")
@@ -1474,6 +1496,8 @@ BUFFER."
           (run-with-idle-timer 0.1 nil
                                (lambda (window top)
                                  (select-window window)
+                                 (other-window -1) ;; add this to force golden-ratio
+                                 (other-window 1)
                                  (pdf-util-tooltip-arrow (round top) 20))
                                (selected-window) top)))
       (with-current-buffer buffer
