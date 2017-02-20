@@ -775,6 +775,9 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c i") 'ivy-resume)
+  (global-set-key (kbd "C-c j") 'avy-resume)
+  (global-set-key (kbd "C-c h") 'helm-resume)
   (global-set-key (kbd "C-c s") 'swiper)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)

@@ -67,6 +67,7 @@
     ivy
     swiper
     swiper-helm
+    counsel
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
@@ -366,7 +367,12 @@ Each entry is either:
   (use-package helm-dired-history))
 
 (defun tddsg/init-ivy ()
-  (use-package ivy))
+  (use-package ivy
+    :config
+    (ivy-mode 1)))
+
+(defun tddsg/init-counsel ()
+  (use-package counsel))
 
 (defun tddsg/init-swiper ()
   (use-package swiper))
