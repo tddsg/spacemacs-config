@@ -385,7 +385,10 @@ Each entry is either:
   ;;; update cursor
   (defun update-cursor ()
     (if god-global-mode (set-cursor-color "purple")
-      (set-cursor-color "lime green")))
+      (cond ((eq spacemacs--cur-theme 'leuven)
+             (set-cursor-color "forest green"))
+            ((eq spacemacs--cur-theme 'spacemacs-dark)
+             (set-cursor-color "lime green")))))
   (defun advice-update-cursor (orig-func &rest args)
     (apply orig-func args)
     (update-cursor))

@@ -28,8 +28,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
-(setq tddsg--cursor-color "lime green")
-
 (setq tddsg--auto-truncate-lines nil)
 
 
@@ -642,6 +640,14 @@ after stripping extra whitespace and new lines"
   (defadvice flyspell-correct-word-before-point (after golden-ratio activate)
     (golden-ratio 1))
 
+  ;; themes
+  (defun tddsg--update-cursor ()
+    (cond ((eq spacemacs--cur-theme 'leuven)
+           (set-cursor-color "forest green"))
+          ((eq spacemacs--cur-theme 'spacemacs-dark)
+           (set-cursor-color "lime green"))))
+  (add-hook 'buffer-list-update-hook 'tddsg--update-cursor)
+
   ;; isearch
   (defun tddsg--isearch-show-case-fold (orig-func &rest args)
     (apply orig-func args)
@@ -1032,7 +1038,7 @@ after stripping extra whitespace and new lines"
    '((bold ((t (:foreground "salmon4" :weight bold))))
      (bold-italic ((t (:foreground "salmon4" :slant italic :weight bold))))
      ;; cursors & line
-     (cursor ((t (:background "lime green"))))
+     (cursor ((t (:background "forest green"))))
      (hl-line ((t (:background "honeydew2"))))
      ;; latex font face
      (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
@@ -1224,8 +1230,8 @@ after stripping extra whitespace and new lines"
 
 
 ;; update header line of each buffer
-(add-hook 'buffer-list-update-hook
-          'tddsg--update-header-line)
+(add-hook 'buffer-list-update-hook 'tddsg--update-header-line)
+(add-hook 'window-configuration-change-hook 'tddsg--update-header-line)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
