@@ -1011,7 +1011,6 @@ after stripping extra whitespace and new lines"
      (cursor ((t (:background "lime green"))))
      (hl-line ((t (:background "honeydew2"))))
      ;; latex font face
-     (font-latex-sedate-face ((t (:foreground "forest green" :weight bold))))
      (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
      (font-latex-math-face ((t (:foreground "DeepSkyBlue4"))))
      (font-latex-sedate-face ((t (:foreground "green4"))))
@@ -1066,7 +1065,7 @@ after stripping extra whitespace and new lines"
      '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
      '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
      ;; font
-     (font-latex-sedate-face ((t (:foreground "PaleGreen4" :weight normal))))
+     (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
      (font-latex-subscript-face ((t (:height 0.96))))
      (font-latex-superscript-face ((t (:height 0.96))))
      (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
