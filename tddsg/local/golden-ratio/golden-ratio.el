@@ -159,10 +159,10 @@ will prevent the window to be resized to the golden ratio."
               (window-minibuffer-p)
               (one-window-p)
               (golden-ratio-exclude-major-mode-p)
-              (member (string-trim (buffer-name))
-                      golden-ratio-exclude-buffer-names)
+              (memq (string-trim (buffer-name))
+                    golden-ratio-exclude-buffer-names)
               (and golden-ratio-exclude-buffer-regexp
-                (loop for r in golden-ratio-exclude-buffer-regexp
+                   (loop for r in golden-ratio-exclude-buffer-regexp
                          thereis (string-match r (buffer-name))))
               (and golden-ratio-inhibit-functions
                    (loop for fun in golden-ratio-inhibit-functions

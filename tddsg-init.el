@@ -272,12 +272,24 @@ If the new path's directories does not exist, create them."
   (interactive)
   (let ((current-char (char-after))
         (previous-char (char-before)))
-    (cond ((and (memq (char-syntax previous-char) '(?w ?_))
-                (memq (char-syntax current-char) '(?w ?_)))
-           (if (not (region-active-p)) (backward-word))
-           (call-interactively 'er/expand-region))
-          (t (if (< (point) (mark)) (set-mark-command nil))
-             (call-interactively  'tddsg/mark-sexp)))))
+    (if (memq (char-syntax current-char) '(?w ?_))
+        (if (and (not (null previous-char))
+                 (memq (char-syntax previous-char) '(?w ?_))
+                 (not (region-active-p)))
+            (progn (backward-word)
+                   (call-interactively 'er/expand-region))
+          (call-interactively 'er/expand-region))
+      (if (< (point) (mark)) (set-mark-command nil))
+      (call-interactively  'tddsg/mark-sexp))
+    ;; (cond ((memq (char-syntax current-char) '(?w ?_))
+    ;;        (and (memq (char-syntax previous-char) '(?w ?_))
+    ;;             (not (null previous-char))
+    ;;             )
+    ;;        (if (not (region-active-p)) (backward-word))
+    ;;        (call-interactively 'er/expand-region))
+    ;;       (t (if (< (point) (mark)) (set-mark-command nil))
+    ;;          (call-interactively  'tddsg/mark-sexp)))
+    ))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -597,12 +609,12 @@ after stripping extra whitespace and new lines"
     (advice-add func :around #'tddsg--truncate-lines))
 
   ;; advise golden-ratio-mode
-  (defun tddsg--golden-ratio (orig-func &rest args)
-    (apply orig-func args)
-    (if (and (derived-mode-p 'pdf-view-mode)
-             (bound-and-true-p golden-ratio-mode))
-        (golden-ratio)))
-  (advice-add 'select-window :around #'tddsg--golden-ratio)
+  ;; (defun tddsg--golden-ratio (orig-func &rest args)
+  ;;   (apply orig-func args)
+  ;;   (if (and (derived-mode-p 'pdf-view-mode)
+  ;;            (bound-and-true-p golden-ratio-mode))
+  ;;       (golden-ratio)))
+  ;; (advice-add 'select-window :around #'tddsg--golden-ratio)
 
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
@@ -821,6 +833,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
+  (global-set-key (kbd "M-m w o") 'flop-frame)
+  (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m T l") 'tddsg/toggle-hide-mode-line)
   (global-set-key (kbd "M-m T h") 'tddsg/toggle-hide-header-line)
 
@@ -1318,6 +1332,7 @@ Set `spaceline-highlight-face-func' to
        "*NeoTree*"
        "*ace-popup-menu*"
        "*compilation*")))
+   '(pdf-view-continuous nil)
    '(hl-todo-keyword-faces
      (quote
       (("HOLD" . "red")
@@ -1475,6 +1490,8 @@ BUFFER."
           (run-with-idle-timer 0.1 nil
                                (lambda (window top)
                                  (select-window window)
+                                 (other-window -1) ;; add this to force golden-ratio
+                                 (other-window 1)
                                  (pdf-util-tooltip-arrow (round top) 20))
                                (selected-window) top)))
       (with-current-buffer buffer
