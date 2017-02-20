@@ -770,6 +770,8 @@ after stripping extra whitespace and new lines"
 
   (global-set-key [?\H-M] 'helm-mini)
   (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-i] 'swiper)
+  (global-set-key [?\H-I] 'swiper)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
