@@ -1502,12 +1502,14 @@ BUFFER."
         (pdf-util-assert-pdf-window)
         (pdf-view-goto-page page)
         (let ((top (* y1 (cdr (pdf-view-image-size)))))
-          (run-with-idle-timer 0.1 nil
-                               (lambda (window top)
-                                 (select-window window)
-                                 (other-window -1) ;; add this to force golden-ratio
-                                 (other-window 1)
-                                 (pdf-util-tooltip-arrow (round top) 20))
-                               (selected-window) top)))
+          (pdf-util-tooltip-arrow (round top) 20)
+          ;; (run-with-idle-timer 0.1 nil
+          ;;                      (lambda (window top)
+          ;;                        (select-window window)
+          ;;                        (other-window -1) ;; add this to force golden-ratio
+          ;;                        (other-window 1)
+          ;;                        (pdf-util-tooltip-arrow (round top) 20))
+          ;;                      (selected-window) top)
+          ))
       (with-current-buffer buffer
         (run-hooks 'pdf-sync-forward-hook)))))

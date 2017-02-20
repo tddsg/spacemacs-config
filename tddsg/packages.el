@@ -260,6 +260,8 @@ Each entry is either:
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\If" "\\EndIf" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
+    (sp-local-pair "\\While" "\\EndWhile" :post-handlers
+                   '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\For" "\\EndFor" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
