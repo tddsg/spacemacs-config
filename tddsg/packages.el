@@ -64,7 +64,7 @@
     pdf-tools
     elmacro
     helm-dired-history
-    ivy
+    ;; ivy
     swiper
     swiper-helm
     counsel
@@ -368,10 +368,10 @@ Each entry is either:
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
 
-(defun tddsg/init-ivy ()
-  (use-package ivy
-    :config
-    (ivy-mode 1)))
+;; (defun tddsg/init-ivy ()
+;;   (use-package ivy
+;;     :config
+;;     (ivy-mode 1)))
 
 (defun tddsg/init-counsel ()
   (use-package counsel))
@@ -388,7 +388,7 @@ Each entry is either:
   (defun update-cursor ()
     (if god-global-mode (set-cursor-color "purple")
       (cond ((eq spacemacs--cur-theme 'leuven)
-             (set-cursor-color "forest green"))
+             (set-cursor-color "dark orange"))
             ((eq spacemacs--cur-theme 'spacemacs-dark)
              (set-cursor-color "lime green")))))
   (defun advice-update-cursor (orig-func &rest args)

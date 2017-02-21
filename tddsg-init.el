@@ -604,14 +604,6 @@ after stripping extra whitespace and new lines"
                       'other-window))
     (advice-add func :around #'tddsg--truncate-lines))
 
-  ;; advise golden-ratio-mode
-  ;; (defun tddsg--golden-ratio (orig-func &rest args)
-  ;;   (apply orig-func args)
-  ;;   (if (and (derived-mode-p 'pdf-view-mode)
-  ;;            (bound-and-true-p golden-ratio-mode))
-  ;;       (golden-ratio)))
-  ;; (advice-add 'select-window :around #'tddsg--golden-ratio)
-
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
@@ -643,7 +635,7 @@ after stripping extra whitespace and new lines"
   ;; themes
   (defun tddsg--update-cursor ()
     (cond ((eq spacemacs--cur-theme 'leuven)
-           (set-cursor-color "forest green"))
+           (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
            (set-cursor-color "lime green"))))
   (add-hook 'buffer-list-update-hook 'tddsg--update-cursor)
@@ -1038,7 +1030,7 @@ after stripping extra whitespace and new lines"
    '((bold ((t (:foreground "salmon4" :weight bold))))
      (bold-italic ((t (:foreground "salmon4" :slant italic :weight bold))))
      ;; cursors & line
-     (cursor ((t (:background "forest green"))))
+     (cursor ((t (:background "dark orange"))))
      (hl-line ((t (:background "honeydew2"))))
      ;; latex font face
      (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
@@ -1499,6 +1491,7 @@ BUFFER."
                       (find-file-noselect pdf))))
       ;; (with-selected-window (display-buffer
       ;;                        buffer pdf-sync-forward-display-action)
+      ;;   (select-window (selected-window))
       ;;   (pdf-util-assert-pdf-window)
       ;;   (pdf-view-goto-page page)
       ;;   (let ((top (* y1 (cdr (pdf-view-image-size)))))
