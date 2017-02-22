@@ -407,39 +407,7 @@ Each entry is either:
   (pdf-tools-install)
   (setq pdf-view-resize-factor 1.05)
   (custom-set-variables
-   '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E"))))
-  (defun custom-pdf-view ()
-    ;; (setq cursor-type nil)  ;; hide cursor
-    ;; use pdf-midnight-mode
-    (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
-             (not (bound-and-true-p pdf-view-midnight-minor-mode)))
-        (pdf-view-midnight-minor-mode))
-    ;; disable pdf-midnight-mode
-    (if (and (eq spacemacs--cur-theme 'leuven)
-             (bound-and-true-p pdf-view-midnight-minor-mode))
-        (pdf-view-midnight-minor-mode -1)))
-  (defun advice-pdf-view-func (orig-func &rest args)
-    (custom-pdf-view)
-    (apply orig-func args))
-  (dolist (func (list 'pdf-view-next-line-or-next-page
-                      'pdf-view-next-page
-                      'pdf-view-next-page-command
-                      'pdf-view-previous-line-or-previous-page
-                      'pdf-view-previous-page
-                      'pdf-view-previous-page-command
-                      'pdf-view-scroll-down-or-previous-page
-                      'pdf-view-scroll-up-or-next-page
-                      'pdf-view-reset-slice
-                      'pdf-view-set-slice
-                      'pdf-view-redisplay
-                      'pdf-view-maybe-redisplay-resized-windows
-                      'pdf-view-display-image
-                      'pdf-view-display-page
-                      'pdf-view-display-region))
-    (advice-add func :around #'advice-pdf-view-func))
-  (defadvice mwheel-scroll (after custom activate)
-    (if (string= major-mode "pdf-view-mode") (custom-pdf-view)))
-  (add-hook 'pdf-view-mode-hook 'custom-pdf-view))
+   '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
 
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow

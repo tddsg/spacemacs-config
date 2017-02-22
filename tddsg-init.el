@@ -599,18 +599,33 @@ after stripping extra whitespace and new lines"
     (apply orig-func args)
     (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines -1)))
   ;; do not advice 'select-window since this causes buffer overflow
-  (dolist (func (list 'windmove-do-window-select
-                      'select-window-by-number
-                      'other-window))
-    (advice-add func :around #'tddsg--truncate-lines))
+  (advice-add 'windmove-do-window-select :around #'tddsg--truncate-lines)
+  (advice-add 'select-window-by-number :around #'tddsg--truncate-lines)
+  (advice-add 'other-window :around #'tddsg--truncate-lines)
 
   ;; advice changing buffer
   (defun tddsg--enable-truncate-lines (orig-func &rest args)
     (apply orig-func args)
     (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines 1)))
-  (dolist (func (list 'helm-find-files
-                      'helm-mini))
-    (advice-add func :around #'tddsg--enable-truncate-lines)) ;
+  (advice-add 'helm-mini :around #'tddsg--enable-truncate-lines)
+  (advice-add 'helm-find-files :around #'tddsg--enable-truncate-lines)
+
+  ;; pdf-view
+  (defun update-pdf-view-theme ()
+    (when (derived-mode-p 'pdf-view-mode)
+      (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
+               (not (bound-and-true-p pdf-view-midnight-minor-mode)))
+          (pdf-view-midnight-minor-mode))
+      ;; disable pdf-midnight-mode
+      (if (and (eq spacemacs--cur-theme 'leuven)
+               (bound-and-true-p pdf-view-midnight-minor-mode))
+          (pdf-view-midnight-minor-mode -1))))
+  (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
+    (mapc (lambda (window)
+            (with-current-buffer (window-buffer window)
+              (update-pdf-view-theme)))
+          (window-list)))
+  (add-hook 'pdf-view-mode-hook 'update-pdf-view-theme)
 
   ;; mode editing setting
   (electric-pair-mode t)
@@ -691,6 +706,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish utop-minor-mode "")
   (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish with-editor-mode "")
+  (spacemacs|diminish compilation-in-progress "")
   (spacemacs|diminish server-buffer-clients "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
@@ -707,7 +723,6 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish holy-mode " ☼")
   (spacemacs|diminish projectile-mode " ♖")
   (spacemacs|diminish compilation-minor-mode "⚡⚡⚡COMPILING⚡⚡⚡")
-  (spacemacs|diminish compilation-in-progress "⚡⚡⚡COMPILING⚡⚡⚡")
 
   ;; hooks, finally hook
   (add-hook 'LaTeX-mode-hook 'tddsg--hook-prog-text-mode)
