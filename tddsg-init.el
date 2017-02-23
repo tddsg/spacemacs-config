@@ -509,14 +509,14 @@ after stripping extra whitespace and new lines"
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
-(defun tddsg/toggle-show-linum ()
+(defun tddsg/toggle-linum ()
   (interactive)
-  (cond (tddsg--show-linum
-         (setq tddsg--show-linum nil)
-         (global-linum-mode -1))
-        (t
+  (cond ((null linum-mode)
          (setq tddsg--show-linum t)
-         (global-linum-mode 1))))
+         (global-linum-mode 1))
+        (t
+         (setq tddsg--show-linum nil)
+         (global-linum-mode -1))))
 
 (defun tddsg/toggle-hide-header-line ()
   (interactive)
