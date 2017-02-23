@@ -255,6 +255,7 @@ Each entry is either:
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe
                    :unless '(sp-latex-point-after-backslash))
+    (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
     (sp-local-pair "$" "$" :post-handlers '())
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))

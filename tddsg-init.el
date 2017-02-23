@@ -696,6 +696,9 @@ after stripping extra whitespace and new lines"
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
+  (setq helm-split-window-in-side-p t)
+  (setq helm-split-window-default-side 'below)
+
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
@@ -818,7 +821,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "M-?") 'company-complete)
+  ;; (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "M-?") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
 
@@ -979,6 +983,7 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "<tab>") 'flyspell-correct-word-before-point)
        (define-key LaTeX-mode-map (kbd "<backtab>") 'flyspell-correct-previous-word-generic)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
+       (define-key LaTeX-mode-map (kbd "\"") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
