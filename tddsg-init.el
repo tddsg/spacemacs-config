@@ -818,7 +818,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "M-?") 'company-complete)
+  ;; (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "M-?") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
 
@@ -841,12 +842,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
   (global-set-key (kbd "M-m s d") 'dictionary-search)
-  (global-set-key (kbd "M-m S f m") 'flyspell-mode)
-  (global-set-key (kbd "M-m S f b") 'flyspell-buffer)
-  (global-set-key (kbd "M-m S i b") 'ispell-buffer)
-  (global-set-key (kbd "M-m S i c") 'ispell-continue)
-  (global-set-key (kbd "M-m S i k") 'ispell-kill-ispell)
-  (global-set-key (kbd "M-m m t") 'ansi-term)
+  (global-set-key (kbd "M-m S i") 'ispell-buffer)
+  (global-set-key (kbd "M-m S s") 'ispell-continue)
+  (global-set-key (kbd "M-m S p") 'flyspell-correct-previous-word-generic)
+  (global-set-key (kbd "M-m S c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
@@ -976,8 +975,6 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "C-j") nil)
   (eval-after-load 'latex
     '(progn
-       (define-key LaTeX-mode-map (kbd "<tab>") 'flyspell-correct-word-before-point)
-       (define-key LaTeX-mode-map (kbd "<backtab>") 'flyspell-correct-previous-word-generic)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
