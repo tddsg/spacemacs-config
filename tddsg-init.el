@@ -573,6 +573,9 @@ after stripping extra whitespace and new lines"
   ;; zoom
   (require 'zoom-frm)
 
+  ;; auto-completetion
+  (setq dabbrev-case-replace nil)
+
   ;; visual line mode
   (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
@@ -810,6 +813,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-/") 'hippie-expand)
+  (global-set-key (kbd "M-'") 'dabbrev-completion)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-+") 'delete-other-windows)
   (global-set-key (kbd "M--") 'delete-window)
@@ -818,8 +822,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
-  ;; (global-set-key (kbd "M-?") 'company-complete)
-  (global-set-key (kbd "M-?") 'helm-company)
+  (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "C-M-?") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
 
@@ -862,7 +866,14 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
 
-  (global-set-key (kbd "M-s c") 'spacemacs/evil-search-clear-highlight)
+  (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
+  (global-set-key (kbd "M-s i") 'ispell-buffer)
+  (global-set-key (kbd "M-s s") 'ispell-continue)
+  (global-set-key (kbd "M-s f") 'flyspell-buffer)
+  (global-set-key (kbd "M-s p") 'flyspell-correct-previous-word-generic)
+  (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
+  (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
+
 
   ;; workspaces transient
   (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
