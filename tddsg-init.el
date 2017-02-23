@@ -30,6 +30,8 @@
 
 (setq tddsg--auto-truncate-lines nil)
 
+(setq tddsg--show-linum t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
@@ -135,7 +137,8 @@ If the new path's directories does not exist, create them."
                                                "user.dict"))))
 
 (defun tddsg--hook-prog-text-mode ()
-  (linum-mode 1)
+  (message "TEX HOOK")
+  (if tddsg--show-linum (linum-mode 1) (linum-mode -1))
   (column-marker-3 80)
   (whitespace-mode 1))
 
@@ -506,6 +509,15 @@ after stripping extra whitespace and new lines"
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
+(defun tddsg/toggle-show-linum ()
+  (interactive)
+  (cond (tddsg--show-linum
+         (setq tddsg--show-linum nil)
+         (global-linum-mode -1))
+        (t
+         (setq tddsg--show-linum t)
+         (global-linum-mode 1))))
+
 (defun tddsg/toggle-hide-header-line ()
   (interactive)
   (if (bound-and-true-p header-line-format)
@@ -616,13 +628,12 @@ after stripping extra whitespace and new lines"
   ;; pdf-view
   (defun update-pdf-view-theme ()
     (when (derived-mode-p 'pdf-view-mode)
-      (if (and (eq spacemacs--cur-theme 'spacemacs-dark)
-               (not (bound-and-true-p pdf-view-midnight-minor-mode)))
-          (pdf-view-midnight-minor-mode))
-      ;; disable pdf-midnight-mode
-      (if (and (eq spacemacs--cur-theme 'leuven)
-               (bound-and-true-p pdf-view-midnight-minor-mode))
-          (pdf-view-midnight-minor-mode -1))))
+      (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
+             (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
+                 (pdf-view-midnight-minor-mode)))
+            ((eq spacemacs--cur-theme 'leuven)
+             (if (bound-and-true-p pdf-view-midnight-minor-mode)
+                 (pdf-view-midnight-minor-mode -1))))))
   (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
     (mapc (lambda (window)
             (with-current-buffer (window-buffer window)
@@ -732,6 +743,7 @@ after stripping extra whitespace and new lines"
 
   ;; hooks, finally hook
   (add-hook 'LaTeX-mode-hook 'tddsg--hook-prog-text-mode)
+  (add-hook 'TeX-mode-hook 'tddsg--hook-prog-text-mode)
   (add-hook 'tex-mode-hook 'tddsg--hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg--hook-prog-text-mode)
   (add-hook 'text-mode-hook 'tddsg--hook-prog-text-mode)

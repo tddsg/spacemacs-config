@@ -224,7 +224,6 @@ Each entry is either:
         (modify-syntax-entry symbol "'" tex-mode-syntax-table)
         (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
         (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
-    (linum-mode 1)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
     (pdf-sync-minor-mode)
