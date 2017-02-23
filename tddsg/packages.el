@@ -219,7 +219,7 @@ Each entry is either:
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
     ;; change syntax table to work with smartparens
-    (dolist (symbol (list ?#))
+    (dolist (symbol (list ?# ?=))
       (progn
         (modify-syntax-entry symbol "'" tex-mode-syntax-table)
         (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)

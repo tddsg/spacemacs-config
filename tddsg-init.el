@@ -1169,17 +1169,24 @@ after stripping extra whitespace and new lines"
          (file-name  (if buffer-file-name
                          (file-name-nondirectory buffer-file-name)
                        (buffer-name)))
+         (name-len (length file-name))
+         (dir-len (length dir-name))
          (drop-str "[...]")
-         (display-width (- (window-body-width) (length drop-str) 3
-                           (length (projectile-project-name)))))
-    (if (> (length file-path) display-width)
-        (if (> (length file-name) display-width)
+         (dir-display-len (- (window-body-width) (length drop-str) 3
+                               (length (projectile-project-name))
+                               name-len 1)))
+    (if (> (length file-path) dir-display-len)
+        (if (> name-len dir-display-len)
             (concat "▷ " (with-face file-name :foreground "DarkOrange3"))
           (concat "▷ "
-                  (with-face (substring dir-name 0 (- display-width
-                                                      (length file-name)))
+                  (with-face (substring dir-name 0 (/ dir-display-len 2))
                              :foreground "DeepSkyBlue3")
                   (with-face drop-str :foreground "DeepSkyBlue3")
+                  (with-face (substring dir-name
+                                        (- dir-len (/ dir-display-len 2))
+                                        (- dir-len 1))
+                             :foreground "DeepSkyBlue3")
+                  (with-face "/" :foreground "DeepSkyBlue3")
                   (with-face file-name :foreground "DarkOrange3")))
       (concat "▷ "
               (with-face dir-name :foreground "DeepSkyBlue3")
