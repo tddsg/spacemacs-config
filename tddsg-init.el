@@ -699,6 +699,9 @@ after stripping extra whitespace and new lines"
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
+  (setq helm-split-window-in-side-p t)
+  (setq helm-split-window-default-side 'below)
+
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
@@ -987,6 +990,7 @@ after stripping extra whitespace and new lines"
   (eval-after-load 'latex
     '(progn
        (define-key LaTeX-mode-map (kbd "C-j") nil)
+       (define-key LaTeX-mode-map (kbd "\"") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
