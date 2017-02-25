@@ -137,8 +137,8 @@ If the new path's directories does not exist, create them."
                                                "user.dict"))))
 
 (defun tddsg--hook-prog-text-mode ()
-  (message "TEX HOOK")
   (if tddsg--show-linum (linum-mode 1) (linum-mode -1))
+  (smartparens-mode 1)
   (column-marker-3 80)
   (whitespace-mode 1))
 
@@ -774,7 +774,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
-  (global-set-key (kbd "C-\\") 'indent-region)
+  (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
@@ -786,6 +786,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
@@ -888,6 +889,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s p") 'flyspell-correct-previous-word-generic)
   (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
+  (global-set-key (kbd "M-s k") 'sp-splice-sexp-killing-around)
 
 
   ;; workspaces transient
@@ -1015,6 +1017,9 @@ after stripping extra whitespace and new lines"
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
+  (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
+  (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
+
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
@@ -1385,6 +1390,26 @@ Set `spaceline-highlight-face-func' to
        "*NeoTree*"
        "*ace-popup-menu*"
        "*compilation*")))
+   '(LaTeX-indent-environment-list
+     (quote
+      (("verbatim" current-indentation)
+       ("verbatim*" current-indentation)
+       ("longtable" LaTeX-indent-tabular)
+       ("Form" current-indentation)
+       ("tabular")
+       ("tabular*")
+       ("align")
+       ("align*")
+       ("array")
+       ("eqnarray")
+       ("eqnarray*")
+       ("displaymath")
+       ("equation")
+       ("equation*")
+       ("picture")
+       ("tabbing")
+       ("figure")
+       ("small"))))
    '(pdf-view-continuous nil)
    '(hl-todo-keyword-faces
      (quote

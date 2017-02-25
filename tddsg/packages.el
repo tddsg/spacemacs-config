@@ -250,12 +250,13 @@ Each entry is either:
                    plain-tex-mode
                    latex-mode
                    LaTeX-mode)
+    (sp-local-pair "{" nil :actions :rem)   ;; unpair "{" nil
     (sp-local-pair "`" "'"
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe
                    :unless '(sp-latex-point-after-backslash))
     (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
-    (sp-local-pair "$" "$" :post-handlers '())
+    ;; (sp-local-pair "$" "$" :post-handlers '())
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\If" "\\EndIf" :post-handlers
