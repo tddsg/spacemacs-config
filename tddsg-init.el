@@ -98,16 +98,6 @@ If the new path's directories does not exist, create them."
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
 
-(defun tddsg--list-exists (check xs)
-  (if xs (if (funcall check (car xs)) t
-           (tddsg--list-exists check (cdr xs)))
-    nil))
-
-(defun tddsg--list-forall (check xs)
-  (if xs (if (not (funcall check (car xs))) nil
-           (tddsg--list-exists check (cdr xs)))
-    t))
-
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
@@ -115,10 +105,8 @@ If the new path's directories does not exist, create them."
   (get-buffer-window buffer t)
   (cond (popwin:popup-window
          (set-window-buffer popwin:popup-window buffer))
-        ((not (tddsg--list-exists
-               (lambda (window) (eq buffer (window-buffer window)))
-               (window-list)))
-         (popwin:popup-buffer buffer :noselect t))))
+        ((cl-loop forall window in (window-list)
+                  always (not (eq buffer (window-buffer window)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
@@ -1246,9 +1234,8 @@ after stripping extra whitespace and new lines"
                                             "*spacemacs*"))
 
 (defun tddsg--header-exclude-p (buffer-name)
-  (tddsg--list-exists (lambda (prefix)
-                        (string-match-p (regexp-quote prefix) buffer-name))
-                      tddsg--excluded-buffer-prefix))
+  (cl-loop for buffer-prefix in tddsg--excluded-buffer-prefix
+           thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
