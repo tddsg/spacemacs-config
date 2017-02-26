@@ -250,7 +250,8 @@ Each entry is either:
                    plain-tex-mode
                    latex-mode
                    LaTeX-mode)
-    (sp-local-pair "{" nil :actions :rem)   ;; unpair "{" nil
+    ;; (sp-local-pair "{" nil :actions :rem)
+    ;; unpair "{" nil
     (sp-local-pair "`" "'"
                    :actions '(:rem autoskip)
                    :skip-match 'sp-latex-skip-match-apostrophe
