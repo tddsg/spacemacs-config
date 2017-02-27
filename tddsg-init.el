@@ -313,13 +313,13 @@ If the new path's directories does not exist, create them."
   (interactive)
   (let ((current-char (char-after)))
     (cond ((equal (char-syntax current-char) ? )
-           (tddsg/one-space))
-          ((eq (char-syntax current-char) ?.)
+           (just-one-space))
+          ((memq (char-syntax current-char) '(?. ?'))
            (delete-char 1)
-           (tddsg/one-space))
+           (just-one-space))
           (t
            (call-interactively 'sp-kill-sexp)
-           (tddsg/one-space)))))
+           (just-one-space)))))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
