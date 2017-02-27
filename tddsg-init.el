@@ -311,7 +311,9 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp ()
   "Kill sexp smartly"
   (interactive)
-  (let ((current-char (char-after)))
+  (let ((current-char (char-after))
+        (prev-car)
+        )
     (cond ((equal (char-syntax current-char) ? )
            (just-one-space))
           ((memq (char-syntax current-char) '(?. ?'))
@@ -970,12 +972,12 @@ after stripping extra whitespace and new lines"
   ;; god-mode
   (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-mode)
+  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "<escape>") 'god-mode)
+  (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
   (define-key god-local-mode-map (kbd "z") 'repeat)
-  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+  (define-key god-local-mode-map (kbd "i") 'god-mode-all)
 
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
