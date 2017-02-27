@@ -32,6 +32,8 @@
 
 (setq tddsg--show-linum t)
 
+(setq tddsg--show-header-line t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
@@ -503,13 +505,14 @@ after stripping extra whitespace and new lines"
          (message "Enable auto truncate lines")
          (setq tddsg--auto-truncate-lines t))))
 
-(defun tddsg/toggle-hide-mode-line ()
+(defun tddsg/toggle-show-mode-line ()
   (interactive)
   (if (bound-and-true-p mode-line-format)
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
 (defun tddsg/toggle-linum ()
+  "Toggle show/hide line number."
   (interactive)
   (cond ((null linum-mode)
          (setq tddsg--show-linum t)
@@ -517,12 +520,6 @@ after stripping extra whitespace and new lines"
         (t
          (setq tddsg--show-linum nil)
          (global-linum-mode -1))))
-
-(defun tddsg/toggle-hide-header-line ()
-  (interactive)
-  (if (bound-and-true-p header-line-format)
-      (setq header-line-format nil)
-    (setq header-line-format (default-value 'header-line-format))))
 
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
@@ -871,8 +868,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
-  (global-set-key (kbd "M-m T l") 'tddsg/toggle-hide-mode-line)
-  (global-set-key (kbd "M-m T h") 'tddsg/toggle-hide-header-line)
+  (global-set-key (kbd "M-m T l") 'tddsg/toggle-show-mode-line)
+  (global-set-key (kbd "M-m T h") 'tddsg/toggle-show-header-line)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m l c") 'langtool-check)
@@ -1252,25 +1249,30 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
-  ;; dim header-line of inactive buffers
-  (mapc
-   (lambda (window)
-     (with-current-buffer (window-buffer window)
-       (cond ((tddsg--header-exclude-p (buffer-name)) ())
-             ((not (eq window (selected-window)))
-              (setq header-line-format
-                    `(:propertize ,(tddsg--create-header-line)
-                                  face (list :foreground "grey55")))))))
-   (window-list))
-  ;; activate header-line of the buffer in the active window
-  (mapc
-   (lambda (window)
-     (with-current-buffer (window-buffer window)
-       (if (and (not (tddsg--header-exclude-p (buffer-name)))
-                (eq window (selected-window)))
-           (setq header-line-format (tddsg--create-header-line)))))
-   (window-list)))
+  (if tddsg--show-header-line
+      (cl-loop for window in (window-list) do
+               (with-current-buffer (window-buffer window)
+                 (when (not (tddsg--header-exclude-p
+                             (buffer-name (window-buffer window))))
+                   (if (eq (window-buffer window)
+                           (window-buffer (selected-window)))
+                       ;; activate header-line of the active buffer
+                       (setq header-line-format (tddsg--create-header-line))
+                     ;; dim header-line of inactive buffers
+                     (setq header-line-format
+                           `(:propertize ,(tddsg--create-header-line)
+                                         face (list :foreground "grey55")))))))
+    (cl-loop for window in (window-list) do
+             (with-current-buffer (window-buffer window)
+               (setq header-line-format nil)))))
 
+(defun tddsg/toggle-show-header-line ()
+  "Toggle show/hide header line of all buffers."
+  (interactive)
+  (if tddsg--show-header-line
+      (setq tddsg--show-header-line nil)
+    (setq tddsg--show-header-line t))
+  (tddsg--update-header-line))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook 'tddsg--update-header-line)
