@@ -282,16 +282,7 @@ If the new path's directories does not exist, create them."
                    (call-interactively 'er/expand-region))
           (call-interactively 'er/expand-region))
       (if (< (point) (mark)) (set-mark-command nil))
-      (call-interactively  'tddsg/mark-sexp))
-    ;; (cond ((memq (char-syntax current-char) '(?w ?_))
-    ;;        (and (memq (char-syntax previous-char) '(?w ?_))
-    ;;             (not (null previous-char))
-    ;;             )
-    ;;        (if (not (region-active-p)) (backward-word))
-    ;;        (call-interactively 'er/expand-region))
-    ;;       (t (if (< (point) (mark)) (set-mark-command nil))
-    ;;          (call-interactively  'tddsg/mark-sexp)))
-    ))
+      (call-interactively  'tddsg/mark-sexp))))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -316,6 +307,19 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
+
+(defun tddsg/smart-kill-sexp ()
+  "Kill sexp smartly"
+  (interactive)
+  (let ((current-char (char-after)))
+    (cond ((equal (char-syntax current-char) ? )
+           (tddsg/one-space))
+          ((eq (char-syntax current-char) ?.)
+           (delete-char 1)
+           (tddsg/one-space))
+          (t
+           (call-interactively 'sp-kill-sexp)
+           (tddsg/one-space)))))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
@@ -538,18 +542,18 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg/init-configs ()
   ;; specific setting for each machines
-  (cond ((tddsg--is-small-screen)
-         (set-default 'truncate-lines t)   ;; disable truncate line
-         (setq tddsg--auto-truncate-lines t)
-         (setq golden-ratio-adjust-factor 0.9)
-         (setq golden-ratio-balance nil)
-         (global-linum-mode -1)
-         (golden-ratio-mode))
-        (t
-         (setq tddsg--auto-truncate-lines nil)
-         (setq golden-ratio-adjust-factor 1.618)
-         (setq golden-ratio-balance nil)
-         (golden-ratio-mode)))
+  (if (tddsg--is-small-screen)
+      (progn
+        (global-linum-mode -1)
+        (set-default 'truncate-lines t)   ;; disable truncate line
+        (setq tddsg--auto-truncate-lines t)
+        (setq golden-ratio-adjust-factor 0.9)
+        (setq golden-ratio-balance nil)
+        (golden-ratio-mode))
+    (setq tddsg--auto-truncate-lines nil)
+    (setq golden-ratio-adjust-factor 1.618)
+    (setq golden-ratio-balance nil)
+    (golden-ratio-mode))
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
@@ -662,7 +666,9 @@ after stripping extra whitespace and new lines"
 
   ;; themes
   (defun tddsg--update-cursor ()
-    (cond ((eq spacemacs--cur-theme 'leuven)
+    (cond ((bound-and-true-p god-global-mode)
+           (set-cursor-color "purple"))
+          ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
            (set-cursor-color "lime green"))))
@@ -757,7 +763,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/init-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "<escape>") 'god-mode)
+  (global-set-key (kbd "<escape>") 'god-mode-all)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -779,7 +785,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-O") 'helm-imenu-anywhere)
-  (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
+  (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
