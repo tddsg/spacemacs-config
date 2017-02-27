@@ -153,6 +153,19 @@ If the new path's directories does not exist, create them."
   (interactive)
   (message "Current path: %s" (buffer-file-name)))
 
+(defun tddsg/previous-overlay ()
+  "Go to previous overlay."
+  (interactive)
+  (let ((posn (-  (previous-overlay-change (point)) 1)))
+    (if (not (null (overlays-at posn)))
+        (goto-char posn)))
+  ;; (goto-char (previous-overlay-change (point)))
+  ;; (while (and (not (bobp))
+  ;;             (not (memq (char-syntax (char-after)) '(?w))))
+  ;;   (goto-char (previous-overlay-change (point))))
+  )
+
+
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
@@ -667,8 +680,9 @@ after stripping extra whitespace and new lines"
 
   ;; compilation
   (setq compilation-ask-about-save nil
-        compilation-window-height 15
-        compilation-finish-functions 'tddsg--compilation-finish)
+        compilation-window-height 15)
+  (setq compilation-finish-functions
+        (append compilation-finish-functions 'tddsg--compilation-finish))
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -1506,41 +1520,41 @@ BUFFER."
 
 (require 'pdf-view)
 
-;;;;; customize to allow page-up/page-down by window-size
-(defun pdf-view-next-page-command (&optional n)
-  (declare (interactive-only pdf-view-next-page))
-  (interactive "p")
-  (unless n (setq n 1))
-  (when (> (+ (pdf-view-current-page) n)
-           (pdf-cache-number-of-pages))
-    (user-error "Last page"))
-  (when (< (+ (pdf-view-current-page) n) 1)
-    (user-error "First page"))
-  ;;; <-- new code is inserted here
-  (let* ((pdf-view-inhibit-redisplay t)
-         (wdn-height (window-height (selected-window)))
-         (lines-to-move (cond ((> n 0) (- wdn-height 4))
-                              ((< n 0) (- 4 wdn-height))
-                              (t 0))))
-    (when (= (window-vscroll) (image-next-line lines-to-move))
-      (pdf-view-goto-page (+ (pdf-view-current-page) n))
-      (if (> n 0) (image-bob) (image-eob))))
-  ;;; --> end of new code
-  (force-mode-line-update)
-  (sit-for 0)
-  (when pdf-view--next-page-timer
-    (cancel-timer pdf-view--next-page-timer)
-    (setq pdf-view--next-page-timer nil))
-  (if (or (not (input-pending-p))
-          (and (> n 0)
-               (= (pdf-view-current-page)
-                  (pdf-cache-number-of-pages)))
-          (and (< n 0)
-               (= (pdf-view-current-page) 1)))
-      (pdf-view-redisplay)
-    (setq pdf-view--next-page-timer
-          (run-with-idle-timer 0.001 nil 'pdf-view-redisplay
-                               (selected-window)))))
+;; ;;;;; customize to allow page-up/page-down by window-size
+;; (defun pdf-view-next-page-command (&optional n)
+;;   (declare (interactive-only pdf-view-next-page))
+;;   (interactive "p")
+;;   (unless n (setq n 1))
+;;   (when (> (+ (pdf-view-current-page) n)
+;;            (pdf-cache-number-of-pages))
+;;     (user-error "Last page"))
+;;   (when (< (+ (pdf-view-current-page) n) 1)
+;;     (user-error "First page"))
+;;   ;;; <-- new code is inserted here
+;;   (let* ((pdf-view-inhibit-redisplay t)
+;;          (wdn-height (window-height (selected-window)))
+;;          (lines-to-move (cond ((> n 0) (- wdn-height 4))
+;;                               ((< n 0) (- 4 wdn-height))
+;;                               (t 0))))
+;;     (when (= (window-vscroll) (image-next-line lines-to-move))
+;;       (pdf-view-goto-page (+ (pdf-view-current-page) n))
+;;       (if (> n 0) (image-bob) (image-eob))))
+;;   ;;; --> end of new code
+;;   (force-mode-line-update)
+;;   (sit-for 0)
+;;   (when pdf-view--next-page-timer
+;;     (cancel-timer pdf-view--next-page-timer)
+;;     (setq pdf-view--next-page-timer nil))
+;;   (if (or (not (input-pending-p))
+;;           (and (> n 0)
+;;                (= (pdf-view-current-page)
+;;                   (pdf-cache-number-of-pages)))
+;;           (and (< n 0)
+;;                (= (pdf-view-current-page) 1)))
+;;       (pdf-view-redisplay)
+;;     (setq pdf-view--next-page-timer
+;;           (run-with-idle-timer 0.001 nil 'pdf-view-redisplay
+;;                                (selected-window)))))
 
 ;;;;; customize to jump to the pdf-view window and display tooltip
 (defun pdf-sync-forward-search (&optional line column)
