@@ -100,16 +100,6 @@ If the new path's directories does not exist, create them."
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
 
-(defun tddsg--list-exists (check xs)
-  (if xs (if (funcall check (car xs)) t
-           (tddsg--list-exists check (cdr xs)))
-    nil))
-
-(defun tddsg--list-forall (check xs)
-  (if xs (if (not (funcall check (car xs))) nil
-           (tddsg--list-exists check (cdr xs)))
-    t))
-
 (require 'popwin)
 (defun tddsg--compilation-finish (buffer string)
   "Function run when a compilation finishes."
@@ -117,10 +107,8 @@ If the new path's directories does not exist, create them."
   (get-buffer-window buffer t)
   (cond (popwin:popup-window
          (set-window-buffer popwin:popup-window buffer))
-        ((not (tddsg--list-exists
-               (lambda (window) (eq buffer (window-buffer window)))
-               (window-list)))
-         (popwin:popup-buffer buffer :noselect t))))
+        ((cl-loop for window in (window-list)
+                  always (not (eq buffer (window-buffer window)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
@@ -542,6 +530,7 @@ after stripping extra whitespace and new lines"
          (setq tddsg--auto-truncate-lines t)
          (setq golden-ratio-adjust-factor 0.9)
          (setq golden-ratio-balance nil)
+         (global-linum-mode -1)
          (golden-ratio-mode))
         (t
          (setq tddsg--auto-truncate-lines nil)
@@ -787,7 +776,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x G") 'magit-diff)
+  ;; (global-set-key (kbd "C-x G") 'magit-diff)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
@@ -1243,9 +1232,8 @@ after stripping extra whitespace and new lines"
                                             "*spacemacs*"))
 
 (defun tddsg--header-exclude-p (buffer-name)
-  (tddsg--list-exists (lambda (prefix)
-                        (string-match-p (regexp-quote prefix) buffer-name))
-                      tddsg--excluded-buffer-prefix))
+  (cl-loop for buffer-prefix in tddsg--excluded-buffer-prefix
+           thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
@@ -1562,37 +1550,11 @@ BUFFER."
       (pdf-sync-forward-correlate line column)
     (let ((buffer (or (find-buffer-visiting pdf)
                       (find-file-noselect pdf))))
-      ;; (with-selected-window (display-buffer
-      ;;                        buffer pdf-sync-forward-display-action)
-      ;;   (select-window (selected-window))
-      ;;   (pdf-util-assert-pdf-window)
-      ;;   (pdf-view-goto-page page)
-      ;;   (let ((top (* y1 (cdr (pdf-view-image-size)))))
-      ;;     (pdf-util-tooltip-arrow (round top) 20)
-      ;;     ;; (run-with-idle-timer 0.1 nil
-      ;;     ;;                      (lambda (window top)
-      ;;     ;;                        (select-window window)
-      ;;     ;;                        (other-window -1) ;; add this to force golden-ratio
-      ;;     ;;                        (other-window 1)
-      ;;     ;;                        (pdf-util-tooltip-arrow (round top) 20))
-      ;;     ;;                      (selected-window) top)
-      ;;     ))
-      ;; (with-current-buffer buffer
-      ;;   (run-hooks 'pdf-sync-forward-hook))
       (select-window (display-buffer buffer pdf-sync-forward-display-action))
       (other-window -1)
       (other-window 1)
       (pdf-util-assert-pdf-window)
       (pdf-view-goto-page page)
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
-        (pdf-util-tooltip-arrow (round top) 20)
-        ;; (run-with-idle-timer 0.1 nil
-        ;;                      (lambda (window top)
-        ;;                        (select-window window)
-        ;;                        (other-window -1) ;; add this to force golden-ratio
-        ;;                        (other-window 1)
-        ;;                        (pdf-util-tooltip-arrow (round top) 20))
-        ;;                      (selected-window) top)
-        )
-      (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook))
-      )))
+        (pdf-util-tooltip-arrow (round top) 20))
+      (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
