@@ -388,22 +388,24 @@ Each entry is either:
   (require 'god-mode)
   ;;; update cursor
   (defun update-cursor ()
-    (if god-global-mode (set-cursor-color "purple")
-      (cond ((eq spacemacs--cur-theme 'leuven)
-             (set-cursor-color "dark orange"))
-            ((eq spacemacs--cur-theme 'spacemacs-dark)
-             (set-cursor-color "lime green")))))
+    (cond ((or (bound-and-true-p god-mode)
+               (bound-and-true-p god-global-mode))
+           (set-cursor-color "purple"))
+          ((eq spacemacs--cur-theme 'leuven)
+           (set-cursor-color "dark orange"))
+          ((eq spacemacs--cur-theme 'spacemacs-dark)
+           (set-cursor-color "lime green"))))
   (defun advice-update-cursor (orig-func &rest args)
     (apply orig-func args)
     (update-cursor))
   (dolist (func (list 'windmove-do-window-select
                       'select-window
                       'god-mode-isearch-activate
-                      'god-mode-isearch-disable))
+                      'god-mode-isearch-disable
+                      'god-mode-all))
     (advice-add func :around #'advice-update-cursor))
-  (defun my-god-mode-hook () (interactive) (update-cursor))
-  (add-hook 'god-mode-enabled-hook 'my-god-mode-hook)
-  (add-hook 'god-mode-disabled-hook 'my-god-mode-hook))
+  (add-hook 'god-mode-enabled-hook 'update-cursor)
+  (add-hook 'god-mode-disabled-hook 'update-cursor))
 
 (defun tddsg/post-init-pdf-tools ()
   (pdf-tools-install)

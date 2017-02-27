@@ -311,17 +311,15 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp ()
   "Kill sexp smartly"
   (interactive)
-  (let ((current-char (char-after))
-        (prev-car)
-        )
-    (cond ((equal (char-syntax current-char) ? )
-           (just-one-space))
-          ((memq (char-syntax current-char) '(?. ?'))
-           (delete-char 1)
-           (just-one-space))
-          (t
-           (call-interactively 'sp-kill-sexp)
-           (just-one-space)))))
+  (cond ((equal (char-syntax (char-after)) ?-)
+         (just-one-space))
+        ((memq (char-syntax (char-after)) '(?. ?'))
+         (delete-char 1)
+         (just-one-space))
+        (t
+         (call-interactively 'sp-kill-sexp)
+         (if (equal (char-syntax (char-after)) ? )
+             (just-one-space)))))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
@@ -668,7 +666,8 @@ after stripping extra whitespace and new lines"
 
   ;; themes
   (defun tddsg--update-cursor ()
-    (cond ((bound-and-true-p god-global-mode)
+    (cond ((or (bound-and-true-p god-mode)
+               (bound-and-true-p god-global-mode))
            (set-cursor-color "purple"))
           ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
