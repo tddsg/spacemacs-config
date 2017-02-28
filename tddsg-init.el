@@ -710,10 +710,12 @@ after stripping extra whitespace and new lines"
   ;; smartparens
   (smartparens-global-mode)
 
-  ;; backup
-  (setq make-backup-files t)
+  ;; auto-revert
+  (setq auto-revert-check-vc-info t)
 
-  (setq make-backup-file-name-function 'tddsg--create-backup-file-name)
+  ;; backup
+  (setq make-backup-files t
+        make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; evil mode
   (evil-mode -1)
