@@ -311,15 +311,25 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp ()
   "Kill sexp smartly"
   (interactive)
+  (defun adjust-space ()
+    (just-one-space)
+    (tddsg/one-or-zero-space)
+    (message "char-afte: %s" (char-after))
+    (if (and (not (null (char-before)))
+             (memq (char-syntax (char-after)) '(?w ?_)))
+        (just-one-space)))
   (cond ((equal (char-syntax (char-after)) ? )
-         (just-one-space))
-        ((memq (char-syntax (char-after)) '(?. ?' ?\\))
+         (adjust-space))
+        ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
+             (and (equal (char-syntax (char-after)) ?()
+                  (null (sp-get-paired-expression)))
+             (and (equal (char-syntax (char-after)) ?))
+                  (null (sp-get-paired-expression t))))
          (delete-char 1)
-         (just-one-space))
+         (adjust-space))
         (t
          (call-interactively 'sp-kill-sexp)
-         (if (equal (char-syntax (char-after)) ? )
-             (just-one-space)))))
+         (adjust-space))))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
@@ -357,7 +367,7 @@ or in a custom directory when prefix-argument is given (C-u)."
     (if (memq (char-syntax current-char) '(?w ?_ ?\" ?\( ?< ?>))
         (just-one-space))))
 
-(defun tddsg/just-one-space ()
+(defun tddsg/one-space ()
   "Just one space in a region or in the current location."
   (interactive)
   (if (region-active-p)
@@ -369,7 +379,7 @@ or in a custom directory when prefix-argument is given (C-u)."
             (replace-match " "))))
     (just-one-space)))
 
-(defun tddsg/one-space ()
+(defun tddsg/one-or-zero-space ()
   "Delete the space if there is only 1 space,
 replace all spaces by 1 if there is more than 1,
 insert a new space if there is none"
@@ -401,7 +411,7 @@ insert a new space if there is none"
             (replace-match " "))))
     (if (tddsg--blank-line-p)
         (delete-blank-lines)
-      (tddsg/one-space))))
+      (tddsg/one-or-zero-space))))
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -989,10 +999,11 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-S-<down>") 'buf-move-down)
-  (global-set-key (kbd "C-s-7") 'buf-move-left)
-  (global-set-key (kbd "C-s-8") 'buf-move-down)
-  (global-set-key (kbd "C-s-9") 'buf-move-up)
-  (global-set-key (kbd "C-s-0") 'buf-move-right)
+  (define-key spacemacs-default-map-root-map (kbd "M-m b m") nil)
+  (global-set-key (kbd "M-m b m b") 'buf-move-left)
+  (global-set-key (kbd "M-m b m n") 'buf-move-down)
+  (global-set-key (kbd "M-m b m p") 'buf-move-up)
+  (global-set-key (kbd "M-m b m f") 'buf-move-right)
 
   ;; buffer-clone
   (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
