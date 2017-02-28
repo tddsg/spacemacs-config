@@ -1311,7 +1311,7 @@ after stripping extra whitespace and new lines"
                        auto-compile
                        ,second-left
                        major-mode
-                       (version-control :when active)
+                       version-control
                        minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
