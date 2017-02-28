@@ -311,25 +311,25 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp ()
   "Kill sexp smartly"
   (interactive)
-  (defun adjust-space ()
-    (just-one-space)
-    (tddsg/one-or-zero-space)
-    (message "char-afte: %s" (char-after))
+  (defun delete-next-spaces ()
+    (cl-loop while (equal (char-syntax (char-after)) ? )
+             do (delete-char 1))
     (if (and (not (null (char-before)))
-             (memq (char-syntax (char-after)) '(?w ?_)))
+             (memq (char-syntax (char-before)) '(?w ))
+             (memq (char-syntax (char-after)) '(?w ?( ?) ?_ )))
         (just-one-space)))
   (cond ((equal (char-syntax (char-after)) ? )
-         (adjust-space))
+         (delete-next-spaces))
         ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
              (and (equal (char-syntax (char-after)) ?()
                   (null (sp-get-paired-expression)))
              (and (equal (char-syntax (char-after)) ?))
                   (null (sp-get-paired-expression t))))
          (delete-char 1)
-         (adjust-space))
+         (delete-next-spaces))
         (t
          (call-interactively 'sp-kill-sexp)
-         (adjust-space))))
+         (delete-next-spaces))))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
@@ -789,6 +789,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
+  (global-set-key (kbd "C-*") 'evil-copy-from-above)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
@@ -815,7 +816,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
   (global-set-key (kbd "C-x C-z") nil)
-  (global-set-key (kbd "C-z") nil)
 
   (global-set-key [?\H-M] 'helm-mini)
   (global-set-key [?\H-m] 'helm-mini)
@@ -979,13 +979,9 @@ after stripping extra whitespace and new lines"
   (define-key magit-status-mode-map (kbd "M-0") nil)
 
   ;; god-mode
-  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
-  (define-key god-local-mode-map (kbd "z") 'repeat)
   (define-key god-local-mode-map (kbd "i") 'god-mode-all)
 
   ;; windmove
@@ -1061,8 +1057,6 @@ after stripping extra whitespace and new lines"
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
-  (define-key evil-motion-state-map (kbd "C-z") nil)
-  (define-key evil-insert-state-map (kbd "C-z") 'god-local-mode)
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
