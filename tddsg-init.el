@@ -311,9 +311,9 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp ()
   "Kill sexp smartly"
   (interactive)
-  (cond ((equal (char-syntax (char-after)) ?-)
+  (cond ((equal (char-syntax (char-after)) ? )
          (just-one-space))
-        ((memq (char-syntax (char-after)) '(?. ?'))
+        ((memq (char-syntax (char-after)) '(?. ?' ?\\))
          (delete-char 1)
          (just-one-space))
         (t
