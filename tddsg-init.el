@@ -324,9 +324,8 @@ If the new path's directories does not exist, create them."
         (just-one-space)))
   (let ((forward (if (and (not (null direction)) (< direction 0)) nil t)))
     (cond (forward
-           (cond ((equal (char-syntax (char-after)) ? )
-                  (delete-spaces t))
-                 ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
+           (delete-spaces t)
+           (cond ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
                       (and (equal (char-syntax (char-after)) ?()
                            (null (sp-get-paired-expression))))
                       (and (equal (char-syntax (char-after)) ?))
@@ -337,9 +336,9 @@ If the new path's directories does not exist, create them."
                   (call-interactively 'sp-kill-sexp)
                   (delete-spaces t))))
           ((and (null forward) (not (null (char-before))))
-           (cond ((equal (char-syntax (char-before)) ? )
-                  (delete-spaces nil))
-                 ((or (memq (char-syntax (char-before)) '(?. ?' ?\\))
+           (forward-char -1)
+           (delete-spaces -1)
+           (cond ((or (memq (char-syntax (char-before)) '(?. ?' ?\\))
                       (and (equal (char-syntax (char-before)) ?()
                            (null (sp-get-paired-expression))))
                       (and (equal (char-syntax (char-before)) ?))
@@ -723,6 +722,8 @@ after stripping extra whitespace and new lines"
   (advice-add 'isearch-mode :around #'tddsg--isearch-show-case-fold)
   (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
   (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
+  (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
+
 
   ;; compilation
   (setq compilation-ask-about-save nil
@@ -826,6 +827,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
+  (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-O") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
@@ -970,6 +972,10 @@ after stripping extra whitespace and new lines"
   ;; isearch
   (define-key isearch-mode-map (kbd "C-.")
     'tddsg/yank-current-word-to-isearch-buffer)
+  (define-key isearch-mode-map (kbd "C-c C-v")
+    'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "<f6>")
+    'pdf-isearch-sync-backward-current-match)
 
   (define-key swiper-map (kbd "C-.")
     'tddsg/yank-current-word-to-minibuffer)
@@ -1234,8 +1240,8 @@ after stripping extra whitespace and new lines"
          (dir-len (length dir-name))
          (drop-str "[...]")
          (dir-display-len (- (window-body-width) (length drop-str) 3
-                               (length (projectile-project-name))
-                               name-len 1)))
+                             (length (projectile-project-name))
+                             name-len 1)))
     (if (> (length file-path) dir-display-len)
         (if (> name-len dir-display-len)
             (concat "▷ " (with-face file-name :foreground "DarkOrange3"))
@@ -1458,6 +1464,8 @@ Set `spaceline-highlight-face-func' to
        ("tabbing")
        ("figure")
        ("center")
+       ("flushleft")
+       ("flushright")
        ("small"))))
    '(pdf-view-continuous nil)
    '(hl-todo-keyword-faces
