@@ -739,10 +739,12 @@ after stripping extra whitespace and new lines"
   ;; smartparens
   (smartparens-global-mode)
 
-  ;; backup
-  (setq make-backup-files t)
+  ;; auto-revert
+  (setq auto-revert-check-vc-info t)
 
-  (setq make-backup-file-name-function 'tddsg--create-backup-file-name)
+  ;; backup
+  (setq make-backup-files t
+        make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; evil mode
   (evil-mode -1)
@@ -1335,7 +1337,7 @@ after stripping extra whitespace and new lines"
                        auto-compile
                        ,second-left
                        major-mode
-                       (version-control :when active)
+                       version-control
                        minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
