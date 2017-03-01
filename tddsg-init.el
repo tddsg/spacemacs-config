@@ -323,7 +323,8 @@ If the new path's directories does not exist, create them."
              (memq (char-syntax (char-after)) '(?w ?( ?) ?_ )))
         (just-one-space)))
   (let ((forward (if (and (not (null direction)) (< direction 0)) nil t)))
-    (cond (forward
+    (cond ((region-active-p) (delete-active-region))
+          (forward
            (delete-spaces t)
            (cond ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
                       (and (equal (char-syntax (char-after)) ?()
@@ -1050,11 +1051,13 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; LaTeX-mode
+  (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg--latex-compile)
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (eval-after-load 'latex
     '(progn
+       (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "\"") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
