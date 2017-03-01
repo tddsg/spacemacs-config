@@ -325,7 +325,7 @@ If the new path's directories does not exist, create them."
   (let ((forward (if (and (not (null direction)) (< direction 0)) nil t)))
     (cond ((region-active-p) (delete-active-region))
           (forward
-           (delete-spaces t)
+           ;; (delete-spaces t)
            (cond ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
                       (and (equal (char-syntax (char-after)) ?()
                            (null (sp-get-paired-expression))))
@@ -338,7 +338,7 @@ If the new path's directories does not exist, create them."
                   (delete-spaces t))))
           ((and (null forward) (not (null (char-before))))
            (forward-char -1)
-           (delete-spaces -1)
+           ;; (delete-spaces -1)
            (cond ((or (memq (char-syntax (char-before)) '(?. ?' ?\\))
                       (and (equal (char-syntax (char-before)) ?()
                            (null (sp-get-paired-expression))))
