@@ -308,28 +308,57 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
-(defun tddsg/smart-kill-sexp ()
-  "Kill sexp smartly"
+(defun tddsg/smart-kill-sexp (&optional direction)
+  "Kill sexp smartly."
   (interactive)
-  (defun delete-next-spaces ()
-    (cl-loop while (equal (char-syntax (char-after)) ? )
-             do (delete-char 1))
+  (defun delete-spaces (forward)
+    (if forward
+        (cl-loop while (equal (char-syntax (char-after)) ? )
+                 do (delete-char 1))
+      (cl-loop while (and (not (null (char-before)))
+                          (equal (char-syntax (char-before)) ? ))
+               do (delete-char -1)))
     (if (and (not (null (char-before)))
              (memq (char-syntax (char-before)) '(?w ))
              (memq (char-syntax (char-after)) '(?w ?( ?) ?_ )))
         (just-one-space)))
-  (cond ((equal (char-syntax (char-after)) ? )
-         (delete-next-spaces))
-        ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
-             (and (equal (char-syntax (char-after)) ?()
-                  (null (sp-get-paired-expression)))
-             (and (equal (char-syntax (char-after)) ?))
-                  (null (sp-get-paired-expression t))))
-         (delete-char 1)
-         (delete-next-spaces))
-        (t
-         (call-interactively 'sp-kill-sexp)
-         (delete-next-spaces))))
+  (let ((forward (if (and (not (null direction)) (< direction 0)) nil t)))
+    (cond (forward
+           (cond ((equal (char-syntax (char-after)) ? )
+                  (delete-spaces t))
+                 ((or (memq (char-syntax (char-after)) '(?. ?' ?\\))
+                      (and (equal (char-syntax (char-after)) ?()
+                           (null (sp-get-paired-expression))))
+                      (and (equal (char-syntax (char-after)) ?))
+                           (null (sp-get-paired-expression t)))
+                  (delete-char 1)
+                  (delete-spaces t))
+                 (t
+                  (call-interactively 'sp-kill-sexp)
+                  (delete-spaces t))))
+          ((and (null forward) (not (null (char-before))))
+           (cond ((equal (char-syntax (char-before)) ? )
+                  (delete-spaces nil))
+                 ((or (memq (char-syntax (char-before)) '(?. ?' ?\\))
+                      (and (equal (char-syntax (char-before)) ?()
+                           (null (sp-get-paired-expression))))
+                      (and (equal (char-syntax (char-before)) ?))
+                           (null (sp-get-paired-expression t)))
+                  (delete-char -1)
+                  (delete-spaces nil))
+                 (t
+                  (call-interactively 'sp-backward-kill-sexp)
+                  (delete-spaces nil)))))))
+
+(defun tddsg/smart-kill-sexp-forward ()
+  "Kill sexp forward."
+  (interactive)
+  (tddsg/smart-kill-sexp 1))
+
+(defun tddsg/smart-kill-sexp-backward ()
+  "Kill sexp backward."
+  (interactive)
+  (tddsg/smart-kill-sexp -1))
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
@@ -797,7 +826,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-O") 'helm-imenu-anywhere)
-  (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp)
+  (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
+  (global-set-key (kbd "C-M-S-K") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
@@ -1425,6 +1455,7 @@ Set `spaceline-highlight-face-func' to
        ("picture")
        ("tabbing")
        ("figure")
+       ("center")
        ("small"))))
    '(pdf-view-continuous nil)
    '(hl-todo-keyword-faces
