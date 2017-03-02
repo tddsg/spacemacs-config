@@ -226,7 +226,6 @@ Each entry is either:
         (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
-    (pdf-sync-minor-mode)
     (abbrev-mode +1)
     (set-fill-column 75)
     (show-smartparens-mode)

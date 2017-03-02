@@ -30,7 +30,7 @@
 
 (setq tddsg--auto-truncate-lines nil)
 
-(setq tddsg--show-linum t)
+(setq tddsg--show-linum nil)
 
 (setq tddsg--show-header-line t)
 
@@ -734,7 +734,7 @@ after stripping extra whitespace and new lines"
 
   ;; shell
   (setq comint-prompt-read-only nil)
-  (defadvice shell (after linum activate) (linum-mode 1))
+  ;; (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
 
@@ -1575,42 +1575,6 @@ BUFFER."
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)
-
-;; ;;;;; customize to allow page-up/page-down by window-size
-;; (defun pdf-view-next-page-command (&optional n)
-;;   (declare (interactive-only pdf-view-next-page))
-;;   (interactive "p")
-;;   (unless n (setq n 1))
-;;   (when (> (+ (pdf-view-current-page) n)
-;;            (pdf-cache-number-of-pages))
-;;     (user-error "Last page"))
-;;   (when (< (+ (pdf-view-current-page) n) 1)
-;;     (user-error "First page"))
-;;   ;;; <-- new code is inserted here
-;;   (let* ((pdf-view-inhibit-redisplay t)
-;;          (wdn-height (window-height (selected-window)))
-;;          (lines-to-move (cond ((> n 0) (- wdn-height 4))
-;;                               ((< n 0) (- 4 wdn-height))
-;;                               (t 0))))
-;;     (when (= (window-vscroll) (image-next-line lines-to-move))
-;;       (pdf-view-goto-page (+ (pdf-view-current-page) n))
-;;       (if (> n 0) (image-bob) (image-eob))))
-;;   ;;; --> end of new code
-;;   (force-mode-line-update)
-;;   (sit-for 0)
-;;   (when pdf-view--next-page-timer
-;;     (cancel-timer pdf-view--next-page-timer)
-;;     (setq pdf-view--next-page-timer nil))
-;;   (if (or (not (input-pending-p))
-;;           (and (> n 0)
-;;                (= (pdf-view-current-page)
-;;                   (pdf-cache-number-of-pages)))
-;;           (and (< n 0)
-;;                (= (pdf-view-current-page) 1)))
-;;       (pdf-view-redisplay)
-;;     (setq pdf-view--next-page-timer
-;;           (run-with-idle-timer 0.001 nil 'pdf-view-redisplay
-;;                                (selected-window)))))
 
 ;;;;; customize to jump to the pdf-view window and display tooltip
 (defun pdf-sync-forward-search (&optional line column)
