@@ -723,7 +723,7 @@ after stripping extra whitespace and new lines"
   (advice-add 'isearch-mode :around #'tddsg--isearch-show-case-fold)
   (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
   (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
-  (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
+  ;; (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
 
 
   ;; compilation
