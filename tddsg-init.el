@@ -1316,7 +1316,7 @@ after stripping extra whitespace and new lines"
                      ;; dim header-line of inactive buffers
                      (setq header-line-format
                            `(:propertize ,(tddsg--create-header-line)
-                                         face (list :foreground "grey55")))))))
+                                         face (:foreground "grey55")))))))
     (cl-loop for window in (window-list) do
              (with-current-buffer (window-buffer window)
                (setq header-line-format nil)))))

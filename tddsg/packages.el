@@ -399,7 +399,7 @@ Each entry is either:
     (apply orig-func args)
     (update-cursor))
   (dolist (func (list 'windmove-do-window-select
-                      'select-window
+                      ;; 'select-window  ;; do not advise select-window
                       'god-mode-isearch-activate
                       'god-mode-isearch-disable
                       'god-mode-all))
