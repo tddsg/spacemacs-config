@@ -182,7 +182,6 @@ If the new path's directories does not exist, create them."
         (shell-buffer (call-interactively 'shell)))
     (set-window-configuration window-config)
     (select-window window)
-    (message "Buffer: %s" shell-buffer)
     (switch-to-buffer shell-buffer)))
 
 (defun tddsg/term (&optional buffer)
