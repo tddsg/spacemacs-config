@@ -724,8 +724,8 @@ after stripping extra whitespace and new lines"
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 15)
-  (setq compilation-finish-functions
-        (append compilation-finish-functions 'tddsg--compilation-finish))
+  ;; (setq compilation-finish-functions
+  ;;       (append compilation-finish-functions 'tddsg--compilation-finish))
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -863,7 +863,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
-  (global-set-key (kbd "C-c M") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
   (global-set-key (kbd "C-c t") 'tddsg/term)
 
