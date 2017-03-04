@@ -186,9 +186,9 @@ If the new path's directories does not exist, create them."
   (call-interactively 'other-window)
   (call-interactively 'tddsg/shell-current-window))
 
-(defun tddsg/term-current-window ()
+(defun tddsg/term-current-window (arg)
   "Open a `term' in the current window."
-  (interactive)
+  (interactive "P")
   (defun last-term-buffer (buffers)
     (when buffers
       (if (eq 'term-mode (with-current-buffer (car buffers) major-mode))
@@ -197,7 +197,8 @@ If the new path's directories does not exist, create them."
   (let* ((window (selected-window))
          (window-config (current-window-configuration))
          (last-term (last-term-buffer (buffer-list)))
-         (term-buffer (if (or (null last-term)
+         (term-buffer (if (or (not (null arg))
+                              (null last-term)
                               (eq 'term-mode major-mode))
                           (multi-term)
                         (switch-to-buffer last-term))))
@@ -759,7 +760,11 @@ after stripping extra whitespace and new lines"
   (setq multi-term-program-switches "--login")
   (setq term-bind-key-alist
         (list (cons "C-c C-j" 'term-line-mode)
-              (cons "C-c C-c"  'term-send-raw)))
+              (cons "C-c C-c" 'term-send-raw)
+              (cons "M-n" 'term-send-down)
+              (cons "M-p" 'term-send-up)
+              (cons "C-<down>" 'term-send-down)
+              (cons "C-<up>" 'term-send-up)))
   (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
 
   ;; smartparens
@@ -899,7 +904,6 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
-  ;; (global-set-key (kbd "C-c C-c") nil)
 
   (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
@@ -1089,9 +1093,8 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
-  ;; (global-set-key (kbd "C-c C-c") 'tddsg/compile)
-  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
-  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
+  (define-key tuareg-mode-map (kbd "C-c C-c") 'tddsg/compile)
+  (define-key tuareg-mode-map (kbd "<f5>") 'tddsg/compile)
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
