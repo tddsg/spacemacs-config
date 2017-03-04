@@ -756,8 +756,8 @@ after stripping extra whitespace and new lines"
   ;; term mode
   (require 'multi-term)
   (multi-term-keystroke-setup)
-  (setq multi-term-program "/bin/bash")
-  (setq multi-term-program-switches "--login")
+  (setq multi-term-program "/bin/bash"
+        multi-term-program-switches "--login")
   (setq term-bind-key-alist
         (list (cons "C-c C-j" 'term-line-mode)
               (cons "C-c C-c" 'term-send-raw)
