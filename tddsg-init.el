@@ -145,6 +145,9 @@ If the new path's directories does not exist, create them."
   (visual-line-mode 1)
   (rainbow-delimiters-mode-enable))
 
+(defun tddsg--hook-term-mode ()
+  (term-set-escape-char ?\C-x))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -165,15 +168,6 @@ If the new path's directories does not exist, create them."
   ;;   (goto-char (previous-overlay-change (point))))
   )
 
-
-(defun tddsg/shell-other-window (&optional buffer)
-  "Open a `shell' in a new window."
-  (interactive)
-  (when (equal (length (window-list)) 1)
-    (call-interactively 'split-window-right))
-  (call-interactively 'other-window)
-  (call-interactively 'tddsg/shell-current-window))
-
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -184,21 +178,41 @@ If the new path's directories does not exist, create them."
     (select-window window)
     (switch-to-buffer shell-buffer)))
 
-(defun tddsg/term (&optional buffer)
-  "Open a `term' in the current window."
+(defun tddsg/shell-other-window (&optional buffer)
+  "Open a `shell' in a new window."
   (interactive)
-  (let ((old-buf (if (= (count-windows) 1) (current-buffer)
-                   (progn
-                     (other-window 1)
-                     (let ((buf (window-buffer))) (other-window -1) buf))))
-        (old-window (frame-selected-window))
-        (current-prefix-arg 4) ;; allow using C-u
-        ;; (shell-buf (call-interactively 'term "/bin/bash"))
-        (shell-buf (term "/bin/bash"))
-        )
-    (switch-to-buffer old-buf)
-    (select-window old-window)
-    (switch-to-buffer shell-buf)))
+  (when (equal (length (window-list)) 1)
+    (call-interactively 'split-window-right))
+  (call-interactively 'other-window)
+  (call-interactively 'tddsg/shell-current-window))
+
+(defun tddsg/term-current-window (arg)
+  "Open a `term' in the current window."
+  (interactive "P")
+  (defun last-term-buffer (buffers)
+    (when buffers
+      (if (eq 'term-mode (with-current-buffer (car buffers) major-mode))
+          (car buffers)
+        (last-term-buffer (cdr buffers)))))
+  (let* ((window (selected-window))
+         (window-config (current-window-configuration))
+         (last-term (last-term-buffer (buffer-list)))
+         (term-buffer (if (or (not (null arg))
+                              (null last-term)
+                              (eq 'term-mode major-mode))
+                          (multi-term)
+                        (switch-to-buffer last-term))))
+    (set-window-configuration window-config)
+    (select-window window)
+    (switch-to-buffer term-buffer)))
+
+(defun tddsg/term-other-window (arg)
+  "Open a `term' in a new window."
+  (interactive "P")
+  (when (equal (length (window-list)) 1)
+    (call-interactively 'split-window-right))
+  (call-interactively 'other-window)
+  (call-interactively 'tddsg/term-current-window))
 
 (defun tddsg/save-file-as-and-open-file (filename &optional confirm)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -241,6 +255,14 @@ If the new path's directories does not exist, create them."
   (interactive)
   ;; TODO: how to deal with file names having no \".\". For example: TODO files
   (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 - (COPY).\\2"))
+
+(defun tddsg/duplicate-region-or-line ()
+  "Duplicate a selected region or a line."
+  (interactive)
+  (if (not (region-active-p)) (tddsg/mark-line))
+  (call-interactively 'kill-ring-save)
+  (newline-and-indent)
+  (yank))
 
 (defun tddsg/mark-line ()
   "Select current line"
@@ -728,15 +750,28 @@ after stripping extra whitespace and new lines"
 
   ;; shell
   (setq comint-prompt-read-only nil)
-  ;; (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
+
+  ;; term mode
+  (require 'multi-term)
+  (multi-term-keystroke-setup)
+  (setq multi-term-program "/bin/bash"
+        multi-term-program-switches "--login")
+  (setq term-bind-key-alist
+        (list (cons "C-c C-j" 'term-line-mode)
+              (cons "C-c C-c" 'term-send-raw)
+              (cons "M-n" 'term-send-down)
+              (cons "M-p" 'term-send-up)
+              (cons "C-<down>" 'term-send-down)
+              (cons "C-<up>" 'term-send-up)))
+  (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
 
   ;; smartparens
   (smartparens-global-mode)
 
   ;; auto-revert
-  (setq auto-revert-check-vc-info t)
+  (setq auto-revert-check-vc-info nil)
 
   ;; backup
   (setq make-backup-files t
@@ -814,7 +849,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "C-z") 'save-buffer)
+  ;; (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-*") 'evil-copy-from-above)
@@ -861,14 +896,14 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
-  (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
-  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
-  (global-set-key (kbd "C-c t") 'tddsg/term)
+  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
+  (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
 
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
-  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
 
   (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
@@ -1058,7 +1093,8 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
-  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
+  (define-key tuareg-mode-map (kbd "C-c C-c") 'tddsg/compile)
+  (define-key tuareg-mode-map (kbd "<f5>") 'tddsg/compile)
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
