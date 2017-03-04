@@ -51,7 +51,7 @@
 
 (defun tddsg--auto-truncate-lines-p ()
   (and tddsg--auto-truncate-lines
-       (not (derived-mode-p 'pdf-view-mode))))
+       (not (derived-mode-p 'pdf-view-mode 'shell-mode))))
 
 (defun tddsg--toggle-truncate-lines (arg)
   (let ((inhibit-message t))
