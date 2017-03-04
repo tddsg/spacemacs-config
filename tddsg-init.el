@@ -145,6 +145,9 @@ If the new path's directories does not exist, create them."
   (visual-line-mode 1)
   (rainbow-delimiters-mode-enable))
 
+(defun tddsg--hook-term-mode ()
+  (term-set-escape-char ?\C-x))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -735,15 +738,15 @@ after stripping extra whitespace and new lines"
 
   ;; shell
   (setq comint-prompt-read-only nil)
-  ;; (defadvice shell (after linum activate) (linum-mode 1))
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
+  (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
 
   ;; smartparens
   (smartparens-global-mode)
 
   ;; auto-revert
-  (setq auto-revert-check-vc-info t)
+  (setq auto-revert-check-vc-info nil)
 
   ;; backup
   (setq make-backup-files t
