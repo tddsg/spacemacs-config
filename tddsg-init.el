@@ -765,6 +765,7 @@ after stripping extra whitespace and new lines"
               (cons "M-p" 'term-send-up)
               (cons "C-<down>" 'term-send-down)
               (cons "C-<up>" 'term-send-up)))
+  (define-key term-raw-map (kbd "C-u") nil)
   (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
 
   ;; smartparens

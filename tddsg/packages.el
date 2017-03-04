@@ -64,6 +64,7 @@
     pdf-tools
     elmacro
     helm-dired-history
+    helm-tramp
     ;; ivy
     swiper
     swiper-helm
@@ -368,6 +369,9 @@ Each entry is either:
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
+
+(defun tddsg/init-helm-tramp ()
+  (use-package helm-tramp))
 
 ;; (defun tddsg/init-ivy ()
 ;;   (use-package ivy
