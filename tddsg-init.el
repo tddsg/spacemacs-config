@@ -172,27 +172,20 @@ If the new path's directories does not exist, create them."
 (defun tddsg/shell-other-window (&optional buffer)
   "Open a `shell' in a new window."
   (interactive)
-  (let ((old-buf (current-buffer))
-        (current-prefix-arg 4) ;; allow using C-u
-        (shell-buf (call-interactively 'shell)))
-    (switch-to-buffer old-buf)
-    (switch-to-buffer-other-window shell-buf)
-    ;; (switch-to-buffer-other-window old-buf)
-    ))
+  (when (equal (length (window-list)) 1)
+    (call-interactively 'split-window-right))
+  (call-interactively 'other-window)
+  (call-interactively 'tddsg/shell-current-window))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
-  (let ((old-buf (if (= (count-windows) 1) (current-buffer)
-                   (progn
-                     (other-window 1)
-                     (let ((buf (window-buffer))) (other-window -1) buf))))
-        (old-window (frame-selected-window))
-        (current-prefix-arg 4) ;; allow using C-u
-        (shell-buf (call-interactively 'shell)))
-    (switch-to-buffer old-buf)
-    (select-window old-window)
-    (switch-to-buffer shell-buf)))
+  (let ((window (selected-window))
+        (window-config (current-window-configuration))
+        (shell-buffer (call-interactively 'shell)))
+    (set-window-configuration window-config)
+    (select-window window)
+    (switch-to-buffer shell-buffer)))
 
 (defun tddsg/term (&optional buffer)
   "Open a `term' in the current window."
@@ -733,8 +726,8 @@ after stripping extra whitespace and new lines"
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 15)
-  (setq compilation-finish-functions
-        (append compilation-finish-functions 'tddsg--compilation-finish))
+  ;; (setq compilation-finish-functions
+  ;;       (append compilation-finish-functions 'tddsg--compilation-finish))
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -824,6 +817,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-*") 'evil-copy-from-above)
@@ -871,7 +865,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'crux-duplicate-current-line-or-region)
-  (global-set-key (kbd "C-c M") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
   (global-set-key (kbd "C-c t") 'tddsg/term)
 
@@ -1076,6 +1070,8 @@ after stripping extra whitespace and new lines"
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
+  (define-key pdf-view-mode-map (kbd "M-SPC")
+    'pdf-view-scroll-down-or-previous-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
 
@@ -1350,8 +1346,8 @@ after stripping extra whitespace and new lines"
                        auto-compile
                        ,second-left
                        major-mode
-                       version-control
-                       minor-modes
+                       (version-control :when active)
+                       (minor-modes :when active)
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
