@@ -76,7 +76,7 @@
 (defun tddsg--create-backup-file-name (fpath)
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+  (let* ((backupRootDir "~/.emacs.d/private/backup/")
          ;; remove Windows driver letter in path, ➢ for example: “C:”
          (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
          (backupFilePath (replace-regexp-in-string
