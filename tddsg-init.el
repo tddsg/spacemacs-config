@@ -34,6 +34,9 @@
 
 (setq tddsg--show-header-line t)
 
+(setq tddsg--golden-ratio-mode nil)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
@@ -602,7 +605,7 @@ after stripping extra whitespace and new lines"
         (global-linum-mode -1)
         (set-default 'truncate-lines t)   ;; disable truncate line
         (setq tddsg--auto-truncate-lines t)
-        (setq golden-ratio-adjust-factor 0.9)
+        (setq golden-ratio-adjust-factor 1.05)
         (setq golden-ratio-balance nil)
         (golden-ratio-mode))
     (setq tddsg--auto-truncate-lines nil)
@@ -768,6 +771,16 @@ after stripping extra whitespace and new lines"
   (define-key term-raw-map (kbd "C-u") nil)
   (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
 
+  ;; ediff-mode
+  (add-hook 'ediff-mode-hook '(lambda () (golden-ratio-mode -1)))
+
+  ;; tramp
+  (require 'tramp)
+  (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist
+               '((regexp-quote (system-name)) nil nil))
+
+
   ;; smartparens
   (smartparens-global-mode)
 
@@ -792,7 +805,6 @@ after stripping extra whitespace and new lines"
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
   (setq helm-split-window-in-side-p t)
   (setq helm-split-window-default-side 'below)
-
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
@@ -850,10 +862,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  ;; (global-set-key (kbd "C-z") 'save-buffer)
+  (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
-  (global-set-key (kbd "C-*") 'evil-copy-from-above)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-_") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
@@ -874,7 +885,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
-  ;; (global-set-key (kbd "C-x G") 'magit-diff)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
@@ -890,6 +900,7 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c e") 'ediff)
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
@@ -1095,7 +1106,7 @@ after stripping extra whitespace and new lines"
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "C-c C-c") 'tddsg/compile)
-  (define-key tuareg-mode-map (kbd "<f5>") 'tddsg/compile)
+  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
