@@ -460,6 +460,20 @@ insert a new space if there is none"
         (delete-blank-lines)
       (tddsg/one-or-zero-space))))
 
+(defun tddsg/shrink-window-horizontally ()
+  "Shrink window horizontally, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor (- golden-ratio-adjust-factor 0.02)))
+  (call-interactively 'shrink-window-horizontally))
+
+(defun tddsg/enlarge-window-horizontally ()
+  "Enlarge window horizontally, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
+  (call-interactively 'enlarge-window-horizontally))
+
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
 after stripping extra whitespace and new lines"
@@ -514,7 +528,6 @@ after stripping extra whitespace and new lines"
      (lambda ()
        (skip-syntax-forward "w_")
        (point)))))
-
 
 ;; call compile to the closest parent folder containing a Makefile
 (defun tddsg/compile ()
@@ -882,6 +895,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x {") 'tddsg/shrink-window-horizontally)
+  (global-set-key (kbd "C-x }") 'tddsg/enlarge-window-horizontally)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
