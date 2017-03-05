@@ -151,6 +151,12 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-term-mode ()
   (term-set-escape-char ?\C-x))
 
+(defun tddsg--rectify-golden-ratio ()
+  (with-current-buffer (window-buffer (selected-window))
+    (if (and golden-ratio-mode
+             (not (derived-mode-p 'pdf-view-mode)))
+        (golden-ratio 1))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -718,9 +724,7 @@ after stripping extra whitespace and new lines"
   (setq powerline-default-separator 'wave)
 
   ;; golden-ratio
-  (defadvice keyboard-quit (after golden-ratio activate) (golden-ratio 1))
-  (defadvice flyspell-correct-word-before-point (after golden-ratio activate)
-    (golden-ratio 1))
+  (add-hook 'buffer-list-update-hook 'tddsg--rectify-golden-ratio)
 
   ;; themes
   (defun tddsg--update-cursor ()
