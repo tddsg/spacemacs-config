@@ -389,20 +389,13 @@ If the new path's directories does not exist, create them."
   "Search by Helm-Ag in the current directory, \
 or in a custom directory when prefix-argument is given (C-u)."
   (interactive "P")
-  (let ((text (if (region-active-p)
-                  (let* ((begin (region-beginning))
-                         (end (region-end))
-                         (text (buffer-substring-no-properties begin end))
-                         (text (string-trim text))
-                         (text (replace-regexp-in-string " " "\\\\ " text)))
-                    text)
-                (thing-at-point 'word))))
-    (progn
-      (if (null arg)
-          (progn
-            (message "TEXT: %s" text)
-            (helm-do-ag (expand-file-name default-directory) text))
-        (call-interactively 'helm-do-ag)))))
+  (if (null arg)
+      (let* ((text (if (region-active-p)
+                       (buffer-substring (region-beginning) (region-end))
+                     (thing-at-point 'word)))
+             (text (replace-regexp-in-string " " "\\\\ " (string-trim text))))
+        (helm-do-ag (expand-file-name default-directory) text))
+    (call-interactively 'helm-do-ag)))
 
 (defun tddsg/join-with-beneath-line ()
   "Join the current line to the line beneath it."
