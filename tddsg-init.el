@@ -899,6 +899,7 @@ after stripping extra whitespace and new lines"
   (global-set-key [?\H-I] 'swiper)
 
   (global-set-key (kbd "C-c f") 'projectile-find-file)
+  (global-set-key (kbd "C-c k") 'kill-this-buffer)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c e") 'ediff)
   (global-set-key (kbd "C-c i") 'ivy-resume)
@@ -909,12 +910,13 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
-  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
-  (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
+  (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
+  (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
+  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
+  (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
 
   (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
