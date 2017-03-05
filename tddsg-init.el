@@ -628,7 +628,7 @@ after stripping extra whitespace and new lines"
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight current line
-  (blink-cursor-mode 0)             ;; turn on blinking
+  (blink-cursor-mode 0)             ;; turn off blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
   (setq-default fill-column 75)     ;; max size of a line for fill-or-unfill
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
@@ -655,7 +655,7 @@ after stripping extra whitespace and new lines"
   ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
-  ;; zoom
+  ;; zoom frame
   (require 'zoom-frm)
 
   ;; auto-completetion
@@ -670,6 +670,7 @@ after stripping extra whitespace and new lines"
         ispell-dictionary "english"
         ispell-personal-dictionary "~/.emacs.d/user.dict")
 
+  ;; mark ring
   (setq set-mark-command-repeat-pop t)
   (defadvice find-file (before set-mark activate) (tddsg--set-mark))
   (defadvice isearch-update (before set-mark activate) (tddsg--set-mark))
@@ -677,9 +678,11 @@ after stripping extra whitespace and new lines"
   (defadvice end-of-buffer (before set-mark activate) (tddsg--set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
 
-  ;; disable company auto suggest
+  ;; company-mode
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
+  (global-company-mode)
+
 
   ;; auto truncate lines when necessary on changing window
   (defun tddsg--truncate-lines (orig-func &rest args)
@@ -719,8 +722,6 @@ after stripping extra whitespace and new lines"
   (delete-selection-mode t)                            ;; delete selection by keypress
   (setq require-final-newline t)                       ;; newline at end of file
   (defadvice newline (after indent activate) (indent-according-to-mode))
-  ;; (setq company-idle-delay 200)         ;; set delay time by default
-  (global-company-mode)
 
   ;; some Emacs threshold
   (setq max-lisp-eval-depth 50000)
@@ -827,6 +828,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish with-editor-mode "")
   (spacemacs|diminish compilation-in-progress "")
   (spacemacs|diminish server-buffer-clients "")
+  (spacemacs|diminish reftex-mode "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
   (spacemacs|diminish god-local-mode " ⚡☢⚡☢⚡")
@@ -969,6 +971,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
 
+  (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
+
+  (global-set-key (kbd "M-m d r") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "M-m f p") 'tddsg/show-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m h o") 'helm-occur)
@@ -980,19 +985,17 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m S c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-m m S") 'shell)
   (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
-  (global-set-key (kbd "M-m w t") 'transpose-frame)
-  (global-set-key (kbd "M-m w o") 'flop-frame)
-  (global-set-key (kbd "M-m w i") 'flip-frame)
-  (global-set-key (kbd "M-m T l") 'tddsg/toggle-show-mode-line)
-  (global-set-key (kbd "M-m T h") 'tddsg/toggle-show-header-line)
-
-  (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m l c") 'langtool-check)
   (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
   (global-set-key (kbd "M-m l d") 'langtool-check-done)
   (global-set-key (kbd "M-m l n") 'langtool-goto-next-error)
   (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
+  (global-set-key (kbd "M-m w t") 'transpose-frame)
+  (global-set-key (kbd "M-m w o") 'flop-frame)
+  (global-set-key (kbd "M-m w i") 'flip-frame)
+  (global-set-key (kbd "M-m T l") 'tddsg/toggle-show-mode-line)
+  (global-set-key (kbd "M-m T h") 'tddsg/toggle-show-header-line)
 
   (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
   (global-set-key (kbd "M-s i") 'ispell-buffer)
@@ -1247,9 +1250,10 @@ after stripping extra whitespace and new lines"
      '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
      '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
      ;; font
+     (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
-     (font-latex-subscript-face ((t (:height 0.96))))
-     (font-latex-superscript-face ((t (:height 0.96))))
+     (font-latex-subscript-face ((t (:height 0.9))))
+     (font-latex-superscript-face ((t (:height 0.9))))
      (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
      (font-latex-sectioning-1-face ((t (:foreground "deep sky blue" :weight bold :height 1.4))))
      (font-latex-sectioning-2-face ((t (:foreground "royal blue" :weight bold :height 1.2))))
