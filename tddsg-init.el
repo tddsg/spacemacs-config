@@ -279,34 +279,45 @@ If the new path's directories does not exist, create them."
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-(defun tddsg/mark-sexp ()
+(defun tddsg/mark-sexp (&optional backward)
   "Mark sexp using the smartparens package"
-  (interactive)
-  (let ((current-char (char-after)))
-    (if (= ?\) (char-syntax current-char))
-        (progn
-          (deactivate-mark)
-          (forward-char)
-          (backward-sexp)))
-    (if (region-active-p) (sp-forward-sexp)
-      (progn
-        (set-mark-command nil)
-        (sp-forward-sexp 1)))))
+  (let ((step (if (null backward) 1 -1)))
+    (if (region-active-p)
+        (sp-forward-sexp step)
+      (cond ((and (null backward)
+                  (not (null (char-before)))
+                  (memq (char-syntax (char-before)) '(?w ?_)))
+             (backward-sexp))
+            ((and (not (null backward))
+                  (not (null (char-after)))
+                  (memq (char-syntax (char-after)) '(?w ?_)))
+             (forward-sexp)))
+      (set-mark-command nil)
+      (sp-forward-sexp step))))
 
-(defun tddsg/smart-mark-sexp ()
-  "Expand region or mark sexp"
+(defun tddsg/mark-sexp-forward ()
   (interactive)
-  (let ((current-char (char-after))
-        (previous-char (char-before)))
-    (if (memq (char-syntax current-char) '(?w ?_))
-        (if (and (not (null previous-char))
-                 (memq (char-syntax previous-char) '(?w ?_))
-                 (not (region-active-p)))
-            (progn (backward-word)
-                   (call-interactively 'er/expand-region))
-          (call-interactively 'er/expand-region))
-      (if (< (point) (mark)) (set-mark-command nil))
-      (call-interactively  'tddsg/mark-sexp))))
+  (tddsg/mark-sexp))
+
+(defun tddsg/mark-sexp-backward ()
+  (interactive)
+  (tddsg/mark-sexp t))
+
+
+;; (defun tddsg/smart-mark-sexp ()
+;;   "Expand region or mark sexp"
+;;   (interactive)
+;;   (let ((current-char (char-after))
+;;         (previous-char (char-before)))
+;;     (if (memq (char-syntax current-char) '(?w ?_))
+;;         (if (and (not (null previous-char))
+;;                  (memq (char-syntax previous-char) '(?w ?_))
+;;                  (not (region-active-p)))
+;;             (progn (backward-word)
+;;                    (call-interactively 'er/expand-region))
+;;           (call-interactively 'er/expand-region))
+;;       (if (< (point) (mark)) (set-mark-command nil))
+;;       (call-interactively  'tddsg/mark-sexp))))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -353,7 +364,11 @@ If the new path's directories does not exist, create them."
                       (not (memq (char-syntax (char-before begin)) '(?w ?_)))
                       (not (memq (char-syntax (char-after (1+ end))) '(?w ?_)))))
        do (setq end (1+ end))))
-    (kill-region begin end))
+    (kill-region begin end)
+    (when (and (not (null (char-before)))
+               (memq (char-syntax (char-after)) '(?w ?_))
+               (memq (char-syntax (char-before)) '(?w ?_ ?.)))
+      (just-one-space)))
   (if (region-active-p) (delete-active-region t)
     (cond ((and backward
                 (not (space-or-tab-p (char-after)))
@@ -862,6 +877,7 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "<f5>") (kbd "C-c C-c C-j"))
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -888,7 +904,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-K") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
-  (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
+  (global-set-key (kbd "C-M-S-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
+  (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
@@ -930,6 +948,7 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
   (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
@@ -939,7 +958,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
+  ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-k") 'delete-char)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
@@ -1005,7 +1024,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
   (global-set-key (kbd "M-s k") 'sp-splice-sexp-killing-around)
-
 
   ;; workspaces transient
   (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
@@ -1126,8 +1144,6 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
-  (define-key tuareg-mode-map (kbd "C-c C-c") 'tddsg/compile)
-  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
