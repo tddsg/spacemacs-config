@@ -364,7 +364,11 @@ If the new path's directories does not exist, create them."
                       (not (memq (char-syntax (char-before begin)) '(?w ?_)))
                       (not (memq (char-syntax (char-after (1+ end))) '(?w ?_)))))
        do (setq end (1+ end))))
-    (kill-region begin end))
+    (kill-region begin end)
+    (when (and (not (null (char-before)))
+               (memq (char-syntax (char-after)) '(?w ?_))
+               (memq (char-syntax (char-before)) '(?w ?_ ?.)))
+      (just-one-space)))
   (if (region-active-p) (delete-active-region t)
     (cond ((and backward
                 (not (space-or-tab-p (char-after)))
