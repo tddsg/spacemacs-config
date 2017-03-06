@@ -886,7 +886,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
-  (global-set-key (kbd "C-M-K") 'tddsg/smart-kill-sexp-backward)
+  (global-set-key (kbd "C-M-S-K") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
@@ -941,7 +941,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-k") 'delete-char)
-  (global-set-key (kbd "M-H") 'kill-word)
+  (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M-'") 'dabbrev-completion)
   (global-set-key (kbd "M--") 'delete-window)
@@ -1642,6 +1642,8 @@ BUFFER."
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)
+(require 'pdf-isearch)
+(require 'pdf-sync)
 
 ;;;;; customize to jump to the pdf-view window and display tooltip
 (defun pdf-sync-forward-search (&optional line column)
@@ -1659,3 +1661,13 @@ BUFFER."
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
         (pdf-util-tooltip-arrow (round top) 20))
       (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
+
+;;;;;; customize pdf-isearch for syncing backward
+(defun pdf-isearch-sync-backward-current-match ()
+  "Sync backward to the LaTeX source of the current match."
+  (interactive)
+  (if pdf-isearch-current-match
+      (let ((left (caar pdf-isearch-current-match))
+            (top (cadar pdf-isearch-current-match)))
+        (isearch-exit)
+        (funcall 'pdf-sync-backward-search left top))))
