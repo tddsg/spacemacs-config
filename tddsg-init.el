@@ -475,6 +475,13 @@ insert a new space if there is none"
         (delete-blank-lines)
       (tddsg/one-or-zero-space))))
 
+(defun tddsg/enlarge-window-horizontally ()
+  "Enlarge window horizontally, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
+  (call-interactively 'enlarge-window-horizontally))
+
 (defun tddsg/shrink-window-horizontally ()
   "Shrink window horizontally, considering golden-ratio-mode."
   (interactive)
@@ -482,12 +489,22 @@ insert a new space if there is none"
       (setq golden-ratio-adjust-factor (- golden-ratio-adjust-factor 0.02)))
   (call-interactively 'shrink-window-horizontally))
 
-(defun tddsg/enlarge-window-horizontally ()
-  "Enlarge window horizontally, considering golden-ratio-mode."
+(defun tddsg/enlarge-window-vertically ()
+  "Enlarge window vertically, considering golden-ratio-mode."
   (interactive)
   (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
-  (call-interactively 'enlarge-window-horizontally))
+      (setq golden-ratio-adjust-factor-height
+            (+ golden-ratio-adjust-factor-height 0.02)))
+  (call-interactively 'enlarge-window))
+
+(defun tddsg/shrink-window-vertically ()
+  "Shrink window vertically, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor-height
+            (- golden-ratio-adjust-factor-height 0.02)))
+  (call-interactively 'shrink-window))
+
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -918,6 +935,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x {") 'tddsg/shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'tddsg/enlarge-window-horizontally)
+  (global-set-key (kbd "C-x _") 'tddsg/shrink-window-vertically)
+  (global-set-key (kbd "C-x ^") 'tddsg/enlarge-window-vertically)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
@@ -1026,16 +1045,16 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s k") 'sp-splice-sexp-killing-around)
 
   ;; workspaces transient
-  (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
-  (global-set-key (kbd "s-2") 'eyebrowse-switch-to-window-config-2)
-  (global-set-key (kbd "s-3") 'eyebrowse-switch-to-window-config-3)
-  (global-set-key (kbd "s-4") 'eyebrowse-switch-to-window-config-4)
-  (global-set-key (kbd "s-5") 'eyebrowse-switch-to-window-config-5)
-  (global-set-key (kbd "s-6") 'eyebrowse-switch-to-window-config-6)
-  (global-set-key (kbd "s-7") 'eyebrowse-switch-to-window-config-7)
-  (global-set-key (kbd "s-8") 'eyebrowse-switch-to-window-config-8)
-  (global-set-key (kbd "s-9") 'eyebrowse-switch-to-window-config-9)
-  (global-set-key (kbd "s-0") 'eyebrowse-switch-to-window-config-0)
+  (global-set-key (kbd "M-m 1") 'eyebrowse-switch-to-window-config-1)
+  (global-set-key (kbd "M-m 2") 'eyebrowse-switch-to-window-config-2)
+  (global-set-key (kbd "M-m 3") 'eyebrowse-switch-to-window-config-3)
+  (global-set-key (kbd "M-m 4") 'eyebrowse-switch-to-window-config-4)
+  (global-set-key (kbd "M-m 5") 'eyebrowse-switch-to-window-config-5)
+  (global-set-key (kbd "M-m 6") 'eyebrowse-switch-to-window-config-6)
+  (global-set-key (kbd "M-m 7") 'eyebrowse-switch-to-window-config-7)
+  (global-set-key (kbd "M-m 8") 'eyebrowse-switch-to-window-config-8)
+  (global-set-key (kbd "M-m 9") 'eyebrowse-switch-to-window-config-9)
+  (global-set-key (kbd "M-m 0") 'eyebrowse-switch-to-window-config-0)
   (global-set-key (kbd "s-+") 'eyebrowse-next-window-config)
   (global-set-key (kbd "s--") 'eyebrowse-prev-window-config)
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
@@ -1687,3 +1706,21 @@ BUFFER."
             (top (cadar pdf-isearch-current-match)))
         (isearch-exit)
         (funcall 'pdf-sync-backward-search left top))))
+
+
+
+;;;;;;;; override golden-ratio-mode
+
+(defcustom golden-ratio-adjust-factor-height 1.1
+  "Adjust the height sizing by some factor. 1 is no adjustment."
+  :group 'golden-ratio
+  :type 'integer)
+
+(defun golden-ratio--scale-factor-height ()
+  golden-ratio-adjust-factor-height)
+
+(defun golden-ratio--dimensions ()
+  (list (floor (* (/ (frame-height) golden-ratio--value)
+                  (golden-ratio--scale-factor-height)))
+        (floor (* (/ (frame-width)  golden-ratio--value)
+                   (golden-ratio--scale-factor)))))
