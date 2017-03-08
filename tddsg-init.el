@@ -830,6 +830,8 @@ after stripping extra whitespace and new lines"
   (add-to-list 'tramp-default-proxies-alist
                '((regexp-quote (system-name)) nil nil))
 
+  ;; which-key
+  (setq which-key-idle-delay 1.2)
 
   ;; smartparens
   (smartparens-global-mode)
@@ -984,6 +986,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "M-p") 'scroll-down-command)
+  (global-set-key (kbd "M-n") 'scroll-up-command)
   ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-k") 'delete-char)
@@ -1176,6 +1180,8 @@ after stripping extra whitespace and new lines"
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+  (define-key pdf-view-mode-map (kbd "[") 'pdf-view-previous-line-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "]") 'pdf-view-next-line-or-next-page)
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
