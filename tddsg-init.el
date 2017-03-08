@@ -85,6 +85,10 @@ If the new path's directories does not exist, create them."
                     (file-name-directory backupFilePath))
     backupFilePath))
 
+(defun tddsg--save-buffer ()
+  "Save current buffer."
+  (if (not buffer-read-only) (save-buffer)))
+
 (defun tddsg--latex-compile ()
   (interactive)
   (save-buffer)
@@ -800,6 +804,9 @@ after stripping extra whitespace and new lines"
   ;; ediff-mode
   (add-hook 'ediff-mode-hook '(lambda () (golden-ratio-mode -1)))
 
+  ;; magit
+  (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
+
   ;; tramp
   (require 'tramp)
   (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
@@ -959,6 +966,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-k") 'delete-char)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
