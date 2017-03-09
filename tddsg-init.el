@@ -85,6 +85,10 @@ If the new path's directories does not exist, create them."
                     (file-name-directory backupFilePath))
     backupFilePath))
 
+(defun tddsg--save-buffer ()
+  "Save current buffer."
+  (if (not buffer-read-only) (save-buffer)))
+
 (defun tddsg--latex-compile ()
   (interactive)
   (save-buffer)
@@ -279,34 +283,31 @@ If the new path's directories does not exist, create them."
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-(defun tddsg/mark-sexp ()
-  "Mark sexp using the smartparens package"
-  (interactive)
-  (let ((current-char (char-after)))
-    (if (= ?\) (char-syntax current-char))
-        (progn
-          (deactivate-mark)
-          (forward-char)
-          (backward-sexp)))
-    (if (region-active-p) (sp-forward-sexp)
-      (progn
-        (set-mark-command nil)
-        (sp-forward-sexp 1)))))
+(defun tddsg/mark-sexp (&optional backward)
+  "Mark sexp using the smartparens package."
+  (let ((step (if (null backward) 1 -1)))
+    (if (region-active-p)
+        (sp-forward-sexp step)
+      (cond ((and (null backward)
+                  (not (null (char-before)))
+                  (memq (char-syntax (char-before)) '(?w ?_)))
+             (backward-sexp))
+            ((and (not (null backward))
+                  (not (null (char-after)))
+                  (memq (char-syntax (char-after)) '(?w ?_)))
+             (forward-sexp)))
+      (set-mark-command nil)
+      (sp-forward-sexp step))))
 
-(defun tddsg/smart-mark-sexp ()
-  "Expand region or mark sexp"
+(defun tddsg/mark-sexp-forward ()
+  "Mark sexp forward, using the smartparens package."
   (interactive)
-  (let ((current-char (char-after))
-        (previous-char (char-before)))
-    (if (memq (char-syntax current-char) '(?w ?_))
-        (if (and (not (null previous-char))
-                 (memq (char-syntax previous-char) '(?w ?_))
-                 (not (region-active-p)))
-            (progn (backward-word)
-                   (call-interactively 'er/expand-region))
-          (call-interactively 'er/expand-region))
-      (if (< (point) (mark)) (set-mark-command nil))
-      (call-interactively  'tddsg/mark-sexp))))
+  (tddsg/mark-sexp))
+
+(defun tddsg/mark-sexp-backward ()
+  "Mark sexp backward, using the smartparens package."
+  (interactive)
+  (tddsg/mark-sexp t))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -353,7 +354,11 @@ If the new path's directories does not exist, create them."
                       (not (memq (char-syntax (char-before begin)) '(?w ?_)))
                       (not (memq (char-syntax (char-after (1+ end))) '(?w ?_)))))
        do (setq end (1+ end))))
-    (kill-region begin end))
+    (kill-region begin end)
+    (when (and (not (null (char-before)))
+               (memq (char-syntax (char-after)) '(?w ?_))
+               (memq (char-syntax (char-before)) '(?w ?_ ?.)))
+      (just-one-space)))
   (if (region-active-p) (delete-active-region t)
     (cond ((and backward
                 (not (space-or-tab-p (char-after)))
@@ -391,12 +396,13 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
-or in a custom directory when prefix-argument is given (C-u)."
+or in a custom directory when prefix-argument is given <C-u>."
   (interactive "P")
   (if (null arg)
       (let* ((text (if (region-active-p)
                        (buffer-substring (region-beginning) (region-end))
                      (thing-at-point 'word)))
+             (text (if (null text) "" text))
              (text (replace-regexp-in-string " " "\\\\ " (string-trim text))))
         (helm-do-ag (expand-file-name default-directory) text))
     (call-interactively 'helm-do-ag)))
@@ -464,6 +470,13 @@ insert a new space if there is none"
         (delete-blank-lines)
       (tddsg/one-or-zero-space))))
 
+(defun tddsg/enlarge-window-horizontally ()
+  "Enlarge window horizontally, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
+  (call-interactively 'enlarge-window-horizontally))
+
 (defun tddsg/shrink-window-horizontally ()
   "Shrink window horizontally, considering golden-ratio-mode."
   (interactive)
@@ -471,12 +484,22 @@ insert a new space if there is none"
       (setq golden-ratio-adjust-factor (- golden-ratio-adjust-factor 0.02)))
   (call-interactively 'shrink-window-horizontally))
 
-(defun tddsg/enlarge-window-horizontally ()
-  "Enlarge window horizontally, considering golden-ratio-mode."
+(defun tddsg/enlarge-window-vertically ()
+  "Enlarge window vertically, considering golden-ratio-mode."
   (interactive)
   (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
-  (call-interactively 'enlarge-window-horizontally))
+      (setq golden-ratio-adjust-factor-height
+            (+ golden-ratio-adjust-factor-height 0.02)))
+  (call-interactively 'enlarge-window))
+
+(defun tddsg/shrink-window-vertically ()
+  "Shrink window vertically, considering golden-ratio-mode."
+  (interactive)
+  (if golden-ratio-mode
+      (setq golden-ratio-adjust-factor-height
+            (- golden-ratio-adjust-factor-height 0.02)))
+  (call-interactively 'shrink-window))
+
 
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
@@ -789,12 +812,17 @@ after stripping extra whitespace and new lines"
   ;; ediff-mode
   (add-hook 'ediff-mode-hook '(lambda () (golden-ratio-mode -1)))
 
+  ;; magit
+  (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
+
   ;; tramp
   (require 'tramp)
   (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
   (add-to-list 'tramp-default-proxies-alist
                '((regexp-quote (system-name)) nil nil))
 
+  ;; which-key
+  (setq which-key-idle-delay 1.2)
 
   ;; smartparens
   (smartparens-global-mode)
@@ -866,6 +894,7 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "<f5>") (kbd "C-c C-c C-j"))
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -892,7 +921,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
-  (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
+  (global-set-key (kbd "C-M-S-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
+  (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-_") 'flip-frame)
   (global-set-key (kbd "C-M-+") 'flop-frame)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
@@ -904,6 +935,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x {") 'tddsg/shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'tddsg/enlarge-window-horizontally)
+  (global-set-key (kbd "C-x _") 'tddsg/shrink-window-vertically)
+  (global-set-key (kbd "C-x ^") 'tddsg/enlarge-window-vertically)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
@@ -934,6 +967,7 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
   (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
+  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
@@ -943,9 +977,12 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "M-p") 'scroll-down-command)
+  (global-set-key (kbd "M-n") 'scroll-up-command)
+  ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-k") 'delete-char)
-  (global-set-key (kbd "M-H") 'kill-word)
+  (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M-'") 'dabbrev-completion)
   (global-set-key (kbd "M--") 'delete-window)
@@ -1010,18 +1047,17 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
   (global-set-key (kbd "M-s k") 'sp-splice-sexp-killing-around)
 
-
   ;; workspaces transient
-  (global-set-key (kbd "s-1") 'eyebrowse-switch-to-window-config-1)
-  (global-set-key (kbd "s-2") 'eyebrowse-switch-to-window-config-2)
-  (global-set-key (kbd "s-3") 'eyebrowse-switch-to-window-config-3)
-  (global-set-key (kbd "s-4") 'eyebrowse-switch-to-window-config-4)
-  (global-set-key (kbd "s-5") 'eyebrowse-switch-to-window-config-5)
-  (global-set-key (kbd "s-6") 'eyebrowse-switch-to-window-config-6)
-  (global-set-key (kbd "s-7") 'eyebrowse-switch-to-window-config-7)
-  (global-set-key (kbd "s-8") 'eyebrowse-switch-to-window-config-8)
-  (global-set-key (kbd "s-9") 'eyebrowse-switch-to-window-config-9)
-  (global-set-key (kbd "s-0") 'eyebrowse-switch-to-window-config-0)
+  (global-set-key (kbd "M-m 1") 'eyebrowse-switch-to-window-config-1)
+  (global-set-key (kbd "M-m 2") 'eyebrowse-switch-to-window-config-2)
+  (global-set-key (kbd "M-m 3") 'eyebrowse-switch-to-window-config-3)
+  (global-set-key (kbd "M-m 4") 'eyebrowse-switch-to-window-config-4)
+  (global-set-key (kbd "M-m 5") 'eyebrowse-switch-to-window-config-5)
+  (global-set-key (kbd "M-m 6") 'eyebrowse-switch-to-window-config-6)
+  (global-set-key (kbd "M-m 7") 'eyebrowse-switch-to-window-config-7)
+  (global-set-key (kbd "M-m 8") 'eyebrowse-switch-to-window-config-8)
+  (global-set-key (kbd "M-m 9") 'eyebrowse-switch-to-window-config-9)
+  (global-set-key (kbd "M-m 0") 'eyebrowse-switch-to-window-config-0)
   (global-set-key (kbd "s-+") 'eyebrowse-next-window-config)
   (global-set-key (kbd "s--") 'eyebrowse-prev-window-config)
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
@@ -1130,13 +1166,13 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
 
   ;; Tuareg mode
-  (define-key tuareg-mode-map (kbd "C-c C-c") 'tddsg/compile)
-  (define-key tuareg-mode-map (kbd "<f5>") (kbd "C-c C-c C-j"))
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+  (define-key pdf-view-mode-map (kbd "[") 'pdf-view-previous-line-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "]") 'pdf-view-next-line-or-next-page)
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
@@ -1646,6 +1682,8 @@ BUFFER."
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)
+(require 'pdf-isearch)
+(require 'pdf-sync)
 
 ;;;;; customize to jump to the pdf-view window and display tooltip
 (defun pdf-sync-forward-search (&optional line column)
@@ -1663,3 +1701,31 @@ BUFFER."
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
         (pdf-util-tooltip-arrow (round top) 20))
       (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
+
+;;;;;; customize pdf-isearch for syncing backward
+(defun pdf-isearch-sync-backward-current-match ()
+  "Sync backward to the LaTeX source of the current match."
+  (interactive)
+  (if pdf-isearch-current-match
+      (let ((left (caar pdf-isearch-current-match))
+            (top (cadar pdf-isearch-current-match)))
+        (isearch-exit)
+        (funcall 'pdf-sync-backward-search left top))))
+
+
+
+;;;;;;;; override golden-ratio-mode
+
+(defcustom golden-ratio-adjust-factor-height 1.1
+  "Adjust the height sizing by some factor. 1 is no adjustment."
+  :group 'golden-ratio
+  :type 'integer)
+
+(defun golden-ratio--scale-factor-height ()
+  golden-ratio-adjust-factor-height)
+
+(defun golden-ratio--dimensions ()
+  (list (floor (* (/ (frame-height) golden-ratio--value)
+                  (golden-ratio--scale-factor-height)))
+        (floor (* (/ (frame-width)  golden-ratio--value)
+                   (golden-ratio--scale-factor)))))
