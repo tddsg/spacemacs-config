@@ -373,7 +373,11 @@ If the new path's directories does not exist, create them."
                (<= (point) (cadddr thing)))
       (setq begin (cadr thing))
       (setq end (cadddr thing)))
-    (kill-region-and-next-spaces begin end backward)))
+    (kill-region-and-next-spaces begin end backward)
+    (when (and (not (null (char-before)))
+               (memq (char-syntax (char-after)) '(?w ?_))
+               (memq (char-syntax (char-before)) '(?w ?_)))
+      (just-one-space))))
 
 (defun tddsg/smart-kill-sexp-forward ()
   "Kill sexp forward."
@@ -886,7 +890,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
-  (global-set-key (kbd "C-M-K") 'tddsg/smart-kill-sexp-backward)
+  (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/smart-mark-sexp)
   (global-set-key (kbd "C-M-_") 'flip-frame)
