@@ -284,7 +284,7 @@ If the new path's directories does not exist, create them."
   (set-mark (line-beginning-position)))
 
 (defun tddsg/mark-sexp (&optional backward)
-  "Mark sexp using the smartparens package"
+  "Mark sexp using the smartparens package."
   (let ((step (if (null backward) 1 -1)))
     (if (region-active-p)
         (sp-forward-sexp step)
@@ -300,28 +300,14 @@ If the new path's directories does not exist, create them."
       (sp-forward-sexp step))))
 
 (defun tddsg/mark-sexp-forward ()
+  "Mark sexp forward, using the smartparens package."
   (interactive)
   (tddsg/mark-sexp))
 
 (defun tddsg/mark-sexp-backward ()
+  "Mark sexp backward, using the smartparens package."
   (interactive)
   (tddsg/mark-sexp t))
-
-
-;; (defun tddsg/smart-mark-sexp ()
-;;   "Expand region or mark sexp"
-;;   (interactive)
-;;   (let ((current-char (char-after))
-;;         (previous-char (char-before)))
-;;     (if (memq (char-syntax current-char) '(?w ?_))
-;;         (if (and (not (null previous-char))
-;;                  (memq (char-syntax previous-char) '(?w ?_))
-;;                  (not (region-active-p)))
-;;             (progn (backward-word)
-;;                    (call-interactively 'er/expand-region))
-;;           (call-interactively 'er/expand-region))
-;;       (if (< (point) (mark)) (set-mark-command nil))
-;;       (call-interactively  'tddsg/mark-sexp))))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
@@ -406,12 +392,13 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
-or in a custom directory when prefix-argument is given (C-u)."
+or in a custom directory when prefix-argument is given <C-u>."
   (interactive "P")
   (if (null arg)
       (let* ((text (if (region-active-p)
                        (buffer-substring (region-beginning) (region-end))
                      (thing-at-point 'word)))
+             (text (if (null text) "" text))
              (text (replace-regexp-in-string " " "\\\\ " (string-trim text))))
         (helm-do-ag (expand-file-name default-directory) text))
     (call-interactively 'helm-do-ag)))
