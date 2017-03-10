@@ -381,7 +381,11 @@ If the new path's directories does not exist, create them."
                (<= (point) (cadddr thing)))
       (setq begin (cadr thing))
       (setq end (cadddr thing)))
-    (kill-region-and-next-spaces begin end backward)))
+    (kill-region-and-next-spaces begin end backward)
+    (when (and (not (null (char-before)))
+               (memq (char-syntax (char-after)) '(?w ?_))
+               (memq (char-syntax (char-before)) '(?w ?_)))
+      (just-one-space))))
 
 (defun tddsg/smart-kill-sexp-forward ()
   "Kill sexp forward."
@@ -918,7 +922,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
-  (global-set-key (kbd "C-M-S-K") 'tddsg/smart-kill-sexp-backward)
+  (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-S-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
@@ -1345,28 +1349,29 @@ after stripping extra whitespace and new lines"
          (file-name  (if buffer-file-name
                          (file-name-nondirectory buffer-file-name)
                        (buffer-name)))
+         (path-len (length file-path))
          (name-len (length file-name))
          (dir-len (length dir-name))
          (drop-str "[...]")
-         (dir-display-len (- (window-body-width) (length drop-str) 3
-                             (length (projectile-project-name))
-                             name-len 1)))
-    (if (> (length file-path) dir-display-len)
-        (if (> name-len dir-display-len)
-            (concat "▷ " (with-face file-name :foreground "DarkOrange3"))
-          (concat "▷ "
-                  (with-face (substring dir-name 0 (/ dir-display-len 2))
-                             :foreground "DeepSkyBlue3")
-                  (with-face drop-str :foreground "DeepSkyBlue3")
-                  (with-face (substring dir-name
-                                        (- dir-len (/ dir-display-len 2))
-                                        (- dir-len 1))
-                             :foreground "DeepSkyBlue3")
-                  (with-face "/" :foreground "DeepSkyBlue3")
-                  (with-face file-name :foreground "DarkOrange3")))
-      (concat "▷ "
-              (with-face dir-name :foreground "DeepSkyBlue3")
-              (with-face file-name :foreground "DarkOrange3")))))
+         (path-display-len (- (window-body-width)
+                              (length (projectile-project-name)) 3))
+         (dir-display-len (- path-display-len (length drop-str) name-len 2)))
+    (cond ((< path-len path-display-len)
+           (concat "▷ "
+                   (with-face dir-name :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          ((and (> dir-len dir-display-len) (> dir-display-len 3))
+           (concat "▷ "
+                   (with-face (substring dir-name 0 (/ dir-display-len 2))
+                              :foreground "DeepSkyBlue3")
+                   (with-face drop-str :foreground "DeepSkyBlue3")
+                   (with-face (substring dir-name
+                                         (- dir-len (/ dir-display-len 2))
+                                         (- dir-len 1))
+                              :foreground "DeepSkyBlue3")
+                   (with-face "/" :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          (t (concat "▷ " (with-face file-name :foreground "DarkOrange3"))))))
 
 (defun tddsg--header-project-path ()
   "Create project path for the header line."
