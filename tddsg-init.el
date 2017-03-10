@@ -87,7 +87,9 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--save-buffer ()
   "Save current buffer."
-  (if (not buffer-read-only) (save-buffer)))
+  (if (and (not buffer-read-only)
+           (derived-mode-p 'text-mode 'prog-mode))
+      (save-buffer)))
 
 (defun tddsg--latex-compile ()
   (interactive)
@@ -275,7 +277,8 @@ If the new path's directories does not exist, create them."
   (if (not (region-active-p)) (tddsg/mark-line))
   (call-interactively 'kill-ring-save)
   (newline-and-indent)
-  (yank))
+  (yank)
+  (indent-region))
 
 (defun tddsg/mark-line ()
   "Select current line"
