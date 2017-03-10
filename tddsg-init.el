@@ -771,7 +771,7 @@ after stripping extra whitespace and new lines"
           ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
-           (set-cursor-color "lime green"))))
+           (set-cursor-color "dark orange"))))
   (add-hook 'buffer-list-update-hook 'tddsg--update-cursor)
 
   ;; isearch
@@ -1272,7 +1272,7 @@ after stripping extra whitespace and new lines"
    'tddsg-themes
    'spacemacs-dark
    '(;; cursors & line
-     (cursor ((t (:background "lime green"))))
+     (cursor ((t (:background "dark orange"))))
      ;; dired
      (diredp-compressed-file-name ((t (:foreground "burlywood"))))
      (diredp-compressed-file-suffix ((t (:foreground "yellow green"))))

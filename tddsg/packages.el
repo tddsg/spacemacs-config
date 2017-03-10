@@ -397,7 +397,7 @@ Each entry is either:
           ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
-           (set-cursor-color "lime green"))))
+           (set-cursor-color "dark orange"))))
   (defun advice-update-cursor (orig-func &rest args)
     (apply orig-func args)
     (update-cursor))
