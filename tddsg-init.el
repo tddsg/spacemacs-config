@@ -1181,6 +1181,7 @@ after stripping extra whitespace and new lines"
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
   (define-key pdf-view-mode-map (kbd "M-SPC")
     'pdf-view-scroll-down-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
 
