@@ -217,11 +217,11 @@ Each entry is either:
              (output-html "xdg-open")))))
   (defun tex-show-compile-error ()
     "Show TeX help if there is an compile error"
-    ;; (when
-    ;;     (with-current-buffer TeX-command-buffer
-    ;;       (plist-get TeX-error-report-switches (intern (TeX-master-file))))
-    ;;   ;; If there are errors, open the output buffer.
-    ;;   (call-interactively 'TeX-next-error))
+    (when
+        (with-current-buffer TeX-command-buffer
+          (plist-get TeX-error-report-switches (intern (TeX-master-file))))
+      ;; If there are errors, open the output buffer.
+      (call-interactively 'TeX-next-error))
     )
   (defadvice TeX-LaTeX-sentinel
       (around mg-TeX-LaTeX-sentinel-open-output activate)

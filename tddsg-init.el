@@ -30,6 +30,8 @@
 
 (setq tddsg--auto-truncate-lines nil)
 
+(setq tddsg--auto-slice-pdf-view nil)
+
 (setq tddsg--show-linum nil)
 
 (setq tddsg--show-header-line t)
@@ -397,6 +399,13 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/smart-kill-sexp t))
 
+(defun tddsg/toggle-pdf-view-auto-slice ()
+  "Toggle auto slice pdf view."
+  (interactive)
+  (if tddsg--auto-slice-pdf-view
+      (setq tddsg--auto-slice-pdf-view nil)
+    (setq tddsg--auto-slice-pdf-view t)))
+
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
 or in a custom directory when prefix-argument is given <C-u>."
@@ -647,6 +656,7 @@ after stripping extra whitespace and new lines"
         (global-linum-mode -1)
         (set-default 'truncate-lines t)   ;; disable truncate line
         (setq tddsg--auto-truncate-lines t)
+        (setq tddsg--auto-slice-pdf-view t)
         (setq golden-ratio-adjust-factor 1.05)
         (setq golden-ratio-balance nil)
         (golden-ratio-mode))
@@ -732,6 +742,15 @@ after stripping extra whitespace and new lines"
   (advice-add 'helm-find-files :around #'tddsg--enable-truncate-lines)
 
   ;; pdf-view
+  (defun pdf-view-advise-page-turn (orig-func &rest args)
+    (apply orig-func args)
+    (when tddsg--auto-slice-pdf-view
+      (call-interactively 'pdf-view-set-slice-from-bounding-box)))
+  (dolist (func (list 'pdf-view-next-page-command
+                      'pdf-view-previous-page-command
+                      'pdf-view-scroll-up-or-next-page
+                      'pdf-view-scroll-down-or-previous-page))
+    (advice-add func :around #'pdf-view-advise-page-turn))
   (defun update-pdf-view-theme ()
     (when (derived-mode-p 'pdf-view-mode)
       (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
@@ -1168,6 +1187,13 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "\"") nil)
        (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
+
+  ;; latex-extra-mode
+  (require 'latex-extra-mode)
+  (define-key latex-extra-mode-map (kbd "C-M-f") nil)
+  (define-key latex-extra-mode-map (kbd "C-M-b") nil)
+  (define-key latex-extra-mode-map (kbd "C-M-n") nil)
+  (define-key latex-extra-mode-map (kbd "C-M-p") nil)
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "M-q") nil)
