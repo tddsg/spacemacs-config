@@ -34,6 +34,7 @@
     noflet
     tuareg
     auctex
+    latex-extra
     cc-mode
     god-mode
     org
@@ -195,6 +196,9 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
+(defun tddsg/init-latex-extra ()
+  (use-package latex-extra))
+
 (defun tddsg/post-init-auctex ()
   (require 'tex)
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
@@ -211,6 +215,19 @@ Each entry is either:
              (output-dvi "xdvi")
              (output-pdf "pdf-tools")
              (output-html "xdg-open")))))
+  (defun tex-show-compile-error ()
+    "Show TeX help if there is an compile error"
+    ;; (when
+    ;;     (with-current-buffer TeX-command-buffer
+    ;;       (plist-get TeX-error-report-switches (intern (TeX-master-file))))
+    ;;   ;; If there are errors, open the output buffer.
+    ;;   (call-interactively 'TeX-next-error))
+    )
+  (defadvice TeX-LaTeX-sentinel
+      (around mg-TeX-LaTeX-sentinel-open-output activate)
+    "Open output when there are errors."
+    ad-do-it
+    (tex-show-compile-error))
   ;; hook
   (defun my-latex-hook ()
     ;; set tex master file
@@ -225,6 +242,7 @@ Each entry is either:
         (modify-syntax-entry symbol "'" tex-mode-syntax-table)
         (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
         (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
+    (latex-extra-mode)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
     (abbrev-mode +1)
