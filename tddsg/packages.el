@@ -197,7 +197,11 @@ Each entry is either:
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
 (defun tddsg/init-latex-extra ()
-  (use-package latex-extra))
+  (let ((byte-compile-warnings '(not free-vars)))
+    (use-package latex-extra
+      :ensure t
+      :config
+      (add-hook 'LaTeX-mode-hook #'latex-extra-mode))))
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)

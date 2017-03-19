@@ -399,7 +399,7 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/smart-kill-sexp t))
 
-(defun tddsg/toggle-pdf-view-auto-slice ()
+(defun tddsg/toggle-auto-slice-pdf-view ()
   "Toggle auto slice pdf view."
   (interactive)
   (if tddsg--auto-slice-pdf-view
@@ -962,7 +962,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
-  (global-set-key (kbd "C-x C-c") 'capitalize-region)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
@@ -1186,14 +1185,11 @@ after stripping extra whitespace and new lines"
        (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
        (define-key LaTeX-mode-map (kbd "C-j") nil)
        (define-key LaTeX-mode-map (kbd "\"") nil)
-       (define-key LaTeX-mode-map (kbd "C-c C-g") nil)))
-
-  ;; latex-extra-mode
-  (require 'latex-extra-mode)
-  (define-key latex-extra-mode-map (kbd "C-M-f") nil)
-  (define-key latex-extra-mode-map (kbd "C-M-b") nil)
-  (define-key latex-extra-mode-map (kbd "C-M-n") nil)
-  (define-key latex-extra-mode-map (kbd "C-M-p") nil)
+       (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+       (define-key latex-extra-mode-map (kbd "C-M-f") nil)
+       (define-key latex-extra-mode-map (kbd "C-M-b") nil)
+       (define-key latex-extra-mode-map (kbd "C-M-n") nil)
+       (define-key latex-extra-mode-map (kbd "C-M-p") nil)))
 
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "M-q") nil)
@@ -1730,6 +1726,8 @@ BUFFER."
       (other-window 1)
       (pdf-util-assert-pdf-window)
       (pdf-view-goto-page page)
+      (when tddsg--auto-slice-pdf-view
+        (call-interactively 'pdf-view-set-slice-from-bounding-box))
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
         (pdf-util-tooltip-arrow (round top) 20))
       (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
