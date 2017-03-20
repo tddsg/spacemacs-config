@@ -93,20 +93,24 @@ If the new path's directories does not exist, create them."
            (derived-mode-p 'text-mode 'prog-mode))
       (save-buffer)))
 
-(defun tddsg--latex-compile ()
-  (interactive)
-  (save-buffer)
-  (setq TeX-after-compilation-finished-functions nil)
-  (TeX-command "LaTeX" 'TeX-master-file -1))
+;; (defun tddsg--latex-compile ()
+;;   (interactive)
+;;   (save-buffer)
+;;   (setq TeX-after-compilation-finished-functions nil)
+;;   (call-interactively 'latex/compile-commands-until-done)
+;;   ;; (TeX-command "LaTeX" 'TeX-master-file -1)
+;;   )
 
-(defun tddsg--latex-compile-sync-forward ()
-  (interactive)
-  (save-buffer)
-  (setq TeX-after-compilation-finished-functions
-        (lambda (file)
-          (select-window (selected-window))
-          (call-interactively 'pdf-sync-forward-search)))
-  (TeX-command "LaTeX" 'TeX-master-file -1))
+;; (defun tddsg--latex-compile-sync-forward ()
+;;   (interactive)
+;;   (save-buffer)
+;;   (call-interactively 'pdf-sync-forward-search)
+;;   ;; (setq TeX-after-compilation-finished-functions
+;;   ;;       (lambda (file)
+;;   ;;         (select-window (selected-window))
+;;   ;;         (call-interactively 'pdf-sync-forward-search)))
+;;   ;; (TeX-command "LaTeX" 'TeX-master-file -1)
+;;   )
 
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
@@ -943,7 +947,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
-  (global-set-key (kbd "C-M-S-j") 'tddsg/join-to-above-line)
+  (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-_") 'flip-frame)
@@ -1109,6 +1113,10 @@ after stripping extra whitespace and new lines"
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.")
     'tddsg/yank-current-word-to-minibuffer)
+  (define-key minibuffer-local-map (kbd "C-M-i") nil)
+
+  ;; elisp-mode
+  (define-key emacs-lisp-mode-map (kbd "C-M-i") nil)
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
@@ -1177,9 +1185,10 @@ after stripping extra whitespace and new lines"
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
-  (define-key TeX-mode-map (kbd "<f5>") 'tddsg--latex-compile)
-  (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
+  (define-key TeX-mode-map (kbd "<f5>") 'latex/compile-commands-until-done)
+  (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "C-j") nil)
+  (define-key TeX-mode-map (kbd "C-M-i") nil)
   (eval-after-load 'latex
     '(progn
        (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
@@ -1211,6 +1220,7 @@ after stripping extra whitespace and new lines"
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
+  (define-key flyspell-mode-map (kbd "C-M-i") nil)
 
   ;; dired mode
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
@@ -1729,7 +1739,14 @@ BUFFER."
       (when tddsg--auto-slice-pdf-view
         (call-interactively 'pdf-view-set-slice-from-bounding-box))
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
-        (pdf-util-tooltip-arrow (round top) 20))
+        (run-at-time 0.02 nil
+                     (lambda (top)
+                       ;; display tooltip by a timer to avoid being cleared
+                       (pdf-util-tooltip-arrow (round top) 20))
+                     top)
+        ;;; old code
+        ;; (pdf-util-tooltip-arrow (round top) 20)
+        )
       (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
 
 ;;;;;; customize pdf-isearch for syncing backward

@@ -66,6 +66,8 @@
     elmacro
     helm-dired-history
     helm-tramp
+    company-math
+    math-symbol-lists
     ;; ivy
     swiper
     swiper-helm
@@ -201,6 +203,7 @@ Each entry is either:
     (use-package latex-extra
       :ensure t
       :config
+      (setq latex/view-after-compile nil)
       (add-hook 'LaTeX-mode-hook #'latex-extra-mode))))
 
 (defun tddsg/post-init-auctex ()
@@ -219,19 +222,19 @@ Each entry is either:
              (output-dvi "xdvi")
              (output-pdf "pdf-tools")
              (output-html "xdg-open")))))
-  (defun tex-show-compile-error ()
-    "Show TeX help if there is an compile error"
-    (when
-        (with-current-buffer TeX-command-buffer
-          (plist-get TeX-error-report-switches (intern (TeX-master-file))))
-      ;; If there are errors, open the output buffer.
-      (call-interactively 'TeX-next-error))
-    )
-  (defadvice TeX-LaTeX-sentinel
-      (around mg-TeX-LaTeX-sentinel-open-output activate)
-    "Open output when there are errors."
-    ad-do-it
-    (tex-show-compile-error))
+  ;; (defun tex-show-compile-error ()
+  ;;   "Show TeX help if there is an compile error"
+  ;;   (when
+  ;;       (with-current-buffer TeX-command-buffer
+  ;;         (plist-get TeX-error-report-switches (intern (TeX-master-file))))
+  ;;     ;; If there are errors, open the output buffer.
+  ;;     (call-interactively 'TeX-next-error))
+  ;;   )
+  ;; (defadvice TeX-LaTeX-sentinel
+  ;;     (around mg-TeX-LaTeX-sentinel-open-output activate)
+  ;;   "Open output when there are errors."
+  ;;   ad-do-it
+  ;;   (tex-show-compile-error))
   ;; hook
   (defun my-latex-hook ()
     ;; set tex master file
@@ -394,6 +397,12 @@ Each entry is either:
 
 (defun tddsg/init-helm-tramp ()
   (use-package helm-tramp))
+
+(defun tddsg/init-company-math ()
+  (use-package company-math))
+
+(defun tddsg/init-math-symbol-lists ()
+  (use-package math-symbol-lists))
 
 ;; (defun tddsg/init-ivy ()
 ;;   (use-package ivy
