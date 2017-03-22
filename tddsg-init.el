@@ -93,24 +93,17 @@ If the new path's directories does not exist, create them."
            (derived-mode-p 'text-mode 'prog-mode))
       (save-buffer)))
 
-;; (defun tddsg--latex-compile ()
-;;   (interactive)
-;;   (save-buffer)
-;;   (setq TeX-after-compilation-finished-functions nil)
-;;   (call-interactively 'latex/compile-commands-until-done)
-;;   ;; (TeX-command "LaTeX" 'TeX-master-file -1)
-;;   )
+(defun tddsg--latex-compile ()
+  (interactive)
+  (save-buffer)
+  ;; (setq TeX-after-compilation-finished-functions nil)
+  ;; (call-interactively 'latex/compile-commands-until-done)
+  (TeX-command "LaTeX" 'TeX-master-file -1))
 
-;; (defun tddsg--latex-compile-sync-forward ()
-;;   (interactive)
-;;   (save-buffer)
-;;   (call-interactively 'pdf-sync-forward-search)
-;;   ;; (setq TeX-after-compilation-finished-functions
-;;   ;;       (lambda (file)
-;;   ;;         (select-window (selected-window))
-;;   ;;         (call-interactively 'pdf-sync-forward-search)))
-;;   ;; (TeX-command "LaTeX" 'TeX-master-file -1)
-;;   )
+(defun tddsg--latex-compile-sync-forward ()
+  (interactive)
+  (call-interactively 'latex/compile-commands-until-done)
+  (call-interactively 'pdf-sync-forward-search))
 
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
@@ -1185,8 +1178,8 @@ after stripping extra whitespace and new lines"
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
-  (define-key TeX-mode-map (kbd "<f5>") 'latex/compile-commands-until-done)
-  (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
+  (define-key TeX-mode-map (kbd "<f5>") 'tddsg--latex-compile)
+  (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (eval-after-load 'latex
