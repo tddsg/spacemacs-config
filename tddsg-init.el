@@ -30,8 +30,6 @@
 
 (setq tddsg--auto-truncate-lines nil)
 
-(setq tddsg--auto-slice-pdf-view nil)
-
 (setq tddsg--show-linum nil)
 
 (setq tddsg--show-header-line t)
@@ -396,13 +394,6 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/smart-kill-sexp t))
 
-(defun tddsg/toggle-auto-slice-pdf-view ()
-  "Toggle auto slice pdf view."
-  (interactive)
-  (if tddsg--auto-slice-pdf-view
-      (setq tddsg--auto-slice-pdf-view nil)
-    (setq tddsg--auto-slice-pdf-view t)))
-
 (defun tddsg/helm-do-ag (arg)
   "Search by Helm-Ag in the current directory, \
 or in a custom directory when prefix-argument is given <C-u>."
@@ -653,7 +644,6 @@ after stripping extra whitespace and new lines"
         (global-linum-mode -1)
         (set-default 'truncate-lines t)   ;; disable truncate line
         (setq tddsg--auto-truncate-lines t)
-        (setq tddsg--auto-slice-pdf-view t)
         (setq golden-ratio-adjust-factor 1.05)
         (setq golden-ratio-balance nil)
         (golden-ratio-mode))
@@ -739,15 +729,6 @@ after stripping extra whitespace and new lines"
   (advice-add 'helm-find-files :around #'tddsg--enable-truncate-lines)
 
   ;; pdf-view
-  (defun pdf-view-advise-page-turn (orig-func &rest args)
-    (apply orig-func args)
-    (when tddsg--auto-slice-pdf-view
-      (call-interactively 'pdf-view-set-slice-from-bounding-box)))
-  (dolist (func (list 'pdf-view-next-page-command
-                      'pdf-view-previous-page-command
-                      'pdf-view-scroll-up-or-next-page
-                      'pdf-view-scroll-down-or-previous-page))
-    (advice-add func :around #'pdf-view-advise-page-turn))
   (defun update-pdf-view-theme ()
     (when (derived-mode-p 'pdf-view-mode)
       (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
@@ -874,6 +855,7 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish company-mode "")
   (spacemacs|diminish which-key-mode "")
   (spacemacs|diminish yas-minor-mode "")
+  (spacemacs|diminish latex-extra-mode "")
   (spacemacs|diminish utop-minor-mode "")
   (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish with-editor-mode "")
@@ -1729,8 +1711,6 @@ BUFFER."
       (other-window 1)
       (pdf-util-assert-pdf-window)
       (pdf-view-goto-page page)
-      (when tddsg--auto-slice-pdf-view
-        (call-interactively 'pdf-view-set-slice-from-bounding-box))
       (let ((top (* y1 (cdr (pdf-view-image-size)))))
         (run-at-time 0.02 nil
                      (lambda (top)
