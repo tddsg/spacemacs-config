@@ -649,8 +649,7 @@ after stripping extra whitespace and new lines"
         (golden-ratio-mode))
     (setq tddsg--auto-truncate-lines nil)
     (setq golden-ratio-adjust-factor 1.618)
-    (setq golden-ratio-balance nil)
-    (golden-ratio-mode))
+    (setq golden-ratio-balance nil))
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
@@ -826,6 +825,13 @@ after stripping extra whitespace and new lines"
 
   ;; smartparens
   (smartparens-global-mode)
+
+  ;; anaconda
+  (eval-after-load 'anaconda-mode
+    '(progn
+       (setq no_proxy "localhost,127.0.0.1")
+       (remove-hook 'anaconda-mode-response-read-fail-hook
+                    'anaconda-mode-show-unreadable-response)))
 
   ;; auto-revert
   (setq auto-revert-check-vc-info nil)
