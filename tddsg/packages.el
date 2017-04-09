@@ -424,7 +424,7 @@ Each entry is either:
   (defun update-cursor ()
     (cond ((or (bound-and-true-p god-mode)
                (bound-and-true-p god-global-mode))
-           (set-cursor-color "purple"))
+           (set-cursor-color "lime green"))
           ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)

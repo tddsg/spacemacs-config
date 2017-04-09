@@ -768,7 +768,7 @@ after stripping extra whitespace and new lines"
   (defun tddsg--update-cursor ()
     (cond ((or (bound-and-true-p god-mode)
                (bound-and-true-p god-global-mode))
-           (set-cursor-color "purple"))
+           (set-cursor-color "lime green"))
           ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
@@ -816,8 +816,10 @@ after stripping extra whitespace and new lines"
   ;; ediff-mode
   (add-hook 'ediff-mode-hook '(lambda () (golden-ratio-mode -1)))
 
-  ;; magit
+  ;; automatically save buffer
   (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
+  (defadvice winum-select-window-by-number
+      (before save-buffer activate) (tddsg--save-buffer))
 
   ;; tramp
   (require 'tramp)
