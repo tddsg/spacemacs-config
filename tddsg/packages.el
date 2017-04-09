@@ -268,8 +268,8 @@ Each entry is either:
   (define-key smartparens-mode-map (kbd "M-s") nil)
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   ;; smartparens for ocaml
-  (sp-with-modes '(tuareg-mode)
-    (sp-local-pair "(*" "*)" :post-handlers '(sp-insert-pair)))
+  ;; (sp-with-modes '(tuareg-mode)
+  ;;   (sp-local-pair "(*" "*)" ))
   ;; smartparens for latex
   (sp-with-modes '(tex-mode
                    plain-tex-mode
