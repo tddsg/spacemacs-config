@@ -76,14 +76,14 @@
 (defun tddsg--create-backup-file-name (fpath)
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/private/backup/")
-         ;; remove Windows driver letter in path, ➢ for example: “C:”
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
-         (backupFilePath (replace-regexp-in-string
-                          "//" "/" (concat backupRootDir filePath "~"))))
-    (make-directory (file-name-directory backupFilePath)
-                    (file-name-directory backupFilePath))
-    backupFilePath))
+  (let* ((backup-root "~/.emacs.d/private/backup/")
+         ;; remove Windows driver letter in path, for example: “C:”
+         (file-path (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
+         (backup-filepath (replace-regexp-in-string
+                          "//" "/" (concat backup-root file-path "~"))))
+    (make-directory (file-name-directory backup-filepath)
+                    (file-name-directory backup-filepath))
+    backup-filepath))
 
 (defun tddsg--save-buffer ()
   "Save current buffer."
@@ -133,9 +133,13 @@ If the new path's directories does not exist, create them."
                                                "user.dict"))))
 
 (defun tddsg--hook-prog-text-mode ()
-  (if tddsg--show-linum (linum-mode 1) (linum-mode -1))
+  ;; linum-mode
+  (cond ((derived-mode-p 'songbird 'c-mode 'cc-mode)
+         (linum-mode 1))
+        (tddsg--show-linum (linum-mode 1))
+        (t (linum-mode -1)))
   (smartparens-mode 1)
-  (column-marker-3 80)
+  (column-marker-3 76)
   (whitespace-mode 1))
 
 (defun tddsg--hook-prog-mode ()
@@ -163,9 +167,10 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
-(defun tddsg/show-path-current-buffer ()
+(defun tddsg/show-and-copy-path-current-buffer ()
   "Show path of the current buffer."
   (interactive)
+  (kill-new (buffer-file-name))
   (message "Current path: %s" (buffer-file-name)))
 
 (defun tddsg/previous-overlay ()
@@ -982,7 +987,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-n") 'forward-paragraph)
   ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-D") 'backward-kill-word)
-  (global-set-key (kbd "M-k") 'delete-char)
+  (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M-'") 'dabbrev-completion)
@@ -1016,7 +1021,7 @@ after stripping extra whitespace and new lines"
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
 
   (global-set-key (kbd "M-m d r") 'diredp-dired-recent-dirs)
-  (global-set-key (kbd "M-m f p") 'tddsg/show-path-current-buffer)
+  (global-set-key (kbd "M-m f p") 'tddsg/show-and-copy-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m h o") 'helm-occur)
   (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
