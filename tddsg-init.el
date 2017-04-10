@@ -892,6 +892,7 @@ after stripping extra whitespace and new lines"
   (add-hook 'text-mode-hook 'tddsg--hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg--hook-prog-mode)
   (add-hook 'text-mode-hook 'tddsg--hook-text-mode)
+  (add-hook 'c-mode-hook '(lambda () (setq tddsg--show-linum t)))
   (add-hook 'change-major-mode-hook 'tddsg--hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
