@@ -1,0 +1,14 @@
+* Configure proxy:
+** If using virtual machine:
+- Configure network to the NAT adapter.
+(I don't know why the Bridge adapter doesn't work)
+
+- Setting the proxy in Emacs.
+For Spacemacs, put the code in dotspacemacs/user-init
+
+(setq url-proxy-services
+      '(("no_proxy" . "127.0.0.1,localhost")
+        ("http" . "some-proxy.com:80")
+        ("https" . "some-proxy.com:80")))
+
+- Run Emacs with --insecure
