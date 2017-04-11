@@ -134,10 +134,16 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-prog-text-mode ()
   ;; linum-mode
-  (cond ((derived-mode-p 'songbird 'c-mode 'cc-mode)
-         (linum-mode 1))
-        (tddsg--show-linum (linum-mode 1))
-        (t (linum-mode -1)))
+  (if (or tddsg--show-linum
+          (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode))
+      (linum-mode 1)
+    (linum-mode -1))
+  ;; manually highlight some todo keywords, using hl-todo face
+  (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
+                                 1 (hl-todo-get-face) t)))
+  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\)\\b"
+                                 1 (hl-todo-get-face) t)))
+  ;; Other setting
   (smartparens-mode 1)
   (column-marker-3 76)
   (whitespace-mode 1))
@@ -658,7 +664,7 @@ after stripping extra whitespace and new lines"
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
-  (global-hl-todo-mode 1)           ;; highlight current line
+  (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 0)             ;; turn off blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
   (setq-default fill-column 75)     ;; max size of a line for fill-or-unfill
@@ -855,6 +861,7 @@ after stripping extra whitespace and new lines"
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
   (setq dired-guess-shell-alist-user
         '(("\\.pdf\\'" "okular &")
+          ("\\.html\\'" "google-chrome &")
           ("\\.txt\\'" "gedit")))
 
   ;; helm setting
