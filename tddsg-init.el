@@ -834,11 +834,11 @@ after stripping extra whitespace and new lines"
   (smartparens-global-mode)
 
   ;; anaconda
-  (eval-after-load 'anaconda-mode
-    '(progn
-       (setq no_proxy "localhost,127.0.0.1")
-       (remove-hook 'anaconda-mode-response-read-fail-hook
-                    'anaconda-mode-show-unreadable-response)))
+  ;; (eval-after-load 'anaconda-mode
+  ;;   '(progn
+  ;;      (setq no_proxy "localhost,127.0.0.1")
+  ;;      (remove-hook 'anaconda-mode-response-read-fail-hook
+  ;;                   'anaconda-mode-show-unreadable-response)))
 
   ;; auto-revert
   (setq auto-revert-check-vc-info nil)

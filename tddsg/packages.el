@@ -33,6 +33,7 @@
   '(comment-dwim-2
     noflet
     tuareg
+    python
     auctex
     latex-extra
     cc-mode
@@ -64,6 +65,7 @@
     dired+
     pdf-tools
     elmacro
+    elpy
     helm-dired-history
     helm-tramp
     company-math
@@ -260,6 +262,11 @@ Each entry is either:
   (add-hook 'tex-mode-hook 'my-latex-hook 'append)
   (add-hook 'TeX-mode-hook 'my-latex-hook 'append))
 
+(defun tddsg/post-init-python ()
+  (defun my-python-mode-hook ()
+    (elpy-mode))
+  (add-hook 'python-mode-hook 'my-python-mode-hook))
+
 (defun tddsg/post-init-smartparens ()
   ;; bindings
   (sp-use-paredit-bindings)
@@ -388,6 +395,9 @@ Each entry is either:
 
 (defun tddsg/init-elmacro ()
   (use-package elmacro))
+
+(defun tddsg/init-elpy ()
+  (use-package elpy))
 
 (defun tddsg/init-dired+ ()
   (use-package dired+))
