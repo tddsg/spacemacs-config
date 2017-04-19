@@ -141,7 +141,7 @@ If the new path's directories does not exist, create them."
   ;; manually highlight some todo keywords, using hl-todo face
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
-  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\)\\b"
+  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|IMPORTANT\\)\\b"
                                  1 (hl-todo-get-face) t)))
   ;; Other setting
   (smartparens-mode 1)
@@ -157,6 +157,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-shell-mode ()
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
+  (rainbow-delimiters-mode-disable)
   (toggle-truncate-lines -1)
   (visual-line-mode 1)
   (rainbow-delimiters-mode-enable))
@@ -667,7 +668,8 @@ after stripping extra whitespace and new lines"
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 0)             ;; turn off blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (setq-default fill-column 75)     ;; max size of a line for fill-or-unfill
+  (setq fill-column 75)             ;; max size of a line for fill-or-unfill
+  (setq fast-but-imprecise-scrolling nil)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
   (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
@@ -925,6 +927,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-+") 'zoom-in)
   (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-`") 'goto-last-change)
+  (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
@@ -959,12 +962,11 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x }") 'tddsg/enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'tddsg/shrink-window-vertically)
   (global-set-key (kbd "C-x ^") 'tddsg/enlarge-window-vertically)
-  (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
+  (global-set-key (kbd "C-x C-w") 'tddsg/save-file-as-and-open-file)
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-M] 'helm-mini)
@@ -1006,7 +1008,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "M-'") 'dabbrev-completion)
+  (global-set-key (kbd "M-'") 'other-window)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-+") 'delete-other-windows)
   (global-set-key (kbd "M--") 'delete-window)
