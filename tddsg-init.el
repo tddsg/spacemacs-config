@@ -147,7 +147,7 @@ If the new path's directories does not exist, create them."
   ;; manually highlight some todo keywords, using hl-todo face
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
-  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\)\\b"
+  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|IMPORTANT\\)\\b"
                                  1 (hl-todo-get-face) t)))
   ;; Other setting
   (smartparens-mode 1)
@@ -163,9 +163,9 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-shell-mode ()
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
+  (rainbow-delimiters-mode-disable)
   (toggle-truncate-lines -1)
-  (visual-line-mode 1)
-  (rainbow-delimiters-mode-enable))
+  (visual-line-mode 1))
 
 (defun tddsg--hook-term-mode ()
   (term-set-escape-char ?\C-x))
@@ -673,7 +673,8 @@ after stripping extra whitespace and new lines"
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 0)             ;; turn off blinking
   (setq blink-cursor-blinks 15)     ;; blink 15 times
-  (setq-default fill-column 75)     ;; max size of a line for fill-or-unfill
+  (setq fill-column 75)             ;; max size of a line for fill-or-unfill
+  (setq fast-but-imprecise-scrolling nil)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
   (setq frame-title-format          ;; frame title
         '("" invocation-name " - "
@@ -686,8 +687,9 @@ after stripping extra whitespace and new lines"
   ;; scrolling
   (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
   (setq redisplay-dont-pause t
-        scroll-conservatively 10000
-        scroll-margin 5
+        scroll-conservatively 101
+        scroll-margin -1                   ;; perfect setting for scrolling
+        next-screen-context-lines -1       ;; perfect setting for scrolling
         scroll-preserve-screen-position 't)
 
   ;; mode paragraph setting
@@ -845,13 +847,6 @@ after stripping extra whitespace and new lines"
   ;; smartparens
   (smartparens-global-mode)
 
-  ;; anaconda
-  ;; (eval-after-load 'anaconda-mode
-  ;;   '(progn
-  ;;      (setq no_proxy "localhost,127.0.0.1")
-  ;;      (remove-hook 'anaconda-mode-response-read-fail-hook
-  ;;                   'anaconda-mode-show-unreadable-response)))
-
   ;; auto-revert
   (setq auto-revert-check-vc-info nil)
 
@@ -915,7 +910,7 @@ after stripping extra whitespace and new lines"
   (add-hook 'c-mode-hook '(lambda () (setq tddsg--show-linum t)))
   (add-hook 'change-major-mode-hook 'tddsg--hook-change-major-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
 
 (defun tddsg/init-keys ()
@@ -931,6 +926,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-+") 'zoom-in)
   (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-`") 'goto-last-change)
+  (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-q") 'goto-last-change)
@@ -970,7 +966,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-M] 'helm-mini)
@@ -1012,7 +1007,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "M-'") 'dabbrev-completion)
+  (global-set-key (kbd "M-'") 'other-window)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-+") 'delete-other-windows)
   (global-set-key (kbd "M--") 'delete-window)
@@ -1021,7 +1016,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "C-M-/") 'company-complete)
   (global-set-key (kbd "C-M-?") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
@@ -1205,6 +1200,9 @@ after stripping extra whitespace and new lines"
   ;; Tuareg mode
   (define-key tuareg-mode-map (kbd "M-q") nil)
 
+  ;; Python mode
+  (define-key python-mode-map (kbd "C-j") nil)
+
   ;; pdf-tools
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
@@ -1251,7 +1249,6 @@ after stripping extra whitespace and new lines"
   ;; reassign key-chords
   (key-chord-define-global "ji" 'indent-region)
   )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
@@ -1371,6 +1368,8 @@ after stripping extra whitespace and new lines"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT HEADER LINE
+
+;; https://www.emacswiki.org/emacs/HeaderLine
 
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))

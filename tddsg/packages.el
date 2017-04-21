@@ -264,6 +264,9 @@ Each entry is either:
 
 (defun tddsg/post-init-python ()
   (defun my-python-mode-hook ()
+    (setq indent-tabs-mode t)    ;; indent by using tab
+    (setq tab-width 4)
+    (setq python-indent 4)
     (elpy-mode))
   (add-hook 'python-mode-hook 'my-python-mode-hook))
 
