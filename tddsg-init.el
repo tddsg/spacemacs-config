@@ -54,7 +54,9 @@
 
 (defun tddsg--auto-truncate-lines-p ()
   (and tddsg--auto-truncate-lines
-       (not (derived-mode-p 'pdf-view-mode 'shell-mode))))
+       (not (derived-mode-p 'pdf-view-mode
+                            'shell-mode
+                            'songbird))))
 
 (defun tddsg--toggle-truncate-lines (arg)
   (let ((inhibit-message t))
@@ -138,6 +140,10 @@ If the new path's directories does not exist, create them."
           (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode))
       (linum-mode 1)
     (linum-mode -1))
+  ;; truncate-line
+  (if (or tddsg--show-linum
+          (derived-mode-p 'songbird))
+      (toggle-truncate-lines -1))
   ;; manually highlight some todo keywords, using hl-todo face
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
