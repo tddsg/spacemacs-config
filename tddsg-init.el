@@ -688,8 +688,8 @@ after stripping extra whitespace and new lines"
   (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
   (setq redisplay-dont-pause t
         scroll-conservatively 101
-        scroll-margin -1                   ;; perfect setting for scrolling
-        next-screen-context-lines -1       ;; perfect setting for scrolling
+        scroll-margin 0                    ;; perfect setting for scrolling
+        next-screen-context-lines 0        ;; perfect setting for scrolling
         scroll-preserve-screen-position 't)
 
   ;; mode paragraph setting
