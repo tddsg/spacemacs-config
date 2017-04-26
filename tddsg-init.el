@@ -82,6 +82,12 @@ If the new path's directories does not exist, create them."
   (call-interactively 'latex/compile-commands-until-done)
   (call-interactively 'pdf-sync-forward-search))
 
+(defun tddsg--highlight-todos ()
+  (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
+                                 1 (hl-todo-get-face) t)))
+  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|IMPORTANT\\)\\b"
+                                 1 (hl-todo-get-face) t))))
+
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
 
@@ -105,12 +111,7 @@ If the new path's directories does not exist, create them."
   ;; linum-mode
   (when (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode)
     (linum-mode 1))
-  ;; manually highlight some todo keywords, using hl-todo face
-  (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
-                                 1 (hl-todo-get-face) t)))
-  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|IMPORTANT\\)\\b"
-                                 1 (hl-todo-get-face) t)))
-  ;; Other setting
+  (tddsg--highlight-todos)
   (smartparens-mode 1)
   (column-marker-3 76)
   (whitespace-mode 1))
