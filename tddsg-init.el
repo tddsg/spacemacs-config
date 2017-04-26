@@ -28,8 +28,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
-(setq tddsg--show-linum nil)
-
 (setq tddsg--golden-ratio-mode nil)
 
 
@@ -122,10 +120,8 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-prog-text-mode ()
   ;; linum-mode
-  (if (or tddsg--show-linum
-          (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode))
-      (linum-mode 1)
-    (linum-mode -1))
+  (when (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode)
+    (linum-mode 1))
   ;; manually highlight some todo keywords, using hl-todo face
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
@@ -602,16 +598,6 @@ after stripping extra whitespace and new lines"
       (setq mode-line-format nil)
     (setq mode-line-format (default-value 'mode-line-format))))
 
-(defun tddsg/toggle-linum ()
-  "Toggle show/hide line number."
-  (interactive)
-  (cond ((null linum-mode)
-         (setq tddsg--show-linum t)
-         (global-linum-mode 1))
-        (t
-         (setq tddsg--show-linum nil)
-         (global-linum-mode -1))))
-
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
@@ -858,7 +844,6 @@ after stripping extra whitespace and new lines"
   (add-hook 'text-mode-hook 'tddsg--hook-prog-text-mode)
   (add-hook 'prog-mode-hook 'tddsg--hook-prog-mode)
   (add-hook 'text-mode-hook 'tddsg--hook-text-mode)
-  (add-hook 'c-mode-hook '(lambda () (setq tddsg--show-linum t)))
   (add-hook 'change-major-mode-hook 'tddsg--hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
