@@ -69,6 +69,7 @@
     helm-dired-history
     helm-tramp
     company-math
+    company-c-headers
     math-symbol-lists
     ;; ivy
     swiper
@@ -139,6 +140,10 @@ Each entry is either:
 ;; Don't know why can't use post-init- for cc-mode. Must use init-
 (defun tddsg/init-cc-mode ()
   (defun my-c-mode-hook ()
+    ;; company mode using clang
+    (setq company-backends (delete 'company-semantic company-backends))
+    (add-to-list 'company-backends 'company-c-headers)
+    ;; indentation
     (c-set-style "linux")
     (setq c-basic-offset 4)
     (local-set-key (kbd "C-c C-c") nil))
@@ -413,6 +418,9 @@ Each entry is either:
 
 (defun tddsg/init-company-math ()
   (use-package company-math))
+
+(defun tddsg/init-company-c-headers ()
+  (use-package company-c-headers))
 
 (defun tddsg/init-math-symbol-lists ()
   (use-package math-symbol-lists))
