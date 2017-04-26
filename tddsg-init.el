@@ -85,16 +85,6 @@ If the new path's directories does not exist, create them."
 (defun tddsg--is-small-screen ()
   (string= (system-name) "pisces"))
 
-(require 'popwin)
-(defun tddsg--compilation-finish (buffer string)
-  "Function run when a compilation finishes."
-  ;; show compilation window when finish
-  (get-buffer-window buffer t)
-  (cond (popwin:popup-window
-         (set-window-buffer popwin:popup-window buffer))
-        ((cl-loop for window in (window-list)
-                  always (not (eq buffer (window-buffer window)))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
 
@@ -734,8 +724,6 @@ after stripping extra whitespace and new lines"
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 15)
-  ;; (setq compilation-finish-functions
-  ;;       (append compilation-finish-functions 'tddsg--compilation-finish))
 
   ;; shell
   (setq comint-prompt-read-only nil)
