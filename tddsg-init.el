@@ -28,8 +28,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; VARIABLES
 
-(setq tddsg--auto-truncate-lines nil)
-
 (setq tddsg--show-linum nil)
 
 (setq tddsg--show-header-line t)
@@ -51,16 +49,6 @@
 
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
-
-(defun tddsg--auto-truncate-lines-p ()
-  (and tddsg--auto-truncate-lines
-       (not (derived-mode-p 'pdf-view-mode
-                            'shell-mode
-                            'songbird))))
-
-(defun tddsg--toggle-truncate-lines (arg)
-  (let ((inhibit-message t))
-    (toggle-truncate-lines arg)))
 
 (defun tddsg--projectile-p ()
   "Check if a projectile exists in the current buffer."
@@ -140,10 +128,6 @@ If the new path's directories does not exist, create them."
           (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode))
       (linum-mode 1)
     (linum-mode -1))
-  ;; truncate-line
-  (if (or tddsg--show-linum
-          (derived-mode-p 'songbird))
-      (toggle-truncate-lines -1))
   ;; manually highlight some todo keywords, using hl-todo face
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
@@ -614,16 +598,6 @@ after stripping extra whitespace and new lines"
   (interactive)
   (setq company-idle-delay 300))
 
-(defun tddsg/toggle-auto-truncate-lines ()
-  "Toggle auto truncate lines."
-  (interactive)
-  (cond (tddsg--auto-truncate-lines
-         (message "Disable auto truncate lines")
-         (setq tddsg--auto-truncate-lines nil))
-        (t
-         (message "Enable auto truncate lines")
-         (setq tddsg--auto-truncate-lines t))))
-
 (defun tddsg/toggle-show-mode-line ()
   (interactive)
   (if (bound-and-true-p mode-line-format)
@@ -659,12 +633,9 @@ after stripping extra whitespace and new lines"
   (if (tddsg--is-small-screen)
       (progn
         (global-linum-mode -1)
-        (set-default 'truncate-lines t)   ;; disable truncate line
-        (setq tddsg--auto-truncate-lines t)
         (setq golden-ratio-adjust-factor 1.05)
         (setq golden-ratio-balance nil)
         (golden-ratio-mode))
-    (setq tddsg--auto-truncate-lines nil)
     (setq golden-ratio-adjust-factor 1.618)
     (setq golden-ratio-balance nil))
 
@@ -727,24 +698,6 @@ after stripping extra whitespace and new lines"
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
   (global-company-mode)
-
-
-  ;; auto truncate lines when necessary on changing window
-  (defun tddsg--truncate-lines (orig-func &rest args)
-    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines 1))
-    (apply orig-func args)
-    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines -1)))
-  ;; do not advice 'select-window since this causes buffer overflow
-  (advice-add 'windmove-do-window-select :around #'tddsg--truncate-lines)
-  (advice-add 'select-window-by-number :around #'tddsg--truncate-lines)
-  (advice-add 'other-window :around #'tddsg--truncate-lines)
-
-  ;; advice changing buffer
-  (defun tddsg--enable-truncate-lines (orig-func &rest args)
-    (apply orig-func args)
-    (if (tddsg--auto-truncate-lines-p) (tddsg--toggle-truncate-lines 1)))
-  (advice-add 'helm-mini :around #'tddsg--enable-truncate-lines)
-  (advice-add 'helm-find-files :around #'tddsg--enable-truncate-lines)
 
   ;; pdf-view
   (defun update-pdf-view-theme ()
@@ -988,8 +941,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
-  (global-set-key (kbd "C-c C-t") 'tddsg/term-other-window)
-  (global-set-key (kbd "C-c H-m") 'tddsg/shell-other-window)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
