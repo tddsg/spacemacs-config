@@ -69,7 +69,6 @@
     helm-dired-history
     helm-tramp
     company-math
-    company-c-headers
     math-symbol-lists
     ;; ivy
     swiper
@@ -138,7 +137,7 @@ Each entry is either:
   (use-package smartparens-ocaml))
 
 ;; Don't know why can't use post-init- for cc-mode. Must use init-
-(defun tddsg/init-cc-mode ()
+(defun tddsg/post-init-cc-mode ()
   (defun my-c-mode-hook ()
     ;; company mode using clang
     (setq company-backends (delete 'company-semantic company-backends))
@@ -146,6 +145,7 @@ Each entry is either:
     ;; indentation
     (c-set-style "linux")
     (setq c-basic-offset 4)
+    ;; (semantic-mode 1)
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
@@ -418,9 +418,6 @@ Each entry is either:
 
 (defun tddsg/init-company-math ()
   (use-package company-math))
-
-(defun tddsg/init-company-c-headers ()
-  (use-package company-c-headers))
 
 (defun tddsg/init-math-symbol-lists ()
   (use-package math-symbol-lists))
