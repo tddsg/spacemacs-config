@@ -117,6 +117,7 @@ If the new path's directories does not exist, create them."
   (whitespace-mode 1))
 
 (defun tddsg--hook-prog-mode ()
+  (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
   (flycheck-mode 1))
 
 (defun tddsg--hook-text-mode ()
@@ -720,7 +721,6 @@ after stripping extra whitespace and new lines"
   (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
   (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
   ;; (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
-
 
   ;; compilation
   (setq compilation-ask-about-save nil
