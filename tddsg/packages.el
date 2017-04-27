@@ -70,14 +70,12 @@
     helm-tramp
     company-math
     math-symbol-lists
-    ;; ivy
     swiper
     swiper-helm
     counsel
     (songbird :location local)
     (buffer-clone :location local)
     (merlin-imenu :location local)
-    ;; (merlin-eldoc :location local)
     (smartparens-ocaml :location local))
   "The list of Lisp packages required by the tddsg layer.
 
@@ -129,14 +127,9 @@ Each entry is either:
   (with-eval-after-load 'merlin
     (use-package merlin-imenu)))
 
-;; (defun tddsg/init-merlin-eldoc ()
-;;   (with-eval-after-load 'merlin
-;;     (use-package merlin-eldoc)))
-
 (defun tddsg/init-smartparens-ocaml ()
   (use-package smartparens-ocaml))
 
-;; Don't know why can't use post-init- for cc-mode. Must use init-
 (defun tddsg/post-init-cc-mode ()
   (defun my-c-mode-hook ()
     ;; company mode using clang
