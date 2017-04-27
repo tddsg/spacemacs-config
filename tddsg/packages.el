@@ -75,7 +75,6 @@
     counsel
     (songbird :location local)
     (buffer-clone :location local)
-    (merlin-imenu :location local)
     (smartparens-ocaml :location local))
   "The list of Lisp packages required by the tddsg layer.
 
@@ -122,10 +121,6 @@ Each entry is either:
 
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
-
-(defun tddsg/init-merlin-imenu ()
-  (with-eval-after-load 'merlin
-    (use-package merlin-imenu)))
 
 (defun tddsg/init-smartparens-ocaml ()
   (use-package smartparens-ocaml))
@@ -189,6 +184,7 @@ Each entry is either:
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
     (local-set-key (kbd "C-c C-c") nil)
+    (local-set-key (kbd "M-q") nil)
     (global-set-key (kbd "C-c l") nil)
     (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
     (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)

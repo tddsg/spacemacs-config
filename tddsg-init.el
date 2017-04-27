@@ -1116,9 +1116,6 @@ after stripping extra whitespace and new lines"
        (define-key latex-extra-mode-map (kbd "C-M-n") nil)
        (define-key latex-extra-mode-map (kbd "C-M-p") nil)))
 
-  ;; Tuareg mode
-  (define-key tuareg-mode-map (kbd "M-q") nil)
-
   ;; Python mode
   (define-key python-mode-map (kbd "C-j") nil)
 
