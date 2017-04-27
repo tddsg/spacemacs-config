@@ -126,6 +126,9 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-shell-mode ()
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
+  ;; specify margin for shell-mode
+  (set (make-local-variable 'scroll-margin) 1)
+  (set (make-local-variable 'next-screen-context-lines ) 1)
   (rainbow-delimiters-mode-disable)
   (toggle-truncate-lines -1)
   (visual-line-mode 1))
