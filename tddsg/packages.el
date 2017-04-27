@@ -33,6 +33,7 @@
   '(comment-dwim-2
     noflet
     tuareg
+    merlin
     python
     auctex
     latex-extra
@@ -138,13 +139,7 @@ Each entry is either:
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
-  (require 'merlin-imenu)
-  (dolist (var (car (read-from-string
-                     (shell-command-to-string "opam config env --sexp"))))
-    (setenv (car var) (cadr var)))
-  (setq exec-path (split-string (getenv "PATH") path-separator)
-        opam-share (substring (shell-command-to-string
-                               "opam config var share 2> /dev/null") 0 -1))
+  (message "POST INIT TUAREG")
   ;; fix syntax highlight for OCaml
   (font-lock-add-keywords
    'tuareg-mode
@@ -161,6 +156,28 @@ Each entry is either:
   (defun enable-ocp-indent ()
     (interactive)
     (setq indent-line-function 'ocp-indent-line))
+  (defun my-tuareg-hook ()
+    (merlin-mode)
+    (eldoc-mode -1)
+    (yas-minor-mode -1)
+    (enable-ocp-indent)
+    (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
+    ;; customize syntax table for forward/backward slurping/barfing sexp
+    (dolist (symbol (list ?, ?\; ?: ?+ ?- ?/ ?@ ?! ?> ?<))
+      (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
+    ;; unbind some keys
+    (local-set-key (kbd "C-c C-i") nil)
+    (local-set-key (kbd "C-c C-c") nil)
+    (local-set-key (kbd "M-q") nil))
+  (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
+
+(defun tddsg/post-init-merlin ()
+  (dolist (var (car (read-from-string
+                     (shell-command-to-string "opam config env --sexp"))))
+    (setenv (car var) (cadr var)))
+  (setq exec-path (split-string (getenv "PATH") path-separator)
+        opam-share (substring (shell-command-to-string
+                               "opam config var share 2> /dev/null") 0 -1))
   (defun merlin-locate-this-window ()
     (interactive)
     (setq merlin-locate-in-new-window 'never)
@@ -169,22 +186,10 @@ Each entry is either:
     (interactive)
     (setq merlin-locate-in-new-window 'always)
     (call-interactively 'merlin-locate))
-  (defun my-tuareg-hook ()
-    (interactive)
-    (merlin-mode)
+  (defun my-merlin-hook ()
     (merlin-use-merlin-imenu)
-    (eldoc-mode -1)
-    (yas-minor-mode -1)
-    (enable-ocp-indent)
-    (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
     (setq merlin-locate-in-new-window 'diff)
-    ;; customize syntax table for forward/backward slurping/barfing sexp
-    (dolist (symbol (list ?, ?\; ?: ?+ ?- ?/ ?@ ?! ?> ?<))
-      (modify-syntax-entry symbol "'" tuareg-mode-syntax-table))
     ;; unbind some keys
-    (local-set-key (kbd "C-c C-i") nil)
-    (local-set-key (kbd "C-c C-c") nil)
-    (local-set-key (kbd "M-q") nil)
     (global-set-key (kbd "C-c l") nil)
     (define-key merlin-mode-map (kbd "C-c C-l") 'merlin-locate-this-window)
     (define-key merlin-mode-map (kbd "C-c l") 'merlin-locate-other-window)
@@ -192,7 +197,7 @@ Each entry is either:
     (define-key merlin-mode-map (kbd "C-M-.") 'merlin-locate-other-window)
     (define-key merlin-mode-map (kbd "M-,") 'merlin-error-next)
     (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
-  (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
+  (add-hook 'merlin-mode-hook 'my-merlin-hook 'append))
 
 (defun tddsg/init-latex-extra ()
   (let ((byte-compile-warnings '(not free-vars)))

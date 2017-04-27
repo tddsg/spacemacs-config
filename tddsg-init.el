@@ -1683,6 +1683,9 @@ BUFFER."
 ;;;;;;; REASON MODE ;;;;;;;;
 
 (defun tddsg/init-reason-mode ()
+  (require 'reason-mode)
+  (require 'merlin)
+  (require 'merlin-imenu)
   (defun chomp-end (str)
     "Chomp tailing whitespace from STR."
     (replace-regexp-in-string (rx (* (any " \t\n")) eos)
@@ -1702,8 +1705,5 @@ BUFFER."
     ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
     (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
     (setq refmt-command (concat support-base-dir "/bin/refmt")))
-
-  (require 'reason-mode)
-  (require 'merlin)
   (setq merlin-ac-setup t)
   (add-hook 'reason-mode-hook 'my-reason-hook))
