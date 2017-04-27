@@ -41,7 +41,10 @@ values."
      latex
      ocaml
      haskell
-     c-c++
+     semantic
+     cscope
+     (gtags :variables gtags-enable-by-default t)
+     (c-c++ :variables c-c++-enable-clang-support t)
      csv
      python
      html
@@ -287,7 +290,12 @@ you should place your code here."
      ("equation")
      ("equation*")
      ("picture")
-     ("tabbing"))))
+     ("tabbing")
+     ("figure")
+     ("center")
+     ("flushleft")
+     ("flushright")
+     ("small"))))
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
@@ -304,8 +312,11 @@ you should place your code here."
  '(ansi-color-names-vector
    ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
  '(compilation-message-face (quote default))
- '(electric-pair-open-newline-between-pairs nil)
+ '(electric-pair-open-newline-between-pairs nil t)
  '(evil-want-Y-yank-to-eol t)
+ '(golden-ratio-exclude-buffer-names
+   (quote
+    ("*which-key*" "*LV*" "*NeoTree*" "*ace-popup-menu*" "*compilation*")))
  '(helm-ag-insert-at-point (quote symbol) t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
