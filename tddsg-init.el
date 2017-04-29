@@ -6,8 +6,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LOAD FILES
-(load-file "~/.emacs.d/private/tddsg/local/golden-ratio/golden-ratio.el")
-
 
 (require 'smartparens)
 (require 'company)
@@ -135,12 +133,6 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-term-mode ()
   (term-set-escape-char ?\C-x))
-
-(defun tddsg--rectify-golden-ratio ()
-  (with-current-buffer (window-buffer (selected-window))
-    (if (and golden-ratio-mode
-             (not (derived-mode-p 'pdf-view-mode)))
-        (golden-ratio 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
@@ -453,37 +445,6 @@ insert a new space if there is none"
         (delete-blank-lines)
       (tddsg/one-or-zero-space))))
 
-(defun tddsg/enlarge-window-horizontally ()
-  "Enlarge window horizontally, considering golden-ratio-mode."
-  (interactive)
-  (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor (+ golden-ratio-adjust-factor 0.02)))
-  (call-interactively 'enlarge-window-horizontally))
-
-(defun tddsg/shrink-window-horizontally ()
-  "Shrink window horizontally, considering golden-ratio-mode."
-  (interactive)
-  (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor (- golden-ratio-adjust-factor 0.02)))
-  (call-interactively 'shrink-window-horizontally))
-
-(defun tddsg/enlarge-window-vertically ()
-  "Enlarge window vertically, considering golden-ratio-mode."
-  (interactive)
-  (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor-height
-            (+ golden-ratio-adjust-factor-height 0.02)))
-  (call-interactively 'enlarge-window))
-
-(defun tddsg/shrink-window-vertically ()
-  "Shrink window vertically, considering golden-ratio-mode."
-  (interactive)
-  (if golden-ratio-mode
-      (setq golden-ratio-adjust-factor-height
-            (- golden-ratio-adjust-factor-height 0.02)))
-  (call-interactively 'shrink-window))
-
-
 (defun tddsg/kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
 after stripping extra whitespace and new lines"
@@ -602,14 +563,8 @@ after stripping extra whitespace and new lines"
 
 (defun tddsg/init-configs ()
   ;; specific setting for each machines
-  (if (tddsg--is-small-screen)
-      (progn
-        (global-linum-mode -1)
-        (setq golden-ratio-adjust-factor 1.05)
-        (setq golden-ratio-balance nil)
-        (golden-ratio-mode))
-    (setq golden-ratio-adjust-factor 1.618)
-    (setq golden-ratio-balance nil))
+  (when (tddsg--is-small-screen)
+    (global-linum-mode -1))
 
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
@@ -700,9 +655,6 @@ after stripping extra whitespace and new lines"
   ;; mode-line setting
   (setq powerline-default-separator 'wave)
 
-  ;; golden-ratio
-  (add-hook 'buffer-list-update-hook 'tddsg--rectify-golden-ratio)
-
   ;; themes
   (defun tddsg--update-cursor ()
     (cond ((or (bound-and-true-p god-mode)
@@ -748,9 +700,6 @@ after stripping extra whitespace and new lines"
               (cons "C-<up>" 'term-send-up)))
   (define-key term-raw-map (kbd "C-u") nil)
   (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
-
-  ;; ediff-mode
-  (add-hook 'ediff-mode-hook '(lambda () (golden-ratio-mode -1)))
 
   ;; automatically save buffer
   (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
@@ -881,10 +830,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x m") 'monky-status)
   (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x {") 'tddsg/shrink-window-horizontally)
-  (global-set-key (kbd "C-x }") 'tddsg/enlarge-window-horizontally)
-  (global-set-key (kbd "C-x _") 'tddsg/shrink-window-vertically)
-  (global-set-key (kbd "C-x ^") 'tddsg/enlarge-window-vertically)
+  (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-x _") 'shrink-window)
+  (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
   (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
@@ -1664,24 +1613,6 @@ BUFFER."
             (top (cadar pdf-isearch-current-match)))
         (isearch-exit)
         (funcall 'pdf-sync-backward-search left top))))
-
-
-
-;;;;;;;; override golden-ratio-mode
-
-(defcustom golden-ratio-adjust-factor-height 1.1
-  "Adjust the height sizing by some factor. 1 is no adjustment."
-  :group 'golden-ratio
-  :type 'integer)
-
-(defun golden-ratio--scale-factor-height ()
-  golden-ratio-adjust-factor-height)
-
-(defun golden-ratio--dimensions ()
-  (list (floor (* (/ (frame-height) golden-ratio--value)
-                  (golden-ratio--scale-factor-height)))
-        (floor (* (/ (frame-width)  golden-ratio--value)
-                   (golden-ratio--scale-factor)))))
 
 ;;;;;;; REASON MODE ;;;;;;;;
 
