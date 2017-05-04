@@ -75,8 +75,7 @@
     swiper-helm
     counsel
     (songbird :location local)
-    (buffer-clone :location local)
-    (smartparens-ocaml :location local))
+    (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
 
 Each entry is either:
@@ -122,9 +121,6 @@ Each entry is either:
 
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
-
-(defun tddsg/init-smartparens-ocaml ()
-  (use-package smartparens-ocaml))
 
 (defun tddsg/post-init-cc-mode ()
   (defun my-cc-mode-hook ()
