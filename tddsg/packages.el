@@ -135,7 +135,6 @@ Each entry is either:
   (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
-  (message "POST INIT TUAREG")
   ;; fix syntax highlight for OCaml
   (font-lock-add-keywords
    'tuareg-mode
@@ -273,8 +272,8 @@ Each entry is either:
   (define-key smartparens-mode-map (kbd "M-s") nil)
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   ;; smartparens for ocaml
-  ;; (sp-with-modes '(tuareg-mode)
-  ;;   (sp-local-pair "(*" "*)" ))
+  (sp-with-modes '(tuareg-mode)
+    (sp-local-pair "(*" "*)" ))
   ;; smartparens for latex
   (sp-with-modes '(tex-mode
                    plain-tex-mode

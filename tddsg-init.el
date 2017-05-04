@@ -679,7 +679,9 @@ after stripping extra whitespace and new lines"
 
   ;; compilation
   (setq compilation-ask-about-save nil
-        compilation-window-height 15)
+        compilation-window-height 16
+        compilation-scroll-output 'next-error
+        compilation-skip-threshold 2)
 
   ;; shell
   (setq comint-prompt-read-only nil)
