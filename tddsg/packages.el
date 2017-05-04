@@ -123,7 +123,7 @@ Each entry is either:
   (super-save-mode 1))
 
 (defun tddsg/post-init-cc-mode ()
-  (defun my-c-mode-hook ()
+  (defun my-cc-mode-hook ()
     ;; company mode using clang
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends 'company-c-headers)
@@ -132,7 +132,9 @@ Each entry is either:
     (setq c-basic-offset 4)
     ;; (semantic-mode 1)
     (local-set-key (kbd "C-c C-c") nil))
-  (add-hook 'c-mode-hook 'my-c-mode-hook 'append))
+  (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
+  (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
+  (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
   ;; fix syntax highlight for OCaml

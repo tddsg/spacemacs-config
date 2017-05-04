@@ -83,7 +83,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg--highlight-todos ()
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
-  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|IMPORTANT\\)\\b"
+  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|TRUNG\\)\\b"
                                  1 (hl-todo-get-face) t))))
 
 (defun tddsg--is-small-screen ()
@@ -682,6 +682,7 @@ after stripping extra whitespace and new lines"
         compilation-window-height 16
         compilation-scroll-output 'next-error
         compilation-skip-threshold 2)
+
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -1485,6 +1486,7 @@ Set `spaceline-highlight-face-func' to
        ("FAIL" . "red")
        ("DONE" . "red")
        ("NOTE" . "red")
+       ("TRUNG" . "red")
        ("HACK" . "red")
        ("FIXME" . "red")
        ("XXX" . "red")
