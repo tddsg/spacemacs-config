@@ -74,6 +74,7 @@
     swiper
     swiper-helm
     counsel
+    monky
     (songbird :location local)
     (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
@@ -260,7 +261,7 @@ Each entry is either:
 
 (defun tddsg/post-init-python ()
   (defun my-python-mode-hook ()
-    (setq indent-tabs-mode t)    ;; indent by using tab
+    ;; (setq indent-tabs-mode t)    ;; indent by using tab
     (setq tab-width 4)
     (setq python-indent 4)
     (elpy-mode))
@@ -413,10 +414,8 @@ Each entry is either:
 (defun tddsg/init-math-symbol-lists ()
   (use-package math-symbol-lists))
 
-;; (defun tddsg/init-ivy ()
-;;   (use-package ivy
-;;     :config
-;;     (ivy-mode 1)))
+(defun tddsg/init-monky ()
+  (use-package monky))
 
 (defun tddsg/init-counsel ()
   (use-package counsel))
