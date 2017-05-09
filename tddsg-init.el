@@ -309,6 +309,16 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
+(defun tddsg/version-control-status ()
+  "Show version control status (git, hg) of the project containing the current file."
+  (interactive)
+  (let ((vc-tool-name (vc-backend (buffer-name))))
+    (cond ((eq vc-tool-name 'Hg)
+           (call-interactively 'monky-status))
+          ((eq vc-tool-name 'Git)
+           (call-interactively 'magit-status))
+          (t (message "Error: unknown version control of the file: %s" (buffer-name))))))
+
 (defun tddsg/smart-kill-sexp (&optional backward)
   "Kill sexp smartly."
   (interactive)
@@ -791,6 +801,7 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "<f5>") (kbd "C-c C-c C-j"))
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -828,8 +839,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x _") 'shrink-window)
-  (global-set-key (kbd "C-x m") 'monky-status)
-  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x g") 'tddsg/version-control-status)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
