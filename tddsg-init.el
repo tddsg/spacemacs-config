@@ -748,6 +748,9 @@ after stripping extra whitespace and new lines"
   ;; reason-mode
   (tddsg/init-reason-mode)
 
+  ;; ggtags
+  (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
+
   ;; spacemacs
   (push "\\*magit\.\+\\*" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
@@ -1077,7 +1080,8 @@ after stripping extra whitespace and new lines"
 
   ;; ggtags
   (with-eval-after-load 'ggtags
-    (define-key ggtags-mode-map (kbd "M-]") 'ggtags-find-reference)
+    (define-key ggtags-mode-map (kbd "M-]") nil)
+    (define-key ggtags-mode-map (kbd "M-.") 'ggtags-find-definition)
     (define-key ggtags-mode-map (kbd "C-c M-r") 'ggtags-find-reference))
 
 
