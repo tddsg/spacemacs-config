@@ -97,6 +97,7 @@ If the new path's directories does not exist, create them."
   (keyboard-translate ?\C-\[ ?\H-\[)
   (keyboard-translate ?\C-i ?\H-i)
   (keyboard-translate ?\C-m ?\H-m)
+  (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
   (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
   (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
   (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
@@ -793,7 +794,6 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
-  (global-set-key (kbd "<f5>") (kbd "C-c C-c C-j"))
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
@@ -839,13 +839,13 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
-  (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
+  (global-set-key (kbd "C-x C-d") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-m] 'project-find-file)
-  (global-set-key [?\H-M] 'helm-mini)
+  (global-set-key (kbd "H-M-m") 'helm-mini)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
@@ -858,13 +858,13 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c h") 'helm-resume)
   (global-set-key (kbd "C-c s") 'swiper)
   (global-set-key (kbd "C-c r") 'projectile-replace)
-  (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
+  (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
@@ -910,18 +910,8 @@ after stripping extra whitespace and new lines"
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
 
-  (global-set-key (kbd "M-m d r") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "M-m f p") 'tddsg/show-and-copy-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
-  (global-set-key (kbd "M-m h o") 'helm-occur)
-  (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "M-m s d") 'dictionary-search)
-  (global-set-key (kbd "M-m S i") 'ispell-buffer)
-  (global-set-key (kbd "M-m S s") 'ispell-continue)
-  (global-set-key (kbd "M-m S p") 'flyspell-correct-previous-word-generic)
-  (global-set-key (kbd "M-m S c") 'flyspell-correct-word-before-point)
-  (global-set-key (kbd "M-m m S") 'shell)
-  (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m l c") 'langtool-check)
   (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
   (global-set-key (kbd "M-m l d") 'langtool-check-done)
@@ -931,9 +921,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
-  (global-set-key (kbd "M-m T l") 'tddsg/toggle-show-mode-line)
-  (global-set-key (kbd "M-m T h") 'tddsg/toggle-show-header-line)
 
+  (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
   (global-set-key (kbd "M-s i") 'ispell-buffer)
   (global-set-key (kbd "M-s s") 'ispell-continue)
@@ -959,12 +948,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
   (global-set-key (kbd "C-x M-<left>") 'eyebrowse-prev-window-config)
 
-  ;; layout
-  (global-set-key (kbd "M-m l") nil)  ;; disable key "M-m l" first
-  (global-set-key (kbd "M-m l m") 'spacemacs/layouts-transient-state/body)
-  (global-set-key (kbd "M-m l s") 'spacemacs/layouts-transient-state/persp-save-state-to-file-and-exit)
-  (global-set-key (kbd "M-m l l") 'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
-
   ;; isearch
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
   (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward-current-match)
@@ -989,27 +972,27 @@ after stripping extra whitespace and new lines"
   (define-key undo-tree-map (kbd "M-_") nil)
 
   ;; magit
-  (require 'magit)
-  (define-key magit-mode-map (kbd "M-1") nil)
-  (define-key magit-mode-map (kbd "M-2") nil)
-  (define-key magit-mode-map (kbd "M-3") nil)
-  (define-key magit-mode-map (kbd "M-4") nil)
-  (define-key magit-mode-map (kbd "M-5") nil)
-  (define-key magit-mode-map (kbd "M-6") nil)
-  (define-key magit-mode-map (kbd "M-7") nil)
-  (define-key magit-mode-map (kbd "M-8") nil)
-  (define-key magit-mode-map (kbd "M-9") nil)
-  (define-key magit-mode-map (kbd "M-0") nil)
-  (define-key magit-status-mode-map (kbd "M-1") nil)
-  (define-key magit-status-mode-map (kbd "M-2") nil)
-  (define-key magit-status-mode-map (kbd "M-3") nil)
-  (define-key magit-status-mode-map (kbd "M-4") nil)
-  (define-key magit-status-mode-map (kbd "M-5") nil)
-  (define-key magit-status-mode-map (kbd "M-6") nil)
-  (define-key magit-status-mode-map (kbd "M-7") nil)
-  (define-key magit-status-mode-map (kbd "M-8") nil)
-  (define-key magit-status-mode-map (kbd "M-9") nil)
-  (define-key magit-status-mode-map (kbd "M-0") nil)
+  (with-eval-after-load 'magit
+    (define-key magit-mode-map (kbd "M-1") nil)
+    (define-key magit-mode-map (kbd "M-2") nil)
+    (define-key magit-mode-map (kbd "M-3") nil)
+    (define-key magit-mode-map (kbd "M-4") nil)
+    (define-key magit-mode-map (kbd "M-5") nil)
+    (define-key magit-mode-map (kbd "M-6") nil)
+    (define-key magit-mode-map (kbd "M-7") nil)
+    (define-key magit-mode-map (kbd "M-8") nil)
+    (define-key magit-mode-map (kbd "M-9") nil)
+    (define-key magit-mode-map (kbd "M-0") nil)
+    (define-key magit-status-mode-map (kbd "M-1") nil)
+    (define-key magit-status-mode-map (kbd "M-2") nil)
+    (define-key magit-status-mode-map (kbd "M-3") nil)
+    (define-key magit-status-mode-map (kbd "M-4") nil)
+    (define-key magit-status-mode-map (kbd "M-5") nil)
+    (define-key magit-status-mode-map (kbd "M-6") nil)
+    (define-key magit-status-mode-map (kbd "M-7") nil)
+    (define-key magit-status-mode-map (kbd "M-8") nil)
+    (define-key magit-status-mode-map (kbd "M-9") nil)
+    (define-key magit-status-mode-map (kbd "M-0") nil))
 
   ;; god-mode
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
@@ -1028,21 +1011,12 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-S-<down>") 'buf-move-down)
-  (define-key spacemacs-default-map-root-map (kbd "M-m b m") nil)
-  (global-set-key (kbd "M-m b m b") 'buf-move-left)
-  (global-set-key (kbd "M-m b m n") 'buf-move-down)
-  (global-set-key (kbd "M-m b m p") 'buf-move-up)
-  (global-set-key (kbd "M-m b m f") 'buf-move-right)
 
   ;; buffer-clone
   (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
   (global-set-key (kbd "C-M-S-<right>") 'buf-clone-right)
   (global-set-key (kbd "C-M-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "C-M-s-7") 'buf-clone-left)
-  (global-set-key (kbd "C-M-s-8") 'buf-clone-down)
-  (global-set-key (kbd "C-M-s-9") 'buf-clone-up)
-  (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
@@ -1089,14 +1063,10 @@ after stripping extra whitespace and new lines"
   (define-key smartparens-mode-map (kbd "M-s") nil)
 
   ;; evil mode
-  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
-    'evil-next-visual-line)
-  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>")
-    'evil-previous-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>")
-    'evil-next-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>")
-    'evil-previous-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
@@ -1113,13 +1083,13 @@ after stripping extra whitespace and new lines"
 
   ;; reassign key-chords
   (key-chord-define-global "ji" 'indent-region)
-  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
 
-(defcustom tddsg-themes nil
-  "Association list of override faces to set for different custom themes.")
+  (defcustom tddsg-themes nil
+    "Association list of override faces to set for different custom themes."))
 
 (defun tddsg--read-custom-themes (alist-symbol key value)
   "Set VALUE of a KEY in ALIST-SYMBOL."
