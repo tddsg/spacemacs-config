@@ -748,6 +748,10 @@ after stripping extra whitespace and new lines"
   ;; reason-mode
   (tddsg/init-reason-mode)
 
+  ;; spacemacs
+  (push "\\*magit\.\+\\*" spacemacs-useful-buffers-regexp)
+  (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
+
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
   (spacemacs|diminish super-save-mode "")
@@ -1151,15 +1155,17 @@ after stripping extra whitespace and new lines"
      (diredp-link-priv ((t (:foreground "dodger blue"))))
      (diredp-symlink ((t (:foreground "dodger blue"))))
      ;; hilock
-     '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
-     '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
-     '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
-     '(hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
-     '(hi-red-b ((t (:foreground "red1" :weight bold))))
-     '(hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
+     (hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
+     (hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
+     (hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
+     (hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
+     (hi-red-b ((t (:foreground "red1" :weight bold))))
+     (hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
      ;; isearch
-     '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
-     '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
+     (isearch ((t (:background "dark orange" :foreground "#292b2e"))))
+     (lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
+     ;; speedbar
+     (speedbar-file-face ((t (:foreground "PeachPuff3"))))
      ;; font
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
@@ -1168,8 +1174,7 @@ after stripping extra whitespace and new lines"
      (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
      (font-latex-sectioning-1-face ((t (:foreground "deep sky blue" :weight bold :height 1.4))))
      (font-latex-sectioning-2-face ((t (:foreground "royal blue" :weight bold :height 1.2))))
-     (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
-     )))
+     (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal)))))))
 
 (defun tddsg--custom-common ()
   ;; custom variables
