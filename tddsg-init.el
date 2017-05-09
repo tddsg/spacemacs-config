@@ -844,8 +844,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
 
+  (global-set-key [?\H-m] 'project-find-file)
   (global-set-key [?\H-M] 'helm-mini)
-  (global-set-key [?\H-m] 'helm-mini)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
