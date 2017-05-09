@@ -38,6 +38,7 @@
     auctex
     latex-extra
     cc-mode
+    sr-speedbar
     god-mode
     org
     ace-popup-menu
@@ -210,31 +211,12 @@ Each entry is either:
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
   (custom-set-variables
    '(TeX-save-query nil)
-   '(TeX-source-correlate-method (quote synctex))
+   '(TeX-source-correlate-method 'synctex)
    '(TeX-source-correlate-mode t)
    '(TeX-source-correlate-start-server t)
    '(LaTeX-command "latex --synctex=1")
-   '(TeX-view-program-list
-     (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
-   '(TeX-view-program-selection
-     (quote ((engine-omega "dvips and gv")
-             (output-dvi "xdvi")
-             (output-pdf "pdf-tools")
-             (output-html "xdg-open")))))
-  ;; (defun tex-show-compile-error ()
-  ;;   "Show TeX help if there is an compile error"
-  ;;   (when
-  ;;       (with-current-buffer TeX-command-buffer
-  ;;         (plist-get TeX-error-report-switches (intern (TeX-master-file))))
-  ;;     ;; If there are errors, open the output buffer.
-  ;;     (call-interactively 'TeX-next-error))
-  ;;   )
-  ;; (defadvice TeX-LaTeX-sentinel
-  ;;     (around mg-TeX-LaTeX-sentinel-open-output activate)
-  ;;   "Open output when there are errors."
-  ;;   ad-do-it
-  ;;   (tex-show-compile-error))
-  ;; hook
+   '(TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+   '(TeX-view-program-selection '((output-pdf "pdf-tools"))))
   (defun my-latex-hook ()
     ;; set tex master file
     (if (eq TeX-master t)
@@ -242,19 +224,11 @@ Each entry is either:
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
-    ;; change syntax table to work with smartparens
-    (dolist (symbol (list ?# ?=))
-      (progn
-        (modify-syntax-entry symbol "'" tex-mode-syntax-table)
-        (modify-syntax-entry symbol "'" LaTeX-mode-syntax-table)
-        (modify-syntax-entry symbol "'" latex-mode-syntax-table)))
     (latex-extra-mode)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
     (abbrev-mode +1)
-    (set-fill-column 75)
-    (show-smartparens-mode)
-    (smartparens-mode +1))
+    (set-fill-column 75))
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append)
   (add-hook 'TeX-mode-hook 'my-latex-hook 'append))
@@ -425,6 +399,16 @@ Each entry is either:
 
 (defun tddsg/init-swiper-helm ()
   (use-package swiper-helm))
+
+(defun tddsg/init-sr-speedbar ()
+  (use-package sr-speedbar
+    :config
+    (defun select-next-window ()
+      (other-window 1))
+    (defun my-sr-speedbar-open-hook ()
+      (add-hook 'speedbar-visiting-file-hook 'select-next-window t)
+      (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
+    (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)

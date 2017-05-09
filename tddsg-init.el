@@ -97,6 +97,7 @@ If the new path's directories does not exist, create them."
   (keyboard-translate ?\C-\[ ?\H-\[)
   (keyboard-translate ?\C-i ?\H-i)
   (keyboard-translate ?\C-m ?\H-m)
+  (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
   (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
   (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
   (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
@@ -308,6 +309,16 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
+(defun tddsg/version-control-status ()
+  "Show version control status (git, hg) of the project containing the current file."
+  (interactive)
+  (let ((vc-tool-name (vc-backend (buffer-name))))
+    (cond ((eq vc-tool-name 'Hg)
+           (call-interactively 'monky-status))
+          ((eq vc-tool-name 'Git)
+           (call-interactively 'magit-status))
+          (t (message "Error: unknown version control of the file: %s" (buffer-name))))))
+
 (defun tddsg/smart-kill-sexp (&optional backward)
   "Kill sexp smartly."
   (interactive)
@@ -500,28 +511,18 @@ after stripping extra whitespace and new lines"
        (skip-syntax-forward "w_")
        (point)))))
 
-;; call compile to the closest parent folder containing a Makefile
 (defun tddsg/compile ()
+  "Find the closest Makefile and compile."
   (interactive)
-  (cl-labels
-      ((find-make-file-dir
-        (cur-dir root-dir make-file)
-        (cond ((string= cur-dir root-dir) "")
-              ((file-exists-p (expand-file-name make-file cur-dir)) cur-dir)
-              (t (find-make-file-dir (expand-file-name ".." cur-dir)
-                                     root-dir
-                                     make-file)))))
-    (let* ((cur-dir default-directory)
-           (root-dir "/")
-           (make-file "Makefile")
-           (new-command
-            (if (and (>  (length compile-command) 4)
-                     (string= (substring compile-command 0 4) "make"))
-                (format "make -k -C %s"
-                        (find-make-file-dir cur-dir root-dir make-file))
-              compile-command)))
-      (setq compile-command new-command)
-      (call-interactively 'compile))))
+  (defun find-make-dir (dir)
+    (cond ((file-exists-p (expand-file-name "Makefile" dir)) dir)
+          ((file-exists-p (expand-file-name "build/Makefile" dir))
+           (expand-file-name "build" dir))
+          (t (find-make-dir (expand-file-name ".." dir)))) )
+  (when (string-match-p (regexp-quote "make") compile-command)
+    (setq compile-command
+          (format "make -k -C %s" (find-make-dir default-directory))))
+  (call-interactively 'compile))
 
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -747,6 +748,13 @@ after stripping extra whitespace and new lines"
   ;; reason-mode
   (tddsg/init-reason-mode)
 
+  ;; ggtags
+  (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
+
+  ;; spacemacs
+  (push "\\*magit\.\+\\*" spacemacs-useful-buffers-regexp)
+  (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
+
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
   (spacemacs|diminish super-save-mode "")
@@ -831,21 +839,20 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x _") 'shrink-window)
-  (global-set-key (kbd "C-x m") 'monky-status)
-  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x g") 'tddsg/version-control-status)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
 
-  (global-set-key (kbd "C-x C-d") 'helm-dired-history-view)
+  (global-set-key (kbd "C-x C-d") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
 
-  (global-set-key [?\H-m] 'project-find-file)
-  (global-set-key [?\H-M] 'helm-mini)
+  (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key (kbd "H-M-m") 'project-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
@@ -856,15 +863,15 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
-  (global-set-key (kbd "C-c s") 'swiper)
+  (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
   (global-set-key (kbd "C-c r") 'projectile-replace)
-  (global-set-key (kbd "C-c R") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
+  (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
@@ -911,18 +918,8 @@ after stripping extra whitespace and new lines"
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
 
-  (global-set-key (kbd "M-m d r") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "M-m f p") 'tddsg/show-and-copy-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
-  (global-set-key (kbd "M-m h o") 'helm-occur)
-  (global-set-key (kbd "M-m h s") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "M-m s d") 'dictionary-search)
-  (global-set-key (kbd "M-m S i") 'ispell-buffer)
-  (global-set-key (kbd "M-m S s") 'ispell-continue)
-  (global-set-key (kbd "M-m S p") 'flyspell-correct-previous-word-generic)
-  (global-set-key (kbd "M-m S c") 'flyspell-correct-word-before-point)
-  (global-set-key (kbd "M-m m S") 'shell)
-  (global-set-key (kbd "M-m m s") 'tddsg/shell-other-window)
   (global-set-key (kbd "M-m l c") 'langtool-check)
   (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
   (global-set-key (kbd "M-m l d") 'langtool-check-done)
@@ -932,9 +929,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
-  (global-set-key (kbd "M-m T l") 'tddsg/toggle-show-mode-line)
-  (global-set-key (kbd "M-m T h") 'tddsg/toggle-show-header-line)
 
+  (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
   (global-set-key (kbd "M-s i") 'ispell-buffer)
   (global-set-key (kbd "M-s s") 'ispell-continue)
@@ -960,30 +956,16 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
   (global-set-key (kbd "C-x M-<left>") 'eyebrowse-prev-window-config)
 
-  ;; layout
-  (global-set-key (kbd "M-m l") nil)  ;; disable key "M-m l" first
-  (global-set-key (kbd "M-m l m") 'spacemacs/layouts-transient-state/body)
-  (global-set-key
-   (kbd "M-m l s")
-   'spacemacs/layouts-transient-state/persp-save-state-to-file-and-exit)
-  (global-set-key
-   (kbd "M-m l l")
-   'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
-
   ;; isearch
-  (define-key isearch-mode-map (kbd "C-.")
-    'tddsg/yank-current-word-to-isearch-buffer)
-  (define-key isearch-mode-map (kbd "C-c C-v")
-    'pdf-isearch-sync-backward-current-match)
-  (define-key isearch-mode-map (kbd "<f6>")
-    'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
+  (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward-current-match)
 
-  (define-key swiper-map (kbd "C-.")
-    'tddsg/yank-current-word-to-minibuffer)
+  ;; swiper
+  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
 
   ;; minibuffer
-  (define-key minibuffer-local-map (kbd "C-.")
-    'tddsg/yank-current-word-to-minibuffer)
+  (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key minibuffer-local-map (kbd "C-M-i") nil)
 
   ;; elisp-mode
@@ -991,35 +973,34 @@ after stripping extra whitespace and new lines"
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-c C-s")
-    'tddsg/toggle-shell-scroll-to-bottomon-on-output)
+  (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
 
   ;; magit
-  (require 'magit)
-  (define-key magit-mode-map (kbd "M-1") nil)
-  (define-key magit-mode-map (kbd "M-2") nil)
-  (define-key magit-mode-map (kbd "M-3") nil)
-  (define-key magit-mode-map (kbd "M-4") nil)
-  (define-key magit-mode-map (kbd "M-5") nil)
-  (define-key magit-mode-map (kbd "M-6") nil)
-  (define-key magit-mode-map (kbd "M-7") nil)
-  (define-key magit-mode-map (kbd "M-8") nil)
-  (define-key magit-mode-map (kbd "M-9") nil)
-  (define-key magit-mode-map (kbd "M-0") nil)
-  (define-key magit-status-mode-map (kbd "M-1") nil)
-  (define-key magit-status-mode-map (kbd "M-2") nil)
-  (define-key magit-status-mode-map (kbd "M-3") nil)
-  (define-key magit-status-mode-map (kbd "M-4") nil)
-  (define-key magit-status-mode-map (kbd "M-5") nil)
-  (define-key magit-status-mode-map (kbd "M-6") nil)
-  (define-key magit-status-mode-map (kbd "M-7") nil)
-  (define-key magit-status-mode-map (kbd "M-8") nil)
-  (define-key magit-status-mode-map (kbd "M-9") nil)
-  (define-key magit-status-mode-map (kbd "M-0") nil)
+  (with-eval-after-load 'magit
+    (define-key magit-mode-map (kbd "M-1") nil)
+    (define-key magit-mode-map (kbd "M-2") nil)
+    (define-key magit-mode-map (kbd "M-3") nil)
+    (define-key magit-mode-map (kbd "M-4") nil)
+    (define-key magit-mode-map (kbd "M-5") nil)
+    (define-key magit-mode-map (kbd "M-6") nil)
+    (define-key magit-mode-map (kbd "M-7") nil)
+    (define-key magit-mode-map (kbd "M-8") nil)
+    (define-key magit-mode-map (kbd "M-9") nil)
+    (define-key magit-mode-map (kbd "M-0") nil)
+    (define-key magit-status-mode-map (kbd "M-1") nil)
+    (define-key magit-status-mode-map (kbd "M-2") nil)
+    (define-key magit-status-mode-map (kbd "M-3") nil)
+    (define-key magit-status-mode-map (kbd "M-4") nil)
+    (define-key magit-status-mode-map (kbd "M-5") nil)
+    (define-key magit-status-mode-map (kbd "M-6") nil)
+    (define-key magit-status-mode-map (kbd "M-7") nil)
+    (define-key magit-status-mode-map (kbd "M-8") nil)
+    (define-key magit-status-mode-map (kbd "M-9") nil)
+    (define-key magit-status-mode-map (kbd "M-0") nil))
 
   ;; god-mode
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
@@ -1038,21 +1019,12 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-S-<down>") 'buf-move-down)
-  (define-key spacemacs-default-map-root-map (kbd "M-m b m") nil)
-  (global-set-key (kbd "M-m b m b") 'buf-move-left)
-  (global-set-key (kbd "M-m b m n") 'buf-move-down)
-  (global-set-key (kbd "M-m b m p") 'buf-move-up)
-  (global-set-key (kbd "M-m b m f") 'buf-move-right)
 
   ;; buffer-clone
   (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
   (global-set-key (kbd "C-M-S-<right>") 'buf-clone-right)
   (global-set-key (kbd "C-M-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "C-M-s-7") 'buf-clone-left)
-  (global-set-key (kbd "C-M-s-8") 'buf-clone-down)
-  (global-set-key (kbd "C-M-s-9") 'buf-clone-up)
-  (global-set-key (kbd "C-M-s-0") 'buf-clone-right)
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
@@ -1060,16 +1032,15 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
-  (eval-after-load 'latex
-    '(progn
-       (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
-       (define-key LaTeX-mode-map (kbd "C-j") nil)
-       (define-key LaTeX-mode-map (kbd "\"") nil)
-       (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-f") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-b") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-n") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-p") nil)))
+  (with-eval-after-load 'latex
+    (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "C-j") nil)
+    (define-key LaTeX-mode-map (kbd "\"") nil)
+    (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-f") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-b") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-n") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-p") nil))
 
   ;; Python mode
   (define-key python-mode-map (kbd "C-j") nil)
@@ -1082,8 +1053,7 @@ after stripping extra whitespace and new lines"
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
-  (define-key pdf-view-mode-map (kbd "M-SPC")
-    'pdf-view-scroll-down-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "M-SPC") 'pdf-view-scroll-down-or-previous-page)
   (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
@@ -1101,17 +1071,20 @@ after stripping extra whitespace and new lines"
   (define-key smartparens-mode-map (kbd "M-s") nil)
 
   ;; evil mode
-  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>")
-    'evil-next-visual-line)
-  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>")
-    'evil-previous-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>")
-    'evil-next-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>")
-    'evil-previous-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
+
+  ;; ggtags
+  (with-eval-after-load 'ggtags
+    (define-key ggtags-mode-map (kbd "M-]") nil)
+    (define-key ggtags-mode-map (kbd "M-.") 'ggtags-find-definition)
+    (define-key ggtags-mode-map (kbd "C-c M-r") 'ggtags-find-reference))
+
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
@@ -1119,13 +1092,13 @@ after stripping extra whitespace and new lines"
 
   ;; reassign key-chords
   (key-chord-define-global "ji" 'indent-region)
-  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
 
-(defcustom tddsg-themes nil
-  "Association list of override faces to set for different custom themes.")
+  (defcustom tddsg-themes nil
+    "Association list of override faces to set for different custom themes."))
 
 (defun tddsg--read-custom-themes (alist-symbol key value)
   "Set VALUE of a KEY in ALIST-SYMBOL."
@@ -1187,15 +1160,17 @@ after stripping extra whitespace and new lines"
      (diredp-link-priv ((t (:foreground "dodger blue"))))
      (diredp-symlink ((t (:foreground "dodger blue"))))
      ;; hilock
-     '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
-     '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
-     '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
-     '(hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
-     '(hi-red-b ((t (:foreground "red1" :weight bold))))
-     '(hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
+     (hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
+     (hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
+     (hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
+     (hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
+     (hi-red-b ((t (:foreground "red1" :weight bold))))
+     (hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
      ;; isearch
-     '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
-     '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
+     (isearch ((t (:background "dark orange" :foreground "#292b2e"))))
+     (lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
+     ;; speedbar
+     (speedbar-file-face ((t (:foreground "PeachPuff3"))))
      ;; font
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
@@ -1204,8 +1179,7 @@ after stripping extra whitespace and new lines"
      (font-latex-sectioning-0-face ((t (:foreground "lawn green" :weight bold :height 1.4))))
      (font-latex-sectioning-1-face ((t (:foreground "deep sky blue" :weight bold :height 1.4))))
      (font-latex-sectioning-2-face ((t (:foreground "royal blue" :weight bold :height 1.2))))
-     (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal))))
-     )))
+     (lazy-highlight ((t (:background "dark goldenrod" :foreground "gray10" :weight normal)))))))
 
 (defun tddsg--custom-common ()
   ;; custom variables

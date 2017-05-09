@@ -305,12 +305,7 @@ you should place your code here."
  '(TeX-source-correlate-mode t)
  '(TeX-source-correlate-start-server t)
  '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
- '(TeX-view-program-selection
-   (quote
-    ((engine-omega "dvips and gv")
-     (output-dvi "xdvi")
-     (output-pdf "pdf-tools")
-     (output-html "xdg-open"))))
+ '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
@@ -344,6 +339,7 @@ you should place your code here."
      ("FAIL" . "red")
      ("DONE" . "red")
      ("NOTE" . "red")
+     ("TRUNG" . "red")
      ("HACK" . "red")
      ("FIXME" . "red")
      ("XXX" . "red")
