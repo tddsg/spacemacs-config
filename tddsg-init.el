@@ -501,28 +501,18 @@ after stripping extra whitespace and new lines"
        (skip-syntax-forward "w_")
        (point)))))
 
-;; call compile to the closest parent folder containing a Makefile
 (defun tddsg/compile ()
+  "Find the closest Makefile and compile."
   (interactive)
-  (cl-labels
-      ((find-make-file-dir
-        (cur-dir root-dir make-file)
-        (cond ((string= cur-dir root-dir) "")
-              ((file-exists-p (expand-file-name make-file cur-dir)) cur-dir)
-              (t (find-make-file-dir (expand-file-name ".." cur-dir)
-                                     root-dir
-                                     make-file)))))
-    (let* ((cur-dir default-directory)
-           (root-dir "/")
-           (make-file "Makefile")
-           (new-command
-            (if (and (>  (length compile-command) 4)
-                     (string= (substring compile-command 0 4) "make"))
-                (format "make -k -C %s"
-                        (find-make-file-dir cur-dir root-dir make-file))
-              compile-command)))
-      (setq compile-command new-command)
-      (call-interactively 'compile))))
+  (defun find-make-dir (dir)
+    (cond ((file-exists-p (expand-file-name "Makefile" dir)) dir)
+          ((file-exists-p (expand-file-name "build/Makefile" dir))
+           (expand-file-name "build" dir))
+          (t (find-make-dir (expand-file-name ".." dir)))) )
+  (when (string-match-p (regexp-quote "make") compile-command)
+    (setq compile-command
+          (format "make -k -C %s" (find-make-dir default-directory))))
+  (call-interactively 'compile))
 
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
