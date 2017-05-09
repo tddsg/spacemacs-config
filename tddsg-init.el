@@ -876,7 +876,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-p") 'backward-paragraph)
   (global-set-key (kbd "M-n") 'forward-paragraph)
-  ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
@@ -963,27 +962,19 @@ after stripping extra whitespace and new lines"
   ;; layout
   (global-set-key (kbd "M-m l") nil)  ;; disable key "M-m l" first
   (global-set-key (kbd "M-m l m") 'spacemacs/layouts-transient-state/body)
-  (global-set-key
-   (kbd "M-m l s")
-   'spacemacs/layouts-transient-state/persp-save-state-to-file-and-exit)
-  (global-set-key
-   (kbd "M-m l l")
-   'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
+  (global-set-key (kbd "M-m l s") 'spacemacs/layouts-transient-state/persp-save-state-to-file-and-exit)
+  (global-set-key (kbd "M-m l l") 'spacemacs/layouts-transient-state/persp-load-state-from-file-and-exit)
 
   ;; isearch
-  (define-key isearch-mode-map (kbd "C-.")
-    'tddsg/yank-current-word-to-isearch-buffer)
-  (define-key isearch-mode-map (kbd "C-c C-v")
-    'pdf-isearch-sync-backward-current-match)
-  (define-key isearch-mode-map (kbd "<f6>")
-    'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
+  (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward-current-match)
 
-  (define-key swiper-map (kbd "C-.")
-    'tddsg/yank-current-word-to-minibuffer)
+  ;; swiper
+  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
 
   ;; minibuffer
-  (define-key minibuffer-local-map (kbd "C-.")
-    'tddsg/yank-current-word-to-minibuffer)
+  (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
   (define-key minibuffer-local-map (kbd "C-M-i") nil)
 
   ;; elisp-mode
@@ -991,8 +982,7 @@ after stripping extra whitespace and new lines"
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-c C-s")
-    'tddsg/toggle-shell-scroll-to-bottomon-on-output)
+  (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
@@ -1060,16 +1050,15 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
-  (eval-after-load 'latex
-    '(progn
-       (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
-       (define-key LaTeX-mode-map (kbd "C-j") nil)
-       (define-key LaTeX-mode-map (kbd "\"") nil)
-       (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-f") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-b") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-n") nil)
-       (define-key latex-extra-mode-map (kbd "C-M-p") nil)))
+  (with-eval-after-load 'latex
+    (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "C-j") nil)
+    (define-key LaTeX-mode-map (kbd "\"") nil)
+    (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-f") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-b") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-n") nil)
+    (define-key latex-extra-mode-map (kbd "C-M-p") nil))
 
   ;; Python mode
   (define-key python-mode-map (kbd "C-j") nil)
@@ -1082,8 +1071,7 @@ after stripping extra whitespace and new lines"
   (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
   (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
   (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
-  (define-key pdf-view-mode-map (kbd "M-SPC")
-    'pdf-view-scroll-down-or-previous-page)
+  (define-key pdf-view-mode-map (kbd "M-SPC") 'pdf-view-scroll-down-or-previous-page)
   (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
@@ -1112,6 +1100,12 @@ after stripping extra whitespace and new lines"
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
+
+  ;; ggtags
+  (with-eval-after-load 'ggtags
+    (define-key ggtags-mode-map (kbd "M-]") 'ggtags-find-reference)
+    (define-key ggtags-mode-map (kbd "C-c M-r") 'ggtags-find-reference))
+
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
