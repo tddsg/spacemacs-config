@@ -844,8 +844,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
 
-  (global-set-key [?\H-m] 'project-find-file)
-  (global-set-key (kbd "H-M-m") 'helm-mini)
+  (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key (kbd "H-M-m") 'project-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
@@ -856,7 +856,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
-  (global-set-key (kbd "C-c s") 'swiper)
+  (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
