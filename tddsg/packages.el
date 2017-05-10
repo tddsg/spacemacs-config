@@ -39,6 +39,12 @@
     latex-extra
     cc-mode
     sr-speedbar
+    rtags
+    company-rtags
+    helm-rtags
+    irony
+    company-irony
+    company-irony-c-headers
     god-mode
     org
     ace-popup-menu
@@ -126,16 +132,16 @@ Each entry is either:
 
 (defun tddsg/post-init-cc-mode ()
   (defun my-cc-mode-hook ()
-    ;; company mode using clang
     (setq company-backends (delete 'company-semantic company-backends))
-    (add-to-list 'company-backends 'company-c-headers)
-    ;; indentation
+    (add-to-list 'company-backends '(company-irony-c-headers company-irony))
     (c-set-style "linux")
     (setq c-basic-offset 4)
-    ;; (semantic-mode 1)
+    (rtags-start-process-unless-running)  ;; using rtags
+    (irony-mode)                          ;; using irony
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
+  (add-hook 'objc-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
@@ -409,6 +415,40 @@ Each entry is either:
       (add-hook 'speedbar-visiting-file-hook 'select-next-window t)
       (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
     (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
+
+(defun tddsg/init-rtags ()
+  (use-package rtags
+    :config
+    (setq rtags-completions-enabled t)
+    (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
+    (which-key-add-major-mode-key-based-replacements 'c-mode "C-c t" "rtags-commands")
+    (which-key-add-major-mode-key-based-replacements 'c++-mode "C-c t" "rtags-commands")
+    (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
+    (setq rtags-autostart-diagnostics t)))
+
+(defun tddsg/init-company-rtags ()
+  (use-package company-rtags))
+
+(defun tddsg/init-helm-rtags ()
+  (use-package helm-rtags
+    :config
+    (setq rtags-display-result-backend 'helm)))
+
+(defun tddsg/init-irony ()
+  (use-package irony
+    :config
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point] 'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol] 'irony-completion-at-point-async)
+      (company-irony-setup-begin-commands))
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+
+(defun tddsg/init-company-irony ()
+  (use-package company-irony))
+
+(defun tddsg/init-company-irony-c-headers ()
+  (use-package company-irony-c-headers))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)

@@ -22,6 +22,7 @@
 (require 'god-mode)
 (require 'god-mode-isearch)
 (require 'expand-region)
+(require 'rtags)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
@@ -132,9 +133,6 @@ If the new path's directories does not exist, create them."
   (toggle-truncate-lines -1)
   (visual-line-mode 1))
 
-(defun tddsg--hook-term-mode ()
-  (term-set-escape-char ?\C-x))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -173,34 +171,6 @@ If the new path's directories does not exist, create them."
     (call-interactively 'split-window-right))
   (call-interactively 'other-window)
   (call-interactively 'tddsg/shell-current-window))
-
-(defun tddsg/term-current-window (arg)
-  "Open a `term' in the current window."
-  (interactive "P")
-  (defun last-term-buffer (buffers)
-    (when buffers
-      (if (eq 'term-mode (with-current-buffer (car buffers) major-mode))
-          (car buffers)
-        (last-term-buffer (cdr buffers)))))
-  (let* ((window (selected-window))
-         (window-config (current-window-configuration))
-         (last-term (last-term-buffer (buffer-list)))
-         (term-buffer (if (or (not (null arg))
-                              (null last-term)
-                              (eq 'term-mode major-mode))
-                          (multi-term)
-                        (switch-to-buffer last-term))))
-    (set-window-configuration window-config)
-    (select-window window)
-    (switch-to-buffer term-buffer)))
-
-(defun tddsg/term-other-window (arg)
-  "Open a `term' in a new window."
-  (interactive "P")
-  (when (equal (length (window-list)) 1)
-    (call-interactively 'split-window-right))
-  (call-interactively 'other-window)
-  (call-interactively 'tddsg/term-current-window))
 
 (defun tddsg/save-file-as-and-open-file (filename &optional confirm)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -309,15 +279,36 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
-(defun tddsg/version-control-status ()
+(defun tddsg/vc-status-dwim ()
   "Show version control status (git, hg) of the project containing the current file."
   (interactive)
-  (let ((vc-tool-name (vc-backend (buffer-name))))
-    (cond ((eq vc-tool-name 'Hg)
+  (defun find-vc-tool (dir)
+    (cond ((string-match-p (regexp-quote "..") dir) nil)
+          ((file-exists-p (expand-file-name ".git/config" dir)) 'Git)
+          ((file-exists-p (expand-file-name ".hg/hgrc" dir)) 'Hg)
+          (t (find-vc-tool (expand-file-name ".." dir)))))
+  (let ((vc-tool (find-vc-tool buffer-file-name)))
+    (cond ((eq vc-tool 'Hg)
            (call-interactively 'monky-status))
-          ((eq vc-tool-name 'Git)
+          ((eq vc-tool 'Git)
            (call-interactively 'magit-status))
-          (t (message "Error: unknown version control of the file: %s" (buffer-name))))))
+          (t (message "Error: unknown version control tool")))))
+
+(defun tddsg/find-definition-dwim (&optional prefix)
+  "Goto definition of a function or a variable."
+  (interactive "P")
+  (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
+         (if (and (not (rtags-find-symbol-at-point prefix))
+                  rtags-last-request-not-indexed)
+             (gtags-find-tag)))))
+
+(defun tddsg/find-references-dwim (&optional prefix)
+  "Goto definition of a function or a variable."
+  (interactive "P")
+  (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
+         (if (and (not (rtags-find-references-at-point prefix))
+                  rtags-last-request-not-indexed)
+             (gtags-find-rtag)))))
 
 (defun tddsg/smart-kill-sexp (&optional backward)
   "Kill sexp smartly."
@@ -515,7 +506,8 @@ after stripping extra whitespace and new lines"
   "Find the closest Makefile and compile."
   (interactive)
   (defun find-make-dir (dir)
-    (cond ((file-exists-p (expand-file-name "Makefile" dir)) dir)
+    (cond ((string-match-p (regexp-quote "..") dir) "./")
+          ((file-exists-p (expand-file-name "Makefile" dir)) dir)
           ((file-exists-p (expand-file-name "build/Makefile" dir))
            (expand-file-name "build" dir))
           (t (find-make-dir (expand-file-name ".." dir)))) )
@@ -690,21 +682,6 @@ after stripping extra whitespace and new lines"
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
 
-  ;; term mode
-  (require 'multi-term)
-  (multi-term-keystroke-setup)
-  (setq multi-term-program "/bin/bash"
-        multi-term-program-switches "--login")
-  (setq term-bind-key-alist
-        (list (cons "C-c C-j" 'term-line-mode)
-              (cons "C-c C-c" 'term-send-raw)
-              (cons "M-n" 'term-send-down)
-              (cons "M-p" 'term-send-up)
-              (cons "C-<down>" 'term-send-down)
-              (cons "C-<up>" 'term-send-up)))
-  (define-key term-raw-map (kbd "C-u") nil)
-  (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
-
   ;; automatically save buffer
   (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
   (defadvice winum-select-window-by-number
@@ -752,7 +729,7 @@ after stripping extra whitespace and new lines"
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
 
   ;; spacemacs
-  (push "\\*magit\.\+\\*" spacemacs-useful-buffers-regexp)
+  (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
 
   ;; diminish
@@ -839,7 +816,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x _") 'shrink-window)
-  (global-set-key (kbd "C-x g") 'tddsg/version-control-status)
+  (global-set-key (kbd "C-x g") 'tddsg/vc-status-dwim)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
@@ -852,7 +829,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key (kbd "H-M-m") 'project-find-file)
+  (global-set-key (kbd "H-M-m") 'projectile-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
@@ -867,7 +844,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
@@ -1082,9 +1058,10 @@ after stripping extra whitespace and new lines"
   ;; ggtags
   (with-eval-after-load 'ggtags
     (define-key ggtags-mode-map (kbd "M-]") nil)
-    (define-key ggtags-mode-map (kbd "M-.") 'ggtags-find-definition)
-    (define-key ggtags-mode-map (kbd "C-c M-r") 'ggtags-find-reference))
-
+    (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition-dwim)
+    (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
+    (define-key ggtags-mode-map (kbd "C-M-,") 'rtags-find-references)
+    (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
@@ -1159,6 +1136,13 @@ after stripping extra whitespace and new lines"
      (diredp-ignored-file-name ((t nil)))
      (diredp-link-priv ((t (:foreground "dodger blue"))))
      (diredp-symlink ((t (:foreground "dodger blue"))))
+     ;; monky
+     (monky-diff-add ((t (:background "#335533" :foreground "#ddffdd"))))
+     (monky-diff-del ((t (:background "#553333" :foreground "#ffdddd"))))
+     (monky-diff-hunk-header ((t (:background "#34323e" :foreground "#9a9aba" :slant italic))))
+     (monky-diff-title ((t (:background "#292e34" :foreground "#2aa1ae"))))
+     (monky-header ((t (:foreground "#4f97d7"))))
+     (monky-section-title ((t (:foreground "#4f97d7" :weight bold))))
      ;; hilock
      (hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
      (hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
