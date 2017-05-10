@@ -432,7 +432,7 @@ Each entry is either:
 (defun tddsg/init-helm-rtags ()
   (use-package helm-rtags
     :config
-    (setq rtags-use-helm t)))
+    (setq rtags-display-result-backend 'helm)))
 
 (defun tddsg/init-irony ()
   (use-package irony

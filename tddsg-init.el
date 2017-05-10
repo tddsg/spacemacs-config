@@ -829,7 +829,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key (kbd "H-M-m") 'project-find-file)
+  (global-set-key (kbd "H-M-m") 'projectile-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
 
@@ -1059,6 +1059,7 @@ after stripping extra whitespace and new lines"
     (define-key ggtags-mode-map (kbd "M-]") nil)
     (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition-dwim)
     (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
+    (define-key ggtags-mode-map (kbd "C-M-,") 'rtags-find-references)
     (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
 
   ;; company mode
