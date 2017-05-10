@@ -39,6 +39,9 @@
     latex-extra
     cc-mode
     sr-speedbar
+    rtags
+    company-rtags
+    helm-rtags
     god-mode
     org
     ace-popup-menu
@@ -126,16 +129,15 @@ Each entry is either:
 
 (defun tddsg/post-init-cc-mode ()
   (defun my-cc-mode-hook ()
-    ;; company mode using clang
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends 'company-c-headers)
-    ;; indentation
     (c-set-style "linux")
     (setq c-basic-offset 4)
-    ;; (semantic-mode 1)
+    (rtags-start-process-unless-running)  ;; using rtags
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
+  (add-hook 'objc-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
@@ -409,6 +411,22 @@ Each entry is either:
       (add-hook 'speedbar-visiting-file-hook 'select-next-window t)
       (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
     (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
+
+(defun tddsg/init-rtags ()
+  (use-package rtags
+    :config
+    (setq rtags-completions-enabled t)
+    (eval-after-load 'company
+      '(add-to-list
+        'company-backends 'company-rtags))
+    (setq rtags-autostart-diagnostics t)
+    (rtags-enable-standard-keybindings)))
+
+(defun tddsg/init-company-rtags ()
+  (use-package company-rtags))
+
+(defun tddsg/init-helm-rtags ()
+  (use-package helm-rtags))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)

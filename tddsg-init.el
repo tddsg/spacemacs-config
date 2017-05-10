@@ -22,6 +22,7 @@
 (require 'god-mode)
 (require 'god-mode-isearch)
 (require 'expand-region)
+(require 'rtags)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
@@ -317,7 +318,24 @@ If the new path's directories does not exist, create them."
            (call-interactively 'monky-status))
           ((eq vc-tool-name 'Git)
            (call-interactively 'magit-status))
-          (t (message "Error: unknown version control of the file: %s" (buffer-name))))))
+          (t (message "Error: unknown version control of the file: %s"
+                      (buffer-name))))))
+
+(defun tddsg/find-definition-dwim (&optional prefix)
+  "Goto definition of a function or a variable."
+  (interactive "P")
+  (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
+         (if (and (not (rtags-find-symbol-at-point prefix))
+                  rtags-last-request-not-indexed)
+             (gtags-find-tag)))))
+
+(defun tddsg/find-references-dwim (&optional prefix)
+  "Goto definition of a function or a variable."
+  (interactive "P")
+  (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
+         (if (and (not (rtags-find-references-at-point prefix))
+                  rtags-last-request-not-indexed)
+             (gtags-find-rtag)))))
 
 (defun tddsg/smart-kill-sexp (&optional backward)
   "Kill sexp smartly."
@@ -1081,9 +1099,13 @@ after stripping extra whitespace and new lines"
   ;; ggtags
   (with-eval-after-load 'ggtags
     (define-key ggtags-mode-map (kbd "M-]") nil)
-    (define-key ggtags-mode-map (kbd "M-.") 'ggtags-find-definition)
-    (define-key ggtags-mode-map (kbd "C-c M-r") 'ggtags-find-reference))
+    (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition-dwim)
+    (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
+    (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
 
+  ;; rtags
+  (with-eval-after-load 'rtags
+    (define-key rtags-mode-map (kbd "C-c r") nil))
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
