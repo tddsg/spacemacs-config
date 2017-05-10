@@ -133,9 +133,6 @@ If the new path's directories does not exist, create them."
   (toggle-truncate-lines -1)
   (visual-line-mode 1))
 
-(defun tddsg--hook-term-mode ()
-  (term-set-escape-char ?\C-x))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -174,34 +171,6 @@ If the new path's directories does not exist, create them."
     (call-interactively 'split-window-right))
   (call-interactively 'other-window)
   (call-interactively 'tddsg/shell-current-window))
-
-(defun tddsg/term-current-window (arg)
-  "Open a `term' in the current window."
-  (interactive "P")
-  (defun last-term-buffer (buffers)
-    (when buffers
-      (if (eq 'term-mode (with-current-buffer (car buffers) major-mode))
-          (car buffers)
-        (last-term-buffer (cdr buffers)))))
-  (let* ((window (selected-window))
-         (window-config (current-window-configuration))
-         (last-term (last-term-buffer (buffer-list)))
-         (term-buffer (if (or (not (null arg))
-                              (null last-term)
-                              (eq 'term-mode major-mode))
-                          (multi-term)
-                        (switch-to-buffer last-term))))
-    (set-window-configuration window-config)
-    (select-window window)
-    (switch-to-buffer term-buffer)))
-
-(defun tddsg/term-other-window (arg)
-  "Open a `term' in a new window."
-  (interactive "P")
-  (when (equal (length (window-list)) 1)
-    (call-interactively 'split-window-right))
-  (call-interactively 'other-window)
-  (call-interactively 'tddsg/term-current-window))
 
 (defun tddsg/save-file-as-and-open-file (filename &optional confirm)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -708,21 +677,6 @@ after stripping extra whitespace and new lines"
   (setq shell-default-shell 'ansi-term)
   (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
 
-  ;; term mode
-  (require 'multi-term)
-  (multi-term-keystroke-setup)
-  (setq multi-term-program "/bin/bash"
-        multi-term-program-switches "--login")
-  (setq term-bind-key-alist
-        (list (cons "C-c C-j" 'term-line-mode)
-              (cons "C-c C-c" 'term-send-raw)
-              (cons "M-n" 'term-send-down)
-              (cons "M-p" 'term-send-up)
-              (cons "C-<down>" 'term-send-down)
-              (cons "C-<up>" 'term-send-up)))
-  (define-key term-raw-map (kbd "C-u") nil)
-  (add-hook 'term-mode-hook 'tddsg--hook-term-mode)
-
   ;; automatically save buffer
   (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
   (defadvice winum-select-window-by-number
@@ -885,7 +839,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c t") 'tddsg/term-current-window)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
