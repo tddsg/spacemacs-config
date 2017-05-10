@@ -1129,6 +1129,13 @@ after stripping extra whitespace and new lines"
      (diredp-ignored-file-name ((t nil)))
      (diredp-link-priv ((t (:foreground "dodger blue"))))
      (diredp-symlink ((t (:foreground "dodger blue"))))
+     ;; monky
+     (monky-diff-add ((t (:background "#335533" :foreground "#ddffdd"))))
+     (monky-diff-del ((t (:background "#553333" :foreground "#ffdddd"))))
+     (monky-diff-hunk-header ((t (:background "#34323e" :foreground "#9a9aba" :slant italic))))
+     (monky-diff-title ((t (:background "#292e34" :foreground "#2aa1ae"))))
+     (monky-header ((t (:foreground "#4f97d7"))))
+     (monky-section-title ((t (:foreground "#4f97d7" :weight bold))))
      ;; hilock
      (hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
      (hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
