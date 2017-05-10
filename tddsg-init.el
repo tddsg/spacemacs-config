@@ -313,7 +313,7 @@ If the new path's directories does not exist, create them."
 (defun tddsg/vc-status-dwim ()
   "Show version control status (git, hg) of the project containing the current file."
   (interactive)
-  (let ((vc-tool-name (vc-backend (buffer-name))))
+  (let ((vc-tool-name (vc-backend (buffer-file-name))))
     (cond ((eq vc-tool-name 'Hg)
            (call-interactively 'monky-status))
           ((eq vc-tool-name 'Git)
@@ -1102,10 +1102,6 @@ after stripping extra whitespace and new lines"
     (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition-dwim)
     (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
     (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
-
-  ;; rtags
-  (with-eval-after-load 'rtags
-    (define-key rtags-mode-map (kbd "C-c r") nil))
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)

@@ -42,6 +42,9 @@
     rtags
     company-rtags
     helm-rtags
+    irony
+    company-irony
+    company-irony-c-headers
     god-mode
     org
     ace-popup-menu
@@ -130,10 +133,11 @@ Each entry is either:
 (defun tddsg/post-init-cc-mode ()
   (defun my-cc-mode-hook ()
     (setq company-backends (delete 'company-semantic company-backends))
-    (add-to-list 'company-backends 'company-c-headers)
+    (add-to-list 'company-backends '(company-irony-c-headers company-irony))
     (c-set-style "linux")
     (setq c-basic-offset 4)
     (rtags-start-process-unless-running)  ;; using rtags
+    (irony-mode)                          ;; using irony
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
@@ -416,17 +420,34 @@ Each entry is either:
   (use-package rtags
     :config
     (setq rtags-completions-enabled t)
-    (eval-after-load 'company
-      '(add-to-list
-        'company-backends 'company-rtags))
-    (setq rtags-autostart-diagnostics t)
-    (rtags-enable-standard-keybindings)))
+    (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
+    ;; (spacemacs/declare-prefix "M-RET t" "rtags")
+    (rtags-enable-standard-keybindings c-mode-base-map "M-RET t")
+    (setq rtags-autostart-diagnostics t)))
 
 (defun tddsg/init-company-rtags ()
   (use-package company-rtags))
 
 (defun tddsg/init-helm-rtags ()
-  (use-package helm-rtags))
+  (use-package helm-rtags
+    :config
+    (setq rtags-use-helm t)))
+
+(defun tddsg/init-irony ()
+  (use-package irony
+    :config
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point] 'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol] 'irony-completion-at-point-async)
+      (company-irony-setup-begin-commands))
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+
+(defun tddsg/init-company-irony ()
+  (use-package company-irony))
+
+(defun tddsg/init-company-irony-c-headers ()
+  (use-package company-irony-c-headers))
 
 (defun tddsg/init-god-mode ()
   (require 'god-mode)
