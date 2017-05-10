@@ -282,13 +282,17 @@ If the new path's directories does not exist, create them."
 (defun tddsg/vc-status-dwim ()
   "Show version control status (git, hg) of the project containing the current file."
   (interactive)
-  (let ((vc-tool-name (vc-backend (buffer-file-name))))
-    (cond ((eq vc-tool-name 'Hg)
+  (defun find-vc-tool (dir)
+    (cond ((string-match-p (regexp-quote "..") dir) nil)
+          ((file-exists-p (expand-file-name ".git/config" dir)) 'Git)
+          ((file-exists-p (expand-file-name ".hg/hgrc" dir)) 'Hg)
+          (t (find-vc-tool (expand-file-name ".." dir)))))
+  (let ((vc-tool (find-vc-tool buffer-file-name)))
+    (cond ((eq vc-tool 'Hg)
            (call-interactively 'monky-status))
-          ((eq vc-tool-name 'Git)
+          ((eq vc-tool 'Git)
            (call-interactively 'magit-status))
-          (t (message "Error: unknown version control of the file: %s"
-                      (buffer-name))))))
+          (t (message "Error: unknown version control tool")))))
 
 (defun tddsg/find-definition-dwim (&optional prefix)
   "Goto definition of a function or a variable."
@@ -502,7 +506,8 @@ after stripping extra whitespace and new lines"
   "Find the closest Makefile and compile."
   (interactive)
   (defun find-make-dir (dir)
-    (cond ((file-exists-p (expand-file-name "Makefile" dir)) dir)
+    (cond ((string-match-p (regexp-quote "..") dir) "./")
+          ((file-exists-p (expand-file-name "Makefile" dir)) dir)
           ((file-exists-p (expand-file-name "build/Makefile" dir))
            (expand-file-name "build" dir))
           (t (find-make-dir (expand-file-name ".." dir)))) )
