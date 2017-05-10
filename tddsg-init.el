@@ -309,7 +309,7 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
-(defun tddsg/version-control-status ()
+(defun tddsg/vc-status-dwim ()
   "Show version control status (git, hg) of the project containing the current file."
   (interactive)
   (let ((vc-tool-name (vc-backend (buffer-name))))
@@ -752,7 +752,7 @@ after stripping extra whitespace and new lines"
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
 
   ;; spacemacs
-  (push "\\*magit\.\+\\*" spacemacs-useful-buffers-regexp)
+  (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
 
   ;; diminish
@@ -839,7 +839,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x _") 'shrink-window)
-  (global-set-key (kbd "C-x g") 'tddsg/version-control-status)
+  (global-set-key (kbd "C-x g") 'tddsg/vc-status-dwim)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
