@@ -217,14 +217,17 @@ If the new path's directories does not exist, create them."
 (defun tddsg/duplicate-region-or-line ()
   "Duplicate a selected region or a line."
   (interactive)
-  (if (not (region-active-p)) (tddsg/mark-line))
-  (call-interactively 'kill-ring-save)
-  (newline-and-indent)
-  (yank)
-  (deactivate-mark))
+  (let ((duplicate-line (not (region-active-p))))
+    (when duplicate-line (tddsg/mark-line))
+    (let ((size (- (region-end) (region-beginning)))
+          (new-region (+ (region-end) 1)))
+      (call-interactively 'kill-ring-save)
+      (when duplicate-line (newline-and-indent))
+      (yank)
+      (indent-region new-region (+ new-region size)))))
 
 (defun tddsg/mark-line ()
-  "Select current line"
+  "Select current line."
   (interactive)
   (end-of-line)
   (set-mark (line-beginning-position)))
