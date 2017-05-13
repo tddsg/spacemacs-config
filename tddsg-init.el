@@ -221,7 +221,7 @@ If the new path's directories does not exist, create them."
   (call-interactively 'kill-ring-save)
   (newline-and-indent)
   (yank)
-  (indent-region))
+  (deactivate-mark))
 
 (defun tddsg/mark-line ()
   "Select current line"
