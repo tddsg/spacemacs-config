@@ -741,6 +741,8 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish yas-minor-mode "")
   (spacemacs|diminish latex-extra-mode "")
   (spacemacs|diminish utop-minor-mode "")
+  (spacemacs|diminish ggtags-mode "")
+  (spacemacs|diminish irony-mode "")
   (spacemacs|diminish golden-ratio-mode "")
   (spacemacs|diminish with-editor-mode "")
   (spacemacs|diminish compilation-in-progress "")
@@ -847,7 +849,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
-  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
+  ;; (global-set-key (kbd "C-c C-c") 'tddsg/compile)
+  (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
@@ -956,6 +959,9 @@ after stripping extra whitespace and new lines"
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
 
+  ;; org-mode
+  (define-key org-mode-map (kbd "C-j") nil)
+
   ;; magit
   (with-eval-after-load 'magit
     (define-key magit-mode-map (kbd "M-1") nil)
@@ -1038,6 +1044,7 @@ after stripping extra whitespace and new lines"
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
+  (define-key flyspell-mode-map (kbd "C-,") nil)
   (define-key flyspell-mode-map (kbd "C-M-i") nil)
 
   ;; dired mode
