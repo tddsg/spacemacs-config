@@ -192,6 +192,7 @@ Each entry is either:
     (setq merlin-locate-in-new-window 'always)
     (call-interactively 'merlin-locate))
   (defun my-merlin-hook ()
+    (require 'merlin-imenu)
     (merlin-use-merlin-imenu)
     (setq merlin-locate-in-new-window 'diff)
     ;; unbind some keys
