@@ -421,9 +421,10 @@ Each entry is either:
     :config
     (setq rtags-completions-enabled t)
     (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
-    ;; (spacemacs/declare-prefix (kbd "C-c t") "rtags")
-    (which-key-add-major-mode-key-based-replacements 'c-mode "C-c t" "rtags-commands")
-    (which-key-add-major-mode-key-based-replacements 'c++-mode "C-c t" "rtags-commands")
+    (which-key-add-major-mode-key-based-replacements
+      'c-mode "C-c t" "rtags-commands")
+    (which-key-add-major-mode-key-based-replacements
+      'c++-mode "C-c t" "rtags-commands")
     (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
     (setq rtags-autostart-diagnostics t)))
 
