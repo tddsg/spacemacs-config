@@ -217,14 +217,17 @@ If the new path's directories does not exist, create them."
 (defun tddsg/duplicate-region-or-line ()
   "Duplicate a selected region or a line."
   (interactive)
-  (if (not (region-active-p)) (tddsg/mark-line))
-  (call-interactively 'kill-ring-save)
-  (newline-and-indent)
-  (yank)
-  (indent-region))
+  (let ((duplicate-line (not (region-active-p))))
+    (when duplicate-line (tddsg/mark-line))
+    (let ((size (- (region-end) (region-beginning)))
+          (new-region (+ (region-end) 1)))
+      (call-interactively 'kill-ring-save)
+      (when duplicate-line (newline-and-indent))
+      (yank)
+      (indent-region new-region (+ new-region size)))))
 
 (defun tddsg/mark-line ()
-  "Select current line"
+  "Select current line."
   (interactive)
   (end-of-line)
   (set-mark (line-beginning-position)))
@@ -724,7 +727,7 @@ after stripping extra whitespace and new lines"
   (setq helm-split-window-default-side 'below)
 
   ;; reason-mode
-  (tddsg/init-reason-mode)
+  ;; (tddsg/init-reason-mode)              ;
 
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
@@ -863,7 +866,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-p") '(lambda () (interactive) (previous-line 8)))
   (global-set-key (kbd "M-n") '(lambda () (interactive) (next-line 8)))
-  ;; (global-set-key (kbd "M-j") 'tddsg/join-to-above-line)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
@@ -1586,28 +1588,28 @@ BUFFER."
 
 ;;;;;;; REASON MODE ;;;;;;;;
 
-(defun tddsg/init-reason-mode ()
-  (require 'reason-mode)
-  (require 'merlin)
-  (require 'merlin-imenu)
-  (defun chomp-end (str)
-    "Chomp tailing whitespace from STR."
-    (replace-regexp-in-string (rx (* (any " \t\n")) eos)
-                              ""
-                              str))
-  (defun my-reason-hook ()
-    (add-hook 'before-save-hook 'refmt-before-save)
-    (merlin-mode)
-    (merlin-use-merlin-imenu))
+;; (defun tddsg/init-reason-mode ()
+;;   (require 'reason-mode)
+;;   (require 'merlin)
+;;   (require 'merlin-imenu)
+;;   (defun chomp-end (str)
+;;     "Chomp tailing whitespace from STR."
+;;     (replace-regexp-in-string (rx (* (any " \t\n")) eos)
+;;                               ""
+;;                               str))
+;;   (defun my-reason-hook ()
+;;     (add-hook 'before-save-hook 'refmt-before-save)
+;;     (merlin-mode)
+;;     (merlin-use-merlin-imenu))
 
-  (let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
-        (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
-    ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
-    (add-to-list 'load-path (concat merlin-base-dir "/share/emacs/site-lisp/"))
-    (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin"))
+;;   (let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
+;;         (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
+;;     ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
+;;     (add-to-list 'load-path (concat merlin-base-dir "/share/emacs/site-lisp/"))
+;;     (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin"))
 
-    ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
-    (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
-    (setq refmt-command (concat support-base-dir "/bin/refmt")))
-  (setq merlin-ac-setup t)
-  (add-hook 'reason-mode-hook 'my-reason-hook))
+;;     ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
+;;     (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
+;;     (setq refmt-command (concat support-base-dir "/bin/refmt")))
+;;   (setq merlin-ac-setup t)
+;;   (add-hook 'reason-mode-hook 'my-reason-hook))

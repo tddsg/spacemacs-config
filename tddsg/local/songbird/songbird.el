@@ -39,17 +39,16 @@
       '("float" "int" "bool" "void" "string"))
 
 (setq songbird-constants
-      '("null" "nil" "true" "false" "unknown" "emp"))
+      '("null" "nil" "true" "false" "unknown"))
 
-;;; TODO: somehow, defining function syntax doesn't work here.
-;;; Currently, it is directly defined inside the syntax table.
-;; (setq songbird-functions
-;;       '("\\([a-zA-Z0-9_']+\\)\\s-*\("))
+(setq songbird-predicates
+      '("emp"))
 
 ;; generate regex string for each category of keywords
-(setq songbird-keywords-regexp (regexp-opt songbird-keywords 'words))
+(setq songbird-keyword-regexp (regexp-opt songbird-keywords 'words))
 (setq songbird-type-regexp (regexp-opt songbird-types 'words))
 (setq songbird-constant-regexp (regexp-opt songbird-constants 'words))
+(setq songbird-predicate-regexp (regexp-opt songbird-predicates 'words))
 ;; (setq songbird-functions-regexp songbird-functions)
 
 ;; create the list for font-lock.
@@ -58,10 +57,11 @@
       `(
         (,songbird-type-regexp . font-lock-type-face)
         (,songbird-constant-regexp . font-lock-constant-face)
-        ;; (,songbird-event-regexp . font-lock-builtin-face)
         ;; (,songbird-functions-regexp . font-lock-function-name-face)
-        (,songbird-keywords-regexp . font-lock-keyword-face)
-        ;; note: order above matters, because once colored, that part won't change.
+        (,songbird-keyword-regexp . font-lock-keyword-face)
+        (,songbird-predicate-regexp . font-lock-function-name-face)
+        ;; note: order above matters, because once colored,
+        ;; that part won't change.
         ;; in general, longer words first
         ))
 
@@ -89,23 +89,18 @@
   ;; highlight syntax function and predicate
   (font-lock-add-keywords 'songbird
                           '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
-                             (1 font-lock-function-name-face)))
-                          t)
-  ;; higlight syntax for data structure declaration
+                             (1 font-lock-function-name-face))) t)
+  ;; higlight syntax for data structure
   (font-lock-add-keywords 'songbird
                           '(("data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{"
-                             (1 font-lock-type-face)))
-                          t)
+                             (1 font-lock-type-face))) t)
+  (font-lock-add-keywords 'songbird
+                          '(("\\([a-zA-Z0-9_']+\\)\\s-*\\([a-zA-Z0-9_']+\\);"
+                             (1 font-lock-type-face))) t)
   ;; higlight syntax for data structure formula
   (font-lock-add-keywords 'songbird
-                          '(("::\\([a-zA-Z0-9_']+\\)\\s-*\<"
-                             (1 font-lock-type-face)))
-                          t)
-  ;; highlight syntax variable declaration
-  ;; (font-lock-add-keywords 'songbird ;
-  ;;                         '(("\\([a-zA-Z0-9_']+\\)\\s-+\\(\\([a-zA-Z0-9_']+\\)\\s-*\\)+;"
-  ;;                            (1 font-lock-type-face)))
-  ;;                         t)
+                          '(("->\\([a-zA-Z0-9_']+\\)\\s-*{"
+                             (1 font-lock-type-face))) t)
 
   (setq indent-tabs-mode nil)                      ;; insert spaces instead of tabs
   (setq indent-line-function (quote (lambda ())))  ;; disable indent
@@ -122,15 +117,14 @@
 (setq songbird-keywords nil)
 (setq songbird-types nil)
 (setq songbird-constants nil)
-(setq songbird-events nil)
-(setq songbird-functions nil)
+;; (setq songbird-functions nil)
 
 ;; clear memory. no longer needed
-(setq songbird-keywords-regexp nil)
-(setq songbird-types-regexp nil)
-(setq songbird-constants-regexp nil)
-(setq songbird-events-regexp nil)
-(setq songbird-functions-regexp nil)
+(setq songbird-keyword-regexp nil)
+(setq songbird-predicate-regexp nil)
+(setq songbird-type-regexp nil)
+(setq songbird-constant-regexp nil)
+;; (setq songbird-function-regexp nil)
 
 
 (or (assoc "\\.sb$" auto-mode-alist)
