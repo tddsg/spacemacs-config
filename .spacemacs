@@ -45,10 +45,11 @@ values."
      cscope
      (gtags :variables gtags-enable-by-default nil)
      (c-c++ :variables c-c++-enable-clang-support t)
-     (reason-mode :location (recipe :repo "facebook/reason"
-                                    :fetcher github
-                                    :files ("editorSupport/emacs/reason-mode.el"
-                                            "editorSupport/emacs/refmt.el")))
+     (reason-mode
+      :location (recipe
+                 :repo "arichiardi/reason-mode"
+                 :fetcher github
+                 :files ("reason-mode.el" "refmt.el")))
      csv
      python
      html
