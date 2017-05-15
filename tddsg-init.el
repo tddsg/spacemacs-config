@@ -907,6 +907,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m l n") 'langtool-goto-next-error)
   (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
+  (global-set-key (kbd "M-m l |") 'vline-mode)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
