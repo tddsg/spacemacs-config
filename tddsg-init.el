@@ -821,7 +821,6 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
-  (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x g") 'tddsg/vc-status-dwim)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
@@ -882,6 +881,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-?") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
+  (global-set-key (kbd "M-g |") 'vline-mode)
 
   (global-set-key (kbd "M-[") 'windmove-left)
   (global-set-key (kbd "M-]") 'windmove-right)
@@ -897,8 +897,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
 
-  (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
 
+  (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m f p") 'tddsg/show-and-copy-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m l c") 'langtool-check)
@@ -907,7 +907,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m l n") 'langtool-goto-next-error)
   (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
-  (global-set-key (kbd "M-m l |") 'vline-mode)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
@@ -1177,6 +1176,8 @@ after stripping extra whitespace and new lines"
      (lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
      ;; speedbar
      (speedbar-file-face ((t (:foreground "PeachPuff3"))))
+     ;; vline
+     (vline ((t (:background "#3E3312"))))
      ;; font
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
