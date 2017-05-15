@@ -852,8 +852,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
-  ;; (global-set-key (kbd "C-c C-c") 'tddsg/compile)
-  (global-set-key (kbd "C-c C-c") nil)
+  (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
@@ -962,7 +961,9 @@ after stripping extra whitespace and new lines"
   (define-key undo-tree-map (kbd "M-_") nil)
 
   ;; org-mode
-  (define-key org-mode-map (kbd "C-j") nil)
+  (with-eval-after-load 'org-mode
+    (define-key org-mode-map (kbd "C-j") nil)
+    (define-key org-mode-map (kbd "C-a") nil))
 
   ;; magit
   (with-eval-after-load 'magit
@@ -1072,6 +1073,16 @@ after stripping extra whitespace and new lines"
     (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
     (define-key ggtags-mode-map (kbd "C-M-,") 'rtags-find-references)
     (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
+
+  ;; irony
+  (with-eval-after-load 'irony
+    (define-key irony-mode-map (kbd "C-c C-t") 'irony-get-type))
+
+  ;; cc
+  (with-eval-after-load 'cc-mode
+    (define-key c-mode-base-map (kbd "C-M-j") nil)
+    (define-key c-mode-map (kbd "C-M-j") nil)
+    (define-key c++-mode-map (kbd "C-M-j") nil))
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)

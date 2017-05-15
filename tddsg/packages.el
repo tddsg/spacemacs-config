@@ -47,6 +47,7 @@
     company-irony-c-headers
     god-mode
     org
+    llvm-mode
     ace-popup-menu
     smartparens
     yasnippet
@@ -362,6 +363,9 @@ Each entry is either:
         langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
 
+(defun tddsg/init-llvm-mode ()
+  (use-package llvm-mode))
+
 (defun tddsg/init-imenu-anywhere ()
   (use-package imenu-anywhere))
 
@@ -495,7 +499,6 @@ Each entry is either:
     (org-indent-mode t)
     (setq indent-line-function 'indent-relative))
   (add-hook 'org-mode-hook 'my-org-hook) 'append)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
