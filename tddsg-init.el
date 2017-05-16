@@ -1177,7 +1177,7 @@ after stripping extra whitespace and new lines"
      ;; speedbar
      (speedbar-file-face ((t (:foreground "PeachPuff3"))))
      ;; vline
-     (vline ((t (:background "#3E3312"))))
+     (vline ((t (:background "#34424D"))))
      ;; font
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
