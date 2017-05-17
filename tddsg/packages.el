@@ -59,6 +59,7 @@
     paren
     autorevert
     windmove
+    framemove
     transpose-frame
     key-chord
     super-save
@@ -316,7 +317,12 @@ Each entry is either:
   (show-paren-mode t))
 
 (defun tddsg/init-windmove ()
-  (windmove-default-keybindings))
+  (require 'framemove)
+  (windmove-default-keybindings)
+  (setq framemove-hook-into-windmove t))
+
+(defun tddsg/init-framemove ()
+  (framemove-default-keybindings))
 
 ;; buffer-clone
 (defun tddsg/init-buffer-move ()
