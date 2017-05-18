@@ -677,7 +677,7 @@ after stripping extra whitespace and new lines"
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 16
-        compilation-scroll-output 'next-error
+        compilation-scroll-output 'first-error
         compilation-skip-threshold 2)
 
 
@@ -851,6 +851,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
+  ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
