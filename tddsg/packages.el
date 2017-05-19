@@ -260,6 +260,19 @@ Each entry is either:
   ;; smartparens for ocaml
   (sp-with-modes '(tuareg-mode)
     (sp-local-pair "(*" "*)" ))
+  ;; smartparens for org-mode
+  (sp-with-modes 'org-mode
+    (sp-local-pair "*" "*" :actions '(insert wrap)
+                   :unless '(sp-point-after-word-p sp-point-at-bol-p)
+                   :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+    (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
+    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p)
+                   :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p)
+                   :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p)
+                   :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "«" "»"))
   ;; smartparens for latex
   (sp-with-modes '(tex-mode
                    plain-tex-mode

@@ -113,7 +113,7 @@ If the new path's directories does not exist, create them."
     (linum-mode 1))
   (tddsg--highlight-todos)
   (smartparens-mode 1)
-  (column-marker-3 76)
+  (column-marker-3 80)
   (whitespace-mode 1))
 
 (defun tddsg--hook-prog-mode ()
@@ -964,7 +964,13 @@ after stripping extra whitespace and new lines"
   ;; org-mode
   (with-eval-after-load 'org-mode
     (define-key org-mode-map (kbd "C-j") nil)
-    (define-key org-mode-map (kbd "C-a") nil))
+    (define-key org-mode-map (kbd "C-a") nil)
+    (define-key org-mode-map (kbd "M-m x i") 'spacemacs/org-italic)
+    (define-key org-mode-map (kbd "M-m x b") 'spacemacs/org-bold)
+    (define-key org-mode-map (kbd "M-m x r") 'spacemacs/org-clear)
+    (define-key org-mode-map (kbd "M-m x c") 'spacemacs/org-code)
+    (define-key org-mode-map (kbd "M-m x u") 'spacemacs/org-underline)
+    (define-key org-mode-map (kbd "M-m x v") 'spacemacs/org-verbose))
 
   ;; magit
   (with-eval-after-load 'magit
