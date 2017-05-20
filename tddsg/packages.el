@@ -218,6 +218,7 @@ Each entry is either:
 (defun tddsg/post-init-auctex ()
   (require 'tex)
   (require 'reftex)
+  (require 'latex)
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
   (custom-set-variables
    '(TeX-save-query nil)
@@ -228,6 +229,8 @@ Each entry is either:
    '(TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
    '(TeX-view-program-selection '((output-pdf "pdf-tools"))))
   (defun my-beamer-hook ()
+    (set (make-local-variable 'TeX-outline-extra)
+         '(("section" 2) ("frametitle" 3)))
     (set (make-local-variable 'reftex-section-levels)
          '(("lecture" . 1) ("section" . 1) ("frametitle" . 2)))
     (reftex-reset-mode))
@@ -299,6 +302,7 @@ Each entry is either:
                    :unless '(sp-latex-point-after-backslash))
     (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
     ;; (sp-local-pair "$" "$" :post-handlers '())
+    (sp-local-pair "\begin{frame}" "\end{frame}")
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\If" "\\EndIf" :post-handlers

@@ -528,7 +528,7 @@ after stripping extra whitespace and new lines"
   "Run pdflatex on current beamer frame."
   (interactive)
   (save-buffer)
-  (setq TeX-region "current-frame")
+  (setq TeX-region "__current_frame")
   (let (beg)
     (save-excursion
       (search-backward "\\begin{frame}")
@@ -1035,14 +1035,14 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
 
   ;; LaTeX-mode
-  (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-current-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
-    (define-key LaTeX-mode-map (kbd "C-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
+    (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
