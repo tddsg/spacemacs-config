@@ -217,6 +217,7 @@ Each entry is either:
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)
+  (require 'reftex)
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
   (custom-set-variables
    '(TeX-save-query nil)
@@ -226,10 +227,15 @@ Each entry is either:
    '(LaTeX-command "latex --synctex=1")
    '(TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
    '(TeX-view-program-selection '((output-pdf "pdf-tools"))))
+  (defun my-beamer-hook ()
+    (set (make-local-variable 'reftex-section-levels)
+         '(("lecture" . 1) ("section" . 1) ("frametitle" . 2)))
+    (reftex-reset-mode))
   (defun my-latex-hook ()
     ;; set tex master file
     (if (eq TeX-master t)
         (setq TeX-master (concat (projectile-project-root) "main.tex")))
+    ;; other setting
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
@@ -238,10 +244,17 @@ Each entry is either:
     (latex/auto-fill-mode)
     (abbrev-mode +1)
     (set-fill-column 75))
+  (TeX-add-style-hook "beamer" 'my-beamer-hook)
   (add-hook 'LaTeX-mode-hook 'my-latex-hook 'append)
   (add-hook 'tex-mode-hook 'my-latex-hook 'append)
   (add-hook 'TeX-mode-hook 'my-latex-hook 'append))
 
+(defun beamer-template-frame ()
+  "Create a simple template and move point to after \\frametitle."
+  (interactive)
+  (LaTeX-environment-menu "frame")
+  (insert "\\frametitle{}")
+  (backward-char 1))
 (defun tddsg/post-init-python ()
   (defun my-python-mode-hook ()
     ;; (setq indent-tabs-mode t)    ;; indent by using tab

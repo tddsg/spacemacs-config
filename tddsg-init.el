@@ -69,18 +69,6 @@ If the new path's directories does not exist, create them."
            (derived-mode-p 'text-mode 'prog-mode))
       (save-buffer)))
 
-(defun tddsg--latex-compile ()
-  (interactive)
-  (save-buffer)
-  ;; (setq TeX-after-compilation-finished-functions nil)
-  ;; (call-interactively 'latex/compile-commands-until-done)
-  (TeX-command "LaTeX" 'TeX-master-file -1))
-
-(defun tddsg--latex-compile-sync-forward ()
-  (interactive)
-  (call-interactively 'latex/compile-commands-until-done)
-  (call-interactively 'pdf-sync-forward-search))
-
 (defun tddsg--highlight-todos ()
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo-get-face) t)))
@@ -506,6 +494,16 @@ after stripping extra whitespace and new lines"
        (skip-syntax-forward "w_")
        (point)))))
 
+(defun tddsg/unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  (interactive)
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
+
 (defun tddsg/compile ()
   "Find the closest Makefile and compile."
   (interactive)
@@ -520,15 +518,32 @@ after stripping extra whitespace and new lines"
           (format "make -k -C %s" (find-make-dir default-directory))))
   (call-interactively 'compile))
 
-(defun tddsg/unpop-to-mark-command ()
-  "Unpop off mark ring. Does nothing if mark ring is empty."
+(defun tddsg/latex-compile ()
+  "Run LaTex command from TeX Master commands."
   (interactive)
-  (when mark-ring
-    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-    (when (null (mark t)) (ding))
-    (setq mark-ring (nbutlast mark-ring))
-    (goto-char (marker-position (car (last mark-ring))))))
+  (save-buffer)
+  (TeX-command "LaTeX" 'TeX-master-file -1))
+
+(defun tddsg/latex-beamer-compile-current-frame ()
+  "Run pdflatex on current beamer frame."
+  (interactive)
+  (save-buffer)
+  (setq TeX-region "current-frame")
+  (let (beg)
+    (save-excursion
+      (search-backward "\\begin{frame}")
+      (setq beg (point))
+      (forward-char 1)
+      (LaTeX-find-matching-end)
+      (TeX-pin-region beg (point))
+      (letf (( (symbol-function 'TeX-command-query) (lambda (x) "LaTeX")))
+        (TeX-command-region)))))
+
+(defun tddsg/latex-compile-sync-forward ()
+  "Compile LaTex and synchronize the output."
+  (interactive)
+  (call-interactively 'latex/compile-commands-until-done)
+  (call-interactively 'pdf-sync-forward-search))
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
@@ -1021,8 +1036,9 @@ after stripping extra whitespace and new lines"
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "C-o") 'reftex-toc)
-  (define-key TeX-mode-map (kbd "<f5>") 'tddsg--latex-compile)
-  (define-key TeX-mode-map (kbd "<f6>") 'tddsg--latex-compile-sync-forward)
+  (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
+  (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
+  (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-current-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
