@@ -1202,6 +1202,8 @@ after stripping extra whitespace and new lines"
      ;; vline
      (vline ((t (:background "#34424D"))))
      ;; font
+     (font-latex-slide-title-face ((t (:inherit font-lock-type-face :weight bold :height 1.3))))
+     (font-latex-script-char-face ((t (:foreground "orange red"))))
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
      (font-latex-sedate-face ((t (:foreground "#64A873" :weight normal))))
      (font-latex-subscript-face ((t (:height 0.9))))
