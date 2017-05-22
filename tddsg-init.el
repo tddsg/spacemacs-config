@@ -976,6 +976,12 @@ after stripping extra whitespace and new lines"
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
 
+  ;; speedbar, make shortcut keys like dired mode
+  (with-eval-after-load 'speedbar
+    (define-key speedbar-key-map (kbd "+") 'speedbar-create-directory)
+    (define-key speedbar-file-key-map (kbd "+") 'speedbar-create-directory)
+    (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
+
   ;; org-mode
   (with-eval-after-load 'org-mode
     (define-key org-mode-map (kbd "C-j") nil)
