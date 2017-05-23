@@ -133,10 +133,17 @@ Each entry is either:
   (super-save-mode 1))
 
 (defun tddsg/post-init-cc-mode ()
+  ;; coding style
+  (defconst my-cc-style
+    '("linux"
+      (c-offsets-alist . ((innamespace . [0]))) ;; no indent in namespace
+      ))
+  (c-add-style "my-cc-style" my-cc-style)
+  ;; hook
   (defun my-cc-mode-hook ()
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends '(company-irony-c-headers company-irony))
-    (c-set-style "linux")
+    (c-set-style "my-cc-style")
     (setq c-basic-offset 4)
     (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
