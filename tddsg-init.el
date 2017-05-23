@@ -166,13 +166,8 @@ If the new path's directories does not exist, create them."
   "Save current buffer into file FILENAME and open it in a new buffer."
   (interactive
    (list (if buffer-file-name
-             (read-file-name "Save as and open file: "
-                             nil nil nil nil)
-           (read-file-name "Save as and open file: " default-directory
-                           (expand-file-name
-                            (file-name-nondirectory (buffer-name))
-                            default-directory)
-                           nil nil))
+             (read-file-name "Save as and open file: " buffer-file-name)
+           (read-file-name "Save as and open file: " default-directory))
          (not current-prefix-arg)))
   (or (null filename) (string-equal filename "")
       (progn
