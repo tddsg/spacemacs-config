@@ -803,7 +803,7 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
-  (global-set-key (kbd "<f5>") (kbd "C-c C-c C-j"))
+  (global-set-key (kbd "<f5>") 'recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
