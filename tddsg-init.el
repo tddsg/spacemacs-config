@@ -261,6 +261,13 @@ If the new path's directories does not exist, create them."
       (set-mark-command nil)
       (forward-paragraph 1))))
 
+(defun tddsg/mark-environment ()
+  "Mark the environment, depending on the major mode."
+  (interactive)
+  (cond ((derived-mode-p 'LaTeX-mode 'TeX-mode 'latex-mode 'tex-mode)
+         (call-interactively 'LaTeX-mark-environment))
+        (t (call-interactively 'mark-defun))))
+
 (defun tddsg/comment-paragraph ()
   "Comment the paragraph."
   (interactive)
@@ -821,6 +828,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
+  (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
@@ -1046,6 +1054,7 @@ after stripping extra whitespace and new lines"
   (with-eval-after-load 'latex
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
     (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "C-M-h") nil)
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
