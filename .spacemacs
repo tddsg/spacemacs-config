@@ -45,11 +45,7 @@ values."
      cscope
      (gtags :variables gtags-enable-by-default nil)
      (c-c++ :variables c-c++-enable-clang-support t)
-     (reason-mode
-      :location (recipe
-                 :repo "arichiardi/reason-mode"
-                 :fetcher github
-                 :files ("reason-mode.el" "refmt.el")))
+     yaml
      csv
      python
      html

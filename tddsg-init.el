@@ -995,15 +995,15 @@ after stripping extra whitespace and new lines"
     (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
 
   ;; org-mode
-  (with-eval-after-load 'org-mode
+  (with-eval-after-load 'org
     (define-key org-mode-map (kbd "C-j") nil)
     (define-key org-mode-map (kbd "C-a") nil)
-    (define-key org-mode-map (kbd "M-m x i") 'spacemacs/org-italic)
-    (define-key org-mode-map (kbd "M-m x b") 'spacemacs/org-bold)
-    (define-key org-mode-map (kbd "M-m x r") 'spacemacs/org-clear)
-    (define-key org-mode-map (kbd "M-m x c") 'spacemacs/org-code)
-    (define-key org-mode-map (kbd "M-m x u") 'spacemacs/org-underline)
-    (define-key org-mode-map (kbd "M-m x v") 'spacemacs/org-verbose))
+    (define-key org-mode-map (kbd "M-g i") 'spacemacs/org-italic)
+    (define-key org-mode-map (kbd "M-g b") 'spacemacs/org-bold)
+    (define-key org-mode-map (kbd "M-g r") 'spacemacs/org-clear)
+    (define-key org-mode-map (kbd "M-g s") 'spacemacs/org-code)
+    (define-key org-mode-map (kbd "M-g u") 'spacemacs/org-underline)
+    (define-key org-mode-map (kbd "M-g v") 'spacemacs/org-verbose))
 
   ;; magit
   (with-eval-after-load 'magit
