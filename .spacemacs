@@ -40,6 +40,11 @@ values."
      pdf-tools
      latex
      ocaml
+     (reason-mode
+      :location (recipe
+                 :repo "arichiardi/reason-mode"
+                 :fetcher github
+                 :files ("reason-mode.el" "refmt.el")))
      haskell
      semantic
      cscope
