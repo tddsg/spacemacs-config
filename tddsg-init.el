@@ -994,17 +994,6 @@ after stripping extra whitespace and new lines"
     (define-key speedbar-file-key-map (kbd "+") 'speedbar-create-directory)
     (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
 
-  ;; org-mode
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-j") nil)
-    (define-key org-mode-map (kbd "C-a") nil)
-    (define-key org-mode-map (kbd "M-g i") 'spacemacs/org-italic)
-    (define-key org-mode-map (kbd "M-g b") 'spacemacs/org-bold)
-    (define-key org-mode-map (kbd "M-g r") 'spacemacs/org-clear)
-    (define-key org-mode-map (kbd "M-g s") 'spacemacs/org-code)
-    (define-key org-mode-map (kbd "M-g u") 'spacemacs/org-underline)
-    (define-key org-mode-map (kbd "M-g v") 'spacemacs/org-verbose))
-
   ;; magit
   (with-eval-after-load 'magit
     (define-key magit-mode-map (kbd "M-1") nil)
@@ -1059,16 +1048,35 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
-    (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
-    (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
     (define-key LaTeX-mode-map (kbd "C-M-h") nil)
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+    (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
+    (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "M-g i") 'latex/font-italic)
+    (define-key LaTeX-mode-map (kbd "M-g b") 'latex/font-bold)
+    (define-key LaTeX-mode-map (kbd "M-g e") 'latex/font-emphasis)
+    (define-key LaTeX-mode-map (kbd "M-g r") 'latex/font-clear)
+    (define-key LaTeX-mode-map (kbd "M-g c") 'latex/font-code)
+    (define-key LaTeX-mode-map (kbd "M-g s") 'latex/font-small-caps)
+    ;; (define-key LaTeX-mode-map (kbd "M-g u") 'latex/font-)
+    (define-key LaTeX-mode-map (kbd "M-g a") 'latex/font-calligraphic)
     (define-key latex-extra-mode-map (kbd "C-M-f") nil)
     (define-key latex-extra-mode-map (kbd "C-M-b") nil)
     (define-key latex-extra-mode-map (kbd "C-M-n") nil)
     (define-key latex-extra-mode-map (kbd "C-M-p") nil))
+
+  ;; org-mode
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-j") nil)
+    (define-key org-mode-map (kbd "C-a") nil)
+    (define-key org-mode-map (kbd "M-g i") 'spacemacs/org-italic)
+    (define-key org-mode-map (kbd "M-g b") 'spacemacs/org-bold)
+    (define-key org-mode-map (kbd "M-g r") 'spacemacs/org-clear)
+    (define-key org-mode-map (kbd "M-g c") 'spacemacs/org-code)
+    (define-key org-mode-map (kbd "M-g u") 'spacemacs/org-underline)
+    (define-key org-mode-map (kbd "M-g v") 'spacemacs/org-verbose))
 
   ;; Python mode
   (define-key python-mode-map (kbd "C-j") nil)

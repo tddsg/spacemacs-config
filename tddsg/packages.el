@@ -182,6 +182,7 @@ Each entry is either:
     ;; unbind some keys
     (local-set-key (kbd "C-c C-i") nil)
     (local-set-key (kbd "C-c C-c") nil)
+    (local-set-key (kbd "C-M-h") nil)
     (local-set-key (kbd "M-q") nil))
   (add-hook 'tuareg-mode-hook 'my-tuareg-hook 'append))
 
