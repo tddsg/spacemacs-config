@@ -522,6 +522,13 @@ after stripping extra whitespace and new lines"
           (format "make -k -C %s" (find-make-dir default-directory))))
   (call-interactively 'compile))
 
+(defun tddsg/recompile ()
+  "Find the closest Makefile and compile."
+  (interactive)
+  (if (string-match-p (regexp-quote "make -k -C") compile-command)
+      (recompile)
+    (call-interactively 'tddsg/compile)))
+
 (defun tddsg/latex-compile ()
   "Run LaTex command from TeX Master commands."
   (interactive)
@@ -803,7 +810,7 @@ after stripping extra whitespace and new lines"
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
-  (global-set-key (kbd "<f5>") 'recompile)
+  (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
