@@ -246,6 +246,7 @@ Each entry is either:
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
+    (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
     (latex-extra-mode)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)
