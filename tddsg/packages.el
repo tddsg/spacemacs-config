@@ -277,9 +277,9 @@ Each entry is either:
     (sp-local-pair "(*" "*)" ))
   ;; smartparens for org-mode
   (sp-with-modes 'org-mode
-    (sp-local-pair "*" "*" :actions '(insert wrap)
+    (sp-local-pair "*" "*"
                    :unless '(sp-point-after-word-p sp-point-at-bol-p)
-                   :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+                   :wrap "C-*")
     (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
     (sp-local-pair "/" "/" :unless '(sp-point-after-word-p)
                    :post-handlers '(("[d1]" "SPC")))
