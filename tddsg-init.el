@@ -154,34 +154,24 @@ If the new path's directories does not exist, create them."
   (call-interactively 'other-window)
   (call-interactively 'tddsg/shell-current-window))
 
-
 ;; TODO: create a full request to Spacemacs
-(defun tddsg/save-file-as-and-open-file (filename &optional confirm)
+(defun tddsg/save-file-as-and-open (filename)
   "Save current buffer into file FILENAME and open it in a new buffer."
   (interactive
    (list (if buffer-file-name
-             (read-file-name "Save as and open file: " buffer-file-name)
-           (read-file-name "Save as and open file: " default-directory))
-         (not current-prefix-arg)))
+             (read-file-name "Save file as and open: " buffer-file-name)
+           (read-file-name "Save file as and open: " default-directory))))
   (or (null filename) (string-equal filename "")
       (progn
-        ;; If arg is just a directory,
-        ;; use the default file name, but in that directory.
-        (if (file-directory-p filename)
-            (setq filename (concat (file-name-as-directory filename)
-                                   (file-name-nondirectory
-                                    (or buffer-file-name (buffer-name))))))
-        (and confirm
-             (file-exists-p filename)
-             ;; NS does its own confirm dialog.
-             (not (and (eq (framep-on-display) 'ns)
-                       (listp last-nonmenu-event)
-                       use-dialog-box))
+        (let ((dir (file-name-directory filename)))
+          (when (and (not (file-exists-p dir))
+                     (yes-or-no-p (format "Create directory '%s'?" dir)))
+            (make-directory dir t)))
+        (and (file-exists-p filename)
              (or (y-or-n-p (format "File `%s' exists; overwrite? " filename))
                  (error "Canceled")))
         (write-region (point-min) (point-max) filename )
-        (find-file filename)))
-  (vc-find-file-hook))
+        (find-file filename))))
 
 (defun tddsg/dired-home ()
   (interactive)
@@ -847,7 +837,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x ^") 'enlarge-window)
-  (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open-file)
+  (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'diredp-dired-recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
