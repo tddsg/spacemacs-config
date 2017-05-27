@@ -124,12 +124,6 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
-(defun tddsg/show-and-copy-path-current-buffer ()
-  "Show path of the current buffer."
-  (interactive)
-  (kill-new (buffer-file-name))
-  (message "Current path: %s" (buffer-file-name)))
-
 (defun tddsg/previous-overlay ()
   "Go to previous overlay."
   (interactive)
@@ -925,9 +919,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
 
-
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
-  (global-set-key (kbd "M-m f p") 'tddsg/show-and-copy-path-current-buffer)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
   (global-set-key (kbd "M-m l c") 'langtool-check)
   (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
