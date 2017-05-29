@@ -953,7 +953,7 @@ after stripping extra whitespace and new lines"
   (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward-current-match)
 
   ;; swiper
-  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
+  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
 
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
@@ -1583,6 +1583,34 @@ BUFFER."
     (select-window popwin:popup-window))
   (run-hooks 'popwin:after-popup-hook)
   popwin:popup-window)
+
+;;; helm-do-ag
+;;;###autoload
+(defun helm-projectile-ag (&optional options)
+  "Helm version of projectile-ag."
+  (interactive (if current-prefix-arg (list (read-string "option: " "" 'helm-ag--extra-options-history))))
+  (if (require 'helm-ag nil t)
+      (if (projectile-project-p)
+          (let* ((ag-ignored-files (cl-union (projectile-ignored-files-rel)
+                                             (projectile-patterns-to-ignore)))
+                 (ag-ignored-dirs (projectile-ignored-directories-rel))
+                 (ignored (mapconcat (lambda (i) (concat "--ignore " i))
+                                     (append ag-ignored-files
+                                             ag-ignored-dirs)
+                                     " "))
+                 (helm-ag-command-option options)
+                 (helm-ag-base-command (concat helm-ag-base-command " " ignored))
+                 (current-prefix-arg nil))
+            (message helm-ag-base-command)
+            (message ignored)
+            (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
+        (error "You're not in a project"))
+    (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
+      (condition-case nil
+          (progn
+            (package-install 'helm-ag)
+            (helm-projectile-ag options))
+        (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
 
 ;;; customize helm-ag
 (defsubst helm-ag--marked-input ()
