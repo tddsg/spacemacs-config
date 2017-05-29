@@ -826,8 +826,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
-  (global-set-key (kbd "C-M-_") 'flip-frame)
-  (global-set-key (kbd "C-M-+") 'flop-frame)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
 
   (global-set-key (kbd "C-x b") 'helm-mini)
@@ -942,8 +940,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m 8") 'eyebrowse-switch-to-window-config-8)
   (global-set-key (kbd "M-m 9") 'eyebrowse-switch-to-window-config-9)
   (global-set-key (kbd "M-m 0") 'eyebrowse-switch-to-window-config-0)
-  (global-set-key (kbd "s-+") 'eyebrowse-next-window-config)
-  (global-set-key (kbd "s--") 'eyebrowse-prev-window-config)
+  (global-set-key (kbd "M-m +") 'eyebrowse-next-window-config)
+  (global-set-key (kbd "M-m -") 'eyebrowse-prev-window-config)
+  (global-set-key (kbd "C-M-+") 'eyebrowse-next-window-config)
+  (global-set-key (kbd "C-M-_") 'eyebrowse-prev-window-config)
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
   (global-set-key (kbd "C-x M-<left>") 'eyebrowse-prev-window-config)
 
