@@ -953,7 +953,7 @@ after stripping extra whitespace and new lines"
   (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward-current-match)
 
   ;; swiper
-  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
+  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
 
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
