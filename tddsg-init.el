@@ -1538,6 +1538,7 @@ BUFFER."
   (setq buffer (get-buffer buffer))
   (popwin:push-context)
   (run-hooks 'popwin:before-popup-hook)
+  (message "CREATE POPUP WIN")
   (multiple-value-bind (context context-stack)
       (popwin:find-context-for-buffer buffer :valid-only t)
     (if context
@@ -1584,7 +1585,11 @@ BUFFER."
   (run-hooks 'popwin:after-popup-hook)
   popwin:popup-window)
 
-;;; helm-do-ag
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Customize helm-do-ag
+
+(require 'helm-ag)
+
 ;;;###autoload
 (defun helm-projectile-ag (&optional options)
   "Helm version of projectile-ag."
@@ -1612,7 +1617,14 @@ BUFFER."
             (helm-projectile-ag options))
         (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
 
-;;; customize helm-ag
+(defun helm-ag-set-extra-option ()
+  "Set extra options for helm-ag"
+  (interactive)
+  (let ((option (read-string "Helm-ag: set extra options: "
+                             (or helm-ag--extra-options "")
+                             'helm-ag--extra-options-history)))
+    (setq helm-ag--extra-options option)))
+
 (defsubst helm-ag--marked-input ()
   (when (use-region-p)
     (let* ((text (buffer-substring-no-properties (region-beginning) (region-end)))
