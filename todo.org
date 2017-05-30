@@ -1,0 +1,6 @@
+* Helm-ag
+- create PR for ~helm-ag-set-extra-option~
+- create PR for ~helm-projectile-ag~
+
+* Popwin
+- customize popwin to split inside the window?
