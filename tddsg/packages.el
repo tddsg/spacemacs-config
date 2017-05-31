@@ -37,6 +37,7 @@
     python
     auctex
     latex-extra
+    helm-bibtex
     cc-mode
     sr-speedbar
     rtags
@@ -223,6 +224,12 @@ Each entry is either:
       (setq latex/view-after-compile nil)
       (add-hook 'LaTeX-mode-hook #'latex-extra-mode))))
 
+(defun tddsg/init-helm-bibtex ()
+  (use-package helm-bibtex
+    :ensure t
+    :config
+    (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
+
 (defun tddsg/post-init-auctex ()
   (require 'tex)
   (require 'reftex)
@@ -241,8 +248,12 @@ Each entry is either:
   (push '("frametitle" 3) TeX-outline-extra)
   (defun my-latex-hook ()
     ;; set tex master file
-    (if (eq TeX-master t)
-        (setq TeX-master (concat (projectile-project-root) "main.tex")))
+    (let ((main-tex (concat (projectile-project-root) "main.tex")))
+      (when (and (eq TeX-master t) (file-exists-p main-tex))
+        (setq TeX-master main-tex)))
+    (let ((main-bib (concat (projectile-project-root) "main.bib")))
+      (when (file-exists-p main-bib)
+        (setq bibtex-completion-bibliography (list main-bib))))
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent
           paragraph-separate "[ \t\f]*$"
