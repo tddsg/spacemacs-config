@@ -1633,6 +1633,24 @@ BUFFER."
       text)))
 
 
+;;;;; module helm-ag.el
+;;;;; show ag options in helm-ag buffer
+(defun helm-ag--put-result-in-save-buffer (result search-this-file-p)
+  (setq buffer-read-only t)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (insert "-*- mode: helm-ag -*-\n\n"
+            (format "Ag Results for `%s'%s:\n\n"
+                    helm-ag--last-query
+                    (if (string= helm-ag--extra-options "") ""
+                      (format ", with options `%s'" helm-ag--extra-options))))
+    (save-excursion
+      (insert result)))
+  (helm-ag-mode)
+  (unless (helm-ag--vimgrep-option)
+    (setq-local helm-ag--search-this-file-p search-this-file-p))
+  (setq-local helm-ag--default-directory default-directory))
+
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)
