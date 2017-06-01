@@ -746,6 +746,13 @@ after stripping extra whitespace and new lines"
   (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
 
+  ;; whichkey
+  (which-key-add-key-based-replacements "C-c !" "flycheck")
+  (which-key-add-key-based-replacements "C-c ," "semantic")
+  (which-key-add-key-based-replacements "C-c @" "hideshow")
+  (which-key-add-key-based-replacements "C-c C-w" "eyebrowse")
+  (which-key-add-key-based-replacements "C-x w" "highlight")
+
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
   (spacemacs|diminish super-save-mode "")

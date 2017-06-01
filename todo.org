@@ -4,3 +4,7 @@
 
 * Popwin
 - customize popwin to split inside the window?
+
+* My own functions
+- function to toggle uppercase / downcase of a letter
+        aBcDe --> abcDe -->  aBcDe  (toggle the letter B)
