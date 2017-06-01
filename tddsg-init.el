@@ -1035,6 +1035,7 @@ after stripping extra whitespace and new lines"
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
+    (define-key LaTeX-mode-map (kbd "C-c b") 'helm-bibtex)
     (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
     (define-key LaTeX-mode-map (kbd "M-g i") 'latex/font-italic)
     (define-key LaTeX-mode-map (kbd "M-g b") 'latex/font-bold)
