@@ -1614,8 +1614,6 @@ BUFFER."
                  (helm-ag-command-option options)
                  (helm-ag-base-command (concat helm-ag-base-command " " ignored))
                  (current-prefix-arg nil))
-            (message helm-ag-base-command)
-            (message ignored)
             (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
         (error "You're not in a project"))
     (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
