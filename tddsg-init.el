@@ -1631,14 +1631,6 @@ BUFFER."
                              'helm-ag--extra-options-history)))
     (setq helm-ag--extra-options option)))
 
-(defsubst helm-ag--marked-input ()
-  (when (use-region-p)
-    (let* ((text (buffer-substring-no-properties (region-beginning) (region-end)))
-           (text (replace-regexp-in-string " " "\\\\ " text)))
-      (deactivate-mark)
-      text)))
-
-
 ;;;;; module helm-ag.el
 ;;;;; show ag options in helm-ag buffer
 (defun helm-ag--put-result-in-save-buffer (result search-this-file-p)
