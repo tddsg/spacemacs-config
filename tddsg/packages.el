@@ -51,13 +51,14 @@
     llvm-mode
     ace-popup-menu
     smartparens
+    paren
     yasnippet
     hi-lock
     projectile
     helm
     expand-region
     goto-chg
-    paren
+    shx
     autorevert
     windmove
     framemove
@@ -349,6 +350,12 @@ Each entry is either:
 
 (defun tddsg/init-goto-chg ()
   (global-set-key (kbd "C-c C-\\") 'goto-last-change))
+
+(defun tddsg/init-shx ()
+  (use-package shx
+    :ensure t
+    :config
+    (shx-global-mode 1)))
 
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
