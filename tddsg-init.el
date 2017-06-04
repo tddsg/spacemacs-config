@@ -752,6 +752,7 @@ after stripping extra whitespace and new lines"
   (which-key-add-key-based-replacements "C-c @" "hideshow")
   (which-key-add-key-based-replacements "C-c C-w" "eyebrowse")
   (which-key-add-key-based-replacements "C-x w" "highlight")
+  (which-key-add-key-based-replacements "M-s h" "highlight")
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
@@ -1615,8 +1616,6 @@ BUFFER."
                  (helm-ag-command-option options)
                  (helm-ag-base-command (concat helm-ag-base-command " " ignored))
                  (current-prefix-arg nil))
-            (message helm-ag-base-command)
-            (message ignored)
             (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
         (error "You're not in a project"))
     (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
@@ -1633,14 +1632,6 @@ BUFFER."
                              (or helm-ag--extra-options "")
                              'helm-ag--extra-options-history)))
     (setq helm-ag--extra-options option)))
-
-(defsubst helm-ag--marked-input ()
-  (when (use-region-p)
-    (let* ((text (buffer-substring-no-properties (region-beginning) (region-end)))
-           (text (replace-regexp-in-string " " "\\\\ " text)))
-      (deactivate-mark)
-      text)))
-
 
 ;;;;; module helm-ag.el
 ;;;;; show ag options in helm-ag buffer
