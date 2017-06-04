@@ -752,6 +752,7 @@ after stripping extra whitespace and new lines"
   (which-key-add-key-based-replacements "C-c @" "hideshow")
   (which-key-add-key-based-replacements "C-c C-w" "eyebrowse")
   (which-key-add-key-based-replacements "C-x w" "highlight")
+  (which-key-add-key-based-replacements "M-s h" "highlight")
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
