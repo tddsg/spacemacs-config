@@ -177,6 +177,17 @@ If the new path's directories does not exist, create them."
   (interactive)
   (dired "~/"))
 
+(defun tddsg/toggle-case-current-character ()
+  "Toggle case of the current character."
+  (interactive)
+  (let ((current-char (char-after)))
+    (cond ((eq current-char (upcase current-char))
+           (delete-char 1)
+           (insert (downcase current-char)))
+          ((eq current-char (downcase current-char))
+           (delete-char 1)
+           (insert (upcase current-char))))))
+
 (defun tddsg/dired-duplicate-files ()
   "Duplicate files to the current folder by adding suffix \" - COPY\"."
   (interactive)
@@ -883,6 +894,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-p") '(lambda () (interactive) (previous-line 8)))
   (global-set-key (kbd "M-n") '(lambda () (interactive) (next-line 8)))
   (global-set-key (kbd "M-D") 'backward-kill-word)
+  (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
@@ -1129,6 +1141,11 @@ after stripping extra whitespace and new lines"
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "M-.") 'company-show-location)
+
+  ;; flycheck
+  (define-key flycheck-mode-map (kbd "M-g M-n") 'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "M-g M-p") 'flycheck-previous-error)
+  (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error)
 
   ;; reassign key-chords
   (key-chord-define-global "ji" 'indent-region)
