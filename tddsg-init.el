@@ -106,6 +106,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-prog-mode ()
   (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
+  (linum-mode 1)
   (flycheck-mode 1))
 
 (defun tddsg--hook-text-mode ()
@@ -123,18 +124,6 @@ If the new path's directories does not exist, create them."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
-
-(defun tddsg/previous-overlay ()
-  "Go to previous overlay."
-  (interactive)
-  (let ((posn (-  (previous-overlay-change (point)) 1)))
-    (if (not (null (overlays-at posn)))
-        (goto-char posn)))
-  ;; (goto-char (previous-overlay-change (point)))
-  ;; (while (and (not (bobp))
-  ;;             (not (memq (char-syntax (char-after)) '(?w))))
-  ;;   (goto-char (previous-overlay-change (point))))
-  )
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -506,6 +495,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/compile ()
   "Find the closest Makefile and compile."
   (interactive)
+  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (defun find-make-dir (dir)
     (cond ((string-match-p (regexp-quote "..") dir) "./")
           ((file-exists-p (expand-file-name "Makefile" dir)) dir)
@@ -514,12 +504,13 @@ after stripping extra whitespace and new lines"
           (t (find-make-dir (expand-file-name ".." dir)))) )
   (when (string-match-p (regexp-quote "make") compile-command)
     (setq compile-command
-          (format "make -k -C %s" (find-make-dir default-directory))))
+          (format "make -k -C %s -j4" (find-make-dir default-directory))))
   (call-interactively 'compile))
 
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
+  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (if (string-match-p (regexp-quote "make -k -C") compile-command)
       (recompile)
     (call-interactively 'tddsg/compile)))
@@ -700,7 +691,7 @@ after stripping extra whitespace and new lines"
         compilation-window-height 16
         compilation-scroll-output 'first-error
         compilation-skip-threshold 2)
-
+  (add-to-list 'same-window-buffer-names "*compilation*")
 
   ;; shell
   (setq comint-prompt-read-only nil)
@@ -746,6 +737,9 @@ after stripping extra whitespace and new lines"
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
   (setq helm-split-window-in-side-p t)
   (setq helm-split-window-default-side 'below)
+
+  ;; minibuffer
+  (setq resize-mini-windows nil)
 
   ;; reason-mode
   (tddsg/init-reason-mode)              ;
@@ -877,6 +871,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
+  (global-set-key (kbd "C-c D") 'dedicated-mode)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   ;; (global-set-key (kbd "C-c C-c") nil)
@@ -1397,7 +1392,8 @@ after stripping extra whitespace and new lines"
                        ,second-left
                        major-mode
                        (version-control :when active)
-                       (minor-modes :when active)
+                       ;; (minor-modes :when active)
+                       minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
