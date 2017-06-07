@@ -495,6 +495,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/compile ()
   "Find the closest Makefile and compile."
   (interactive)
+  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (defun find-make-dir (dir)
     (cond ((string-match-p (regexp-quote "..") dir) "./")
           ((file-exists-p (expand-file-name "Makefile" dir)) dir)
@@ -503,12 +504,13 @@ after stripping extra whitespace and new lines"
           (t (find-make-dir (expand-file-name ".." dir)))) )
   (when (string-match-p (regexp-quote "make") compile-command)
     (setq compile-command
-          (format "make -k -C %s" (find-make-dir default-directory))))
+          (format "make -k -C %s -j4" (find-make-dir default-directory))))
   (call-interactively 'compile))
 
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
+  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (if (string-match-p (regexp-quote "make -k -C") compile-command)
       (recompile)
     (call-interactively 'tddsg/compile)))
@@ -690,22 +692,6 @@ after stripping extra whitespace and new lines"
         compilation-scroll-output 'first-error
         compilation-skip-threshold 2)
   (add-to-list 'same-window-buffer-names "*compilation*")
-  (defun my-compilation-hook ()
-    (when (get-buffer-window "*compilation*")
-      (kill-buffer "*compilation*"))
-    ;; (when (not (get-buffer-window "*compilation*"))
-    ;;   (save-selected-window
-    ;;     (save-excursion
-    ;;       (let* ((w (split-window-vertically))
-    ;;              (h (window-height w)))
-    ;;         (select-window w)
-    ;;         (switch-to-buffer "*compilation*")
-    ;;         (shrink-window (- h compilation-window-height))))))
-    )
-  (add-hook 'compilation-mode-hook 'my-compilation-hook)
-
-
-
 
   ;; shell
   (setq comint-prompt-read-only nil)
