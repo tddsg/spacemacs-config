@@ -700,6 +700,22 @@ after stripping extra whitespace and new lines"
         compilation-window-height 16
         compilation-scroll-output 'first-error
         compilation-skip-threshold 2)
+  (add-to-list 'same-window-buffer-names "*compilation*")
+  (defun my-compilation-hook ()
+    (when (get-buffer-window "*compilation*")
+      (kill-buffer "*compilation*"))
+    ;; (when (not (get-buffer-window "*compilation*"))
+    ;;   (save-selected-window
+    ;;     (save-excursion
+    ;;       (let* ((w (split-window-vertically))
+    ;;              (h (window-height w)))
+    ;;         (select-window w)
+    ;;         (switch-to-buffer "*compilation*")
+    ;;         (shrink-window (- h compilation-window-height))))))
+    )
+  (add-hook 'compilation-mode-hook 'my-compilation-hook)
+
+
 
 
   ;; shell
@@ -877,6 +893,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
+  (global-set-key (kbd "C-c D") 'dedicated-mode)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   ;; (global-set-key (kbd "C-c C-c") nil)

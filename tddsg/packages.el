@@ -86,6 +86,7 @@
     swiper-helm
     counsel
     monky
+    dedicated
     (songbird :location local)
     (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
@@ -454,6 +455,9 @@ Each entry is either:
 
 (defun tddsg/init-monky ()
   (use-package monky))
+
+(defun tddsg/init-dedicated ()
+  (use-package dedicated))
 
 (defun tddsg/init-counsel ()
   (use-package counsel))
