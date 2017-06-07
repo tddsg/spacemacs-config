@@ -106,6 +106,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-prog-mode ()
   (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
+  (linum-mode 1)
   (flycheck-mode 1))
 
 (defun tddsg--hook-text-mode ()
@@ -123,18 +124,6 @@ If the new path's directories does not exist, create them."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
-
-(defun tddsg/previous-overlay ()
-  "Go to previous overlay."
-  (interactive)
-  (let ((posn (-  (previous-overlay-change (point)) 1)))
-    (if (not (null (overlays-at posn)))
-        (goto-char posn)))
-  ;; (goto-char (previous-overlay-change (point)))
-  ;; (while (and (not (bobp))
-  ;;             (not (memq (char-syntax (char-after)) '(?w))))
-  ;;   (goto-char (previous-overlay-change (point))))
-  )
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -762,6 +751,9 @@ after stripping extra whitespace and new lines"
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
   (setq helm-split-window-in-side-p t)
   (setq helm-split-window-default-side 'below)
+
+  ;; minibuffer
+  (setq resize-mini-windows t)
 
   ;; reason-mode
   (tddsg/init-reason-mode)              ;
@@ -1411,7 +1403,8 @@ after stripping extra whitespace and new lines"
                        ,second-left
                        major-mode
                        (version-control :when active)
-                       (minor-modes :when active)
+                       ;; (minor-modes :when active)
+                       minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
                         :when active)
