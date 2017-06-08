@@ -631,9 +631,9 @@ after stripping extra whitespace and new lines"
   (defun window-half-height ()
     (max 1 (/ (1- (window-height (selected-window))) 2)))
   (cond ((eq direction 'upward)
-         (scroll-up (window-half-height)))
+         (scroll-down (window-half-height)))
         ((eq direction 'downward)
-         (scroll-down (window-half-height)))))
+         (scroll-up (window-half-height)))))
 
 (defun tddsg/scroll-half-window-upward ()
   "Scroll half window upward."
