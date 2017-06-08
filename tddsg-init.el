@@ -542,6 +542,13 @@ after stripping extra whitespace and new lines"
   (call-interactively 'latex/compile-commands-until-done)
   (call-interactively 'pdf-sync-forward-search))
 
+(defun tddsg/close-special-windows ()
+  "Close all special windows such as compilation, ..."
+  (interactive)
+  (dolist (buf-name '("*compilation*")) ;; list more windows here
+    (let ((window (get-buffer-window buf-name)))
+      (when window (delete-window window)))))
+
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -821,7 +828,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
@@ -831,8 +837,11 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
+  (global-set-key (kbd "C-S-q") 'goto-last-change)
+  (global-set-key (kbd "C-S-g") 'tddsg/close-special-windows)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
