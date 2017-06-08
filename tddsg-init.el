@@ -549,6 +549,26 @@ after stripping extra whitespace and new lines"
     (let ((window (get-buffer-window buf-name)))
       (when window (delete-window window)))))
 
+(defun tddsg/scroll-half-window (&optional direction)
+  "Scroll half window, DIRECTION can be 'upward or 'downward."
+  (interactive)
+  (defun window-half-height ()
+    (max 1 (/ (1- (window-height (selected-window))) 2)))
+  (cond ((eq direction 'upward)
+         (scroll-up (window-half-height)))
+        ((eq direction 'downward)
+         (scroll-down (window-half-height)))))
+
+(defun tddsg/scroll-half-window-upward ()
+  "Scroll half window upward."
+  (interactive)
+  (tddsg/scroll-half-window 'upward))
+
+(defun tddsg/scroll-half-window-downward ()
+  "Scroll half window downward."
+  (interactive)
+  (tddsg/scroll-half-window 'downward))
+
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -897,8 +917,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-p") '(lambda () (interactive) (previous-line 8)))
-  (global-set-key (kbd "M-n") '(lambda () (interactive) (next-line 8)))
+  (global-set-key (kbd "M-p") 'tddsg/scroll-half-window-upward)
+  (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
