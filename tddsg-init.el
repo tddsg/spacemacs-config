@@ -1046,6 +1046,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m w i") 'flip-frame)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
+  (global-set-key (kbd "M-s g") 'google-translate-at-point)
+  (global-set-key (kbd "M-s t") 'google-translate-query-translate)
   (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
   (global-set-key (kbd "M-s i") 'ispell-buffer)
   (global-set-key (kbd "M-s s") 'ispell-continue)
@@ -1164,6 +1166,7 @@ after stripping extra whitespace and new lines"
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
     (define-key LaTeX-mode-map (kbd "C-c b") 'helm-bibtex)
     (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
+    (define-key LaTeX-mode-map (kbd "M-g v") 'latex/font-sans-serif)
     (define-key LaTeX-mode-map (kbd "M-g i") 'latex/font-italic)
     (define-key LaTeX-mode-map (kbd "M-g b") 'latex/font-bold)
     (define-key LaTeX-mode-map (kbd "M-g e") 'latex/font-emphasis)
