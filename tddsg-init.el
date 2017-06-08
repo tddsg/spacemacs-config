@@ -495,7 +495,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/compile ()
   "Find the closest Makefile and compile."
   (interactive)
-  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
+  ;; (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (defun find-make-dir (dir)
     (cond ((string-match-p (regexp-quote "..") dir) "./")
           ((file-exists-p (expand-file-name "Makefile" dir)) dir)
@@ -510,7 +510,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
-  (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
+  ;; (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (if (string-match-p (regexp-quote "make -k -C") compile-command)
       (recompile)
     (call-interactively 'tddsg/compile)))
@@ -691,7 +691,9 @@ after stripping extra whitespace and new lines"
         compilation-window-height 16
         compilation-scroll-output 'first-error
         compilation-skip-threshold 2)
-  (add-to-list 'same-window-buffer-names "*compilation*")
+  ;; pin the compilation buffer into 1 frame
+  (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
+
 
   ;; shell
   (setq comint-prompt-read-only nil)
