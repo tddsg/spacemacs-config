@@ -150,6 +150,7 @@ Each entry is either:
     (setq c-basic-offset 4)
     (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
+    (semantic-mode -1)
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)

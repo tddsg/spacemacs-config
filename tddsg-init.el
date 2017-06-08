@@ -125,6 +125,47 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
+(defun tddsg/describe-face-under-cursor ()
+  "Describe the face information under the cursor."
+  (interactive)
+  (let* ((pos (point))
+         (face (or (get-char-property pos 'read-face-name)
+                   (get-char-property pos 'face))))
+    (if face (message "Face Under The Cursor: %s" face)
+      (message "Face Not Found Under The Cursor At: %d" pos))))
+
+(defun tddsg/find-face-change-dwim (&optional direction)
+  "Find face change dwim. DIRECTION can be 'backward or 'forward."
+  (interactive)
+  (defun wanted-face-p (pos)
+    (let ((face (or (get-char-property pos 'read-face-name)
+                    (get-char-property pos 'face))))
+      (or (member face '(rtags-fixitline
+                         rtags-errline
+                         rtags-warnline
+                         flyspell-incorrect
+                         flyspell-duplicate)))))
+  (let* ((find-face-change  ;; use overlay for fast moving
+          (cond ((eq direction 'forward) 'next-overlay-change)
+                ((eq direction 'backward) 'previous-overlay-change)))
+         (pos (funcall find-face-change (point))))
+    (while (and (not (wanted-face-p pos))
+                (> pos (point-min))
+                (< pos (point-max)))
+      (setq pos (funcall find-face-change pos)))
+    (when (wanted-face-p pos)
+      (goto-char pos))))
+
+(defun tddsg/next-face-change-dwim ()
+  "Find next face change dwim."
+  (interactive)
+  (tddsg/find-face-change-dwim 'forward))
+
+(defun tddsg/previous-face-change-dwim ()
+  "Find previous face change dwim."
+  (interactive)
+  (tddsg/find-face-change-dwim 'backward))
+
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -919,6 +960,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-p") 'tddsg/scroll-half-window-upward)
   (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
+  (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
+  (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
