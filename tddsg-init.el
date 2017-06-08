@@ -166,6 +166,41 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/find-face-change-dwim 'backward))
 
+(defun tddsg/traverse-char-dwim (&optional direction)
+  "Traverse through character dwim. DIRECTION can be 'backward or 'forward."
+  (interactive)
+  (defun downcase-char-p (ch)
+    (and (looking-at-p "[[:alpha:]]") (eq ch (downcase ch))))
+  (defun upcase-char-p (ch)
+    (and (looking-at-p "[[:alpha:]]") (eq ch (upcase ch))))
+  (defun symbol-char-p (ch)
+    (not (looking-at-p "[[:alpha:]]")))
+  (defun traverse ()
+    (cond ((eq direction 'forward) (forward-char))
+          ((eq direction 'backward) (backward-char))))
+  (defun traverse-until (checker)
+    (while (and (> (point) (point-min))
+                (< (point) (point-max))
+                (not (funcall checker (char-after))))
+      (traverse)))
+  (cond ((downcase-char-p (char-after))
+         (traverse-until 'upcase-char-p))
+        ((symbol-char-p (char-after))
+         (traverse-until 'upcase-char-p))
+        ((upcase-char-p (char-after))
+         (traverse)
+         (traverse-until 'upcase-char-p))))
+
+(defun tddsg/next-char-dwim ()
+  "Go to next char dwim."
+  (interactive)
+  (tddsg/traverse-char-dwim 'forward))
+
+(defun tddsg/previous-char-dwim ()
+  "Go to previous char dwim."
+  (interactive)
+  (tddsg/traverse-char-dwim 'backward))
+
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -898,7 +933,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
-  (global-set-key (kbd "C-S-q") 'goto-last-change)
   (global-set-key (kbd "C-S-g") 'tddsg/close-special-windows)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
@@ -962,8 +996,11 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
+  (global-set-key (kbd "M-B") 'tddsg/previous-char-dwim)
+  (global-set-key (kbd "M-F") 'tddsg/next-char-dwim)
   (global-set-key (kbd "M-D") 'backward-kill-word)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
+  (global-set-key (kbd "M-Q") 'goto-last-change)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)

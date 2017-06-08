@@ -8,3 +8,4 @@
 * My own functions
 - function to toggle uppercase / downcase of a letter
         aBcDe --> abcDe -->  aBcDe  (toggle the letter B)
+- jump to face
