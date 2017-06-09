@@ -125,6 +125,15 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
+(defun tddsg/read-file-sexp ()
+  (interactive)
+  (let* ((config-file (concat (projectile-project-root) ".tddsg.el"))
+         (configuration
+          (with-temp-buffer
+            (insert-file-contents-literally config-file)
+            (read (current-buffer)))))
+    (message (cdar configuration))))
+
 (defun tddsg/describe-face-under-cursor ()
   "Describe the face information under the cursor."
   (interactive)
@@ -143,8 +152,9 @@ If the new path's directories does not exist, create them."
       (or (member face '(rtags-fixitline
                          rtags-errline
                          rtags-warnline
-                         flyspell-incorrect
-                         flyspell-duplicate)))))
+                         ;; flyspell-incorrect
+                         ;; flyspell-duplicate
+                         )))))
   (let* ((find-face-change  ;; use overlay for fast moving
           (cond ((eq direction 'forward) 'next-overlay-change)
                 ((eq direction 'backward) 'previous-overlay-change)))
@@ -796,6 +806,14 @@ after stripping extra whitespace and new lines"
         compilation-skip-threshold 2)
   ;; pin the compilation buffer into 1 frame
   (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
+  (defun my-compilation-hook ()
+    (when (get-buffer-window "*compilation*")
+      (let* ((compilation-window (get-buffer-window "*compilation*"))
+             (compilation-frame (window-frame compilation-window)))
+        (select-frame compilation-frame)
+        (select-window (get-buffer-window "*compilation*"))
+        (goto-char (point-max)))))
+  (add-hook 'compilation-mode-hook 'my-compilation-hook)
 
 
   ;; shell

@@ -6,6 +6,10 @@
 - customize popwin to split inside the window?
 
 * My own functions
-- function to toggle uppercase / downcase of a letter
+- function to toggle uppercase / downcase of a letter: OK
         aBcDe --> abcDe -->  aBcDe  (toggle the letter B)
-- jump to face
+- jump to face: OK
+
+- personal configuration file:
+  + create file =.tddsg= at the same place with =.projectile=
+  + store
