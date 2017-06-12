@@ -176,7 +176,7 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/find-face-change-dwim 'backward))
 
-(defun tddsg/traverse-char-dwim (&optional direction)
+(defun tddsg/traverse-upcase-char (&optional direction delete)
   "Traverse through character dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
   (defun downcase-char-p (ch)
@@ -193,23 +193,35 @@ If the new path's directories does not exist, create them."
                 (< (point) (point-max))
                 (not (funcall checker (char-after))))
       (traverse)))
-  (cond ((downcase-char-p (char-after))
-         (traverse-until 'upcase-char-p))
-        ((symbol-char-p (char-after))
-         (traverse-until 'upcase-char-p))
-        ((upcase-char-p (char-after))
-         (traverse)
-         (traverse-until 'upcase-char-p))))
+  (let ((origin-pos (point)))
+    (cond ((downcase-char-p (char-after))
+           (traverse-until 'upcase-char-p))
+          ((symbol-char-p (char-after))
+           (traverse-until 'upcase-char-p))
+          ((upcase-char-p (char-after))
+           (traverse)
+           (traverse-until 'upcase-char-p)))
+    (if delete (delete-char (- origin-pos (point))))))
 
-(defun tddsg/next-char-dwim ()
-  "Go to next char dwim."
+(defun tddsg/next-upcase-char ()
+  "Go to next upcase char."
   (interactive)
-  (tddsg/traverse-char-dwim 'forward))
+  (tddsg/traverse-upcase-char 'forward))
 
-(defun tddsg/previous-char-dwim ()
-  "Go to previous char dwim."
+(defun tddsg/previous-upcase-char ()
+  "Go to previous upcase char."
   (interactive)
-  (tddsg/traverse-char-dwim 'backward))
+  (tddsg/traverse-upcase-char 'backward))
+
+(defun tddsg/delete-until-next-upcase-char ()
+  "Delete until next upcase char."
+  (interactive)
+  (tddsg/traverse-upcase-char 'forward t))
+
+(defun tddsg/delete-until-previous-upcase-char ()
+  "Delete until previous upcase char."
+  (interactive)
+  (tddsg/traverse-upcase-char 'backward t))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -943,6 +955,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
@@ -1014,11 +1027,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
-  (global-set-key (kbd "M-B") 'tddsg/previous-char-dwim)
-  (global-set-key (kbd "M-F") 'tddsg/next-char-dwim)
-  (global-set-key (kbd "M-D") 'backward-kill-word)
+  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-char)
+  (global-set-key (kbd "M-F") 'tddsg/next-upcase-char)
+  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-char)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
-  (global-set-key (kbd "M-Q") 'goto-last-change)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
@@ -1050,6 +1062,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
+  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-char)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
