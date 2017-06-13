@@ -103,7 +103,10 @@
                              (1 font-lock-type-face))) t)
 
   (setq indent-tabs-mode nil)                      ;; insert spaces instead of tabs
-  (setq indent-line-function (quote (lambda ())))  ;; disable indent
+  ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent
+  (setq indent-line-function 'indent-relative)     ;; indent line relative
+  (setq indent-region-function (quote (lambda (begin end))))  ;; disable indent region
+
 
   ;; set comment command
   (set (make-local-variable 'comment-start) "//")
