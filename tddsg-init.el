@@ -818,15 +818,8 @@ after stripping extra whitespace and new lines"
         compilation-skip-threshold 2)
   ;; pin the compilation buffer into 1 frame
   (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
-  (defun my-compilation-hook ()
-    (when (get-buffer-window "*compilation*")
-      (let* ((compilation-window (get-buffer-window "*compilation*"))
-             (compilation-frame (window-frame compilation-window)))
-        (select-frame compilation-frame)
-        (select-window (get-buffer-window "*compilation*"))
-        (goto-char (point-max)))))
-  (add-hook 'compilation-mode-hook 'my-compilation-hook)
-
+  ;; reset all compilation hook, use the default one
+  (setq compilation-mode-hook nil)
 
   ;; shell
   (setq comint-prompt-read-only nil)
