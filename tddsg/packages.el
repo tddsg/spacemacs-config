@@ -88,6 +88,7 @@
     monky
     dedicated
     (songbird :location local)
+    (proddag :location local)
     (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
 
@@ -575,5 +576,13 @@ Each entry is either:
     (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
       (modify-syntax-entry symbol "_" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
+
+(defun tddsg/init-proddag ()
+  (require 'proddag)
+  (add-to-list 'auto-mode-alist '("\\.pdd\\'" . proddag))
+ (defun my-proddag-hook ()
+    ;; add hook here
+    )
+  (add-hook 'proddag-hook 'my-proddag-hook 'append))
 
 ;;; packages.el ends here

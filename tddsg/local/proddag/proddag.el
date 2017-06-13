@@ -145,10 +145,14 @@
                           '(("\\s-*\\([a-zA-Z0-9_']+\\)\\s-*;"
                              (1 font-lock-constant-face))) t)
 
+  ;; indentation
+  (make-local-variable 'indent-tabs-mode)
+  (make-local-variable 'indent-line-function)
+  (make-local-variable 'indent-region-function)
   (setq indent-tabs-mode nil)                      ;; insert spaces instead of tabs
-  ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent line
   (setq indent-line-function 'indent-relative)     ;; indent line relative
   (setq indent-region-function (quote (lambda (begin end))))  ;; disable indent region
+  ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent line
 
   ;; set comment command
   (set (make-local-variable 'comment-start) "//")
