@@ -87,11 +87,15 @@
 ;;     ))
 
 ;;;;;;;;;;;;;;;;
-;;; Imenu
+;;; generic imenu
 
 (setq proddag-imenu-generic-expression
-      '(("Abstract Entity"  "^\\s-*abstract\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
-        ("Entity"  "^\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*extends\\s-*" 1)))
+      '(("Entity"  "^\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*extends\\s-*" 1)
+        ("Abstract Entity"  "^\\s-*abstract\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
+        ("Space"  "^\\s-*space\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
+        ("Type"  "^\\s-*typedef\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
+        ("Type"  "^\\s-*struct\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
+        ("Type"  "^\\s-*enum\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)))
 
 (defun proddag-imenu-create-index ()
   (save-excursion
