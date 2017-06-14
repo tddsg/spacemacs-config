@@ -12,10 +12,14 @@
 
 ;; full doc on how to use here
 
+
+;;; TODO
+;; - add imenu support
+;; - grammar and syntax support
+
 ;;; Code:
 
 (require 'smie)
-
 
 ;; define several category of keywords
 (setq proddag-keywords
@@ -54,7 +58,6 @@
         ;; in general, longer words first
         ))
 
-
 (defvar proddag-syntax-table nil "Syntax table for `proddag'.")
 (setq proddag-syntax-table
       (let ((syn-table (make-syntax-table)))
@@ -65,6 +68,10 @@
         ;; modify syntax table to use ' character as part of word
         (modify-syntax-entry ?' "w" syn-table)
         syn-table))
+
+
+;;;;;;;;;;;;;;;
+;;; SMIE
 
 ;; (defun proddag-smie-rules (kind token)
 ;;   (pcase (cons kind token)
@@ -78,6 +85,20 @@
 ;;     (`(:after . "}")
 ;;      (if (smie-rule-hanging-p) (smie-rule-parent)))
 ;;     ))
+
+;;;;;;;;;;;;;;;;
+;;; Imenu
+
+(setq proddag-imenu-generic-expression
+      '(("Abstract Entity"  "^\\s-*abstract\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{" 1)
+        ("Entity"  "^\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*extends\\s-*" 1)))
+
+(defun proddag-imenu-create-index ()
+  (save-excursion
+    (imenu--generic-function proddag-imenu-generic-expression)))
+
+;;;;;;;;;;;;;;;;
+;;; Main mode
 
 ;;;###autoload
 (define-derived-mode proddag prog-mode "proddag"
@@ -146,19 +167,21 @@
                              (1 font-lock-constant-face))) t)
 
   ;; indentation
-  (make-local-variable 'indent-tabs-mode)
-  (make-local-variable 'indent-line-function)
-  (make-local-variable 'indent-region-function)
-  (setq indent-tabs-mode nil)                      ;; insert spaces instead of tabs
-  (setq indent-line-function 'indent-relative)     ;; indent line relative
-  (setq indent-region-function (quote (lambda (begin end))))  ;; disable indent region
+  (setq-local indent-tabs-mode nil)
+  ;; indent line relative
+  (setq-local indent-line-function 'indent-relative)
+  ;; disable indent region
+  (setq-local indent-region-function '(lambda (x y) ()))
   ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent line
 
   ;; set comment command
-  (set (make-local-variable 'comment-start) "//")
-  (set (make-local-variable 'comment-end) "")
-  (set (make-local-variable 'comment-multi-line) nil)
-  (set (make-local-variable 'comment-use-syntax) t)
+  (setq-local comment-start "//")
+  (setq-local comment-end "")
+  (setq-local comment-multi-line nil)
+  (setq-local comment-use-syntax t)
+
+  ;; imenu
+  (setq-local imenu-create-index-function 'proddag-imenu-create-index)
 
   ;; indentation
   ;; (smie-setup nil #'proddag-smie-rules)

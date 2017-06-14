@@ -867,7 +867,8 @@ after stripping extra whitespace and new lines"
   (setq helm-split-window-default-side 'below)
 
   ;; minibuffer
-  (setq resize-mini-windows nil)
+  (setq resize-mini-windows t)
+  (setq max-mini-window-height 3)
 
   ;; reason-mode
   (tddsg/init-reason-mode)              ;
