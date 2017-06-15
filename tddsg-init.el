@@ -1008,7 +1008,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c r") 'projectile-replace)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c D") 'dedicated-mode)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
 
   ;; (global-set-key (kbd "C-c C-c") nil)
