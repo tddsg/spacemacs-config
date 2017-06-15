@@ -675,6 +675,12 @@ after stripping extra whitespace and new lines"
   (interactive)
   (setq company-idle-delay 300))
 
+(defun tddsg/restart-irony-mode ()
+  (interactive)
+  (irony-server-kill)
+  (irony--mode-exit)
+  (irony--mode-enter))
+
 (defun tddsg/toggle-show-mode-line ()
   (interactive)
   (if (bound-and-true-p mode-line-format)
