@@ -656,25 +656,45 @@ after stripping extra whitespace and new lines"
     (let ((window (get-buffer-window buf-name)))
       (when window (delete-window window)))))
 
-(defun tddsg/scroll-half-window (&optional direction)
-  "Scroll half window, DIRECTION can be 'upward or 'downward."
+(defun tddsg/scroll-half-window (&optional direction other)
+  "Scroll half window, DIRECTION can be 'upward or 'downward.
+If OTHER is t then scroll other window."
   (interactive)
-  (defun window-half-height ()
-    (max 1 (/ (1- (window-height (selected-window))) 2)))
-  (cond ((eq direction 'upward)
-         (scroll-down (window-half-height)))
-        ((eq direction 'downward)
-         (scroll-up (window-half-height)))))
+  (defun scroll-half ()
+    (defun window-half-height ()
+      (max 1 (/ (1- (window-height (selected-window))) 2)))
+    (if (derived-mode-p 'pdf-view-mode)
+        (cond ((eq direction 'upward)
+               (pdf-view-scroll-down-or-previous-page))
+              ((eq direction 'downward)
+               (pdf-view-scroll-up-or-next-page)))
+      (cond ((eq direction 'upward)
+             (scroll-down (window-half-height)))
+            ((eq direction 'downward)
+             (scroll-up (window-half-height))))))
+  (if (and other (> (length (window-list)) 1)) (other-window 1))
+  (scroll-half)
+  (if (and other (> (length (window-list)) 1)) (other-window -1)))
 
 (defun tddsg/scroll-half-window-upward ()
   "Scroll half window upward."
   (interactive)
-  (tddsg/scroll-half-window 'upward))
+  (tddsg/scroll-half-window 'upward nil))
 
 (defun tddsg/scroll-half-window-downward ()
   "Scroll half window downward."
   (interactive)
-  (tddsg/scroll-half-window 'downward))
+  (tddsg/scroll-half-window 'downward nil))
+
+(defun tddsg/scroll-half-other-window-upward ()
+  "Scroll half window upward."
+  (interactive)
+  (tddsg/scroll-half-window 'upward t))
+
+(defun tddsg/scroll-half-other-window-downward ()
+  "Scroll half window downward."
+  (interactive)
+  (tddsg/scroll-half-window 'downward t))
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
@@ -982,6 +1002,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
+  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-half-other-window-upward)
+  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-half-other-window-downward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
@@ -1019,6 +1041,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
+  (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
 
   ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
@@ -1075,11 +1098,6 @@ after stripping extra whitespace and new lines"
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
-  (global-set-key (kbd "M-m l c") 'langtool-check)
-  (global-set-key (kbd "M-m l b") 'langtool-correct-buffer)
-  (global-set-key (kbd "M-m l d") 'langtool-check-done)
-  (global-set-key (kbd "M-m l n") 'langtool-goto-next-error)
-  (global-set-key (kbd "M-m l p") 'langtool-goto-previous-error)
   (global-set-key (kbd "M-m l v") 'visual-line-mode)
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
@@ -1095,7 +1113,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s p") 'flyspell-correct-previous-word-generic)
   (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
-  (global-set-key (kbd "M-s k") 'sp-splice-sexp-killing-around)
+  (global-set-key (kbd "M-s l") 'langtool-check)
+  (global-set-key (kbd "M-s M-l") 'langtool-check-done)
 
   ;; workspaces transient
   (global-set-key (kbd "M-m 1") 'eyebrowse-switch-to-window-config-1)
