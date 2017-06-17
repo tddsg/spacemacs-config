@@ -25,6 +25,13 @@
 (require 'rtags)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PRIVATE VARIABLES
+
+;; used to jump between faces
+(defvar tddsg--face-change-types '())
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
 
 (defun tddsg--blank-line-p ()
@@ -105,11 +112,18 @@ If the new path's directories does not exist, create them."
   (whitespace-mode 1))
 
 (defun tddsg--hook-prog-mode ()
-  (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
+  "Hook to run in 'prog-mode'."
+  (when (derived-mode-p 'c-mode 'c++-mode)
+    (dolist (face-type '('rtags-fixitline 'rtags-warnline 'rtags-errline))
+      (add-to-list 'tddsg--face-change-types face-type))
+    (ggtags-mode 1))
   (linum-mode 1)
   (flycheck-mode 1))
 
 (defun tddsg--hook-text-mode ()
+  "Hook to run in 'text-mode'."
+  (dolist (face-type '(flyspell-incorrect flyspell-duplicate langtool-errline))
+    (add-to-list 'tddsg--face-change-types face-type))
   (flyspell-mode 1))
 
 (defun tddsg--hook-shell-mode ()
@@ -149,12 +163,7 @@ If the new path's directories does not exist, create them."
   (defun wanted-face-p (pos)
     (let ((face (or (get-char-property pos 'read-face-name)
                     (get-char-property pos 'face))))
-      (or (member face '(rtags-fixitline
-                         rtags-errline
-                         rtags-warnline
-                         ;; flyspell-incorrect
-                         ;; flyspell-duplicate
-                         )))))
+      (or (member face tddsg--face-change-types))))
   (let* ((find-face-change  ;; use overlay for fast moving
           (cond ((eq direction 'forward) 'next-overlay-change)
                 ((eq direction 'backward) 'previous-overlay-change)))
@@ -955,6 +964,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-w") 'kill-region)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
