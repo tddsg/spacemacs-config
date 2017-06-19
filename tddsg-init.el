@@ -250,6 +250,22 @@ If the new path's directories does not exist, create them."
   (call-interactively 'other-window)
   (call-interactively 'tddsg/shell-current-window))
 
+(defun tddsg/next-shell-window ()
+  "Jump to the next shell window, if available."
+  (interactive)
+  (defun next-shell-window (orgwin curwin)
+    (let ((nextwin (next-window curwin nil t)))
+      (if (equal nextwin orgwin) nil
+        (with-current-buffer (window-buffer nextwin)
+          (if (derived-mode-p 'shell-mode) (select-window nextwin)
+            (next-shell-window orgwin nextwin))))))
+  (let* ((curwin (selected-window))
+         (shellwin (next-shell-window curwin curwin)))
+    (if (not shellwin)
+        (message "Next shell window not found!")
+      (select-frame-set-input-focus (window-frame shellwin))
+      (select-window shellwin))))
+
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -1052,6 +1068,7 @@ If OTHER is t then scroll other window."
 
   ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
+  (global-set-key (kbd "C-c H-m") 'tddsg/next-shell-window)
   (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
