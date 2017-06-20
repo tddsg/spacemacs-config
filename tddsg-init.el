@@ -835,8 +835,8 @@ If OTHER is t then scroll other window."
   (add-hook 'pdf-view-mode-hook 'update-pdf-view-theme)
 
   ;; mode editing setting
-  (electric-pair-mode t)
-  (delete-selection-mode t)                            ;; delete selection by keypress
+  (electric-pair-mode -1)         ;; electric-pair may conflict with smartparens
+  (delete-selection-mode t)       ;; delete selection by keypress
   (setq require-final-newline t)                       ;; newline at end of file
   (defadvice newline (after indent activate) (indent-according-to-mode))
 
@@ -923,6 +923,8 @@ If OTHER is t then scroll other window."
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
   (setq helm-split-window-in-side-p t)
   (setq helm-split-window-default-side 'below)
+  ;; (setq helm-display-function 'helm-default-display-buffer)
+  (setq helm-display-function 'spacemacs//display-helm-window)
 
   ;; minibuffer
   (setq resize-mini-windows t)
@@ -1736,75 +1738,33 @@ Set `spaceline-highlight-face-func' to
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
 
-;;;;; POPWIN mode
 
-(require 'popwin)
-(defun* popwin:popup-buffer (buffer
-                             &key
-                             (width popwin:popup-window-width)
-                             (height popwin:popup-window-height)
-                             (position popwin:popup-window-position)
-                             noselect
-                             dedicated
-                             stick
-                             tail)
-  "Show BUFFER in a popup window and return the popup window. If
-NOSELECT is non-nil, the popup window will not be selected. If
-STICK is non-nil, the popup window will be stuck. If TAIL is
-non-nil, the popup window will show the last contents. Calling
-`popwin:popup-buffer' during `popwin:popup-buffer' is allowed. In
-that case, the buffer of the popup window will be replaced with
-BUFFER."
-  (interactive "BPopup buffer:\n")
-  (setq buffer (get-buffer buffer))
-  (popwin:push-context)
-  (run-hooks 'popwin:before-popup-hook)
-  (message "CREATE POPUP WIN")
-  (multiple-value-bind (context context-stack)
-      (popwin:find-context-for-buffer buffer :valid-only t)
-    (if context
-        (progn
-          (popwin:use-context context)
-          (setq popwin:context-stack context-stack))
-      (let ((win-outline (car (popwin:window-config-tree))))
-        (destructuring-bind (master-win popup-win win-map)
-            (let ((size (if (popwin:position-horizontal-p position) width height))
-                  (adjust popwin:adjust-other-windows))
-              ;; <-- original line
-              ;; (popwin:create-popup-window size position adjust)
-              ;; <-- new code
-              (let* ((popup-win-height (- popwin:popup-window-height))
-                     (orig-window (selected-window))
-                     (new-window (split-window orig-window popup-win-height 'below)))
-                (set-window-buffer new-window buffer)
-                (list orig-window new-window nil))
-              )
-          (setq popwin:popup-window popup-win
-                popwin:master-window master-win
-                popwin:window-outline win-outline
-                popwin:window-map win-map
-                popwin:window-config nil
-                popwin:selected-window (selected-window)))
-        (popwin:update-window-reference 'popwin:context-stack :recursive t)
-        (popwin:start-close-popup-window-timer))
-      (with-selected-window popwin:popup-window
-        (popwin:switch-to-buffer buffer)
-        (when tail
-          (set-window-point popwin:popup-window (point-max))
-          (recenter -2)))
-      (setq popwin:popup-buffer buffer
-            popwin:popup-last-config (list buffer
-                                           :width width :height height :position position
-                                           :noselect noselect :dedicated dedicated
-                                           :stick stick :tail tail)
-            popwin:popup-window-dedicated-p dedicated
-            popwin:popup-window-stuck-p stick)))
-  (if noselect
-      (setq popwin:focus-window popwin:selected-window)
-    (setq popwin:focus-window popwin:popup-window)
-    (select-window popwin:popup-window))
-  (run-hooks 'popwin:after-popup-hook)
-  popwin:popup-window)
+(defun pupo//popup-function (position size)
+  "Generate a display function to create a popup window.
+POSITION should be one of bottom, top, left and right.
+SIZE should be either a positive number of nil.  Size is interpreted as
+width or height depending on POSITION."
+  (let* ((size (cl-case position
+                 ('left (purpose--normalize-width (or size
+                                                      popwin:popup-window-width)))
+                 ('right (purpose--normalize-width (or size
+                                                       popwin:popup-window-width)))
+                 ('top (purpose--normalize-height (or size
+                                                      popwin:popup-window-height)))
+                 ('bottom (purpose--normalize-height (or size
+                                                         popwin:popup-window-height)))))
+         (size (when size (- size)))
+         (side (cl-case position
+                 ('left 'left)
+                 ('right 'right)
+                 ('top 'above)
+                 ('bottom 'below))))
+    (lambda (buffer alist)
+      (let ((window (ignore-errors
+                      ;; (split-window (frame-root-window) size side)
+                      (split-window (selected-window) size side))))
+        (when window
+          (purpose-change-buffer buffer window 'window alist))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Customize helm-do-ag
