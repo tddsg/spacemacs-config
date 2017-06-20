@@ -923,8 +923,12 @@ If OTHER is t then scroll other window."
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
   (setq helm-split-window-in-side-p t)
   (setq helm-split-window-default-side 'below)
-  ;; (setq helm-display-function 'helm-default-display-buffer)
-  (setq helm-display-function 'spacemacs//display-helm-window)
+  ;; make Helm split inside the active window in a few function
+  (defun advise-helm-split-active-window (orig-func &rest args)
+    (setq helm-display-function 'helm-default-display-buffer)
+    (apply orig-func args)
+    (setq helm-display-function 'spacemacs//display-helm-window))
+  (advice-add 'helm-company :around #'advise-helm-split-active-window)
 
   ;; minibuffer
   (setq resize-mini-windows t)
