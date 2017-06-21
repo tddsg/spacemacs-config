@@ -931,6 +931,7 @@ If OTHER is t then scroll other window."
   (advice-add 'helm-company :around #'advise-helm-split-active-window)
   (advice-add 'helm-semantic-or-imenu :around #'advise-helm-split-active-window)
   (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
+  (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
 
   ;; minibuffer
   (setq resize-mini-windows t)
@@ -1107,8 +1108,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "C-M-/") 'company-complete)
-  (global-set-key (kbd "C-M-?") 'helm-company)
+  (global-set-key (kbd "M-?") 'company-complete)
+  (global-set-key (kbd "C-M-/") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
   (global-set-key (kbd "M-g |") 'vline-mode)
