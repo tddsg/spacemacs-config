@@ -8,86 +8,56 @@
 
 ;;; Commentary:
 
-;; short description here
-
-;; full doc on how to use here
-
-
-;;; TODO
-;; - add imenu support
-;; - grammar and syntax support
+;;; This package provide a major mode to edit the source code file of protoddag
+;;
+;;  Current supported features:
+;;    - Syntax highlighting
+;;    - Outline viewing by Emacs Imenu
+;;
+;;  TODO:
+;;    - Syntax parsing for a more structured outline view and syntax checking.
+;;    - Auto-indentation
 
 ;;; Code:
 
-(require 'smie)
-
-;; define several category of keywords
+;; define proddag keywors
 (setq proddag-keywords
       '("abstract" "attribute" "entity" "enum"
         "extends" "field" "language"
         "typedef" "reference" "space" "struct"
         "vector"))
 
+;; define proddag primitive types
 (setq proddag-types
       '("float" "int" "uint32" "boolean" "void" "string"))
 
+;; define proddag primitive constants
 (setq proddag-constants
       '("true" "false" ))
-
-(setq proddag-predicates
-      '("emp"))
 
 ;; generate regex string for each category of keywords
 (setq proddag-keyword-regexp (regexp-opt proddag-keywords 'words))
 (setq proddag-type-regexp (regexp-opt proddag-types 'words))
 (setq proddag-constant-regexp (regexp-opt proddag-constants 'words))
-(setq proddag-predicate-regexp (regexp-opt proddag-predicates 'words))
-;; (setq proddag-functions-regexp proddag-functions)
 
 ;; create the list for font-lock.
 ;; each category of keyword is given a particular face
 (setq proddag-font-lock-keywords
-      `(
-        (,proddag-type-regexp . font-lock-type-face)
+      `((,proddag-type-regexp . font-lock-type-face)
         (,proddag-constant-regexp . font-lock-constant-face)
-        ;; (,proddag-functions-regexp . font-lock-function-name-face)
-        (,proddag-keyword-regexp . font-lock-keyword-face)
-        (,proddag-predicate-regexp . font-lock-function-name-face)
-        ;; note: order above matters, because once colored,
-        ;; that part won't change.
-        ;; in general, longer words first
-        ))
+        (,proddag-keyword-regexp . font-lock-keyword-face)))
 
 (defvar proddag-syntax-table nil "Syntax table for `proddag'.")
 (setq proddag-syntax-table
       (let ((syn-table (make-syntax-table)))
-        ;; C++ style comment “// …”
+        ;; C++ style comment “//...”
         (modify-syntax-entry ?\/ ". 124" syn-table)
         (modify-syntax-entry ?* ". 23b" syn-table)
         (modify-syntax-entry ?\n ">" syn-table)
-        ;; modify syntax table to use ' character as part of word
-        (modify-syntax-entry ?' "w" syn-table)
         syn-table))
 
-
-;;;;;;;;;;;;;;;
-;;; SMIE
-
-;; (defun proddag-smie-rules (kind token)
-;;   (pcase (cons kind token)
-;;     (`(:elem . basic) smie-indent-basic)
-;;     ;; (`(,_ . ";") (smie-rule-separator kind))
-;;     ;; (`(:after . ";") (smie-rule-bolp))
-;;     (`(:before . ";") (- smie-indent-basic))
-;;     ;; (`(:after . ";") (smie-rule-separator kind))
-;;     (`(:before . "{")
-;;      (if (smie-rule-hanging-p) (smie-rule-parent)))
-;;     (`(:after . "}")
-;;      (if (smie-rule-hanging-p) (smie-rule-parent)))
-;;     ))
-
 ;;;;;;;;;;;;;;;;
-;;; generic imenu
+;;; generic imenu for viewing outline
 
 (setq proddag-imenu-generic-expression
       '(("Entity"  "^\\s-*entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*extends\\s-*" 1)
@@ -116,10 +86,6 @@
   (font-lock-add-keywords 'proddag
                           '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
                              (1 font-lock-function-name-face))) t)
-  ;; ;; higlight syntax for data structure
-  ;; (font-lock-add-keywords 'proddag
-  ;;                         '(("data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{"
-  ;;                            (1 font-lock-type-face))) t)
 
   ;; highlight for type
   (font-lock-add-keywords 'proddag
@@ -152,6 +118,7 @@
   (font-lock-add-keywords 'proddag
                           '(("attribute\\s-*[a-zA-Z0-9_']+\\s-*=\\s-*\\([a-zA-Z0-9_']+\\)"
                              (1 font-lock-type-face))) t)
+
   ;; highlight for field, attribute, language, space
   (font-lock-add-keywords 'proddag
                           '(("field\\s-*\\([a-zA-Z0-9_']+\\)\\s-*:"
@@ -165,18 +132,16 @@
   (font-lock-add-keywords 'proddag
                           '(("space\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{"
                              (1 font-lock-warning-face))) t)
+
   ;; constant
   (font-lock-add-keywords 'proddag
                           '(("\\s-*\\([a-zA-Z0-9_']+\\)\\s-*;"
                              (1 font-lock-constant-face))) t)
 
   ;; indentation
-  (setq-local indent-tabs-mode nil)
-  ;; indent line relative
-  (setq-local indent-line-function 'indent-relative)
-  ;; disable indent region
-  (setq-local indent-region-function '(lambda (x y) ()))
-  ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent line
+  (setq-local indent-tabs-mode nil)                       ;; using space
+  (setq-local indent-line-function 'indent-relative)      ;; indent line relative
+  (setq-local indent-region-function '(lambda (x y) ()))  ;; disable indent region
 
   ;; set comment command
   (setq-local comment-start "//")
@@ -187,27 +152,22 @@
   ;; imenu
   (setq-local imenu-create-index-function 'proddag-imenu-create-index)
 
-  ;; indentation
-  ;; (smie-setup nil #'proddag-smie-rules)
-
   (run-hooks 'proddag-hook))
 
 ;; clear memory. no longer needed
 (setq proddag-keywords nil)
 (setq proddag-types nil)
 (setq proddag-constants nil)
-;; (setq proddag-functions nil)
 
 ;; clear memory. no longer needed
 (setq proddag-keyword-regexp nil)
-(setq proddag-predicate-regexp nil)
 (setq proddag-type-regexp nil)
 (setq proddag-constant-regexp nil)
-;; (setq proddag-function-regexp nil)
 
 
+;; bind to file *.pdd
 (or (assoc "\\.pdd$" auto-mode-alist)
-    (setq auto-mode-alist (cons '("\\.sb$" . proddag) auto-mode-alist)))
+    (setq auto-mode-alist (cons '("\\.pdd$" . proddag) auto-mode-alist)))
 
 ;; add the mode to the `features' list
 (provide 'proddag)

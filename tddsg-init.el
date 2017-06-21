@@ -929,6 +929,8 @@ If OTHER is t then scroll other window."
     (apply orig-func args)
     (setq helm-display-function 'spacemacs//display-helm-window))
   (advice-add 'helm-company :around #'advise-helm-split-active-window)
+  (advice-add 'helm-semantic-or-imenu :around #'advise-helm-split-active-window)
+  (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
 
   ;; minibuffer
   (setq resize-mini-windows t)
