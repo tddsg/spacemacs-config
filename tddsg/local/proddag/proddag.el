@@ -11,13 +11,28 @@
 ;;; This package provide a major mode to edit the source code file of protoddag
 ;;
 ;;  Current supported features:
-;;    - Syntax highlighting
-;;    - Outline viewing by Emacs Imenu
+;;  - Syntax highlighting
+;;  - Outline viewing by Emacs Imenu
 ;;
 ;;  TODO:
-;;    - Syntax parsing for a more structured outline view and syntax checking.
-;;    - Auto-indentation
-
+;;  - Syntax parsing for a more structured outline view and syntax checking.
+;;  - Auto-indentation
+;;
+;;  Installation:
+;;  - Copy the following into the Emacs configuration file (normally ~/.emacs)
+;;
+;;    (push "path/to/folder/contains/this/file" load-path)
+;;    (autoload 'proddag "proddag" "Protoddag" t)
+;;    (or (assoc "\\.pdd$" auto-mode-alist)
+;;        (setq auto-mode-alist (cons '("\\.pdd$" . proddag) auto-mode-alist)))
+;;
+;;  Usage:
+;;  - With Spacemacs:
+;;    + call `helm-semantic-or-imenu' to view the outline list from the Helm window
+;;
+;;  - With normal Emacs:
+;;    + call `imenu-add-menubar-index' to view the outline from the `Index' menu
+;;
 ;;; Code:
 
 ;; define proddag keywors
@@ -89,6 +104,9 @@
 
   ;; highlight for type
   (font-lock-add-keywords 'proddag
+                          '(("space\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{"
+                             (1 font-lock-type-face))) t)
+  (font-lock-add-keywords 'proddag
                           '(("entity\\s-*\\([a-zA-Z0-9_']+\\)\\s-*"
                              (1 font-lock-type-face))) t)
   (font-lock-add-keywords 'proddag
@@ -128,10 +146,7 @@
                              (1 font-lock-variable-name-face))) t)
   (font-lock-add-keywords 'proddag
                           '(("language\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{"
-                             (1 font-lock-warning-face))) t)
-  (font-lock-add-keywords 'proddag
-                          '(("space\\s-*\\([a-zA-Z0-9_']+\\)\\s-*{"
-                             (1 font-lock-warning-face))) t)
+                             (1 font-lock-variable-name-face))) t)
 
   ;; constant
   (font-lock-add-keywords 'proddag
