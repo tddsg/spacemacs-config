@@ -872,10 +872,10 @@ If OTHER is t then scroll other window."
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 16
-        compilation-scroll-output 'first-error
+        compilation-scroll-output t
         compilation-skip-threshold 2)
   ;; pin the compilation buffer into 1 frame
-  (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
+  ;; (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
   ;; reset all compilation hook, use the default one
   (setq compilation-mode-hook nil)
 
@@ -946,6 +946,8 @@ If OTHER is t then scroll other window."
   ;; spacemacs
   (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
+  (setq-default dotspacemacs-excluded-packages '(window-purpose))
+
 
   ;; whichkey
   (which-key-add-key-based-replacements "C-c !" "flycheck")
@@ -1256,6 +1258,7 @@ If OTHER is t then scroll other window."
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+    (define-key LaTeX-mode-map (kbd "C-c C-S-e") 'LaTeX-delete-environment)
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
     (define-key LaTeX-mode-map (kbd "C-c b") 'helm-bibtex)
     (define-key LaTeX-mode-map (kbd "C-M-o") 'reftex-toc)
@@ -1745,33 +1748,6 @@ Set `spaceline-highlight-face-func' to
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
 
-
-(defun pupo//popup-function (position size)
-  "Generate a display function to create a popup window.
-POSITION should be one of bottom, top, left and right.
-SIZE should be either a positive number of nil.  Size is interpreted as
-width or height depending on POSITION."
-  (let* ((size (cl-case position
-                 ('left (purpose--normalize-width (or size
-                                                      popwin:popup-window-width)))
-                 ('right (purpose--normalize-width (or size
-                                                       popwin:popup-window-width)))
-                 ('top (purpose--normalize-height (or size
-                                                      popwin:popup-window-height)))
-                 ('bottom (purpose--normalize-height (or size
-                                                         popwin:popup-window-height)))))
-         (size (when size (- size)))
-         (side (cl-case position
-                 ('left 'left)
-                 ('right 'right)
-                 ('top 'above)
-                 ('bottom 'below))))
-    (lambda (buffer alist)
-      (let ((window (ignore-errors
-                      ;; (split-window (frame-root-window) size side)
-                      (split-window (selected-window) size side))))
-        (when window
-          (purpose-change-buffer buffer window 'window alist))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Customize helm-do-ag
