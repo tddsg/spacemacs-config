@@ -114,22 +114,27 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-prog-mode ()
   "Hook to run in 'prog-mode'."
   (when (derived-mode-p 'c-mode 'c++-mode)
-    (dolist (face-type '('rtags-fixitline 'rtags-warnline 'rtags-errline))
+    (dolist (face-type '('rtags-fixitline
+                         'rtags-warnline
+                         'rtags-errline))
       (add-to-list 'tddsg--face-change-types face-type))
     (ggtags-mode 1))
+  (flyspell-mode -1)
   (linum-mode 1)
   (flycheck-mode 1))
 
 (defun tddsg--hook-text-mode ()
   "Hook to run in 'text-mode'."
-  (dolist (face-type '(flyspell-incorrect flyspell-duplicate langtool-errline))
+  (dolist (face-type '(flyspell-incorrect
+                       flyspell-duplicate
+                       langtool-errline))
     (add-to-list 'tddsg--face-change-types face-type))
   (flyspell-mode 1))
 
 (defun tddsg--hook-shell-mode ()
+  "Hook to run in shell mode."
   (add-hook 'window-configuration-change-hook
             'tddsg--fix-comint-window-size nil t)
-  ;; specify margin for shell-mode
   (set (make-local-variable 'scroll-margin) 1)
   (set (make-local-variable 'next-screen-context-lines ) 1)
   (rainbow-delimiters-mode-disable)
@@ -1014,6 +1019,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-`") 'goto-last-change)
   (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
+  (global-set-key (kbd "C-S-j") 'avy-goto-char)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
   (global-set-key (kbd "C-w") 'kill-region)
