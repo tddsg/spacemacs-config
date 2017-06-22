@@ -249,6 +249,39 @@ Each entry is either:
   ;; add frametitle into outline of reftex and TeX
   (push '("frametitle" . 3) reftex-section-levels)
   (push '("frametitle" 3) TeX-outline-extra)
+  ;; remove the outer environment
+  (defun LaTeX-delete-environment ()
+    (interactive)
+    (when (LaTeX-current-environment)
+      (save-excursion
+        (let* ((begin-start (save-excursion
+                              (LaTeX-find-matching-begin)
+                              (point)))
+               (begin-end (save-excursion
+                            (goto-char begin-start)
+                            (search-forward-regexp "begin{.*?}")))
+               (end-end (save-excursion
+                          (LaTeX-find-matching-end)
+                          (point)))
+               (end-start (save-excursion
+                            (goto-char end-end)
+                            (1- (search-backward-regexp "\\end")))))
+          ;; delete end first since if we delete begin first it shifts the
+          ;; location of end
+          (delete-region end-start end-end)
+          (delete-region begin-start begin-end)))))
+  ;; remove the outer macro
+  (defun TeX-remove-macro ()
+    "Remove current macro and return `t'.  If no macro at point, return `nil'."
+    (interactive)
+    (when (TeX-current-macro)
+      (let ((bounds (TeX-find-macro-boundaries))
+            (brace  (save-excursion
+                      (goto-char (1- (TeX-find-macro-end)))
+                      (TeX-find-opening-brace))))
+        (delete-region (1- (cdr bounds)) (cdr bounds))
+        (delete-region (car bounds) (1+ brace)))
+      t))
   (defun my-latex-hook ()
     ;; set tex master file
     (let ((main-tex (concat (projectile-project-root) "main.tex")))
