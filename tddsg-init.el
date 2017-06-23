@@ -940,6 +940,12 @@ If OTHER is t then scroll other window."
   (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
   (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
 
+  ;; browser
+  (setq browse-url-browser-function 'browse-url-generic
+        engine/browser-function 'browse-url-generic
+        browse-url-generic-program (if (string= (system-name) "pisces")
+                                       "chromium-browser" "google-chrome"))
+
   ;; minibuffer
   (setq resize-mini-windows t)
   (setq max-mini-window-height 3)
@@ -1148,8 +1154,9 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
-  (global-set-key (kbd "M-s g") 'google-translate-at-point)
-  (global-set-key (kbd "M-s t") 'google-translate-query-translate)
+  (global-set-key (kbd "M-s g") 'engine/search-google)
+  (global-set-key (kbd "M-s t") 'google-translate-at-point)
+  (global-set-key (kbd "M-s T") 'google-translate-query-translate)
   (global-set-key (kbd "M-s r") 'spacemacs/evil-search-clear-highlight)
   (global-set-key (kbd "M-s i") 'ispell-buffer)
   (global-set-key (kbd "M-s s") 'ispell-continue)
