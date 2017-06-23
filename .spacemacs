@@ -40,14 +40,10 @@ values."
      pdf-tools
      latex
      ocaml
-     (reason-mode
-      :location (recipe
-                 :repo "arichiardi/reason-mode"
-                 :fetcher github
-                 :files ("reason-mode.el" "refmt.el")))
      haskell
      semantic
      cscope
+     search-engine
      (gtags :variables gtags-enable-by-default nil)
      (c-c++ :variables c-c++-enable-clang-support t)
      yaml
@@ -125,7 +121,7 @@ values."
                                :size 16
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -285,6 +281,8 @@ you should place your code here."
    (quote
     (("verbatim" current-indentation)
      ("verbatim*" current-indentation)
+     ("longtable" LaTeX-indent-tabular)
+     ("Form" current-indentation)
      ("tabular")
      ("tabular*")
      ("align")
@@ -313,7 +311,7 @@ you should place your code here."
  '(ansi-color-names-vector
    ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
  '(compilation-message-face (quote default))
- '(electric-pair-open-newline-between-pairs nil t)
+ '(electric-pair-open-newline-between-pairs nil)
  '(evil-want-Y-yank-to-eol t)
  '(golden-ratio-exclude-buffer-names
    (quote
@@ -352,12 +350,160 @@ you should place your code here."
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (yaml-mode framemove llvm-mode yapfify xterm-color winum web-mode web-beautify vline uuidgen utop unfill tuareg caml transpose-frame toc-org tagedit swiper-helm super-save stickyfunc-enhance srefactor sr-speedbar smeargle slim-mode shell-pop scss-mode sass-mode pytest pyenv-mode py-isort pug-mode pip-requirements pdf-tools tablist paradox orgit org-projectile org-present org-pomodoro alert log4e gntp org-download org-bullets ocp-indent noflet mwim multi-term monky mmm-mode merlin markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode latex-extra langtool key-chord json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero imenu-anywhere hydra hy-mode htmlize hlint-refactor hindent hide-comnt helm-tramp helm-rtags helm-pydoc helm-hoogle helm-gtags helm-gitignore request helm-dired-history helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet haskell-snippets haml-mode god-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck eyebrowse evil-visual-mark-mode evil-unimpaired evil-magit magit magit-popup git-commit with-editor evil-ediff eshell-z eshell-prompt-extras esh-help emmet-mode elpy pyvenv find-file-in-project elmacro dumb-jump disaster dired+ diff-hl dictionary link connection cython-mode csv-mode crux counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-marker column-enforce-mode coffee-mode cmm-mode cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary auctex-latexmk auctex anaconda-mode pythonic f adaptive-wrap ace-popup-menu avy-menu ac-ispell auto-complete org-plus-contrib ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
+ '(pdf-view-continuous nil)
  '(pdf-view-midnight-colors (quote ("#D3D3D3" . "#292B2E")))
  '(popwin:popup-window-height 15)
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
+ '(sp-highlight-wrap-overlay nil)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#F92672")
+     (40 . "#CF4F1F")
+     (60 . "#C26C0F")
+     (80 . "#E6DB74")
+     (100 . "#AB8C00")
+     (120 . "#A18F00")
+     (140 . "#989200")
+     (160 . "#8E9500")
+     (180 . "#A6E22E")
+     (200 . "#729A1E")
+     (220 . "#609C3C")
+     (240 . "#4E9D5B")
+     (260 . "#3C9F79")
+     (280 . "#A1EFE4")
+     (300 . "#299BA6")
+     (320 . "#2896B5")
+     (340 . "#2790C3")
+     (360 . "#66D9EF"))))
+ '(vc-annotate-very-old-color nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(compilation-error ((t (:foreground "red" :weight bold))))
+ '(compilation-warning ((t (:inherit warning :weight bold))))
+ '(header-line ((default :inherit mode-line) (((type tty)) :foreground "black" :background "yellow" :inverse-video nil) (((class color grayscale) (background light)) :background "grey90" :foreground "grey20" :box nil) (((class color grayscale) (background dark)) :background "#212026" :foreground "gainsboro" :box nil) (((class mono) (background light)) :background "white" :foreground "black" :inverse-video nil :box nil :underline t) (((class mono) (background dark)) :background "black" :foreground "white" :inverse-video nil :box nil :underline t)))
+ '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
+ '(hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
+ '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
+ '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
+ '(sp-pair-overlay-face ((t nil)))
+ '(sp-wrap-overlay-face ((t nil)))
+ '(sp-wrap-tag-overlay-face ((t nil)))
+ '(term-color-green ((t (:foreground "#67d11d")))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(LaTeX-begin-regexp "begin\\b\\|\\[\\|If\\b\\|For\\b")
+ '(LaTeX-command "latex --synctex=1")
+ '(LaTeX-end-regexp "end\\b\\|\\]\\|\\EndIf\\b\\|EndFor\\b")
+ '(LaTeX-indent-environment-list
+   (quote
+    (("verbatim" current-indentation)
+     ("verbatim*" current-indentation)
+     ("longtable" LaTeX-indent-tabular)
+     ("Form" current-indentation)
+     ("tabular")
+     ("tabular*")
+     ("align")
+     ("align*")
+     ("array")
+     ("eqnarray")
+     ("eqnarray*")
+     ("displaymath")
+     ("equation")
+     ("equation*")
+     ("picture")
+     ("tabbing")
+     ("figure")
+     ("center")
+     ("flushleft")
+     ("flushright")
+     ("small"))))
+ '(TeX-save-query nil)
+ '(TeX-source-correlate-method (quote synctex))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
+ '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
+ '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
+ '(compilation-message-face (quote default))
+ '(electric-pair-open-newline-between-pairs nil t)
+ '(evil-want-Y-yank-to-eol t)
+ '(golden-ratio-exclude-buffer-names
+   (quote
+    ("*which-key*" "*LV*" "*NeoTree*" "*ace-popup-menu*" "*compilation*")))
+ '(google-translate-default-target-language "en" t)
+ '(helm-ag-insert-at-point (quote symbol) t)
+ '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
+ '(highlight-tail-colors
+   (quote
+    (("#20240E" . 0)
+     ("#679A01" . 20)
+     ("#4BBEAE" . 30)
+     ("#1DB4D0" . 50)
+     ("#9A8F21" . 60)
+     ("#A75B00" . 70)
+     ("#F309DF" . 85)
+     ("#20240E" . 100))))
+ '(hl-sexp-background-color "#efebe9")
+ '(hl-todo-keyword-faces
+   (quote
+    (("HOLD" . "red")
+     ("TODO" . "red")
+     ("NEXT" . "red")
+     ("OKAY" . "red")
+     ("DONT" . "red")
+     ("FAIL" . "red")
+     ("DONE" . "red")
+     ("NOTE" . "red")
+     ("TRUNG" . "red")
+     ("HACK" . "red")
+     ("FIXME" . "red")
+     ("XXX" . "red")
+     ("XXXX" . "red")
+     ("???" . "red")
+     ("BUG" . "red")
+     ("OK" . "red"))))
+ '(magit-diff-use-overlays nil)
+ '(package-selected-packages
+   (quote
+    (ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+ '(paradox-github-token t)
+ '(pdf-view-midnight-colors (quote ("#D3D3D3" . "#292B2E")))
+ '(popwin:popup-window-height 15)
+ '(popwin:special-display-config
+   (quote
+    (("*compilation*" :width 1.0 :height 0.3 :position bottom :noselect t)
+     ("^\\*Flycheck.+\\*$" :regexp t :position bottom :noselect t :dedicated t :stick t)
+     ("^*WoMan.+*$" :regexp t :position bottom)
+     ("*nosetests*" :position bottom :noselect nil :dedicated t :stick t)
+     ("*grep*" :position bottom :noselect nil :dedicated t :stick t)
+     ("*ert*" :position bottom :noselect nil :dedicated t :stick t)
+     (" *undo-tree*" :height 0.4 :position bottom :noselect nil :dedicated t :stick t)
+     ("*Async Shell Command*" :position bottom :noselect nil :dedicated t :stick t)
+     ("*Shell Command Output*" :position bottom :noselect nil :dedicated t :stick t)
+     ("*Help*" :height 0.4 :position bottom :noselect t :dedicated t :stick t))))
+ '(pos-tip-background-color "#A6E22E")
+ '(pos-tip-foreground-color "#272822")
+ '(pupo-split-active-window t)
  '(sp-highlight-wrap-overlay nil)
  '(super-save-triggers
    (quote
@@ -393,11 +539,9 @@ you should place your code here."
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  '(compilation-error ((t (:foreground "red" :weight bold))))
  '(compilation-warning ((t (:inherit warning :weight bold))))
- '(hi-blue ((t (:background "medium blue" :foreground "white smoke"))))
- '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
+ '(font-latex-bold-face ((t (:foreground "tomato" :weight bold))))
+ '(header-line ((default :inherit mode-line) (((type tty)) :foreground "black" :background "yellow" :inverse-video nil) (((class color grayscale) (background light)) :background "grey90" :foreground "grey20" :box nil) (((class color grayscale) (background dark)) :background "#212026" :foreground "gainsboro" :box nil) (((class mono) (background light)) :background "white" :foreground "black" :inverse-video nil :box nil :underline t) (((class mono) (background dark)) :background "black" :foreground "white" :inverse-video nil :box nil :underline t)))
  '(hi-green ((t (:background "dark olive green" :foreground "white smoke"))))
- '(hi-pink ((t (:background "dark magenta" :foreground "white smoke"))))
- '(hi-red-b ((t (:foreground "red1" :weight bold))))
  '(hi-yellow ((t (:background "dark goldenrod" :foreground "white smoke"))))
  '(isearch ((t (:background "dark orange" :foreground "#292b2e"))))
  '(lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
