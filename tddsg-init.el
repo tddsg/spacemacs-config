@@ -114,9 +114,10 @@ If the new path's directories does not exist, create them."
 (defun tddsg--hook-prog-mode ()
   "Hook to run in 'prog-mode'."
   (when (derived-mode-p 'c-mode 'c++-mode)
-    (dolist (face-type '('rtags-fixitline
-                         'rtags-warnline
-                         'rtags-errline))
+    (setq tddsg--face-change-types '())
+    (dolist (face-type '(rtags-fixitline
+                         rtags-warnline
+                         rtags-errline))
       (add-to-list 'tddsg--face-change-types face-type))
     (ggtags-mode 1))
   (flyspell-mode -1)
@@ -125,6 +126,7 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--hook-text-mode ()
   "Hook to run in 'text-mode'."
+  (setq tddsg--face-change-types '())
   (dolist (face-type '(flyspell-incorrect
                        flyspell-duplicate
                        langtool-errline))
@@ -964,6 +966,7 @@ If OTHER is t then scroll other window."
 
   ;; diminish
   (spacemacs|diminish whitespace-mode "")
+  (spacemacs|diminish shx-mode "")
   (spacemacs|diminish super-save-mode "")
   (spacemacs|diminish company-mode "")
   (spacemacs|diminish which-key-mode "")
@@ -1251,6 +1254,10 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-S-<right>") 'buf-clone-right)
   (global-set-key (kbd "C-M-S-<up>") 'buf-clone-up)
   (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
+  (global-set-key (kbd "M-m b c b") 'buf-clone-left)
+  (global-set-key (kbd "M-m b c f") 'buf-clone-right)
+  (global-set-key (kbd "M-m b c p") 'buf-clone-up)
+  (global-set-key (kbd "M-m b c n") 'buf-clone-down)
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
