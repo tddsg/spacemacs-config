@@ -88,61 +88,6 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; HOOK FUNCTIONS
 
-(defun tddsg--hook-change-major-mode ()
-  ;; change some weird keys
-  (keyboard-translate ?\C-\[ ?\H-\[)
-  (keyboard-translate ?\C-i ?\H-i)
-  (keyboard-translate ?\C-m ?\H-m)
-  (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
-  (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
-  (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
-  (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
-  ;; change personal dictionary of ispell
-  (if (tddsg--projectile-p)
-      (setq ispell-personal-dictionary (concat (projectile-project-root)
-                                               "user.dict"))))
-
-(defun tddsg--hook-prog-text-mode ()
-  ;; linum-mode
-  (when (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode)
-    (linum-mode 1))
-  (tddsg--highlight-todos)
-  (smartparens-mode 1)
-  (column-marker-3 80)
-  (whitespace-mode 1))
-
-(defun tddsg--hook-prog-mode ()
-  "Hook to run in 'prog-mode'."
-  (when (derived-mode-p 'c-mode 'c++-mode)
-    (setq tddsg--face-change-types '())
-    (dolist (face-type '(rtags-fixitline
-                         rtags-warnline
-                         rtags-errline))
-      (add-to-list 'tddsg--face-change-types face-type))
-    (ggtags-mode 1))
-  (flyspell-mode -1)
-  (linum-mode 1)
-  (flycheck-mode 1))
-
-(defun tddsg--hook-text-mode ()
-  "Hook to run in 'text-mode'."
-  (setq tddsg--face-change-types '())
-  (dolist (face-type '(flyspell-incorrect
-                       flyspell-duplicate
-                       langtool-errline))
-    (add-to-list 'tddsg--face-change-types face-type))
-  (flyspell-mode 1))
-
-(defun tddsg--hook-shell-mode ()
-  "Hook to run in shell mode."
-  (add-hook 'window-configuration-change-hook
-            'tddsg--fix-comint-window-size nil t)
-  (set (make-local-variable 'scroll-margin) 1)
-  (set (make-local-variable 'next-screen-context-lines ) 1)
-  (rainbow-delimiters-mode-disable)
-  (toggle-truncate-lines -1)
-  (visual-line-mode 1))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
@@ -757,6 +702,25 @@ If OTHER is t then scroll other window."
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
+(defun tddsg/recent-dirs ()
+  "Open recent dirs."
+  (interactive)
+  (defun parent-dirs (path)
+    (let* ((path (directory-file-name path))
+           (parent (directory-file-name (file-name-directory path))))
+      (cond ((string= path parent) '(path))
+            ((file-directory-p path) (cons path (parent-dirs parent)))
+            ((file-exists-p path) (parent-dirs parent)))))
+  (let* ((recentf-dirs (delete-dups
+                        (apply #'append (mapcar 'parent-dirs recentf-list))))
+         (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
+                             dired-buffers))
+         (all-dirs (delete-dups (append recentf-dirs dired-dirs)))
+         (all-dirs (sort all-dirs 'string<))
+         (selected-dir (completing-read "Dired buffer name: " all-dirs)))
+    (message selected-dir)
+    (dired selected-dir)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
@@ -855,7 +819,7 @@ If OTHER is t then scroll other window."
   (setq powerline-default-separator 'wave)
 
   ;; themes
-  (defun tddsg--update-cursor ()
+  (defun hook-update-cursor ()
     (cond ((or (bound-and-true-p god-mode)
                (bound-and-true-p god-global-mode))
            (set-cursor-color "lime green"))
@@ -863,7 +827,7 @@ If OTHER is t then scroll other window."
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
            (set-cursor-color "dark orange"))))
-  (add-hook 'buffer-list-update-hook 'tddsg--update-cursor)
+  (add-hook 'buffer-list-update-hook 'hook-update-cursor)
 
   ;; isearch
   (defun tddsg--isearch-show-case-fold (orig-func &rest args)
@@ -889,18 +853,21 @@ If OTHER is t then scroll other window."
   ;; shell
   (setq comint-prompt-read-only nil)
   (setq shell-default-shell 'ansi-term)
-  (add-hook 'shell-mode-hook 'tddsg--hook-shell-mode)
+  (defun hook-shell-mode ()
+    "Hook to run in shell mode."
+    (add-hook 'window-configuration-change-hook
+              'tddsg--fix-comint-window-size nil t)
+    (set (make-local-variable 'scroll-margin) 1)
+    (set (make-local-variable 'next-screen-context-lines ) 1)
+    (rainbow-delimiters-mode-disable)
+    (toggle-truncate-lines -1)
+    (visual-line-mode 1))
+  (add-hook 'shell-mode-hook 'hook-shell-mode)
 
   ;; automatically save buffer
   (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
   (defadvice winum-select-window-by-number
       (before save-buffer activate) (tddsg--save-buffer))
-
-  ;; tramp
-  (require 'tramp)
-  (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
-  (add-to-list 'tramp-default-proxies-alist
-               '((regexp-quote (system-name)) nil nil))
 
   ;; which-key
   (setq which-key-idle-delay 1.2)
@@ -948,7 +915,7 @@ If OTHER is t then scroll other window."
 
   ;; minibuffer
   (setq resize-mini-windows t)
-  (setq max-mini-window-height 3)
+  (setq max-mini-window-height 30)
 
   ;; reason-mode
   (tddsg/init-reason-mode)              ;
@@ -1003,14 +970,51 @@ If OTHER is t then scroll other window."
   (spacemacs|diminish compilation-minor-mode "⚡⚡⚡COMPILING⚡⚡⚡")
 
   ;; hooks, finally hook
-  (add-hook 'LaTeX-mode-hook 'tddsg--hook-prog-text-mode)
-  (add-hook 'TeX-mode-hook 'tddsg--hook-prog-text-mode)
-  (add-hook 'tex-mode-hook 'tddsg--hook-prog-text-mode)
-  (add-hook 'prog-mode-hook 'tddsg--hook-prog-text-mode)
-  (add-hook 'text-mode-hook 'tddsg--hook-prog-text-mode)
-  (add-hook 'prog-mode-hook 'tddsg--hook-prog-mode)
-  (add-hook 'text-mode-hook 'tddsg--hook-text-mode)
-  (add-hook 'change-major-mode-hook 'tddsg--hook-change-major-mode))
+  (defun hook-text-mode ()
+    "Hook to run in 'text-mode'."
+    (setq tddsg--face-change-types '())
+    (dolist (face '(flyspell-incorrect flyspell-duplicate langtool-errline))
+      (add-to-list 'tddsg--face-change-types face))
+    (tddsg--highlight-todos)
+    (smartparens-mode 1)
+    (column-marker-3 80)
+    (whitespace-mode 1)
+    (flyspell-mode 1))
+  (defun hook-prog-mode ()
+    "Hook to run in 'prog-mode'."
+    (when (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode)
+      (linum-mode 1))
+    (when (derived-mode-p 'c-mode 'c++-mode)
+      (setq tddsg--face-change-types '())
+      (dolist (face-type '(rtags-fixitline rtags-warnline rtags-errline))
+        (add-to-list 'tddsg--face-change-types face-type))
+      (ggtags-mode 1))
+    (smartparens-mode 1)
+    (column-marker-3 80)
+    (whitespace-mode 1)
+    (flyspell-mode -1)
+    (linum-mode 1)
+    (flycheck-mode 1))
+  (add-hook 'LaTeX-mode-hook 'hook-prog-mode)
+  (add-hook 'TeX-mode-hook 'hook-prog-mode)
+  (add-hook 'tex-mode-hook 'hook-prog-mode)
+  (add-hook 'prog-mode-hook 'hook-prog-mode)
+  (add-hook 'text-mode-hook 'hook-text-mode)
+
+  (defun hook-change-major-mode ()
+    ;; change some weird keys
+    (keyboard-translate ?\C-\[ ?\H-\[)
+    (keyboard-translate ?\C-i ?\H-i)
+    (keyboard-translate ?\C-m ?\H-m)
+    (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
+    (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
+    (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
+    (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
+    ;; change personal dictionary of ispell
+    (if (tddsg--projectile-p)
+        (setq ispell-personal-dictionary (concat (projectile-project-root)
+                                                 "user.dict"))))
+  (add-hook 'change-major-mode-hook 'hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
@@ -1068,7 +1072,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
-  (global-set-key (kbd "C-x C-d") 'diredp-dired-recent-dirs)
+  (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
@@ -1208,6 +1212,12 @@ If OTHER is t then scroll other window."
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
+
+  ;; dired-mode
+  (defun hook-dired-mode ()
+    (toggle-truncate-lines 1))
+  (add-hook 'dired-mode-hook 'hook-dired-mode)
+  (add-hook 'dired-after-readin-hook 'hook-dired-mode)
 
   ;; speedbar, make shortcut keys like dired mode
   (with-eval-after-load 'speedbar
@@ -1865,6 +1875,31 @@ Set `spaceline-highlight-face-func' to
             (top (cadar pdf-isearch-current-match)))
         (isearch-exit)
         (funcall 'pdf-sync-backward-search left top))))
+
+
+;;; Dired-Plus
+
+;;;###autoload
+(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D R'
+  "Open Dired in BUFFER, showing recently used directories.
+You are prompted for BUFFER.
+
+No prefix arg or a plain prefix arg (`C-u', `C-u C-u', etc.) means
+list all of the recently used directories.
+
+With a prefix arg:
+* If 0, `-', or plain (`C-u') then you are prompted for the `ls'
+  switches to use.
+* If not plain (`C-u') then:
+  * If >= 0 then the directories to include are read, one by one.
+  * If  < 0 then the directories to exclude are read, one by one.
+
+When entering directories to include or exclude, use `C-g' to end."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
+                        (read-string "Dired listing switches: " dired-listing-switches))))
+    (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
 ;;;;;;; REASON MODE ;;;;;;;;
 

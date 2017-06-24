@@ -79,7 +79,6 @@
     elmacro
     elpy
     helm-dired-history
-    helm-tramp
     company-math
     math-symbol-lists
     swiper
@@ -477,9 +476,6 @@ Each entry is either:
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
-
-(defun tddsg/init-helm-tramp ()
-  (use-package helm-tramp))
 
 (defun tddsg/init-company-math ()
   (use-package company-math))
