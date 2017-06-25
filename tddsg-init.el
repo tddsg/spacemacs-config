@@ -23,6 +23,7 @@
 (require 'god-mode-isearch)
 (require 'expand-region)
 (require 'rtags)
+(require 'engine-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE VARIABLES
