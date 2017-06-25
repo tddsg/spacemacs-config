@@ -886,6 +886,11 @@ If OTHER is t then scroll other window."
   (evil-mode -1)
   (setq-default evil-cross-lines t)
 
+  ;; engine
+  (defengine thefreedictionary
+    "http://www.thefreedictionary.com/%s"
+       :keybinding "d")
+
   ;; dired
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
   (setq dired-guess-shell-alist-user
@@ -927,6 +932,22 @@ If OTHER is t then scroll other window."
   (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
   (setq-default dotspacemacs-excluded-packages '(window-purpose))
+
+  ;; windmove
+  (defun advise-windmove (orig-func &rest args)
+    ;; Fix bug of windmove for pdf-view-mode by
+    ;; temporarily switch to the "*scratch*" buffer
+    (if (derived-mode-p 'pdf-view-mode)
+        (let* ((cur-win (selected-window))
+               (cur-buf (window-buffer cur-win)))
+          (switch-to-buffer "*scratch*")
+          (ignore-errors (apply orig-func args))
+          (set-window-buffer cur-win cur-buf))
+      (apply orig-func args)))
+  (advice-add 'windmove-left :around #'advise-windmove)
+  (advice-add 'windmove-right :around #'advise-windmove)
+  (advice-add 'windmove-up :around #'advise-windmove)
+  (advice-add 'windmove-down :around #'advise-windmove)
 
 
   ;; whichkey
@@ -1078,6 +1099,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x C-z") nil)
 
   (global-set-key [?\H-m] 'helm-mini)
+  (global-set-key [?\H-M] 'tddsg/recent-dirs)
   (global-set-key (kbd "H-M-m") 'projectile-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
@@ -1158,6 +1180,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
+  (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
   (global-set-key (kbd "M-s g") 'engine/search-google)
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
   (global-set-key (kbd "M-s T") 'google-translate-query-translate)
