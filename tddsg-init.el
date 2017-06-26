@@ -932,6 +932,7 @@ If OTHER is t then scroll other window."
   ;; spacemacs
   (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
+  (push "\\*compilation\\*" spacemacs-useful-buffers-regexp)
   (setq-default dotspacemacs-excluded-packages '(window-purpose))
 
   ;; windmove
