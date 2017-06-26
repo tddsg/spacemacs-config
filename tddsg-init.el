@@ -936,11 +936,11 @@ If OTHER is t then scroll other window."
   ;; windmove
   (defun advise-windmove (orig-func &rest args)
     ;; Fix bug of windmove for pdf-view-mode by
-    ;; temporarily switch to the "*scratch*" buffer
+    ;; temporarily switch to the "*Messages*" buffer
     (if (derived-mode-p 'pdf-view-mode)
         (let* ((cur-win (selected-window))
                (cur-buf (window-buffer cur-win)))
-          (switch-to-buffer "*scratch*")
+          (switch-to-buffer "*Messages*")
           (ignore-errors (apply orig-func args))
           (set-window-buffer cur-win cur-buf))
       (apply orig-func args)))
@@ -1738,9 +1738,9 @@ Set `spaceline-highlight-face-func' to
 
 
 (defun tddsg/init-spaceline ()
+  (interactive)
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CUSTOM
