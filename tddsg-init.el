@@ -1333,6 +1333,10 @@ If OTHER is t then scroll other window."
 
   ;; org-mode
   (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "S-<left>") nil)
+    (define-key org-mode-map (kbd "S-<right>") nil)
+    (define-key org-mode-map (kbd "S-<up>") nil)
+    (define-key org-mode-map (kbd "S-<down>") nil)
     (define-key org-mode-map (kbd "C-j") nil)
     (define-key org-mode-map (kbd "C-a") nil)
     (define-key org-mode-map (kbd "M-g i") 'spacemacs/org-italic)
@@ -1899,31 +1903,6 @@ Set `spaceline-highlight-face-func' to
             (top (cadar pdf-isearch-current-match)))
         (isearch-exit)
         (funcall 'pdf-sync-backward-search left top))))
-
-
-;;; Dired-Plus
-
-;;;###autoload
-(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D R'
-  "Open Dired in BUFFER, showing recently used directories.
-You are prompted for BUFFER.
-
-No prefix arg or a plain prefix arg (`C-u', `C-u C-u', etc.) means
-list all of the recently used directories.
-
-With a prefix arg:
-* If 0, `-', or plain (`C-u') then you are prompted for the `ls'
-  switches to use.
-* If not plain (`C-u') then:
-  * If >= 0 then the directories to include are read, one by one.
-  * If  < 0 then the directories to exclude are read, one by one.
-
-When entering directories to include or exclude, use `C-g' to end."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
-  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
-                        (read-string "Dired listing switches: " dired-listing-switches))))
-    (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
 ;;;;;;; REASON MODE ;;;;;;;;
 
