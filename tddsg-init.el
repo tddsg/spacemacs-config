@@ -1371,6 +1371,7 @@ If OTHER is t then scroll other window."
 
   ;; dired mode
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
+  (define-key dired-mode-map (kbd "<backspace>") 'dired-up-directory)
   (define-key dired-mode-map (kbd "M-C") 'tddsg/dired-duplicate-files)
 
   ;; smartparens
