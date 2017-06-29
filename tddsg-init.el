@@ -937,15 +937,17 @@ If OTHER is t then scroll other window."
 
   ;; windmove
   (defun advise-windmove (orig-func &rest args)
-    ;; Fix bug of windmove for pdf-view-mode by
-    ;; temporarily switch to the "*Messages*" buffer
     (if (derived-mode-p 'pdf-view-mode)
+        ;; Fix bug of windmove for pdf-view-mode by
+        ;; temporarily switch to the "*Messages*" buffer
         (let* ((cur-win (selected-window))
                (cur-buf (window-buffer cur-win)))
           (switch-to-buffer "*Messages*")
           (ignore-errors (apply orig-func args))
           (set-window-buffer cur-win cur-buf))
-      (apply orig-func args)))
+      (apply orig-func args))
+    ;; reselect the current window to update its states
+    (select-window (selected-window)))
   (advice-add 'windmove-left :around #'advise-windmove)
   (advice-add 'windmove-right :around #'advise-windmove)
   (advice-add 'windmove-up :around #'advise-windmove)
