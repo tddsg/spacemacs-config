@@ -535,6 +535,10 @@ after stripping extra whitespace and new lines"
       (pdf-view-deactivate-region)
       (kill-new text))))
 
+(defun tddsg/kill-active-region ()
+  (interactive)
+  (when (region-active-p) (call-interactively 'kill-region)))
+
 (defun tddsg/yank-current-word-to-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
   (interactive)
@@ -811,6 +815,8 @@ If OTHER is t then scroll other window."
   (delete-selection-mode t)       ;; delete selection by keypress
   (setq require-final-newline t)                       ;; newline at end of file
   (defadvice newline (after indent activate) (indent-according-to-mode))
+  (ad-unadvise 'kill-region)
+
 
   ;; some Emacs threshold
   (setq max-lisp-eval-depth 50000)
@@ -1007,12 +1013,11 @@ If OTHER is t then scroll other window."
     (flyspell-mode 1))
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
-    (when (derived-mode-p 'songbird 'c-mode 'cc-mode 'python-mode)
-      (linum-mode 1))
+    (setq tddsg--face-change-types '(rtags-fixitline
+                                     rtags-warnline
+                                     rtags-errline
+                                     merlin-compilation-error-face))
     (when (derived-mode-p 'c-mode 'c++-mode)
-      (setq tddsg--face-change-types '())
-      (dolist (face-type '(rtags-fixitline rtags-warnline rtags-errline))
-        (add-to-list 'tddsg--face-change-types face-type))
       (ggtags-mode 1))
     (smartparens-global-mode 1)
     (column-marker-3 80)
@@ -1062,7 +1067,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-S-j") 'avy-goto-char)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-  (global-set-key (kbd "C-w") 'kill-region)
+  (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
