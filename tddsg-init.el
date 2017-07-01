@@ -29,7 +29,15 @@
 ;;; PRIVATE VARIABLES
 
 ;; used to jump between faces
-(defvar tddsg--face-change-types '())
+(defvar tddsg--face-change-types '(hi-yellow
+                                   hi-pink
+                                   hi-green
+                                   hi-blue
+                                   hi-black-b
+                                   hi-blue-b
+                                   hi-green-b
+                                   hi-red-b
+                                   hi-black-hb))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -113,19 +121,36 @@ If the new path's directories does not exist, create them."
 (defun tddsg/find-face-change-dwim (&optional direction)
   "Find face change dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
+  (defun get-face (pos)
+    (or (get-char-property pos 'read-face-name)
+        (get-char-property pos 'face)))
   (defun wanted-face-p (pos)
-    (let ((face (or (get-char-property pos 'read-face-name)
-                    (get-char-property pos 'face))))
-      (or (member face tddsg--face-change-types))))
-  (let* ((find-face-change  ;; use overlay for fast moving
-          (cond ((eq direction 'forward) 'next-overlay-change)
-                ((eq direction 'backward) 'previous-overlay-change)))
-         (pos (funcall find-face-change (point))))
-    (while (and (not (wanted-face-p pos))
-                (> pos (point-min))
-                (< pos (point-max)))
-      (setq pos (funcall find-face-change pos)))
-    (when (wanted-face-p pos)
+    (let ((face (get-face pos)))
+      (or (member face tddsg--face-change-types)
+          (and (listp face)
+               (not (null (intersection face tddsg--face-change-types)))))))
+  (defun find-face-change (pos)
+    (let ((next-pos (cond ((eq direction 'forward) (1+ pos))
+                          ((eq direction 'backward) (1- pos)))))
+      (cond ((or (<= pos (point-min)) (>= pos (point-max)))
+             (cond ((eq direction 'forward)
+                    (message "No more next face change!"))
+                   ((eq direction 'backward)
+                    (message "No more previous face change!")))
+             -2)
+            ((eq (get-face pos) (get-face next-pos))
+             (find-face-change next-pos))
+            (t next-pos))))
+  (let* ((pos (find-face-change (point))))
+    ;; find wanted face
+    (while (and (> pos (point-min))
+                (< pos (point-max))
+                (not (wanted-face-p pos)))
+      (setq pos (find-face-change pos)))
+    (when (and (>= pos 0) (wanted-face-p pos))
+      ;; refine for backward finding
+      (when (eq direction 'backward)
+        (setq pos (1+ (find-face-change pos))))
       (goto-char pos))))
 
 (defun tddsg/next-face-change-dwim ()
@@ -1003,7 +1028,6 @@ If OTHER is t then scroll other window."
   ;; hooks, finally hook
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
-    (setq tddsg--face-change-types '())
     (dolist (face '(flyspell-incorrect flyspell-duplicate langtool-errline))
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
@@ -1013,10 +1037,10 @@ If OTHER is t then scroll other window."
     (flyspell-mode 1))
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
-    (setq tddsg--face-change-types '(rtags-fixitline
-                                     rtags-warnline
-                                     rtags-errline
-                                     merlin-compilation-error-face))
+    (dolist (face '(rtags-fixitline
+                    rtags-warnline rtags-errline
+                    merlin-compilation-error-face))
+      (add-to-list 'tddsg--face-change-types face))
     (when (derived-mode-p 'c-mode 'c++-mode)
       (ggtags-mode 1))
     (smartparens-mode 1)
