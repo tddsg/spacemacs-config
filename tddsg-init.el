@@ -29,15 +29,16 @@
 ;;; PRIVATE VARIABLES
 
 ;; used to jump between faces
-(defvar tddsg--face-change-types '(hi-yellow
-                                   hi-pink
-                                   hi-green
-                                   hi-blue
-                                   hi-black-b
-                                   hi-blue-b
-                                   hi-green-b
-                                   hi-red-b
-                                   hi-black-hb))
+(defconst tddsg--face-change-types-default '(hi-yellow
+                                             hi-pink
+                                             hi-green
+                                             hi-blue
+                                             hi-black-b
+                                             hi-blue-b
+                                             hi-green-b
+                                             hi-red-b
+                                             hi-black-hb))
+(defvar tddsg--face-change-types tddsg--face-change-types-default)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,8 +116,8 @@ If the new path's directories does not exist, create them."
   (let* ((pos (point))
          (face (or (get-char-property pos 'read-face-name)
                    (get-char-property pos 'face))))
-    (if face (message "Face Under The Cursor: %s" face)
-      (message "Face Not Found Under The Cursor At: %d" pos))))
+    (if face (message "Face under the cursor: %s" face)
+      (message "Face not found under the cursor at: %d" pos))))
 
 (defun tddsg/find-face-change-dwim (&optional direction)
   "Find face change dwim. DIRECTION can be 'backward or 'forward."
@@ -151,7 +152,8 @@ If the new path's directories does not exist, create them."
       ;; refine for backward finding
       (when (eq direction 'backward)
         (setq pos (1+ (find-face-change pos))))
-      (goto-char pos))))
+      (goto-char pos)
+      (tddsg/describe-face-under-cursor))))
 
 (defun tddsg/next-face-change-dwim ()
   "Find next face change dwim."
@@ -1028,6 +1030,7 @@ If OTHER is t then scroll other window."
   ;; hooks, finally hook
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
+    (setq tddsg--face-change-types tddsg--face-change-types-default)
     (dolist (face '(flyspell-incorrect flyspell-duplicate langtool-errline))
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
@@ -1037,6 +1040,7 @@ If OTHER is t then scroll other window."
     (flyspell-mode 1))
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
+    (setq tddsg--face-change-types tddsg--face-change-types-default)
     (dolist (face '(rtags-fixitline
                     rtags-warnline rtags-errline
                     merlin-compilation-error-face))
@@ -1777,6 +1781,7 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/init-spaceline ()
   (interactive)
+  (setq powerline-height 22)  ;; spaceline height
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
 
