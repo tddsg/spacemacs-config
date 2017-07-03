@@ -1043,7 +1043,8 @@ If OTHER is t then scroll other window."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
     (dolist (face '(rtags-fixitline
                     rtags-warnline rtags-errline
-                    merlin-compilation-error-face))
+                    merlin-compilation-error-face
+                    merlin-compilation-warning-face))
       (add-to-list 'tddsg--face-change-types face))
     (when (derived-mode-p 'c-mode 'c++-mode)
       (ggtags-mode 1))
@@ -1267,6 +1268,7 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
+  (define-key shell-mode-map (kbd "C-c r") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
@@ -1781,7 +1783,9 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/init-spaceline ()
   (interactive)
-  (setq powerline-height 22)  ;; spaceline height
+  (setq-default powerline-height 22)  ;; spaceline height
+  (setq-default powerline-scale 1.2)
+  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
 
