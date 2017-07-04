@@ -1714,6 +1714,7 @@ If OTHER is t then scroll other window."
                        selection-info
                        ,@additional-segments
                        input-method
+                       purpose
                        (buffer-encoding-abbrev :when active)
                        (buffer-position :when active)
                        hud))
@@ -1785,7 +1786,7 @@ Set `spaceline-highlight-face-func' to
   (interactive)
   (setq-default powerline-height 22)  ;; spaceline height
   (setq-default powerline-scale 1.2)
-  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
 
