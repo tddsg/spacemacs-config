@@ -29,15 +29,12 @@
 ;;; PRIVATE VARIABLES
 
 ;; used to jump between faces
-(defconst tddsg--face-change-types-default '(hi-yellow
-                                             hi-pink
-                                             hi-green
-                                             hi-blue
-                                             hi-black-b
-                                             hi-blue-b
-                                             hi-green-b
-                                             hi-red-b
-                                             hi-black-hb))
+(defconst tddsg--face-change-types-default
+  '(merlin-compilation-error-face
+    merlin-compilation-warning-face
+    rtags-fixitline rtags-warnline rtags-errline
+    hi-yellow hi-pink hi-green hi-blue hi-black-b
+    hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
 
 
@@ -1041,10 +1038,7 @@ If OTHER is t then scroll other window."
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (dolist (face '(rtags-fixitline
-                    rtags-warnline rtags-errline
-                    merlin-compilation-error-face
-                    merlin-compilation-warning-face))
+    (dolist (face '())
       (add-to-list 'tddsg--face-change-types face))
     (when (derived-mode-p 'c-mode 'c++-mode)
       (ggtags-mode 1))
@@ -1150,7 +1144,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
   (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
-  (global-set-key (kbd "C-c r") 'projectile-replace)
+  (global-set-key (kbd "C-c r") 'anzu-query-replace)
+  (global-set-key (kbd "C-c M-r") 'anzu-query-replace-regexp)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
@@ -1159,7 +1154,8 @@ If OTHER is t then scroll other window."
   ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c H-m") 'tddsg/next-shell-window)
-  (global-set-key (kbd "C-c C-r") 'projectile-replace-regexp)
+  (global-set-key (kbd "C-c C-r") 'projectile-replace)
+  (global-set-key (kbd "C-c C-M-r") 'projectile-replace-regexp)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
