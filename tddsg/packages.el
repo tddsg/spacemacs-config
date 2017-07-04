@@ -430,10 +430,10 @@ Each entry is either:
   (global-set-key  (kbd "C-M-%") 'anzu-query-replace-regexp)
   (defadvice anzu-query-replace (around wrap-query-replace activate)
     (save-excursion
-      (let ((start (point)))
-        ad-do-it
-        (goto-char (point-min))
-        ad-do-it)))
+      (goto-char (anzu--thing-begin t))
+      ad-do-it
+      (goto-char (point-min))
+      ad-do-it))
   (global-anzu-mode))
 
 (defun tddsg/init-dictionary ()
