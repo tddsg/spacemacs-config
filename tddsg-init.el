@@ -1216,6 +1216,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w t") 'transpose-frame)
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
+  (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
@@ -1696,8 +1697,8 @@ If OTHER is t then scroll other window."
                        auto-compile
                        ,second-left
                        major-mode
-                       (version-control :when active)
-                       ;; (minor-modes :when active)
+                       ((version-control :when active)
+                        purpose )
                        minor-modes
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
@@ -1713,10 +1714,9 @@ If OTHER is t then scroll other window."
                        (battery :when active)
                        selection-info
                        ,@additional-segments
-                       input-method
-                       purpose
+                       (input-method
                        (buffer-encoding-abbrev :when active)
-                       (buffer-position :when active)
+                       (buffer-position :when active))
                        hud))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
