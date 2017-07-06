@@ -162,15 +162,18 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/find-face-change-dwim 'backward))
 
-(defun tddsg/traverse-upcase-char (&optional direction delete)
+(defun tddsg/traverse-upcase-dwim (&optional direction delete)
   "Traverse through character dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
-  (defun downcase-char-p (ch)
+  (defun downcase-p (ch)
     (and (looking-at-p "[[:alpha:]]") (eq ch (downcase ch))))
-  (defun upcase-char-p (ch)
+  (defun upcase-p (ch)
     (and (looking-at-p "[[:alpha:]]") (eq ch (upcase ch))))
-  (defun symbol-char-p (ch)
+  (defun symbol-p (ch)
     (not (looking-at-p "[[:alpha:]]")))
+  (defun not-downcase-p (ch) (not (downcase-p ch)))
+  (defun not-upcase-p (ch) (not (upcase-p ch)))
+  (defun not-symbol-p (ch) (not (symbol-p ch)))
   (defun traverse ()
     (cond ((eq direction 'forward) (forward-char))
           ((eq direction 'backward) (backward-char))))
@@ -180,34 +183,34 @@ If the new path's directories does not exist, create them."
                 (not (funcall checker (char-after))))
       (traverse)))
   (let ((origin-pos (point)))
-    (cond ((downcase-char-p (char-after))
-           (traverse-until 'upcase-char-p))
-          ((symbol-char-p (char-after))
-           (traverse-until 'upcase-char-p))
-          ((upcase-char-p (char-after))
-           (traverse)
-           (traverse-until 'upcase-char-p)))
+    (cond ((downcase-p (char-after))
+           (traverse-until 'upcase-p))
+          ((symbol-p (char-after))
+           (traverse-until 'upcase-p))
+          ((upcase-p (char-after))
+           (traverse-until 'not-upcase-p)
+           (traverse-until 'upcase-p)))
     (if delete (delete-char (- origin-pos (point))))))
 
-(defun tddsg/next-upcase-char ()
-  "Go to next upcase char."
+(defun tddsg/next-upcase-dwim ()
+  "Go to next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'forward))
+  (tddsg/traverse-upcase-dwim 'forward))
 
-(defun tddsg/previous-upcase-char ()
-  "Go to previous upcase char."
+(defun tddsg/previous-upcase-dwim ()
+  "Go to previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'backward))
+  (tddsg/traverse-upcase-dwim 'backward))
 
-(defun tddsg/delete-until-next-upcase-char ()
-  "Delete until next upcase char."
+(defun tddsg/delete-until-next-upcase-dwim ()
+  "Delete until next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'forward t))
+  (tddsg/traverse-upcase-dwim 'forward t))
 
-(defun tddsg/delete-until-previous-upcase-char ()
-  "Delete until previous upcase char."
+(defun tddsg/delete-until-previous-upcase-dwim ()
+  "Delete until previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'backward t))
+  (tddsg/traverse-upcase-dwim 'backward t))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -1169,9 +1172,9 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
-  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-char)
-  (global-set-key (kbd "M-F") 'tddsg/next-upcase-char)
-  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-char)
+  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-dwim)
+  (global-set-key (kbd "M-F") 'tddsg/next-upcase-dwim)
+  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-dwim)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
@@ -1204,7 +1207,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-char)
+  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-dwim)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
