@@ -30,15 +30,22 @@
 ;;; Code:
 
 (defconst tddsg-packages
-  '(comment-dwim-2
-    noflet
+  '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;; languages
     tuareg
     merlin
     python
     auctex
     latex-extra
-    helm-bibtex
+    org
     cc-mode
+    llvm-mode
+    web-mode
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;; utilities
+    comment-dwim-2
+    noflet
+    helm-bibtex
     sr-speedbar
     rtags
     company-rtags
@@ -47,8 +54,6 @@
     company-irony
     company-irony-c-headers
     god-mode
-    org
-    llvm-mode
     ace-popup-menu
     smartparens
     paren
@@ -155,6 +160,13 @@ Each entry is either:
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'objc-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
+
+(defun tddsg/post-init-web-mode ()
+  ;; coding style
+  (setq web-mode-code-indent-offset 2
+        web-mode-indent-style 2
+        web-mode-css-indent-offset 2
+        web-mode-markup-indent-offset 2))
 
 (defun tddsg/post-init-tuareg ()
   ;; fix syntax highlight for OCaml

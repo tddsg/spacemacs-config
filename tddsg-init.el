@@ -350,7 +350,10 @@ If the new path's directories does not exist, create them."
   (interactive)
   (cond ((derived-mode-p 'LaTeX-mode 'TeX-mode 'latex-mode 'tex-mode)
          (call-interactively 'LaTeX-mark-environment))
-        (t (call-interactively 'mark-defun))))
+        (t
+         (deactivate-mark t)
+         (sp-backward-up-sexp)
+         (sp-mark-sexp))))
 
 (defun tddsg/comment-paragraph ()
   "Comment the paragraph."
