@@ -189,7 +189,7 @@ If the new path's directories does not exist, create them."
            (traverse-until 'upcase-p))
           ((upcase-p (char-after))
            (traverse-until 'not-upcase-p)
-           (traverse-until 'upcase-p)))
+           (traverse-until 'not-downcase-p)))
     (if delete (delete-char (- origin-pos (point))))))
 
 (defun tddsg/next-upcase-dwim ()
@@ -245,6 +245,11 @@ If the new path's directories does not exist, create them."
         (message "Next shell window not found!")
       (select-frame-set-input-focus (window-frame shellwin))
       (select-window shellwin))))
+
+(defun tddsg/previous-window ()
+  "Jump to the previous window."
+  (interactive)
+  (other-window -1 t))
 
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
@@ -924,7 +929,20 @@ If OTHER is t then scroll other window."
   ;; engine
   (defengine thefreedictionary
     "http://www.thefreedictionary.com/%s"
-       :keybinding "d")
+    :keybinding "d")
+
+  ;; hippie expand
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-file-name-partially
+          try-complete-file-name
+          try-expand-all-abbrevs
+          try-expand-list
+          try-expand-line
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol))
 
   ;; dired
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
@@ -1078,6 +1096,7 @@ If OTHER is t then scroll other window."
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1103,6 +1122,7 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-g") 'tddsg/close-special-windows)
+  (global-set-key (kbd "C-S-q") 'tddsg/previous-window)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
 
@@ -1267,7 +1287,6 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-c r") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
@@ -1313,7 +1332,11 @@ If OTHER is t then scroll other window."
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key god-local-mode-map (kbd "i") 'god-mode-all)
+  (define-key god-local-mode-map (kbd "a") 'god-mode-all)
 
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
