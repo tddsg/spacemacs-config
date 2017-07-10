@@ -759,6 +759,25 @@ If OTHER is t then scroll other window."
     (message selected-dir)
     (dired selected-dir)))
 
+(defun tddsg/yank-recent-dir-files ()
+  "Yank recent dir and files."
+  (interactive)
+  (defun parent-dirs (path)
+    (let* ((path (directory-file-name path))
+           (parent (directory-file-name (file-name-directory path))))
+      (cond ((string= path parent) '(path))
+            ((file-directory-p path) (cons path (parent-dirs parent)))
+            ((file-exists-p path) (parent-dirs parent)))))
+  (let* ((recent-files recentf-list)
+         (recent-dirs (delete-dups
+                       (apply #'append (mapcar 'parent-dirs recent-files))))
+         (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
+                             dired-buffers))
+         (all-dir-files (delete-dups (append recent-files recent-dirs dired-dirs)))
+         (all-dirs (sort all-dir-files 'string<))
+         (selected-dir-file (completing-read "Yank dir/file:" all-dir-files)))
+    (insert selected-dir-file)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
@@ -1148,6 +1167,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
+  (global-set-key (kbd "C-x C-y") 'tddsg/yank-recent-dir-files)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
