@@ -45,11 +45,9 @@
     ;;; utilities
     comment-dwim-2
     noflet
-    helm-bibtex
     sr-speedbar
     rtags
     company-rtags
-    helm-rtags
     irony
     company-irony
     company-irony-c-headers
@@ -60,7 +58,12 @@
     yasnippet
     hi-lock
     projectile
+    ;; helm
     helm
+    helm-rtags
+    helm-ispell
+    helm-bibtex
+    helm-dired-history
     expand-region
     goto-chg
     shx
@@ -83,7 +86,6 @@
     pdf-tools
     elmacro
     elpy
-    helm-dired-history
     company-math
     math-symbol-lists
     swiper
@@ -243,6 +245,10 @@ Each entry is either:
     :ensure t
     :config
     (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
+
+(defun tddsg/init-helm-ispell ()
+  (use-package helm-ispell
+    :ensure t))
 
 (defun tddsg/post-init-auctex ()
   (require 'tex)
