@@ -162,15 +162,18 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/find-face-change-dwim 'backward))
 
-(defun tddsg/traverse-upcase-char (&optional direction delete)
+(defun tddsg/traverse-upcase-dwim (&optional direction delete)
   "Traverse through character dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
-  (defun downcase-char-p (ch)
+  (defun downcase-p (ch)
     (and (looking-at-p "[[:alpha:]]") (eq ch (downcase ch))))
-  (defun upcase-char-p (ch)
+  (defun upcase-p (ch)
     (and (looking-at-p "[[:alpha:]]") (eq ch (upcase ch))))
-  (defun symbol-char-p (ch)
+  (defun symbol-p (ch)
     (not (looking-at-p "[[:alpha:]]")))
+  (defun not-downcase-p (ch) (not (downcase-p ch)))
+  (defun not-upcase-p (ch) (not (upcase-p ch)))
+  (defun not-symbol-p (ch) (not (symbol-p ch)))
   (defun traverse ()
     (cond ((eq direction 'forward) (forward-char))
           ((eq direction 'backward) (backward-char))))
@@ -180,34 +183,34 @@ If the new path's directories does not exist, create them."
                 (not (funcall checker (char-after))))
       (traverse)))
   (let ((origin-pos (point)))
-    (cond ((downcase-char-p (char-after))
-           (traverse-until 'upcase-char-p))
-          ((symbol-char-p (char-after))
-           (traverse-until 'upcase-char-p))
-          ((upcase-char-p (char-after))
-           (traverse)
-           (traverse-until 'upcase-char-p)))
+    (cond ((downcase-p (char-after))
+           (traverse-until 'upcase-p))
+          ((symbol-p (char-after))
+           (traverse-until 'upcase-p))
+          ((upcase-p (char-after))
+           (traverse-until 'not-upcase-p)
+           (traverse-until 'not-downcase-p)))
     (if delete (delete-char (- origin-pos (point))))))
 
-(defun tddsg/next-upcase-char ()
-  "Go to next upcase char."
+(defun tddsg/next-upcase-dwim ()
+  "Go to next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'forward))
+  (tddsg/traverse-upcase-dwim 'forward))
 
-(defun tddsg/previous-upcase-char ()
-  "Go to previous upcase char."
+(defun tddsg/previous-upcase-dwim ()
+  "Go to previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'backward))
+  (tddsg/traverse-upcase-dwim 'backward))
 
-(defun tddsg/delete-until-next-upcase-char ()
-  "Delete until next upcase char."
+(defun tddsg/delete-until-next-upcase-dwim ()
+  "Delete until next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'forward t))
+  (tddsg/traverse-upcase-dwim 'forward t))
 
-(defun tddsg/delete-until-previous-upcase-char ()
-  "Delete until previous upcase char."
+(defun tddsg/delete-until-previous-upcase-dwim ()
+  "Delete until previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-char 'backward t))
+  (tddsg/traverse-upcase-dwim 'backward t))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -242,6 +245,11 @@ If the new path's directories does not exist, create them."
         (message "Next shell window not found!")
       (select-frame-set-input-focus (window-frame shellwin))
       (select-window shellwin))))
+
+(defun tddsg/previous-window ()
+  "Jump to the previous window."
+  (interactive)
+  (other-window -1 t))
 
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
@@ -663,45 +671,46 @@ after stripping extra whitespace and new lines"
     (let ((window (get-buffer-window buf-name)))
       (when window (delete-window window)))))
 
-(defun tddsg/scroll-half-window (&optional direction other)
+(defun tddsg/scroll-window-dwim (&optional direction other)
   "Scroll half window, DIRECTION can be 'upward or 'downward.
 If OTHER is t then scroll other window."
   (interactive)
   (defun scroll-half ()
-    (defun window-half-height ()
-      (max 1 (/ (1- (window-height (selected-window))) 2)))
+    (defun scroll-height ()
+      (let ((height (window-height (selected-window))))
+        (if (> height 20) (- height 5) height)))
     (if (derived-mode-p 'pdf-view-mode)
         (cond ((eq direction 'upward)
                (pdf-view-scroll-down-or-previous-page))
               ((eq direction 'downward)
                (pdf-view-scroll-up-or-next-page)))
       (cond ((eq direction 'upward)
-             (scroll-down (window-half-height)))
+             (scroll-down (scroll-height)))
             ((eq direction 'downward)
-             (scroll-up (window-half-height))))))
+             (scroll-up (scroll-height))))))
   (if (and other (> (length (window-list)) 1)) (other-window 1))
   (scroll-half)
   (if (and other (> (length (window-list)) 1)) (other-window -1)))
 
-(defun tddsg/scroll-half-window-upward ()
+(defun tddsg/scroll-window-upward-dwim ()
   "Scroll half window upward."
   (interactive)
-  (tddsg/scroll-half-window 'upward nil))
+  (tddsg/scroll-window-dwim 'upward nil))
 
-(defun tddsg/scroll-half-window-downward ()
+(defun tddsg/scroll-window-downward-dwim ()
   "Scroll half window downward."
   (interactive)
-  (tddsg/scroll-half-window 'downward nil))
+  (tddsg/scroll-window-dwim 'downward nil))
 
-(defun tddsg/scroll-half-other-window-upward ()
+(defun tddsg/scroll-other-window-upward-dwim ()
   "Scroll half window upward."
   (interactive)
-  (tddsg/scroll-half-window 'upward t))
+  (tddsg/scroll-window-dwim 'upward t))
 
-(defun tddsg/scroll-half-other-window-downward ()
+(defun tddsg/scroll-other-window-downward-dwim ()
   "Scroll half window downward."
   (interactive)
-  (tddsg/scroll-half-window 'downward t))
+  (tddsg/scroll-window-dwim 'downward t))
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
@@ -752,6 +761,25 @@ If OTHER is t then scroll other window."
          (selected-dir (completing-read "Dired buffer name: " all-dirs)))
     (message selected-dir)
     (dired selected-dir)))
+
+(defun tddsg/yank-recent-dir-files ()
+  "Yank recent dir and files."
+  (interactive)
+  (defun parent-dirs (path)
+    (let* ((path (directory-file-name path))
+           (parent (directory-file-name (file-name-directory path))))
+      (cond ((string= path parent) '(path))
+            ((file-directory-p path) (cons path (parent-dirs parent)))
+            ((file-exists-p path) (parent-dirs parent)))))
+  (let* ((recent-files recentf-list)
+         (recent-dirs (delete-dups
+                       (apply #'append (mapcar 'parent-dirs recent-files))))
+         (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
+                             dired-buffers))
+         (all-dir-files (delete-dups (append recent-files recent-dirs dired-dirs)))
+         (all-dirs (sort all-dir-files 'string<))
+         (selected-dir-file (completing-read "Yank dir/file:" all-dir-files)))
+    (insert selected-dir-file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -923,7 +951,20 @@ If OTHER is t then scroll other window."
   ;; engine
   (defengine thefreedictionary
     "http://www.thefreedictionary.com/%s"
-       :keybinding "d")
+    :keybinding "d")
+
+  ;; hippie expand
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-file-name-partially
+          try-complete-file-name
+          try-expand-all-abbrevs
+          try-expand-list
+          try-expand-line
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol))
 
   ;; dired
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
@@ -1041,8 +1082,6 @@ If OTHER is t then scroll other window."
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (dolist (face '())
-      (add-to-list 'tddsg--face-change-types face))
     (when (derived-mode-p 'c-mode 'c++-mode)
       (ggtags-mode 1))
     (smartparens-global-mode 1)
@@ -1079,6 +1118,7 @@ If OTHER is t then scroll other window."
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
   (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1104,6 +1144,7 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-g") 'tddsg/close-special-windows)
+  (global-set-key (kbd "C-S-q") 'tddsg/previous-window)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
 
@@ -1111,8 +1152,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
-  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-half-other-window-upward)
-  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-half-other-window-downward)
+  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-other-window-upward-dwim)
+  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-other-window-downward-dwim)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
@@ -1129,6 +1170,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
+  (global-set-key (kbd "C-x C-y") 'tddsg/yank-recent-dir-files)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
@@ -1168,13 +1210,13 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-p") 'tddsg/scroll-half-window-upward)
-  (global-set-key (kbd "M-n") 'tddsg/scroll-half-window-downward)
+  (global-set-key (kbd "M-p") 'tddsg/scroll-window-upward-dwim)
+  (global-set-key (kbd "M-n") 'tddsg/scroll-window-downward-dwim)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
-  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-char)
-  (global-set-key (kbd "M-F") 'tddsg/next-upcase-char)
-  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-char)
+  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-dwim)
+  (global-set-key (kbd "M-F") 'tddsg/next-upcase-dwim)
+  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-dwim)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
@@ -1207,7 +1249,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-char)
+  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-dwim)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
@@ -1269,7 +1311,6 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-c r") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
   ;; undo tree
@@ -1315,7 +1356,11 @@ If OTHER is t then scroll other window."
   (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
+  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
+  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key god-local-mode-map (kbd "i") 'god-mode-all)
+  (define-key god-local-mode-map (kbd "a") 'god-mode-all)
 
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
