@@ -1143,7 +1143,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
-  (global-set-key (kbd "C-S-g") 'tddsg/close-special-windows)
   (global-set-key (kbd "C-S-q") 'tddsg/previous-window)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)

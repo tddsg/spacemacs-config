@@ -77,6 +77,18 @@
         (modify-syntax-entry ?' "w" syn-table)
         syn-table))
 
+;;;;;;;;;;;;;;;;
+;;; generic imenu for viewing outline
+
+(setq songbird-imenu-generic-expression
+      '(("Entailment"  "^\\s-*checkentail\\s-*\\([a-zA-Z0-9_']+\\)\\s-*;" 1)
+        ("Predicate"  "^\\s-*pred\\s-*\\(\.+\\)\\s-*:" 1)
+        ("Data"  "^\\s-*data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{" 1)))
+
+(defun songbird-imenu-create-index ()
+  (save-excursion
+    (imenu--generic-function songbird-imenu-generic-expression)))
+
 ;;;###autoload
 (define-derived-mode songbird prog-mode
   "songbird"
@@ -103,20 +115,19 @@
                              (1 font-lock-type-face))) t)
 
   ;; indentation
-  (make-local-variable 'indent-tabs-mode)
-  (make-local-variable 'indent-line-function)
-  (make-local-variable 'indent-region-function)
-  (setq indent-tabs-mode nil)                      ;; insert spaces instead of tabs
-  (setq indent-line-function 'indent-relative)     ;; indent line relative
-  (setq indent-region-function (quote (lambda (begin end))))  ;; disable indent region
-  ;; (setq indent-line-function (quote (lambda ())))  ;; disable indent line
-
+  ;; indentation
+  (setq-local indent-tabs-mode nil)                       ;; using space
+  (setq-local indent-line-function 'indent-relative)      ;; indent line relative
+  (setq-local indent-region-function '(lambda (x y) ()))  ;; disable indent region
 
   ;; set comment command
   (set (make-local-variable 'comment-start) "//")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-multi-line) nil)
   (set (make-local-variable 'comment-use-syntax) t)
+
+  ;; imenu
+  (setq-local imenu-create-index-function 'proddag-imenu-create-index)
 
   (run-hooks 'songbird-hook))
 
