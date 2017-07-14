@@ -66,7 +66,6 @@
     helm-dired-history
     expand-region
     goto-chg
-    shx
     autorevert
     windmove
     framemove
@@ -401,12 +400,6 @@ Each entry is either:
 
 (defun tddsg/init-goto-chg ()
   (global-set-key (kbd "C-c C-\\") 'goto-last-change))
-
-(defun tddsg/init-shx ()
-  (use-package shx
-    :ensure t
-    :config
-    (shx-global-mode 1)))
 
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
