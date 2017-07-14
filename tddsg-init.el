@@ -44,14 +44,6 @@
   "Check if CHAR is a SPACE or TAB character."
   (or (equal char ?\s) (equal char ?\t)))
 
-(defun blank-line-p (line)
-  "Check if LINE containing only space, tab or newline characters."
-  (string-match-p "[ \n\t]*$" line))
-
-(defun blank-string-p (str)
-  "Check if STR containing only space or tab characters."
-  (string-match-p "[ \t]*$" str))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
 
@@ -532,8 +524,9 @@ insert a new space if there is none"
           (goto-char (point-min))
           (while (re-search-forward "\\s-+" nil t)
             (replace-match " "))))
-    (if (blank-line-p (thing-at-point 'line t))
+    (if (string-blank-p (thing-at-point 'line t))
         (delete-blank-lines)
+      (message "Insert space")
       (tddsg/one-or-zero-space))))
 
 (defun tddsg/kill-ring-save (arg)
