@@ -79,7 +79,6 @@
     langtool
     imenu-anywhere
     vline
-    crux
     column-marker
     buffer-move
     dired+
@@ -479,9 +478,6 @@ Each entry is either:
 
 (defun tddsg/init-column-marker ()
   (use-package column-marker))
-
-(defun tddsg/init-crux ()
-  (use-package crux))
 
 (defun tddsg/init-elmacro ()
   (use-package elmacro))

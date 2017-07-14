@@ -37,17 +37,23 @@
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UTILITY FUNCTIONS
+
+(defun blank-char-p (char)
+  "Check if CHAR is a SPACE or TAB character."
+  (or (equal char ?\s) (equal char ?\t)))
+
+(defun blank-line-p (line)
+  "Check if LINE containing only space, tab or newline characters."
+  (string-match-p "[ \n\t]*$" line))
+
+(defun blank-string-p (str)
+  "Check if STR containing only space or tab characters."
+  (string-match-p "[ \t]*$" str))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
-
-(defun tddsg--blank-line-p ()
-  (save-excursion
-    (beginning-of-line)
-    (looking-at "[ \t]*$")))
-
-(defun tddsg--blank-char-p (ch)
-  (or (equal (string ch) " ") (equal (string ch) "\\t")))
 
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
@@ -88,12 +94,6 @@ If the new path's directories does not exist, create them."
                                  1 (hl-todo-get-face) t)))
   (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|TRUNG\\)\\b"
                                  1 (hl-todo-get-face) t))))
-
-(defun tddsg--is-small-screen ()
-  (string= (system-name) "pisces"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; HOOK FUNCTIONS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
@@ -404,19 +404,17 @@ If the new path's directories does not exist, create them."
 (defun tddsg/smart-kill-sexp (&optional backward)
   "Kill sexp smartly."
   (interactive)
-  (defun space-or-tab-p (char)
-    (or (equal char ?\s) (equal char ?\t)))
   (defun kill-region-and-next-spaces (begin end &optional backward)
     (if backward
         (cl-loop
-         while (and (space-or-tab-p (char-before begin))
+         while (and (blank-char-p (char-before begin))
                     (or (null (char-before (1+ begin)))
                         (null (char-after end))
                         (not (memq (char-syntax (char-before (1+ begin))) '(?w ?_)))
                         (not (memq (char-syntax (char-after end)) '(?w ?_)))))
          do (setq begin (1- begin)))
       (cl-loop
-       while (and (space-or-tab-p (char-after end))
+       while (and (blank-char-p (char-after end))
                   (or (null (char-before begin))
                       (null (char-after (1+ end)))
                       (not (memq (char-syntax (char-before begin)) '(?w ?_)))
@@ -429,14 +427,14 @@ If the new path's directories does not exist, create them."
       (just-one-space)))
   (if (region-active-p) (delete-active-region t)
     (cond ((and backward
-                (not (space-or-tab-p (char-after)))
+                (not (blank-char-p (char-after)))
                 (not (null (char-before)))
-                (space-or-tab-p (char-before)))
+                (blank-char-p (char-before)))
            (forward-char -1))
           ((and (not backward)
-                (space-or-tab-p (char-after))
+                (blank-char-p (char-after))
                 (not (null (char-before)))
-                (not (space-or-tab-p (char-before))))
+                (not (blank-char-p (char-before))))
            (forward-char 1)))
     (setq begin (if backward (1- (point)) (point)))
     (setq end (if backward (point) (1+ (point))))
@@ -516,10 +514,10 @@ insert a new space if there is none"
           (goto-char (point-min))
           (while (re-search-forward "\\s-+" nil t)
             (replace-match " "))))
-    (if (tddsg--blank-char-p (preceding-char)) (forward-char -1))
-    (if (tddsg--blank-char-p (following-char))
-        (if (or (tddsg--blank-char-p (preceding-char))
-                (tddsg--blank-char-p (char-after (+ (point) 1))))
+    (if (blank-char-p (preceding-char)) (forward-char -1))
+    (if (blank-char-p (following-char))
+        (if (or (blank-char-p (preceding-char))
+                (blank-char-p (char-after (+ (point) 1))))
             (just-one-space)
           (delete-char 1))
       (just-one-space))))
@@ -534,7 +532,7 @@ insert a new space if there is none"
           (goto-char (point-min))
           (while (re-search-forward "\\s-+" nil t)
             (replace-match " "))))
-    (if (tddsg--blank-line-p)
+    (if (blank-line-p (thing-at-point 'line t))
         (delete-blank-lines)
       (tddsg/one-or-zero-space))))
 
@@ -596,6 +594,20 @@ after stripping extra whitespace and new lines"
      (lambda ()
        (skip-syntax-forward "w_")
        (point)))))
+
+(defun tddsg/beginning-of-line-dwim ()
+  "Goto beginning of line."
+  (interactive)
+  (let* ((pos-current (point))
+         (pos-begin-line (save-excursion (beginning-of-line) (point)))
+         (pos-first-nonblank (save-excursion (beginning-of-line)
+                                             (skip-syntax-forward "-")
+                                             (point))))
+    (cond ((eq pos-current pos-begin-line)
+           (goto-char pos-first-nonblank))
+          ((eq pos-current pos-first-nonblank)
+           (goto-char pos-begin-line))
+          (t (goto-char pos-first-nonblank)))))
 
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -785,10 +797,6 @@ If OTHER is t then scroll other window."
 ;;; INIT CONFIGS
 
 (defun tddsg/init-configs ()
-  ;; specific setting for each machines
-  (when (tddsg--is-small-screen)
-    (global-linum-mode -1))
-
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
@@ -971,7 +979,10 @@ If OTHER is t then scroll other window."
   (setq dired-guess-shell-alist-user
         '(("\\.pdf\\'" "okular &")
           ("\\.html\\'" "google-chrome &")
-          ("\\.txt\\'" "gedit")))
+          ("\\.txt\\'" "gedit &")
+          ("\\.doc*" "libreoffice &")
+          ("\\.ppt*" "libreoffice &")
+          ("\\.xls*" "libreoffice &")))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
@@ -1116,7 +1127,7 @@ If OTHER is t then scroll other window."
 
 (defun tddsg/init-keys ()
   ;; unbind some weird keys
-  (global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "<escape>") 'god-mode-all)
   (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
@@ -1132,7 +1143,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-S-j") 'avy-goto-char)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+  (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-z") 'save-buffer)
@@ -1216,7 +1227,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-F") 'tddsg/next-upcase-dwim)
   (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-dwim)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
-  (global-set-key (kbd "M-k") 'crux-kill-line-backwards)
   (global-set-key (kbd "M-K") 'backward-delete-char-untabify)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M-'") 'other-window)
@@ -1256,6 +1266,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w o") 'flop-frame)
   (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
+  (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
+
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
