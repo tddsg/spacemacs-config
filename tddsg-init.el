@@ -1779,12 +1779,19 @@ If OTHER is t then scroll other window."
           (eval (pdf-view-current-page))
           (pdf-cache-number-of-pages)))
 
-(spaceline-define-segment line-column
+(spaceline-define-segment tddsg/line-column
   "The current line and column numbers, or `(current page/number of pages)`
 in pdf-view mode (enabled by the `pdf-tools' package)."
   (if (eq 'pdf-view-mode major-mode)
       (tddsg--pdfview-page-number)
     "%l:%2c"))
+
+(spaceline-define-segment tddsg/buffer-id
+  "Name of buffer."
+  (let ((buffer-id (s-trim (powerline-buffer-id 'mode-line-buffer-id))))
+    (if (< (length buffer-id) 35)
+        buffer-id
+      (concat (substring buffer-id 0 30) "... ") )))
 
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
@@ -1801,9 +1808,9 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            :face highlight-face)
          '(buffer-modified
            point-position
-           line-column
+           tddsg/line-column
            ;; buffer-size
-           buffer-id
+           tddsg/buffer-id
            remote-host)
          additional-segments))
 
@@ -1834,8 +1841,8 @@ Set `spaceline-highlight-face-func' to
 (defun tddsg/init-spaceline ()
   (interactive)
   (setq-default powerline-height 22)  ;; spaceline height
-  (setq-default powerline-scale 1.2)
-  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
+  (setq-default powerline-scale 1)
+  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
 
