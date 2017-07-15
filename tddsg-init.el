@@ -789,7 +789,7 @@ If OTHER is t then scroll other window."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
-(defun tddsg/init-configs ()
+(defun tddsg/config-packages ()
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
@@ -1002,7 +1002,7 @@ If OTHER is t then scroll other window."
   (setq max-mini-window-height 30)
 
   ;; reason-mode
-  (tddsg/init-reason-mode)              ;
+  (tddsg/config-reason-mode)              ;
 
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
@@ -1118,7 +1118,7 @@ If OTHER is t then scroll other window."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT KEYS
 
-(defun tddsg/init-keys ()
+(defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "<escape>") 'god-mode-all)
@@ -1620,7 +1620,7 @@ If OTHER is t then scroll other window."
           (dolist (face faces)
             (custom-theme-set-faces theme face))))))
 
-(defun tddsg/init-themes ()
+(defun tddsg/config-themes ()
   ;; load the custom theme
   (tddsg--custom-common)
   (tddsg--custom-theme-leuven)
@@ -1837,8 +1837,7 @@ Set `spaceline-highlight-face-func' to
    ((buffer-modified-p) 'tddsg-face-modified )
    (t 'tddsg-face-unmodified)))
 
-
-(defun tddsg/init-spaceline ()
+(defun tddsg/config-spaceline ()
   (interactive)
   (setq-default powerline-height 22)  ;; spaceline height
   (setq-default powerline-scale 1)
@@ -1849,7 +1848,7 @@ Set `spaceline-highlight-face-func' to
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CUSTOM
 
-(defun tddsg/init-custom-vars ()
+(defun tddsg/config-custom-vars ()
   (custom-set-variables
    '(golden-ratio-exclude-buffer-names
      (quote
@@ -2005,7 +2004,7 @@ Set `spaceline-highlight-face-func' to
 
 ;;;;;;; REASON MODE ;;;;;;;;
 
-(defun tddsg/init-reason-mode ()
+(defun tddsg/config-reason-mode ()
   (require 'reason-mode)
   (require 'merlin)
   (require 'merlin-imenu)
