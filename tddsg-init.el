@@ -1741,62 +1741,55 @@ If OTHER is t then scroll other window."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT SPACELINE
 
-;; reuse code from spaceline-config.el
-(defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
-  "Convenience function for the spacemacs and emacs themes."
-  (spaceline-install 'tddsg
-                     `(,left
-                       anzu
-                       auto-compile
-                       ,second-left
-                       major-mode
-                       ((version-control :when active)
-                        purpose )
-                       minor-modes
-                       (process :when active)
-                       ((flycheck-error flycheck-warning flycheck-info)
-                        :when active)
-                       (mu4e-alert-segment :when active)
-                       (erc-track :when active)
-                       (org-pomodoro :when active)
-                       (org-clock :when active)
-                       nyan-cat)
-                     `((global :when (not active))
-                       which-function
-                       (python-pyvenv :fallback python-pyenv)
-                       (battery :when active)
-                       selection-info
-                       ,@additional-segments
-                       (input-method
-                       (buffer-encoding-abbrev :when active)
-                       (buffer-position :when active))
-                       hud))
-  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
-
-;;; used for setting pdf-view page
-;;; FIXME: to be removed when spaceline is updated
-(declare-function pdf-view-current-page 'pdf-view)
-(declare-function pdf-cache-number-of-pages 'pdf-view)
-
-(defun tddsg--pdfview-page-number ()
-  (format "(%d/%d)"
-          (eval (pdf-view-current-page))
-          (pdf-cache-number-of-pages)))
+;;; spaceline segments
 
 (spaceline-define-segment tddsg/line-column
   "The current line and column numbers, or `(current page/number of pages)`
 in pdf-view mode (enabled by the `pdf-tools' package)."
-  (if (eq 'pdf-view-mode major-mode)
-      (tddsg--pdfview-page-number)
+  (if (derived-mode-p 'pdf-view-mode)
+      (format "(%d/%d)" (pdf-view-current-page) (pdf-cache-number-of-pages))
     "%l:%2c"))
 
 (spaceline-define-segment tddsg/buffer-id
   "Name of buffer."
   (let ((buffer-id (s-trim (powerline-buffer-id 'mode-line-buffer-id))))
-    (if (< (length buffer-id) 35)
-        buffer-id
-      (concat (substring buffer-id 0 30) "... ") )))
+    (if (< (length buffer-id) 35) buffer-id
+      (concat (substring buffer-id 0 30)
+              (propertize "... " 'face 'mode-line-buffer-id)) )))
 
+
+;; reuse code from spaceline-config.el
+(defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
+  "Convenience function for the spacemacs and emacs themes."
+  (spaceline-install 'tddsg
+    `(,left
+      anzu
+      auto-compile
+      ,second-left
+      major-mode
+      ((version-control :when active)
+       purpose )
+      minor-modes
+      (process :when active)
+      ((flycheck-error flycheck-warning flycheck-info)
+       :when active)
+      (mu4e-alert-segment :when active)
+      (erc-track :when active)
+      (org-pomodoro :when active)
+      (org-clock :when active)
+      nyan-cat)
+    `((global :when (not active))
+      which-function
+      (python-pyvenv :fallback python-pyenv)
+      (battery :when active)
+      selection-info
+      ,@additional-segments
+      (input-method
+       (buffer-encoding-abbrev
+        :when (and active (not (derived-mode-p 'pdf-view-mode))))
+       (buffer-position :when active))
+      hud))
+  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
   "Install the modeline used by Spacemacs.
