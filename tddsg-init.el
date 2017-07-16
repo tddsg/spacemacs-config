@@ -1112,7 +1112,9 @@ If OTHER is t then scroll other window."
     ;; spaceline size
     (setq-default powerline-height 22)  ;; spaceline height
     (setq-default powerline-scale 1)
-    (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+    (cond ((string= (system-name) "lmint")
+           (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12"))
+          (t (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")))
     ;; change personal dictionary of ispell
     (if (tddsg--projectile-p)
         (setq ispell-personal-dictionary (concat (projectile-project-root)
