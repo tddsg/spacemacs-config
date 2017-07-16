@@ -360,9 +360,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq-default powerline-height 22)  ;; spaceline height
-  (setq-default powerline-scale 1)
-  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10"))
+ )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.

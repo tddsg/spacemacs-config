@@ -1109,6 +1109,10 @@ If OTHER is t then scroll other window."
     (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
     (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
     (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
+    ;; spaceline size
+    (setq-default powerline-height 22)  ;; spaceline height
+    (setq-default powerline-scale 1)
+    (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
     ;; change personal dictionary of ispell
     (if (tddsg--projectile-p)
         (setq ispell-personal-dictionary (concat (projectile-project-root)
@@ -1839,11 +1843,9 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/config-spaceline ()
   (interactive)
-  (setq-default powerline-height 22)  ;; spaceline height
-  (setq-default powerline-scale 1)
-  (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CUSTOM
