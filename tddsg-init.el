@@ -1797,11 +1797,10 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
         :when (and active (not (derived-mode-p 'pdf-view-mode))))
        (buffer-position :when active))
       hud))
-  (setq mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
+  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
   "Install the modeline used by Spacemacs.
-
 ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
 `buffer-position'."
   (apply 'tddsg--create-spaceline-theme
@@ -1844,10 +1843,10 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/config-spaceline ()
   (interactive)
-  (if (not tddsg--show-mode-line)
-      (setq mode-line-format nil)
-    (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
-    (tddsg--create-spaceline-final)))
+  (if (not tddsg--show-mode-line) (setq mode-line-format nil)
+    (progn
+      (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
+      (tddsg--create-spaceline-final))))
 
 (defun tddsg/toggle-mode-line()
   (interactive)
