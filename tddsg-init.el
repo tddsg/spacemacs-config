@@ -37,6 +37,8 @@
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
 
+(defvar tddsg--show-header-line nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITY FUNCTIONS
 
@@ -1712,28 +1714,25 @@ If OTHER is t then scroll other window."
      (concat (tddsg--header-project-path)
              (tddsg--header-file-path)))))
 
-;; List of buffer prefixes that the header-line is hidden
-(defvar tddsg--excluded-buffer-prefix (list "*helm"
-                                            "*spacemacs*"))
-
-(defun tddsg--header-exclude-p (buffer-name)
-  (cl-loop for buffer-prefix in tddsg--excluded-buffer-prefix
-           thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
-
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
+  (defun exclude-buffer (buffer-name)
+    (cl-loop for buffer-prefix in (list "*helm" "*spacemacs*")
+             thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
   (cl-loop for window in (window-list) do
            (with-current-buffer (window-buffer window)
-             (when (not (tddsg--header-exclude-p
-                         (buffer-name (window-buffer window))))
-               (if (eq (window-buffer window)
-                       (window-buffer (selected-window)))
+             (cond ((not tddsg--show-header-line)
+                    (setq header-line-format nil))
+                   ;; exclude buffer
+                   ((exclude-buffer (buffer-name (window-buffer window)))
+                    (setq header-line-format nil))
                    ;; activate header-line of the active buffer
-                   (setq header-line-format (tddsg--create-header-line))
-                 ;; dim header-line of inactive buffers
-                 (setq header-line-format
-                       `(:propertize ,(tddsg--create-header-line)
-                                     face (:foreground "grey55"))))))))
+                   ((eq (window-buffer window) (window-buffer (selected-window)))
+                    (setq header-line-format (tddsg--create-header-line)))
+                   ;; dim header-line of inactive buffers
+                   (t (setq header-line-format
+                            `(:propertize ,(tddsg--create-header-line)
+                                          face (:foreground "grey55"))))))))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook 'tddsg--update-header-line)
