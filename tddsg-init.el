@@ -39,7 +39,7 @@
 
 (defvar tddsg--show-header-line t)
 
-(defvar tddsg--show-spaceline t)
+(defvar tddsg--show-mode-line t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITY FUNCTIONS
@@ -975,11 +975,11 @@ If OTHER is t then scroll other window."
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
   (setq dired-guess-shell-alist-user
         '(("\\.pdf\\'" "okular &")
-          ("\\.html\\'" "google-chrome &")
+          ("\\.html\\|\\.xml*" "google-chrome &")
           ("\\.txt\\'" "gedit &")
-          ("\\.doc*" "libreoffice &")
-          ("\\.ppt*" "libreoffice &")
-          ("\\.xls*" "libreoffice &")))
+          ("\\.jpg*\\|\\.png*\\|\\.gif*" "eog")
+          ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice &")
+          ("\\.ods*\\|\\.odt*" "libreoffice &")))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
@@ -1797,7 +1797,7 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
         :when (and active (not (derived-mode-p 'pdf-view-mode))))
        (buffer-position :when active))
       hud))
-  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
+  (setq mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
   "Install the modeline used by Spacemacs.
@@ -1844,12 +1844,15 @@ Set `spaceline-highlight-face-func' to
 
 (defun tddsg/config-spaceline ()
   (interactive)
-  (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
-  (tddsg--create-spaceline-final))
+  (if (not tddsg--show-mode-line)
+      (setq mode-line-format nil)
+    (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
+    (tddsg--create-spaceline-final)))
 
-(defun tddsg/hide-spaceline()
+(defun tddsg/toggle-mode-line()
   (interactive)
-  (setq mode-line-format nil))
+  (setq tddsg--show-mode-line (not tddsg--show-mode-line))
+  (tddsg/config-spaceline))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
