@@ -37,7 +37,9 @@
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
 
-(defvar tddsg--show-header-line nil)
+(defvar tddsg--show-header-line t)
+
+(defvar tddsg--show-spaceline t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITY FUNCTIONS
@@ -1734,6 +1736,11 @@ If OTHER is t then scroll other window."
                             `(:propertize ,(tddsg--create-header-line)
                                           face (:foreground "grey55"))))))))
 
+(defun tddsg/toggle-header-line ()
+  (interactive)
+  (setq tddsg--show-header-line (not tddsg--show-header-line))
+  (tddsg--update-header-line))
+
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook 'tddsg--update-header-line)
 (add-hook 'window-configuration-change-hook 'tddsg--update-header-line)
@@ -1839,6 +1846,10 @@ Set `spaceline-highlight-face-func' to
   (interactive)
   (setq spaceline-highlight-face-func 'tddsg--spaceline-highlight-face)
   (tddsg--create-spaceline-final))
+
+(defun tddsg/hide-spaceline()
+  (interactive)
+  (setq mode-line-format nil))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
