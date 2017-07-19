@@ -977,7 +977,7 @@ If OTHER is t then scroll other window."
         '(("\\.pdf\\'" "okular &")
           ("\\.html\\|\\.xml*" "google-chrome &")
           ("\\.txt\\'" "gedit &")
-          ("\\.jpg*\\|\\.png*\\|\\.gif*" "eog")
+          ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog &")
           ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice &")
           ("\\.ods*\\|\\.odt*" "libreoffice &")))
 
