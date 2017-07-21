@@ -1734,18 +1734,16 @@ If OTHER is t then scroll other window."
              thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
   (cl-loop for window in (window-list) do
            (with-current-buffer (window-buffer window)
-             (cond ((not tddsg--show-header-line)
-                    (setq header-line-format nil))
-                   ;; exclude buffer
-                   ((exclude-buffer (buffer-name (window-buffer window)))
-                    (setq header-line-format nil))
-                   ;; activate header-line of the active buffer
-                   ((eq (window-buffer window) (window-buffer (selected-window)))
-                    (setq header-line-format (tddsg--create-header-line)))
-                   ;; dim header-line of inactive buffers
-                   (t (setq header-line-format
-                            `(:propertize ,(tddsg--create-header-line)
-                                          face (:foreground "grey55"))))))))
+             (when (not (exclude-buffer (buffer-name (window-buffer window))))
+               (cond ((not tddsg--show-header-line)
+                      (setq header-line-format nil))
+                     ;; activate header-line of the active buffer
+                     ((eq (window-buffer window) (window-buffer (selected-window)))
+                      (setq header-line-format (tddsg--create-header-line)))
+                     ;; dim header-line of inactive buffers
+                     (t (setq header-line-format
+                              `(:propertize ,(tddsg--create-header-line)
+                                            face (:foreground "grey55")))))))))
 
 (defun tddsg/toggle-header-line ()
   (interactive)
