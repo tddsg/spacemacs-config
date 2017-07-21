@@ -565,6 +565,15 @@ after stripping extra whitespace and new lines"
       (pdf-view-deactivate-region)
       (kill-new text))))
 
+(defun tddsg/pdf-view-enable-auto-slice ()
+  (interactive)
+  (pdf-view-auto-slice-minor-mode 1))
+
+(defun tddsg/pdf-view-disable-auto-slice ()
+  (interactive)
+  (pdf-view-auto-slice-minor-mode -1)
+  (pdf-view-reset-slice))
+
 (defun tddsg/kill-active-region ()
   (interactive)
   (when (region-active-p) (call-interactively 'kill-region)))
@@ -1448,6 +1457,8 @@ If OTHER is t then scroll other window."
   (define-key python-mode-map (kbd "C-j") nil)
 
   ;; pdf-tools
+  (define-key pdf-view-mode-map (kbd "s d") 'tddsg/pdf-view-disable-auto-slice)
+  (define-key pdf-view-mode-map (kbd "s e") 'tddsg/pdf-view-enable-auto-slice)
   (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
   (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
   (define-key pdf-view-mode-map (kbd "[") 'pdf-view-previous-line-or-previous-page)
@@ -1512,14 +1523,14 @@ If OTHER is t then scroll other window."
   (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error)
 
   ;; reassign key-chords
-  (key-chord-define-global "ji" 'indent-region)
+  (key-chord-define-global "ji" 'indent-region))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT THEMES
 
-  (defcustom tddsg-themes nil
-    "Association list of override faces to set for different custom themes."))
+(defcustom tddsg-themes nil
+  "Association list of override faces to set for different custom themes.")
 
 (defun tddsg--read-custom-themes (alist-symbol key value)
   "Set VALUE of a KEY in ALIST-SYMBOL."
@@ -1724,18 +1735,16 @@ If OTHER is t then scroll other window."
              thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
   (cl-loop for window in (window-list) do
            (with-current-buffer (window-buffer window)
-             (cond ((not tddsg--show-header-line)
-                    (setq header-line-format nil))
-                   ;; exclude buffer
-                   ((exclude-buffer-p (buffer-name (window-buffer window)))
-                    (setq header-line-format nil))
-                   ;; activate header-line of the active buffer
-                   ((eq (window-buffer window) (window-buffer (selected-window)))
-                    (setq header-line-format (tddsg--create-header-line)))
-                   ;; dim header-line of inactive buffers
-                   (t (setq header-line-format
-                            `(:propertize ,(tddsg--create-header-line)
-                                          face (:foreground "grey55"))))))))
+             (when (not (exclude-buffer-p (buffer-name (window-buffer window))))
+               (cond ((not tddsg--show-header-line)
+                      (setq header-line-format nil))
+                     ;; activate header-line of the active buffer
+                     ((eq (window-buffer window) (window-buffer (selected-window)))
+                      (setq header-line-format (tddsg--create-header-line)))
+                     ;; dim header-line of inactive buffers
+                     (t (setq header-line-format
+                              `(:propertize ,(tddsg--create-header-line)
+                                            face (:foreground "grey55")))))))))
 
 (defun tddsg/toggle-header-line ()
   (interactive)
