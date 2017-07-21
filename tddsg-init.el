@@ -1459,6 +1459,7 @@ If OTHER is t then scroll other window."
   (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
+  (define-key pdf-view-mode-map (kbd "<C-mouse-1>") 'pdf-sync-backward-search)
 
 
   ;; flyspell
@@ -1718,7 +1719,7 @@ If OTHER is t then scroll other window."
 
 (defun tddsg--update-header-line ()
   "Update header line of the active buffer and remove from all other."
-  (defun exclude-buffer (buffer-name)
+  (defun exclude-buffer-p (buffer-name)
     (cl-loop for buffer-prefix in (list "*helm" "*spacemacs*")
              thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
   (cl-loop for window in (window-list) do
@@ -1726,7 +1727,7 @@ If OTHER is t then scroll other window."
              (cond ((not tddsg--show-header-line)
                     (setq header-line-format nil))
                    ;; exclude buffer
-                   ((exclude-buffer (buffer-name (window-buffer window)))
+                   ((exclude-buffer-p (buffer-name (window-buffer window)))
                     (setq header-line-format nil))
                    ;; activate header-line of the active buffer
                    ((eq (window-buffer window) (window-buffer (selected-window)))
