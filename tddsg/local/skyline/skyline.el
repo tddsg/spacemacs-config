@@ -25,9 +25,11 @@
 
 ;;; TODO;
 (defmacro skyline-define-segment (name value &rest props)
-  )
+  "Description"
+  `(progn
+     ,value))
 
-(defun header-file-path ()
+(skyline-define-segment header-file-path
   "Create file path for the header line."
   (let* ((file-path (if buffer-file-name
                         (abbreviate-file-name buffer-file-name)
