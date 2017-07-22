@@ -1333,7 +1333,10 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-to-bottomon-on-output)
+  (define-key shell-mode-map (kbd "C-z") nil)
+  (define-key shell-mode-map (kbd "C-c C-s")
+    'tddsg/toggle-shell-scroll-to-bottomon-on-output)
+
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
