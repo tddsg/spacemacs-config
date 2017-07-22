@@ -1,13 +1,13 @@
-;;; headline.el
+;;; skyline.el
 
 ;; Author: Ta Quang Trung
 ;; Version: 0.0.1
 ;; Created: 22 July 2017
-;; Keywords: header-line
+;; Keywords: header-line, skyline
 
 ;;; Commentary:
 
-;;; This package provide a minor mode for header line of Emacs
+;;; This package provide a minor mode for header line (skyline) of Emacs
 
 ;;; Acknowledgement:
 ;;    This package is originally inspired by the idea and the code
@@ -17,11 +17,14 @@
 
 ;;; Code:
 
+(defvar show-skyline t)
+
+
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
 
 ;;; TODO;
-(defmacro headline-define-segment (name value &rest props)
+(defmacro skyline-define-segment (name value &rest props)
   )
 
 (defun header-file-path ()
@@ -83,14 +86,14 @@
      :background "black" :foreground "white"
      :inverse-video nil :box nil :underline t))))
 
-(defun create-header-line ()
-  "Create the header line of a buffer."
+(defun create-skyline ()
+  "Create the skyline of a buffer."
   '("" ;; invocation-name
     (:eval
      (concat (header-project-path)
              (header-file-path)))))
 
-(defun update-header-line ()
+(defun update-skyline ()
   "Update header line of the active buffer and remove from all other."
   (defun exclude-buffer-p (buffer-name)
     (cl-loop for buffer-prefix in (list "*helm" "*spacemacs*")
@@ -98,27 +101,27 @@
   (cl-loop for window in (window-list) do
            (with-current-buffer (window-buffer window)
              (when (not (exclude-buffer-p (buffer-name (window-buffer window))))
-               (cond ((not show-header-line)
+               (cond ((not show-skyline)
                       (setq header-line-format nil))
                      ;; activate header-line of the active buffer
                      ((eq (window-buffer window) (window-buffer (selected-window)))
-                      (setq header-line-format (create-header-line)))
+                      (setq header-line-format (create-skyline)))
                      ;; dim header-line of inactive buffers
                      (t (setq header-line-format
-                              `(:propertize ,(create-header-line)
+                              `(:propertize ,(create-skyline)
                                             face (:foreground "grey55")))))))))
 
-(defun toggle-header-line ()
+(defun toggle-skyline ()
   (interactive)
-  (setq show-header-line (not show-header-line))
-  (update-header-line))
+  (setq show-skyline (not show-skyline))
+  (update-skyline))
 
 ;; update header line of each buffer
-(add-hook 'buffer-list-update-hook 'update-header-line)
-(add-hook 'window-configuration-change-hook 'update-header-line)
+(add-hook 'buffer-list-update-hook 'update-skyline)
+(add-hook 'window-configuration-change-hook 'update-skyline)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
 
-;;; headline.el ends here
+;;; skyline.el ends here
