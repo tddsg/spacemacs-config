@@ -1815,7 +1815,7 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       ;;  ;; (buffer-encoding-abbrev
       ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
       ;;  (buffer-position :when active))
-      ((tddsg/current-time :when active))))
+      tddsg/current-time))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
