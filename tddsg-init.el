@@ -1778,6 +1778,10 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       (concat (substring buffer-id 0 30)
               (propertize "... " 'face 'mode-line-buffer-id)) )))
 
+(spaceline-define-segment tddsg/current-time
+  "Current time."
+  (format-time-string "%I:%M%p"))
+
 
 ;; reuse code from spaceline-config.el
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
@@ -1799,17 +1803,17 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       (org-pomodoro :when active)
       (org-clock :when active)
       nyan-cat)
-    `((global :when (not active))
-      which-function
-      (python-pyvenv :fallback python-pyenv)
+    `(which-function
+      ;; (python-pyvenv :fallback python-pyenv)
       (battery :when active)
       selection-info
       ,@additional-segments
-      (input-method
-       (buffer-encoding-abbrev
-        :when (and active (not (derived-mode-p 'pdf-view-mode))))
-       (buffer-position :when active))
-      hud))
+      ;; (input-method
+      ;;  ;; (buffer-encoding-abbrev
+      ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
+      ;;  (buffer-position :when active))
+      ((hud :when active)
+       (tddsg/current-time :when active))))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
@@ -1866,6 +1870,8 @@ Set `spaceline-highlight-face-func' to
   (setq tddsg--show-mode-line (not tddsg--show-mode-line))
   (tddsg/config-spaceline))
 
+;; update mode line after every 60 seconds
+(run-at-time 60 60 #'force-mode-line-update)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CUSTOM
