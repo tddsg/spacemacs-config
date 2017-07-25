@@ -1817,7 +1817,7 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       ;;  ;; (buffer-encoding-abbrev
       ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
       ;;  (buffer-position :when active))
-      (tddsg/current-time tddsg/hud)))
+      tddsg/current-time))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
@@ -1832,6 +1832,7 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            :separator "|"
            :face highlight-face)
          '(buffer-modified
+           tddsg/hud
            point-position
            tddsg/line-column
            ;; buffer-size
