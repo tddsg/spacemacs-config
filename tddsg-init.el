@@ -1769,7 +1769,7 @@ If OTHER is t then scroll other window."
 in pdf-view mode (enabled by the `pdf-tools' package)."
   (if (derived-mode-p 'pdf-view-mode)
       (format "(%d/%d)" (pdf-view-current-page) (pdf-cache-number-of-pages))
-    "%l:%2c"))
+    "%l:%c"))
 
 (spaceline-define-segment tddsg/buffer-id
   "Name of buffer."
@@ -1782,6 +1782,9 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
   "Current time."
   (format-time-string "%I:%M%p"))
 
+(spaceline-define-segment tddsg/hud
+  "A HUD that shows which part of the buffer is currently visible."
+  (powerline-hud highlight-face default-face 1))
 
 ;; reuse code from spaceline-config.el
 (defun tddsg--create-spaceline-theme (left second-left &rest additional-segments)
@@ -1812,8 +1815,7 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       ;;  ;; (buffer-encoding-abbrev
       ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
       ;;  (buffer-position :when active))
-      ((hud :when active)
-       (tddsg/current-time :when active))))
+      ((tddsg/current-time :when active))))
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
@@ -1828,6 +1830,7 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
            :separator "|"
            :face highlight-face)
          '(buffer-modified
+           tddsg/hud
            point-position
            tddsg/line-column
            ;; buffer-size
