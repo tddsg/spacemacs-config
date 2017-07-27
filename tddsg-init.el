@@ -744,12 +744,6 @@ If OTHER is t then scroll other window."
   (irony--mode-exit)
   (irony--mode-enter))
 
-(defun tddsg/toggle-show-mode-line ()
-  (interactive)
-  (if (bound-and-true-p mode-line-format)
-      (setq mode-line-format nil)
-    (setq mode-line-format (default-value 'mode-line-format))))
-
 (defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
@@ -1287,7 +1281,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
   (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
-
+  (global-set-key (kbd "M-m t M") 'spacemacs/toggle-mode-line)
+  (global-set-key (kbd "M-m t H") 'tddsg/toggle-header-line)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
@@ -1481,8 +1476,6 @@ If OTHER is t then scroll other window."
   (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
   (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
   (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
-  (define-key pdf-view-mode-map (kbd "<C-mouse-1>") 'pdf-sync-backward-search)
-
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
