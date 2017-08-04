@@ -1017,7 +1017,7 @@ If OTHER is t then scroll other window."
   (setq max-mini-window-height 30)
 
   ;; reason-mode
-  (tddsg/config-reason-mode)              ;
+  ;; (tddsg/config-reason-mode)
 
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
@@ -1874,6 +1874,16 @@ Set `spaceline-highlight-face-func' to
 (defun tddsg/toggle-mode-line()
   (interactive)
   (setq tddsg--show-mode-line (not tddsg--show-mode-line))
+  (tddsg/config-spaceline))
+
+(defun tddsg/toggle-presentation()
+  (interactive)
+  (if (or tddsg--show-header-line tddsg--show-mode-line)
+      (setq tddsg--show-header-line nil
+            tddsg--show-mode-line nil)
+    (setq tddsg--show-header-line t
+          tddsg--show-mode-line t))
+  (tddsg--update-header-line)
   (tddsg/config-spaceline))
 
 ;; update mode line after every 60 seconds
