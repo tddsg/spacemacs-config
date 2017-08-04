@@ -543,8 +543,13 @@ after stripping extra whitespace and new lines"
         (let* ((begin (region-beginning))
                (end (region-end))
                (text (buffer-substring-no-properties begin end))
+               (text (replace-regexp-in-string "\t" " " text))
+               (text (replace-regexp-in-string " +\n" "\n" text))
+               ;; FIXME this is a very temporarily fix to maintain paragraphs
+               (text (replace-regexp-in-string "\n\n" "<<<NN>>>" text))
                (text (replace-regexp-in-string "\n" " " text))
                (text (replace-regexp-in-string "\\s-+" " " text))
+               (text (replace-regexp-in-string "<<<NN>>>" "\n\n" text))
                (text (string-trim text)))
           (kill-new text)
           (deactivate-mark))
