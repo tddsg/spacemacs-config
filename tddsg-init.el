@@ -1183,6 +1183,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-other-window-upward-dwim)
   (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-other-window-downward-dwim)
+  (global-set-key (kbd "C-M-S-v") 'tddsg/scroll-other-window-upward-dwim)
+  (global-set-key (kbd "C-M-v") 'tddsg/scroll-other-window-downward-dwim)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
@@ -1286,8 +1288,9 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
   (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
-  (global-set-key (kbd "M-m t M") 'spacemacs/toggle-mode-line)
+  (global-set-key (kbd "M-m t M") 'tddsg/toggle-mode-line)
   (global-set-key (kbd "M-m t H") 'tddsg/toggle-header-line)
+  (global-set-key (kbd "M-m t P") 'tddsg/toggle-presentation)
 
   (global-set-key (kbd "M-s d") 'dictionary-search)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
@@ -1437,6 +1440,7 @@ If OTHER is t then scroll other window."
     (define-key LaTeX-mode-map (kbd "M-g v") 'latex/font-sans-serif)
     (define-key LaTeX-mode-map (kbd "M-g i") 'latex/font-italic)
     (define-key LaTeX-mode-map (kbd "M-g b") 'latex/font-bold)
+    (define-key LaTeX-mode-map (kbd "M-g l") 'latex/font-underline)
     (define-key LaTeX-mode-map (kbd "M-g e") 'latex/font-emphasis)
     (define-key LaTeX-mode-map (kbd "M-g r") 'latex/font-clear)
     (define-key LaTeX-mode-map (kbd "M-g c") 'latex/font-code)
@@ -1824,7 +1828,9 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
       ;;  (buffer-position :when active))
       tddsg/current-time))
-  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg)))))
+  (if (null mode-line-format)
+      (setq mode-line-format '("%e" (:eval (spaceline-ml-tddsg))))
+    (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg))))))
 
 (defun tddsg--create-spaceline-final (&rest additional-segments)
   "Install the modeline used by Spacemacs.
@@ -1857,7 +1863,7 @@ ADDITIONAL-SEGMENTS are inserted on the right, between `global' and
                              :foreground "#3E3D31"
                              :inherit 'mode-line)))
            ,(nth 2 s)
-           :group 'tddsg)))
+          :group 'tddsg)))
 
 
 (defun tddsg--spaceline-highlight-face ()
@@ -1879,7 +1885,8 @@ Set `spaceline-highlight-face-func' to
 (defun tddsg/toggle-mode-line()
   (interactive)
   (setq tddsg--show-mode-line (not tddsg--show-mode-line))
-  (tddsg/config-spaceline))
+  (tddsg/config-spaceline)
+  (force-mode-line-update))
 
 (defun tddsg/toggle-presentation()
   (interactive)

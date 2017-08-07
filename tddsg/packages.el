@@ -265,6 +265,7 @@ Each entry is either:
   ;; add frametitle into outline of reftex and TeX
   (push '("frametitle" . 3) reftex-section-levels)
   (push '("frametitle" 3) TeX-outline-extra)
+  (defun latex/font-underline () (interactive) (TeX-font nil ?\C-l))
   ;; remove the outer environment
   (defun LaTeX-delete-environment ()
     (interactive)
