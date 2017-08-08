@@ -91,6 +91,7 @@
     swiper-helm
     counsel
     monky
+    zone-sl
     (songbird :location local)
     (proddag :location local)
     (buffer-clone :location local))
@@ -497,6 +498,9 @@ Each entry is either:
 
 (defun tddsg/init-monky ()
   (use-package monky))
+
+(defun tddsg/init-zone-sl ()
+  (use-package zone-sl))
 
 (defun tddsg/init-counsel ()
   (use-package counsel))
