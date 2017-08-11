@@ -1,6 +1,6 @@
 ;;; packages.el --- tddsg layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2016 TDDSG
+;; Copyright (c) 2016-present TDDSG
 ;;
 ;; Author: trungtq <thedaydreamersg(*)g-m-a-i-l.com>
 ;; URL: https://tddsg.github.io
@@ -34,13 +34,11 @@
     ;;; languages
     tuareg
     merlin
-    python
     auctex
     latex-extra
     org
     cc-mode
     llvm-mode
-    web-mode
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;; utilities
     comment-dwim-2
@@ -55,16 +53,10 @@
     ace-popup-menu
     smartparens
     paren
-    yasnippet
-    hi-lock
-    projectile
-    ;; helm
-    helm
     helm-rtags
     helm-ispell
     helm-bibtex
     helm-dired-history
-    expand-region
     goto-chg
     autorevert
     windmove
@@ -74,14 +66,11 @@
     super-save
     whitespace
     anzu
-    dictionary
-    langtool
     imenu-anywhere
     vline
     column-marker
     buffer-move
     dired+
-    pdf-tools
     elmacro
     elpy
     company-math
@@ -91,6 +80,12 @@
     swiper-helm
     counsel
     monky
+    ;;; writing, spelling
+    dictionary
+    langtool
+    writegood-mode
+
+    ;;; local
     (songbird :location local)
     (proddag :location local)
     (buffer-clone :location local))
@@ -162,13 +157,6 @@ Each entry is either:
   (add-hook 'objc-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
 
-(defun tddsg/post-init-web-mode ()
-  ;; coding style
-  (setq web-mode-code-indent-offset 2
-        web-mode-indent-style 2
-        web-mode-css-indent-offset 2
-        web-mode-markup-indent-offset 2))
-
 (defun tddsg/post-init-tuareg ()
   ;; fix syntax highlight for OCaml
   (font-lock-add-keywords
@@ -189,7 +177,6 @@ Each entry is either:
   (defun my-tuareg-hook ()
     (merlin-mode)
     (eldoc-mode -1)
-    (yas-minor-mode -1)
     (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
     ;; customize syntax table for forward/backward slurping/barfing sexp
@@ -321,14 +308,6 @@ Each entry is either:
   (add-hook 'tex-mode-hook 'my-latex-hook 'append)
   (add-hook 'TeX-mode-hook 'my-latex-hook 'append))
 
-(defun tddsg/post-init-python ()
-  (defun my-python-mode-hook ()
-    ;; (setq indent-tabs-mode t)    ;; indent by using tab
-    (setq tab-width 4)
-    (setq python-indent 4)
-    (elpy-mode))
-  (add-hook 'python-mode-hook 'my-python-mode-hook))
-
 (defun tddsg/post-init-smartparens ()
   ;; bindings
   (sp-use-paredit-bindings)
@@ -364,7 +343,6 @@ Each entry is either:
                    :skip-match 'sp-latex-skip-match-apostrophe
                    :unless '(sp-latex-point-after-backslash))
     (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
-    ;; (sp-local-pair "$" "$" :post-handlers '())
     (sp-local-pair "\begin{frame}" "\end{frame}")
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
@@ -376,29 +354,6 @@ Each entry is either:
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
   (smartparens-global-mode 1))
-
-(defun tddsg/post-init-yasnippet ()
-  (yas-global-mode t))
-
-(defun tddsg/post-init-hi-lock ()
-  (global-hi-lock-mode 1))
-
-(defun tddsg/post-init-projectile ()
-  (projectile-global-mode 1))
-
-(defun tddsg/post-init-helm ()
-  (require 'helm)
-  (add-to-list 'helm-sources-using-default-as-input
-               'helm-source-grep-ag)
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (setq projectile-completion-system 'helm
-        helm-ff-file-name-history-use-recentf t
-        helm-ff-transformer-show-only-basename nil)
-  (require 'helm-config)
-  (helm-mode 1))
-
-(defun tddsg/post-init-expand-region ()
-  (global-set-key (kbd "C-=") 'er/expand-region))
 
 (defun tddsg/init-goto-chg ()
   (global-set-key (kbd "C-c C-\\") 'goto-last-change))
@@ -461,6 +416,9 @@ Each entry is either:
                                   "EN_QUOTES")
         langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
+
+(defun tddsg/init-writegood-mode ()
+  (require 'writegood-mode))
 
 (defun tddsg/init-llvm-mode ()
   (use-package llvm-mode))
@@ -575,13 +533,6 @@ Each entry is either:
     (advice-add func :around #'advice-update-cursor))
   (add-hook 'god-mode-enabled-hook 'update-cursor)
   (add-hook 'god-mode-disabled-hook 'update-cursor))
-
-(defun tddsg/post-init-pdf-tools ()
-  (pdf-tools-install)
-  (setq pdf-view-resize-factor 1.05)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-auto-slice-minor-mode)
-  (custom-set-variables
-   '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
 
 (defun tddsg/post-init-org ()
   ;; unbind Shift + arrow

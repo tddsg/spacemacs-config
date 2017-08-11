@@ -998,9 +998,14 @@ If OTHER is t then scroll other window."
           ("\\.ods*\\|\\.odt*" "libreoffice &")))
 
   ;; helm setting
-  (setq helm-ag-insert-at-point 'symbol)     ;; insert symbol in helm-ag
-  (setq helm-split-window-in-side-p t)
-  (setq helm-split-window-default-side 'below)
+  (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
+        helm-split-window-in-side-p t
+        projectile-completion-system 'helm
+        helm-ff-file-name-history-use-recentf t
+        helm-ff-transformer-show-only-basename nil)
+  (add-to-list 'helm-sources-using-default-as-input
+               'helm-source-grep-ag)
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   ;; make Helm split inside the active window in a few function
   (defun advise-helm-split-active-window (orig-func &rest args)
     (setq helm-display-function 'helm-default-display-buffer)
@@ -1023,6 +1028,13 @@ If OTHER is t then scroll other window."
 
   ;; reason-mode
   ;; (tddsg/config-reason-mode)
+
+  ;; pdf-tools
+  (with-eval-after-load 'pdf-tools
+    (setq pdf-view-resize-factor 1.05)
+    (add-hook 'pdf-view-mode-hook 'pdf-view-auto-slice-minor-mode)
+    (custom-set-variables
+     '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
 
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
@@ -1365,6 +1377,20 @@ If OTHER is t then scroll other window."
     (define-key speedbar-file-key-map (kbd "+") 'speedbar-create-directory)
     (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
 
+  ;; web-mode
+  (with-eval-after-load 'web-mode
+    (setq web-mode-code-indent-offset 2
+          web-mode-indent-style 2
+          web-mode-css-indent-offset 2
+          web-mode-markup-indent-offset 2))
+
+  ;; python-mode
+  (defun hook-python-mode ()
+    (setq tab-width 4)
+    (setq python-indent 4)
+    (elpy-mode))
+  (add-hook 'python-mode-hook 'hook-python-mode)
+
   ;; magit
   (with-eval-after-load 'magit
     (define-key magit-mode-map (kbd "M-1") nil)
@@ -1472,19 +1498,15 @@ If OTHER is t then scroll other window."
   (define-key python-mode-map (kbd "C-j") nil)
 
   ;; pdf-tools
-  (define-key pdf-view-mode-map (kbd "s d") 'tddsg/pdf-view-disable-auto-slice)
-  (define-key pdf-view-mode-map (kbd "s e") 'tddsg/pdf-view-enable-auto-slice)
-  (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
-  (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
-  (define-key pdf-view-mode-map (kbd "[") 'pdf-view-previous-line-or-previous-page)
-  (define-key pdf-view-mode-map (kbd "]") 'pdf-view-next-line-or-next-page)
-  (define-key pdf-view-mode-map (kbd "M-{") 'pdf-view-previous-page-command)
-  (define-key pdf-view-mode-map (kbd "M-}") 'pdf-view-next-page-command)
-  (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
-  (define-key pdf-view-mode-map (kbd "M-SPC") 'pdf-view-scroll-down-or-previous-page)
-  (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
-  (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
-  (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward)
+  (with-eval-after-load 'pdf-tools
+    (define-key pdf-view-mode-map (kbd "s d") 'tddsg/pdf-view-disable-auto-slice)
+    (define-key pdf-view-mode-map (kbd "s e") 'tddsg/pdf-view-enable-auto-slice)
+    (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
+    (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
+    (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
+    (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
+    (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
+    (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward))
 
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
