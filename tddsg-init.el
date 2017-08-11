@@ -1508,6 +1508,10 @@ If OTHER is t then scroll other window."
     (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
     (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward))
 
+  ;; doc-view
+  (with-eval-after-load 'doc-view-mode
+    (define-key doc-view-mode-map (kbd "RET") 'doc-view-scroll-up-or-next-page))
+
   ;; flyspell
   (define-key flyspell-mode-map (kbd "C-;") nil)
   (define-key flyspell-mode-map (kbd "C-,") nil)
