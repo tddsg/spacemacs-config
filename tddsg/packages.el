@@ -299,6 +299,7 @@ Each entry is either:
           paragraph-separate "[ \t\f]*$"
           paragraph-start "\f\\|[ \t]*$")
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
+    (writegood-mode)
     (latex-extra-mode)
     (turn-on-auto-fill)
     (latex/auto-fill-mode)

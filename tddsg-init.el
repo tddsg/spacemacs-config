@@ -30,9 +30,15 @@
 
 ;; used to jump between faces
 (defconst tddsg--face-change-types-default
-  '(merlin-compilation-error-face
+  '(;; merlin-faces
+    merlin-compilation-error-face
     merlin-compilation-warning-face
+    ;; rtags-faces
     rtags-fixitline rtags-warnline rtags-errline
+    ;; writegood-faces
+    writegood-weasels-face writegood-duplicates-face
+    writegood-passive-voice-face
+    ;; highlighting-faces
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
@@ -1019,8 +1025,7 @@ If OTHER is t then scroll other window."
   ;; browser
   (setq browse-url-browser-function 'browse-url-generic
         engine/browser-function 'browse-url-generic
-        browse-url-generic-program (if (string= (system-name) "pisces")
-                                       "chromium-browser" "google-chrome"))
+        browse-url-generic-program "google-chrome")
 
   ;; minibuffer
   (setq resize-mini-windows t)
