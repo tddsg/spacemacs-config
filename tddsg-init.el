@@ -891,7 +891,7 @@ If OTHER is t then scroll other window."
   (setq max-specpdl-size 50000)
 
   ;; mode-line setting
-  (setq powerline-default-separator 'wave)
+  (setq powerline-default-separator 'bar)
 
   ;; themes
   (defun hook-update-cursor ()
@@ -1141,13 +1141,6 @@ If OTHER is t then scroll other window."
     (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
     (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
     (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
-    ;; spaceline size
-    (setq-default powerline-height 22)  ;; spaceline height
-    (setq-default powerline-scale 1)
-    (cond ((string= (system-name) "lmint")
-           (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12"))
-          (t (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")))
-    ;; change personal dictionary of ispell
     (if (tddsg--projectile-p)
         (setq ispell-personal-dictionary (concat (projectile-project-root)
                                                  "user.dict"))))
