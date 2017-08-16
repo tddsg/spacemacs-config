@@ -3,8 +3,9 @@
 ;; It must be stored in your home directory.
 
 (defun dotspacemacs/layers ()
-  "Layer configuration:
-This function should only modify configuration layer settings."
+  "Configuration Layers declaration.
+You should not put any user code in this function besides modifying the variable
+values."
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base'
@@ -43,10 +44,12 @@ This function should only modify configuration layer settings."
      org
      markdown
      emacs-lisp
-     (c-c++ :variables c-c++-enable-clang-support t)     latex
+     (c-c++ :variables c-c++-enable-clang-support t)
+     latex
      ocaml
      haskell
      yaml
+     perl5
      csv
      python
      html
@@ -159,7 +162,7 @@ It should only modify the values of Spacemacs settings."
                                :size 18
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.25)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
@@ -353,12 +356,13 @@ It should only modify the values of Spacemacs settings."
    ))
 
 (defun dotspacemacs/user-init ()
-  "Initialization for user code:
-This function is called immediately after `dotspacemacs/init', before layer
-configuration.
-It is mostly for variables that should be set before packages are loaded.
-If you are unsure, try setting them in `dotspacemacs/user-config' first."
-  )
+  "Initialization function for user code.
+It is called immediately after `dotspacemacs/init', before layer configuration
+executes.
+ This function is mostly useful for variables that need to be set
+before packages are loaded. If you are unsure, you should try in setting them in
+`dotspacemacs/user-config' first."
+ )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -457,7 +461,7 @@ you should place your code here."
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (shx helm-bibtex biblio parsebib biblio-core yaml-mode framemove llvm-mode yapfify xterm-color winum web-mode web-beautify vline uuidgen utop unfill tuareg caml transpose-frame toc-org tagedit swiper-helm super-save stickyfunc-enhance srefactor sr-speedbar smeargle slim-mode shell-pop scss-mode sass-mode pytest pyenv-mode py-isort pug-mode pip-requirements pdf-tools tablist paradox orgit org-projectile org-present org-pomodoro alert log4e gntp org-download org-bullets ocp-indent noflet mwim multi-term monky mmm-mode merlin markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode latex-extra langtool key-chord json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero imenu-anywhere hydra hy-mode htmlize hlint-refactor hindent hide-comnt helm-rtags helm-pydoc helm-hoogle helm-gtags helm-gitignore request helm-dired-history helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet haskell-snippets haml-mode god-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck eyebrowse evil-visual-mark-mode evil-unimpaired evil-magit magit magit-popup git-commit with-editor evil-ediff eshell-z eshell-prompt-extras esh-help emmet-mode elpy pyvenv find-file-in-project elmacro dumb-jump disaster dired+ diff-hl dictionary link connection cython-mode csv-mode crux counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-marker column-enforce-mode coffee-mode cmm-mode cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary auctex-latexmk auctex anaconda-mode pythonic f adaptive-wrap ace-popup-menu avy-menu ac-ispell auto-complete org-plus-contrib ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (yaml-mode framemove llvm-mode yapfify xterm-color winum web-mode web-beautify vline uuidgen utop unfill tuareg caml transpose-frame toc-org tagedit swiper-helm super-save stickyfunc-enhance srefactor sr-speedbar smeargle slim-mode shell-pop scss-mode sass-mode pytest pyenv-mode py-isort pug-mode pip-requirements pdf-tools tablist paradox orgit org-projectile org-present org-pomodoro alert log4e gntp org-download org-bullets ocp-indent noflet mwim multi-term monky mmm-mode merlin markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode latex-extra langtool key-chord json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero imenu-anywhere hydra hy-mode htmlize hlint-refactor hindent hide-comnt helm-rtags helm-pydoc helm-hoogle helm-gtags helm-gitignore request helm-dired-history helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet haskell-snippets haml-mode god-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck eyebrowse evil-visual-mark-mode evil-unimpaired evil-magit magit magit-popup git-commit with-editor evil-ediff eshell-z eshell-prompt-extras esh-help emmet-mode elpy pyvenv find-file-in-project elmacro dumb-jump disaster dired+ diff-hl dictionary link connection cython-mode csv-mode crux counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-marker column-enforce-mode coffee-mode cmm-mode cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary auctex-latexmk auctex anaconda-mode pythonic f adaptive-wrap ace-popup-menu avy-menu ac-ispell auto-complete org-plus-contrib ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
  '(pdf-view-continuous nil)
  '(pdf-view-midnight-colors (quote ("#D3D3D3" . "#292B2E")))
@@ -518,6 +522,99 @@ This function is called at the very end of Spacemacs initialization."
  '(LaTeX-begin-regexp "begin\\b\\|\\[\\|If\\b\\|For\\b")
  '(LaTeX-command "latex --synctex=1")
  '(LaTeX-end-regexp "end\\b\\|\\]\\|\\EndIf\\b\\|EndFor\\b")
+ '(LaTeX-font-list
+   (quote
+    ((100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (12 "\\underline{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (117 "\\textup{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (1 "" "" "\\mathcal{" "}")
+     (2 "\\textbf{" "}" "\\mathbf{" "}")
+     (3 "\\textsc{" "}")
+     (5 "\\emph{" "}")
+     (6 "\\textsf{" "}" "\\mathsf{" "}")
+     (9 "\\textit{" "}" "\\mathit{" "}")
+     (13 "\\textmd{" "}")
+     (14 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (18 "\\textrm{" "}" "\\mathrm{" "}")
+     (19 "\\textsl{" "}" "\\mathbb{" "}")
+     (20 "\\texttt{" "}" "\\mathtt{" "}")
+     (21 "\\textup{" "}"))))
  '(LaTeX-indent-environment-list
    (quote
     (("verbatim" current-indentation)
@@ -541,6 +638,17 @@ This function is called at the very end of Spacemacs initialization."
      ("flushleft")
      ("flushright")
      ("small"))))
+ '(TeX-font-list
+   (quote
+    ((2 "{\\bf " "}")
+     (3 "{\\sc " "}")
+     (5 "{\\em " "\\/}")
+     (9 "{\\it " "\\/}")
+     (18 "{\\rm " "}")
+     (19 "{\\sl " "\\/}")
+     (20 "{\\tt " "}")
+     (4 "" "" t)
+     (12 "\\underline{" "}"))))
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
@@ -551,14 +659,15 @@ This function is called at the very end of Spacemacs initialization."
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#3F3F3F" "dark violet" "blue" "orange" "forest green" "firebrick" "dodger blue" "dim gray"])
+ '(auto-fill-inhibit-regexp "")
  '(compilation-message-face (quote default))
- '(electric-pair-open-newline-between-pairs nil)
- '(evil-want-Y-yank-to-eol t)
+ '(electric-pair-open-newline-between-pairs nil t)
+ '(evil-want-Y-yank-to-eol nil)
  '(golden-ratio-exclude-buffer-names
    (quote
     ("*which-key*" "*LV*" "*NeoTree*" "*ace-popup-menu*" "*compilation*")))
  '(google-translate-default-target-language "en" t)
- '(helm-ag-insert-at-point (quote symbol))
+ '(helm-ag-insert-at-point (quote symbol) t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -592,7 +701,7 @@ This function is called at the very end of Spacemacs initialization."
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (engine-mode popwin org-brain evil-org dedicated shx helm-ag dante helm-bibtex biblio parsebib biblio-core gandalf-theme monokai-theme symon string-inflection realgud test-simple loc-changes load-relative password-generator helm-purpose window-purpose imenu-list evil-lion editorconfig browse-at-remote yaml-mode framemove llvm-mode yapfify xterm-color winum web-mode web-beautify vline uuidgen utop unfill tuareg caml transpose-frame toc-org tagedit swiper-helm super-save stickyfunc-enhance srefactor sr-speedbar smeargle slim-mode shell-pop scss-mode sass-mode pytest pyenv-mode py-isort pug-mode pip-requirements pdf-tools tablist paradox orgit org-projectile org-present org-pomodoro alert log4e gntp org-download org-bullets ocp-indent noflet mwim multi-term monky mmm-mode merlin markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode latex-extra langtool key-chord json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero imenu-anywhere hydra hy-mode htmlize hlint-refactor hindent hide-comnt helm-rtags helm-pydoc helm-hoogle helm-gtags helm-gitignore request helm-dired-history helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet haskell-snippets haml-mode god-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck eyebrowse evil-visual-mark-mode evil-unimpaired evil-magit magit magit-popup git-commit with-editor evil-ediff eshell-z eshell-prompt-extras esh-help emmet-mode elpy pyvenv find-file-in-project elmacro dumb-jump disaster dired+ diff-hl dictionary link connection cython-mode csv-mode crux counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-marker column-enforce-mode coffee-mode cmm-mode cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary auctex-latexmk auctex anaconda-mode pythonic f adaptive-wrap ace-popup-menu avy-menu ac-ispell auto-complete org-plus-contrib ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (zone-sl writegood-mode bash-completion helm-ispell engine-mode popwin org-brain evil-org dedicated shx helm-ag dante helm-bibtex biblio parsebib biblio-core gandalf-theme monokai-theme symon string-inflection realgud test-simple loc-changes load-relative password-generator helm-purpose window-purpose imenu-list evil-lion editorconfig browse-at-remote yaml-mode framemove llvm-mode yapfify xterm-color winum web-mode web-beautify vline uuidgen utop unfill tuareg caml transpose-frame toc-org tagedit swiper-helm super-save stickyfunc-enhance srefactor sr-speedbar smeargle slim-mode shell-pop scss-mode sass-mode pytest pyenv-mode py-isort pug-mode pip-requirements pdf-tools tablist paradox orgit org-projectile org-present org-pomodoro alert log4e gntp org-download org-bullets ocp-indent noflet mwim multi-term monky mmm-mode merlin markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode latex-extra langtool key-chord json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero imenu-anywhere hydra hy-mode htmlize hlint-refactor hindent hide-comnt helm-rtags helm-pydoc helm-hoogle helm-gtags helm-gitignore request helm-dired-history helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet haskell-snippets haml-mode god-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck eyebrowse evil-visual-mark-mode evil-unimpaired evil-magit magit magit-popup git-commit with-editor evil-ediff eshell-z eshell-prompt-extras esh-help emmet-mode elpy pyvenv find-file-in-project elmacro dumb-jump disaster dired+ diff-hl dictionary link connection cython-mode csv-mode crux counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-marker column-enforce-mode coffee-mode cmm-mode cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary auctex-latexmk auctex anaconda-mode pythonic f adaptive-wrap ace-popup-menu avy-menu ac-ispell auto-complete org-plus-contrib ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters persp-mode pcre2el spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuve-ntheme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
  '(pdf-view-continuous nil)
  '(pdf-view-midnight-colors (quote ("#D3D3D3" . "#292B2E")))
