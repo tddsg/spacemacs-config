@@ -1167,7 +1167,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-<right>") 'right-word)
   (global-set-key (kbd "C-+") 'zoom-in)
   (global-set-key (kbd "C--") 'zoom-out)
-  (global-set-key (kbd "C-`") 'goto-last-change)
   (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-S-j") 'avy-goto-char)

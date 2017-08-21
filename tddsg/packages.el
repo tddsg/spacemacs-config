@@ -57,7 +57,6 @@
     helm-ispell
     helm-bibtex
     helm-dired-history
-    goto-chg
     autorevert
     windmove
     framemove
@@ -355,9 +354,6 @@ Each entry is either:
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
   (smartparens-global-mode 1))
-
-(defun tddsg/init-goto-chg ()
-  (global-set-key (kbd "C-c C-\\") 'goto-last-change))
 
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
