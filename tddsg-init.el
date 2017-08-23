@@ -804,6 +804,16 @@ If OTHER is t then scroll other window."
          (selected-dir-file (completing-read "Yank dir/file:" all-dir-files)))
     (insert selected-dir-file)))
 
+(defun tddsg/unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  (interactive)
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
@@ -862,6 +872,7 @@ If OTHER is t then scroll other window."
   (defadvice beginning-of-buffer (before set-mark activate) (tddsg--set-mark))
   (defadvice end-of-buffer (before set-mark activate) (tddsg--set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
+  (defadvice kill-region (before set-mark activate) (tddsg--set-mark))
 
   ;; company-mode
   (setq company-idle-delay 300)
@@ -1174,6 +1185,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
+  (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
@@ -1182,7 +1194,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-\\") 'sp-split-sexp)
 
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
-  (global-set-key (kbd "C-S-q") 'tddsg/previous-window)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
 
