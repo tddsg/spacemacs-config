@@ -646,6 +646,11 @@ after stripping extra whitespace and new lines"
           ((file-exists-p (expand-file-name "build/Makefile" dir))
            (expand-file-name "build" dir))
           (t (find-make-dir (expand-file-name ".." dir)))) )
+  ;; save editing buffers
+  (let ((root (projectile-project-root)))
+    (save-some-buffers (and root (not compilation-ask-about-save))
+                       (lambda ()
+                         (projectile-project-buffer-p (current-buffer) root))))
   (when (string-match-p (regexp-quote "make") compile-command)
     (setq compile-command
           (format "make -k -C %s -j4" (find-make-dir default-directory))))
@@ -654,7 +659,12 @@ after stripping extra whitespace and new lines"
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
-  ;; (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
+  ;; save editing buffers
+  (let ((root (projectile-project-root)))
+    (save-some-buffers (and root (not compilation-ask-about-save))
+                       (lambda ()
+                         (projectile-project-buffer-p (current-buffer) root))))
+  ;; compile
   (if (string-match-p (regexp-quote "make -k -C") compile-command)
       (recompile)
     (call-interactively 'tddsg/compile)))
@@ -872,7 +882,7 @@ If OTHER is t then scroll other window."
   (defadvice beginning-of-buffer (before set-mark activate) (tddsg--set-mark))
   (defadvice end-of-buffer (before set-mark activate) (tddsg--set-mark))
   (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
-  (defadvice kill-region (before set-mark activate) (tddsg--set-mark))
+  (defadvice kill-region (after set-mark activate) (tddsg--set-mark))
 
   ;; company-mode
   (setq company-idle-delay 300)
@@ -944,6 +954,10 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (setq comint-prompt-read-only nil
+        comint-scroll-show-maximum-output t
+        comint-completion-autolist t
+        comint-input-ignoredups t
+        comint-completion-addsuffix nil
         shell-default-shell 'ansi-term
         shell-dynamic-complete-functions '(bash-completion-dynamic-complete
                                            comint-c-a-p-replace-by-expanded-history
@@ -1184,7 +1198,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
-  (global-set-key (kbd "C-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
+  (global-set-key (kbd "C-q") 'goto-last-change)
+  (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
   (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
   (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
@@ -1556,6 +1571,7 @@ If OTHER is t then scroll other window."
 
   ;; cc
   (with-eval-after-load 'cc-mode
+    (define-key c-mode-base-map (kbd "C-M-q") nil)
     (define-key c-mode-base-map (kbd "C-M-j") nil)
     (define-key c-mode-map (kbd "C-M-j") nil)
     (define-key c++-mode-map (kbd "C-M-j") nil))

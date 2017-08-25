@@ -42,6 +42,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;; utilities
     comment-dwim-2
+    goto-last-change
     noflet
     sr-speedbar
     rtags
@@ -121,6 +122,9 @@ Each entry is either:
 
 (defun tddsg/init-comment-dwim-2 ()
   (use-package comment-dwim-2))
+
+(defun tddsg/init-goto-last-change ()
+  (use-package goto-last-change))
 
 (defun tddsg/init-noflet ()
   (use-package noflet))
