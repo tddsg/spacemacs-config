@@ -75,7 +75,6 @@
     elpy
     company-math
     math-symbol-lists
-    bash-completion
     swiper
     swiper-helm
     counsel
@@ -450,9 +449,6 @@ Each entry is either:
 
 (defun tddsg/init-math-symbol-lists ()
   (use-package math-symbol-lists))
-
-(defun tddsg/init-bash-completion ()
-  (use-package bash-completion))
 
 (defun tddsg/init-monky ()
   (use-package monky))

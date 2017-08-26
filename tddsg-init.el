@@ -958,15 +958,7 @@ If OTHER is t then scroll other window."
         comint-completion-autolist t
         comint-input-ignoredups t
         comint-completion-addsuffix nil
-        shell-default-shell 'ansi-term
-        shell-dynamic-complete-functions '(bash-completion-dynamic-complete
-                                           comint-c-a-p-replace-by-expanded-history
-                                           shell-environment-variable-completion
-                                           shell-command-completion
-                                           shell-c-a-p-replace-by-expanded-directory
-                                           pcomplete-completions-at-point
-                                           shell-filename-completion
-                                           comint-filename-completion))
+        shell-default-shell 'ansi-term)
   (defun hook-shell-mode ()
     "Hook to run in shell mode."
     (add-hook 'window-configuration-change-hook
