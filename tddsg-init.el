@@ -214,6 +214,15 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/traverse-upcase-dwim 'backward t))
 
+(defun tddsg/open-with ()
+  "Open the underlying file of a buffer in an external program."
+  (interactive)
+  (when buffer-file-name
+    (shell-command (concat
+                    (if (eq system-type 'darwin) "open"
+                      (read-shell-command "Open current file with: "))
+                    " " buffer-file-name " &"))))
+
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -1315,6 +1324,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
   (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
+  (global-set-key (kbd "M-m f O") 'tddsg/open-with)
   (global-set-key (kbd "M-m t M") 'tddsg/toggle-mode-line)
   (global-set-key (kbd "M-m t H") 'tddsg/toggle-header-line)
   (global-set-key (kbd "M-m t P") 'tddsg/toggle-presentation)
