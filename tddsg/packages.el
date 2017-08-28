@@ -297,9 +297,7 @@ Each entry is either:
       (when (file-exists-p main-bib)
         (setq bibtex-completion-bibliography (list main-bib))))
     ;; other setting
-    (setq TeX-newline-function 'newline-and-indent
-          paragraph-separate "[ \t\f]*$"
-          paragraph-start "\f\\|[ \t]*$")
+    (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
     (writegood-mode)
     (latex-extra-mode)
