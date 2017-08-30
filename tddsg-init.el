@@ -223,6 +223,14 @@ If the new path's directories does not exist, create them."
                       (read-shell-command "Open current file with: "))
                     " " buffer-file-name " &"))))
 
+(defun tddsg/golden-dict ()
+  "Lookup in golden dict"
+  (interactive)
+  (let* ((begin (region-beginning))
+         (end (region-end))
+         (text (buffer-substring-no-properties begin end)))
+    (shell-command (concat "goldendict " text " &"))))
+
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -1329,7 +1337,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m t H") 'tddsg/toggle-header-line)
   (global-set-key (kbd "M-m t P") 'tddsg/toggle-presentation)
 
-  (global-set-key (kbd "M-s d") 'dictionary-search)
+  (global-set-key (kbd "M-s d") 'tddsg/golden-dict)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
   (global-set-key (kbd "M-s g") 'engine/search-google)
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
