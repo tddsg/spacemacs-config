@@ -218,7 +218,7 @@ If the new path's directories does not exist, create them."
   "Open the underlying file of a buffer in an external program."
   (interactive)
   (when buffer-file-name
-    (shell-command (concat
+    (call-process-shell-command (concat
                     (if (eq system-type 'darwin) "open"
                       (read-shell-command "Open current file with: "))
                     " " buffer-file-name " &"))))
@@ -226,10 +226,10 @@ If the new path's directories does not exist, create them."
 (defun tddsg/golden-dict ()
   "Lookup in golden dict"
   (interactive)
-  (let* ((begin (region-beginning))
-         (end (region-end))
-         (text (buffer-substring-no-properties begin end)))
-    (shell-command (concat "goldendict " text " &"))))
+  (let* ((text (if (region-active-p)
+                   (buffer-substring (region-beginning) (region-end))
+                 (thing-at-point 'word))))
+    (call-process-shell-command (concat "goldendict " text " &"))))
 
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
@@ -968,6 +968,13 @@ If OTHER is t then scroll other window."
   ;; (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
   ;; reset all compilation hook, use the default one
   (setq compilation-mode-hook nil)
+
+  ;; async shell
+  (push '("\\*Async Shell Command\\*.*". (nil (display-buffer-no-window. t))) display-buffer-alist)
+  (add-to-list 'display-buffer-alist
+               (cons "\\*Async Shell Command\\*.*"
+                     (cons #'display-buffer-no-window nil)))
+
 
   ;; shell
   (setq comint-prompt-read-only nil
