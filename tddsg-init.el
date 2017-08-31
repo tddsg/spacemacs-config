@@ -969,13 +969,6 @@ If OTHER is t then scroll other window."
   ;; reset all compilation hook, use the default one
   (setq compilation-mode-hook nil)
 
-  ;; async shell
-  (push '("\\*Async Shell Command\\*.*". (nil (display-buffer-no-window. t))) display-buffer-alist)
-  (add-to-list 'display-buffer-alist
-               (cons "\\*Async Shell Command\\*.*"
-                     (cons #'display-buffer-no-window nil)))
-
-
   ;; shell
   (setq comint-prompt-read-only nil
         comint-scroll-show-maximum-output t
