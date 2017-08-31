@@ -1191,7 +1191,7 @@ If OTHER is t then scroll other window."
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
-  (global-set-key (kbd "<escape>") 'god-mode-all)
+  (global-set-key (kbd "<escape>") 'keyboard-quit)
   (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
@@ -1448,9 +1448,6 @@ If OTHER is t then scroll other window."
     (define-key magit-status-mode-map (kbd "M-0") nil))
 
   ;; god-mode
-  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "<escape>") 'god-mode-all)
   (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
   (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
   (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
