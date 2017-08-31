@@ -218,10 +218,9 @@ If the new path's directories does not exist, create them."
   "Open the underlying file of a buffer in an external program."
   (interactive)
   (when buffer-file-name
-    (call-process-shell-command (concat
-                    (if (eq system-type 'darwin) "open"
-                      (read-shell-command "Open current file with: "))
-                    " " buffer-file-name " &"))))
+    (let ((command (dired-guess-shell-command "Open current file with: "
+                          (list buffer-file-name))))
+      (call-process-shell-command (concat command " " buffer-file-name "&")))))
 
 (defun tddsg/golden-dict ()
   "Lookup in golden dict"
@@ -1030,12 +1029,14 @@ If OTHER is t then scroll other window."
   ;; dired
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
   (setq dired-guess-shell-alist-user
-        '(("\\.pdf\\'" "okular &")
-          ("\\.html\\|\\.xml*" "google-chrome &")
-          ("\\.txt\\'" "gedit &")
-          ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog &")
-          ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice &")
-          ("\\.ods*\\|\\.odt*" "libreoffice &")))
+        '(("\\.pdf\\'" "okular")
+          ("\\.html\\|\\.xml*" "google-chrome")
+          ("\\.txt\\|\\.log" "gedit")
+          ("\\.el\\|\\.ml\\|\\.h*\\|\\.c*\\|\\.java" "gedit")
+          ("\\.tex\\|*.bib" "texstudio")
+          ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog")
+          ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice")
+          ("\\.ods*\\|\\.odt*" "libreoffice")))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
@@ -1386,6 +1387,7 @@ If OTHER is t then scroll other window."
 
   ;; elisp-mode
   (define-key emacs-lisp-mode-map (kbd "C-M-i") nil)
+  (define-key emacs-lisp-mode-map (kbd "C-M-q") nil)
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
