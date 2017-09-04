@@ -1033,7 +1033,7 @@ If OTHER is t then scroll other window."
           ("\\.html\\|\\.xml*" "google-chrome")
           ("\\.txt\\|\\.log" "gedit")
           ("\\.el\\|\\.ml\\|\\.h*\\|\\.c*\\|\\.java" "gedit")
-          ("\\.tex\\|*.bib" "texstudio")
+          ("\\.tex\\|\\.bib" "texstudio")
           ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog")
           ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice")
           ("\\.ods*\\|\\.odt*" "libreoffice")))
