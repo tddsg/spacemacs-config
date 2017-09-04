@@ -693,7 +693,10 @@ after stripping extra whitespace and new lines"
 (defun tddsg/latex-compile ()
   "Run LaTex command from TeX Master commands."
   (interactive)
-  (save-buffer)
+  (let ((root (projectile-project-root)))
+    (save-some-buffers (and root (not compilation-ask-about-save))
+                       (lambda ()
+                         (projectile-project-buffer-p (current-buffer) root))))
   (TeX-command "LaTeX" 'TeX-master-file -1))
 
 (defun tddsg/latex-beamer-compile-current-frame ()
