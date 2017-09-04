@@ -30,15 +30,20 @@
 
 ;; used to jump between faces
 (defconst tddsg--face-change-types-default
-  '(;; merlin-faces
+  '(;;--- merlin-faces
     merlin-compilation-error-face
     merlin-compilation-warning-face
-    ;; rtags-faces
-    rtags-fixitline rtags-warnline rtags-errline
-    ;; writegood-faces
-    writegood-weasels-face writegood-duplicates-face
+    ;;--- rtags-faces
+    rtags-fixitline
+    ;; rtags-warnline
+    rtags-errline
+    ;;--- writegood-faces
+    writegood-weasels-face
+    writegood-duplicates-face
     writegood-passive-voice-face
-    ;; highlighting-faces
+    ;;--- isearch
+    evil-search-highlight-persist-highlight-face
+    ;;--- highlighting-faces
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
@@ -1109,7 +1114,6 @@ If OTHER is t then scroll other window."
   (which-key-add-key-based-replacements "C-c ," "semantic")
   (which-key-add-key-based-replacements "C-c @" "hideshow")
   (which-key-add-key-based-replacements "C-c C-w" "eyebrowse")
-  (which-key-add-key-based-replacements "C-x w" "highlight")
   (which-key-add-key-based-replacements "M-s h" "highlight")
 
   ;; diminish
@@ -1291,6 +1295,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
   (global-set-key (kbd "M-B") 'tddsg/previous-upcase-dwim)
   (global-set-key (kbd "M-F") 'tddsg/next-upcase-dwim)
+  (global-set-key (kbd "M-S") 'save-buffer)
   (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-dwim)
   (global-set-key (kbd "M-K") 'tddsg/delete-until-previous-upcase-dwim)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
@@ -1343,7 +1348,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-s g") 'engine/search-google)
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
   (global-set-key (kbd "M-s T") 'google-translate-query-translate)
-  (global-set-key (kbd "M-s r") 'ispell-region)
+  (global-set-key (kbd "M-s k") 'evil-search-highlight-persist-remove-all)
   (global-set-key (kbd "M-s r") 'ispell-region)
   (global-set-key (kbd "M-s w") 'ispell-word)
   (global-set-key (kbd "M-s s") 'ispell-continue)
@@ -1399,6 +1404,7 @@ If OTHER is t then scroll other window."
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
+  (define-key undo-tree-map (kbd "C-/") nil)
 
   ;; dired-mode
   (defun hook-dired-mode ()
@@ -1556,6 +1562,7 @@ If OTHER is t then scroll other window."
 
   ;; smartparens
   (define-key smartparens-mode-map (kbd "M-s") nil)
+  (define-key smartparens-mode-map (kbd "M-S") nil)
 
   ;; evil mode
   (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
