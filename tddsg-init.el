@@ -1536,7 +1536,8 @@ If OTHER is t then scroll other window."
     (define-key org-mode-map (kbd "M-g v") 'spacemacs/org-verbose))
 
   ;; Python mode
-  (define-key python-mode-map (kbd "C-j") nil)
+  (with-eval-after-load 'python
+    (define-key python-mode-map (kbd "C-j") nil))
 
   ;; pdf-tools
   (with-eval-after-load 'pdf-tools
@@ -1602,10 +1603,7 @@ If OTHER is t then scroll other window."
   ;; flycheck
   (define-key flycheck-mode-map (kbd "M-g M-n") 'flycheck-next-error)
   (define-key flycheck-mode-map (kbd "M-g M-p") 'flycheck-previous-error)
-  (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error)
-
-  ;; reassign key-chords
-  (key-chord-define-global "ji" 'indent-region))
+  (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

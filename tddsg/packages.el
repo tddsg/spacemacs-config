@@ -31,59 +31,55 @@
 
 (defconst tddsg-packages
   '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;; languages
+    ;;; ocaml
     tuareg
     merlin
+    ;;; latex
     auctex
+    helm-bibtex
     latex-extra
-    org
+    math-symbol-lists
+    company-math
+    ;;; c/c++
     cc-mode
     llvm-mode
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;; utilities
-    comment-dwim-2
-    goto-last-change
-    noflet
-    sr-speedbar
-    rtags
-    company-rtags
     irony
     company-irony
     company-irony-c-headers
-    god-mode
-    ace-popup-menu
-    smartparens
-    paren
+    rtags
+    company-rtags
     helm-rtags
+    ;;; writing, spelling
+    langtool
+    writegood-mode
     helm-ispell
-    helm-bibtex
-    helm-dired-history
-    autorevert
+    ;;; buffer, window, frame
+    buffer-move
     windmove
     framemove
     transpose-frame
-    key-chord
-    super-save
-    whitespace
+    ace-popup-menu
+    ;;; text search, editing
     anzu
-    imenu-anywhere
+    swiper
+    super-save
+    autorevert
+    comment-dwim-2
+    smartparens
+    goto-last-change
+    ;;; visualization
+    whitespace
     vline
     column-marker
-    buffer-move
+    ;;; file, directory
     dired+
-    elmacro
-    elpy
-    company-math
-    math-symbol-lists
-    swiper
-    swiper-helm
-    counsel
+    helm-dired-history
+    ;;; project management, version controls
     monky
+    sr-speedbar
+    ;;; others
+    god-mode
     zone-sl
-    ;;; writing, spelling
-    dictionary
-    langtool
-    writegood-mode
     ;;; local
     (songbird :location local)
     (proddag :location local)
@@ -125,9 +121,6 @@ Each entry is either:
 (defun tddsg/init-goto-last-change ()
   (use-package goto-last-change))
 
-(defun tddsg/init-noflet ()
-  (use-package noflet))
-
 (defun tddsg/init-transpose-frame ()
   (use-package transpose-frame))
 
@@ -136,6 +129,67 @@ Each entry is either:
 
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
+
+(defun tddsg/init-helm-bibtex ()
+  (use-package helm-bibtex))
+
+(defun tddsg/init-helm-ispell ()
+  (use-package helm-ispell))
+
+(defun tddsg/init-buffer-move ()
+  (use-package buffer-move))
+
+(defun tddsg/init-buffer-clone ()
+  (use-package buffer-clone))
+
+(defun tddsg/init-writegood-mode ()
+  (use-package writegood-mode))
+
+(defun tddsg/init-llvm-mode ()
+  (use-package llvm-mode))
+
+(defun tddsg/init-vline ()
+  (use-package vline))
+
+(defun tddsg/init-column-marker ()
+  (use-package column-marker))
+
+(defun tddsg/init-dired+ ()
+  (use-package dired+))
+
+(defun tddsg/init-helm-dired-history ()
+  (use-package helm-dired-history))
+
+(defun tddsg/init-company-math ()
+  (use-package company-math))
+
+(defun tddsg/init-math-symbol-lists ()
+  (use-package math-symbol-lists))
+
+(defun tddsg/init-monky ()
+  (use-package monky))
+
+(defun tddsg/init-zone-sl ()
+  (use-package zone-sl))
+
+(defun tddsg/init-swiper ()
+  (use-package swiper))
+
+(defun tddsg/init-autorevert ()
+  (global-auto-revert-mode t))
+
+(defun tddsg/init-framemove ()
+  (framemove-default-keybindings))
+
+(defun tddsg/init-windmove ()
+  (require 'framemove)
+  (windmove-default-keybindings)
+  (setq framemove-hook-into-windmove t))
+
+(defun tddsg/post-init-whitespace ()
+  (add-hook 'before-save-hook #'whitespace-cleanup)
+  (setq whitespace-line-column 80)
+  (setq whitespace-style '(face tabs)))
 
 (defun tddsg/post-init-cc-mode ()
   ;; coding style
@@ -228,16 +282,6 @@ Each entry is either:
       (setq latex/view-after-compile nil)
       (add-hook 'LaTeX-mode-hook #'latex-extra-mode))))
 
-(defun tddsg/init-helm-bibtex ()
-  (use-package helm-bibtex
-    :ensure t
-    :config
-    (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
-
-(defun tddsg/init-helm-ispell ()
-  (use-package helm-ispell
-    :ensure t))
-
 (defun tddsg/post-init-auctex ()
   (require 'tex)
   (require 'reftex)
@@ -260,8 +304,7 @@ Each entry is either:
     (interactive)
     (when (LaTeX-current-environment)
       (save-excursion
-        (let* ((begin-start (save-excursion
-                              (LaTeX-find-matching-begin)
+        (let* ((begin-start (save-excursion (LaTeX-find-matching-begin)
                               (point)))
                (begin-end (save-excursion
                             (goto-char begin-start)
@@ -319,7 +362,6 @@ Each entry is either:
   ;; smartparens for ocaml
   (sp-with-modes '(tuareg-mode)
     (sp-local-pair "(*" "*)" ))
-  ;; smartparens for org-mode
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*"
                    :unless '(sp-point-after-word-p sp-point-at-bol-p)
@@ -356,40 +398,6 @@ Each entry is either:
   ;; enable smartparens
   (smartparens-global-mode 1))
 
-(defun tddsg/init-autorevert ()
-  (global-auto-revert-mode t))
-
-(defun tddsg/init-paren ()
-  (show-paren-mode t))
-
-(defun tddsg/init-windmove ()
-  (require 'framemove)
-  (windmove-default-keybindings)
-  (setq framemove-hook-into-windmove t))
-
-(defun tddsg/init-framemove ()
-  (framemove-default-keybindings))
-
-;; buffer-clone
-(defun tddsg/init-buffer-move ()
-  (use-package buffer-move))
-
-;; buffer-clone
-(defun tddsg/init-buffer-clone ()
-  (use-package buffer-clone))
-
-(defun tddsg/init-key-chord ()
-  (require 'key-chord)
-  (setq key-chord-one-key-delay 0.18
-        key-chord-two-key-delay 0.1)
-  (key-chord-mode 1))
-
-(defun tddsg/post-init-whitespace ()
-  (add-hook 'before-save-hook #'whitespace-cleanup)
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face tabs)))
-
-
 (defun tddsg/init-anzu ()
   (global-set-key  (kbd "M-%") 'anzu-query-replace)
   (global-set-key  (kbd "C-M-%") 'anzu-query-replace-regexp)
@@ -401,10 +409,6 @@ Each entry is either:
       ad-do-it))
   (global-anzu-mode))
 
-(defun tddsg/init-dictionary ()
-  (require 'dictionary)
-  (setq dictionary-use-single-buffer t))
-
 (defun tddsg/init-langtool ()
   (require 'langtool)
   (setq langtool-default-language "en-US"
@@ -414,54 +418,6 @@ Each entry is either:
                                   "EN_QUOTES")
         langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
-
-(defun tddsg/init-writegood-mode ()
-  (require 'writegood-mode))
-
-(defun tddsg/init-llvm-mode ()
-  (use-package llvm-mode))
-
-(defun tddsg/init-imenu-anywhere ()
-  (use-package imenu-anywhere))
-
-(defun tddsg/init-vline ()
-  (use-package vline))
-
-(defun tddsg/init-column-marker ()
-  (use-package column-marker))
-
-(defun tddsg/init-elmacro ()
-  (use-package elmacro))
-
-(defun tddsg/init-elpy ()
-  (use-package elpy))
-
-(defun tddsg/init-dired+ ()
-  (use-package dired+))
-
-(defun tddsg/init-helm-dired-history ()
-  (use-package helm-dired-history))
-
-(defun tddsg/init-company-math ()
-  (use-package company-math))
-
-(defun tddsg/init-math-symbol-lists ()
-  (use-package math-symbol-lists))
-
-(defun tddsg/init-monky ()
-  (use-package monky))
-
-(defun tddsg/init-zone-sl ()
-  (use-package zone-sl))
-
-(defun tddsg/init-counsel ()
-  (use-package counsel))
-
-(defun tddsg/init-swiper ()
-  (use-package swiper))
-
-(defun tddsg/init-swiper-helm ()
-  (use-package swiper-helm))
 
 (defun tddsg/init-sr-speedbar ()
   (use-package sr-speedbar
@@ -490,8 +446,7 @@ Each entry is either:
 
 (defun tddsg/init-helm-rtags ()
   (use-package helm-rtags
-    :config
-    (setq rtags-display-result-backend 'helm)))
+    :config (setq rtags-display-result-backend 'helm)))
 
 (defun tddsg/init-irony ()
   (use-package irony
@@ -531,19 +486,6 @@ Each entry is either:
     (advice-add func :around #'advice-update-cursor))
   (add-hook 'god-mode-enabled-hook 'update-cursor)
   (add-hook 'god-mode-disabled-hook 'update-cursor))
-
-(defun tddsg/post-init-org ()
-  ;; unbind Shift + arrow
-  (defun my-org-hook ()
-    ;; disable keys
-    (define-key org-mode-map (kbd "S-<left>") nil)
-    (define-key org-mode-map (kbd "S-<right>") nil)
-    (define-key org-mode-map (kbd "S-<up>") nil)
-    (define-key org-mode-map (kbd "S-<down>") nil)
-    ;; indentation
-    (org-indent-mode t)
-    (setq indent-line-function 'indent-relative))
-  (add-hook 'org-mode-hook 'my-org-hook) 'append)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
