@@ -10,14 +10,12 @@
 (require 'smartparens)
 (require 'company)
 (require 'powerline)
-(require 'buffer-move)
 (require 'pdf-sync)
 (require 'spaceline-segments)
 (require 'spaceline)
 (require 'pdf-view)
 (require 'pdf-tools)
 (require 'face-remap)
-(require 'magit-gitflow)
 (require 'whitespace)
 (require 'god-mode)
 (require 'god-mode-isearch)
@@ -46,6 +44,7 @@
     ;;--- highlighting-faces
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
+
 (defvar tddsg--face-change-types tddsg--face-change-types-default)
 
 (defvar tddsg--show-header-line t)
@@ -1472,10 +1471,11 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "S-<down>") 'windmove-down)
 
   ;; buffer-move
-  (global-set-key (kbd "C-S-<left>") 'buf-move-left)
-  (global-set-key (kbd "C-S-<right>") 'buf-move-right)
-  (global-set-key (kbd "C-S-<up>") 'buf-move-up)
-  (global-set-key (kbd "C-S-<down>") 'buf-move-down)
+  (with-eval-after-load 'buffer-move
+    (global-set-key (kbd "C-S-<left>") 'buf-move-left)
+    (global-set-key (kbd "C-S-<right>") 'buf-move-right)
+    (global-set-key (kbd "C-S-<up>") 'buf-move-up)
+    (global-set-key (kbd "C-S-<down>") 'buf-move-down))
 
   ;; buffer-clone
   (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
@@ -2022,8 +2022,6 @@ Set `spaceline-highlight-face-func' to
        ("???" . "red")
        ("BUG" . "red")
        ("OK" . "red"))))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
