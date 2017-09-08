@@ -22,6 +22,7 @@
 (require 'expand-region)
 (require 'rtags)
 (require 'engine-mode)
+(require 'hi-lock)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE VARIABLES
@@ -217,6 +218,21 @@ If the new path's directories does not exist, create them."
   "Delete until previous contradict char."
   (interactive)
   (tddsg/traverse-upcase-dwim 'backward t))
+
+(defun tddsg/highlight-symbol-at-point-or-region ()
+  "Highligh thing at point or region"
+  (interactive)
+  (if (region-active-p)
+      (let* ((begin (region-beginning))
+             (end (region-end))
+             (regexp (concat "\\<" (buffer-substring-no-properties begin end) "\\>"))
+	           (hi-lock-auto-select-face t)
+	           (face (hi-lock-read-face-name)))
+        (or (facep face) (setq face 'hi-yellow))
+        (unless hi-lock-mode (hi-lock-mode 1))
+        (hi-lock-set-pattern regexp face)
+        (deactivate-mark))
+    (call-interactively 'highlight-symbol-at-point)))
 
 (defun tddsg/open-with ()
   "Open the underlying file of a buffer in an external program."
@@ -1161,17 +1177,14 @@ If OTHER is t then scroll other window."
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
     (smartparens-global-mode 1)
-    (global-highlight-parentheses-mode -1)
     (column-marker-3 80)
     (whitespace-mode 1)
     (flyspell-mode 1))
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (when (derived-mode-p 'c-mode 'c++-mode)
-      (ggtags-mode 1))
+    (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
     (smartparens-global-mode 1)
-    (global-highlight-parentheses-mode -1)
     (column-marker-3 80)
     (whitespace-mode 1)
     (flyspell-mode -1)
@@ -1352,6 +1365,7 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "M-s d") 'tddsg/golden-dict)
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
+  (global-set-key (kbd "M-s h .") 'tddsg/highlight-symbol-at-point-or-region)
   (global-set-key (kbd "M-s g") 'engine/search-google)
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
   (global-set-key (kbd "M-s T") 'google-translate-query-translate)
