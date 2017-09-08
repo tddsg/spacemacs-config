@@ -975,6 +975,9 @@ If OTHER is t then scroll other window."
   ;; reset all compilation hook, use the default one
   (setq compilation-mode-hook nil)
 
+  ;; undo tree
+  (global-undo-tree-mode 0)
+
   ;; shell
   (setq comint-prompt-read-only nil
         comint-scroll-show-maximum-output t
@@ -1158,6 +1161,7 @@ If OTHER is t then scroll other window."
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
     (smartparens-global-mode 1)
+    (global-highlight-parentheses-mode -1)
     (column-marker-3 80)
     (whitespace-mode 1)
     (flyspell-mode 1))
@@ -1167,6 +1171,7 @@ If OTHER is t then scroll other window."
     (when (derived-mode-p 'c-mode 'c++-mode)
       (ggtags-mode 1))
     (smartparens-global-mode 1)
+    (global-highlight-parentheses-mode -1)
     (column-marker-3 80)
     (whitespace-mode 1)
     (flyspell-mode -1)
