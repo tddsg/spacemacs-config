@@ -149,14 +149,13 @@ If the new path's directories does not exist, create them."
             (t next-pos))))
   (let* ((pos (find-face-change (point))))
     ;; find wanted face
-    (while (and (<= (point) (point-max))
-                (>= (point) (point-min))
+    (while (and (<= pos (point-max))
+                (>= pos (point-min))
                 (not (wanted-face-p pos)))
       (setq pos (find-face-change pos)))
     (when (and (>= pos 0) (wanted-face-p pos))
       ;; refine for backward finding
-      (when (eq direction 'backward)
-        (setq pos (1+ (find-face-change pos))))
+      (when (eq direction 'backward) (setq pos (1+ (find-face-change pos))))
       (goto-char pos)
       (tddsg/describe-face-under-cursor))))
 
