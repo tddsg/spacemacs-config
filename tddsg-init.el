@@ -40,6 +40,8 @@
     writegood-weasels-face
     writegood-duplicates-face
     writegood-passive-voice-face
+    ;; langtools
+    langtool-errline
     ;;--- isearch
     evil-search-highlight-persist-highlight-face
     ;;--- highlighting-faces
@@ -1173,7 +1175,7 @@ If OTHER is t then scroll other window."
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (dolist (face '(flyspell-incorrect flyspell-duplicate langtool-errline))
+    (dolist (face '(flyspell-incorrect flyspell-duplicate))
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
     (smartparens-global-mode 1)
@@ -1359,7 +1361,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m w i") 'flip-frame)
   (global-set-key (kbd "M-m r t") 'purpose-toggle-window-buffer-dedicated)
   (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
-  (global-set-key (kbd "M-m f O") 'tddsg/open-with)
+  (global-set-key (kbd "M-m f o") 'tddsg/open-with)
   (global-set-key (kbd "M-m t M") 'tddsg/toggle-mode-line)
   (global-set-key (kbd "M-m t H") 'tddsg/toggle-header-line)
   (global-set-key (kbd "M-m t P") 'tddsg/toggle-presentation)
@@ -1538,6 +1540,10 @@ If OTHER is t then scroll other window."
     (define-key latex-extra-mode-map (kbd "C-M-b") nil)
     (define-key latex-extra-mode-map (kbd "C-M-n") nil)
     (define-key latex-extra-mode-map (kbd "C-M-p") nil))
+
+  ;; markdown
+  (with-eval-after-load 'markdown-mode
+    (define-key markdown-mode-map (kbd "M-l") nil))
 
   ;; org-mode
   (with-eval-after-load 'org
