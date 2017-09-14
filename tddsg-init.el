@@ -1543,7 +1543,8 @@ If OTHER is t then scroll other window."
 
   ;; markdown
   (with-eval-after-load 'markdown-mode
-    (define-key markdown-mode-map (kbd "M-l") nil))
+    (define-key markdown-mode-map (kbd "M-l") nil)
+    (define-key markdown-mode-map (kbd "M-h") nil))
 
   ;; org-mode
   (with-eval-after-load 'org
