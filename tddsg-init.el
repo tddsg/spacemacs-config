@@ -286,10 +286,32 @@ If the new path's directories does not exist, create them."
       (select-frame-set-input-focus (window-frame shellwin))
       (select-window shellwin))))
 
-(defun tddsg/previous-window ()
-  "Jump to the previous window."
+';; swith between shell buffer
+(defun tddsg/switch-shell-buffer (direction)
+  "Jump to the next or previous shell buffer, DIRECTION is 'next or 'previous."
+  (defun next-shell-buffer (org-buff cur-buff)
+    (let ((new-buff (cond ((eq direction 'next) (next-buffer))
+                          ((eq direction 'prev) (previous-buffer))
+                          (t nil))))
+      (if (equal new-buff org-buff) nil
+        (with-current-buffer new-buff
+          (if (derived-mode-p 'shell-mode) new-buff
+            (next-shell-buffer org-buff new-buff))))))
+  (let* ((cur-buff (current-buffer))
+         (shellbuff (next-shell-buffer cur-buff cur-buff)))
+    (if (not shellbuff)
+        (message "Next shell buffer not found!")
+      (set-buffer shellbuff))))
+
+(defun tddsg/next-shell-buffer ()
+  "Jump to the next shell buffer."
   (interactive)
-  (other-window -1 t))
+  (tddsg/switch-shell-buffer 'next))
+
+(defun tddsg/previous-shell-buffer ()
+  "Jump to the previous shell buffer."
+  (interactive)
+  (tddsg/switch-shell-buffer 'prev))
 
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
@@ -1421,9 +1443,10 @@ If OTHER is t then scroll other window."
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
   (define-key shell-mode-map (kbd "C-z") nil)
+  (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
+  (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
   (define-key shell-mode-map (kbd "C-c C-s")
     'tddsg/toggle-shell-scroll-to-bottomon-on-output)
-
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
