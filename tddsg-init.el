@@ -1445,6 +1445,7 @@ If OTHER is t then scroll other window."
   (define-key shell-mode-map (kbd "C-z") nil)
   (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
   (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
+  (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s")
     'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
