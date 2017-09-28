@@ -1025,6 +1025,7 @@ If OTHER is t then scroll other window."
         comint-input-ignoredups t
         comint-completion-addsuffix nil
         shell-default-shell 'ansi-term)
+  (defadvice comint-clear-buffer (before comint activate) (end-of-buffer))
   (defun hook-shell-mode ()
     "Hook to run in shell mode."
     (add-hook 'window-configuration-change-hook
