@@ -1334,8 +1334,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-k") 'backward-kill-word)
-  (global-set-key (kbd "M-p") 'tddsg/scroll-window-upward-dwim)
-  (global-set-key (kbd "M-n") 'tddsg/scroll-window-downward-dwim)
+  (global-set-key (kbd "M-p") 'backward-paragraph)
+  (global-set-key (kbd "M-n") 'forward-paragraph)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
   (global-set-key (kbd "M-B") 'tddsg/previous-upcase-dwim)
@@ -2172,6 +2172,30 @@ Set `spaceline-highlight-face-func' to
             (top (cadar pdf-isearch-current-match)))
         (isearch-exit)
         (funcall 'pdf-sync-backward-search left top))))
+
+;;;;; auctex
+(defun TeX-brace-count-line ()
+  "Count number of open/closed braces."
+  (save-excursion
+    (let ((count 0) (limit (line-end-position)) char)
+      (while (progn
+               (skip-chars-forward "^{}[]\\\\" limit)
+               (when (and (< (point) limit) (not (TeX-in-comment)))
+                 (setq char (char-after))
+                 (forward-char)
+                 (cond ((eq char ?\{)
+                        (setq count (+ count TeX-brace-indent-level)))
+                       ((eq char ?\})
+                        (setq count (- count TeX-brace-indent-level)))
+                       ((eq char ?\[)
+                        (setq count (+ count TeX-brace-indent-level)))
+                       ((eq char ?\])
+                        (setq count (- count TeX-brace-indent-level)))
+                       ((eq char ?\\)
+                        (when (< (point) limit)
+                          (forward-char)
+                          t))))))
+      count)))
 
 ;;;;;;; REASON MODE ;;;;;;;;
 
