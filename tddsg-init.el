@@ -1025,6 +1025,7 @@ If OTHER is t then scroll other window."
         comint-input-ignoredups t
         comint-completion-addsuffix nil
         shell-default-shell 'ansi-term)
+  (defadvice comint-clear-buffer (before comint activate) (end-of-buffer))
   (defun hook-shell-mode ()
     "Hook to run in shell mode."
     (add-hook 'window-configuration-change-hook
@@ -1445,6 +1446,7 @@ If OTHER is t then scroll other window."
   (define-key shell-mode-map (kbd "C-z") nil)
   (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
   (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
+  (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s")
     'tddsg/toggle-shell-scroll-to-bottomon-on-output)
 
