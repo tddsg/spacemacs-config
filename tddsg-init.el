@@ -20,7 +20,7 @@
 (require 'god-mode)
 (require 'god-mode-isearch)
 (require 'expand-region)
-(require 'rtags)
+;; (require 'rtags)
 (require 'engine-mode)
 (require 'hi-lock)
 
@@ -33,9 +33,9 @@
     merlin-compilation-error-face
     merlin-compilation-warning-face
     ;;--- rtags-faces
-    rtags-fixitline
+    ;; rtags-fixitline
     ;; rtags-warnline
-    rtags-errline
+    ;; rtags-errline
     ;;--- writegood-faces
     writegood-weasels-face
     writegood-duplicates-face
