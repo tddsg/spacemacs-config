@@ -1091,7 +1091,7 @@ If OTHER is t then scroll other window."
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
-        helm-split-window-in-side-p t
+        helm-split-window-inside-p t
         projectile-completion-system 'helm
         helm-ff-file-name-history-use-recentf t
         helm-ff-transformer-show-only-basename nil)
@@ -1107,6 +1107,8 @@ If OTHER is t then scroll other window."
   (advice-add 'helm-semantic-or-imenu :around #'advise-helm-split-active-window)
   (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
   (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
+  (advice-add 'flyspell-correct-previous-word-generic
+              :around #'advise-helm-split-active-window)
 
   ;; browser
   (setq browse-url-browser-function 'browse-url-generic
