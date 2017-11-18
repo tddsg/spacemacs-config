@@ -1091,7 +1091,7 @@ If OTHER is t then scroll other window."
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
-        helm-split-window-in-side-p t
+        helm-split-window-inside-p t
         projectile-completion-system 'helm
         helm-ff-file-name-history-use-recentf t
         helm-ff-transformer-show-only-basename nil)
@@ -1107,6 +1107,8 @@ If OTHER is t then scroll other window."
   (advice-add 'helm-semantic-or-imenu :around #'advise-helm-split-active-window)
   (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
   (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
+  (advice-add 'flyspell-correct-previous-word-generic
+              :around #'advise-helm-split-active-window)
 
   ;; browser
   (setq browse-url-browser-function 'browse-url-generic
@@ -1137,22 +1139,23 @@ If OTHER is t then scroll other window."
   (setq-default dotspacemacs-excluded-packages '(window-purpose))
 
   ;; windmove
-  (defun advise-windmove (orig-func &rest args)
-    (if (derived-mode-p 'pdf-view-mode)
-        ;; Fix bug of windmove for pdf-view-mode by
-        ;; temporarily switch to the "*Messages*" buffer
-        (let* ((cur-win (selected-window))
-               (cur-buf (window-buffer cur-win)))
-          (switch-to-buffer "*Messages*")
-          (ignore-errors (apply orig-func args))
-          (set-window-buffer cur-win cur-buf))
-      (apply orig-func args))
-    ;; reselect the current window to update its states
-    (select-window (selected-window)))
-  (advice-add 'windmove-left :around #'advise-windmove)
-  (advice-add 'windmove-right :around #'advise-windmove)
-  (advice-add 'windmove-up :around #'advise-windmove)
-  (advice-add 'windmove-down :around #'advise-windmove)
+  ;; (defun advise-windmove (orig-func &rest args)
+  ;;   (if (derived-mode-p 'pdf-view-mode)
+  ;;       ;; Fix bug of windmove for pdf-view-mode by
+  ;;       ;; temporarily switch to the "*Messages*" buffer
+  ;;       (let* ((cur-win (selected-window))
+  ;;              (cur-buf (window-buffer cur-win)))
+  ;;         (switch-to-buffer "*Messages*")
+  ;;         (condition-case err
+  ;;             (apply orig-func args)
+  ;;           (error
+  ;;            (fm-next-frame (car args))
+  ;;            (set-window-buffer cur-win cur-buf))))
+  ;;     (apply orig-func args)))
+  ;; (advice-add 'windmove-left :around #'advise-windmove)
+  ;; (advice-add 'windmove-right :around #'advise-windmove)
+  ;; (advice-add 'windmove-up :around #'advise-windmove)
+  ;; (advice-add 'windmove-down :around #'advise-windmove)
 
 
   ;; whichkey
