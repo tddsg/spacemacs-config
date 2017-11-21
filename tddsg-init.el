@@ -1399,6 +1399,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
   (global-set-key (kbd "M-s T") 'google-translate-query-translate)
   (global-set-key (kbd "M-s k") 'evil-search-highlight-persist-remove-all)
+  (global-set-key (kbd "M-s b") 'ispell-buffer)
   (global-set-key (kbd "M-s r") 'ispell-region)
   (global-set-key (kbd "M-s w") 'ispell-word)
   (global-set-key (kbd "M-s s") 'ispell-continue)
@@ -1538,6 +1539,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m b c n") 'buf-clone-down)
 
   ;; LaTeX-mode
+
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-compile-sync-other-window)
