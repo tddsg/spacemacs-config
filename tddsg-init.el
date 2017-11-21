@@ -1256,6 +1256,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C--") 'zoom-out)
   (global-set-key (kbd "C-'") 'other-window)
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
+  (global-set-key (kbd "M-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-S-j") 'avy-goto-char)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
@@ -1617,6 +1618,7 @@ If OTHER is t then scroll other window."
   (define-key flyspell-mode-map (kbd "C-M-i") nil)
 
   ;; dired mode
+  (define-key dired-mode-map (kbd "M-+") 'nil)
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
   (define-key dired-mode-map (kbd "<backspace>") 'dired-up-directory)
   (define-key dired-mode-map (kbd "M-C") 'tddsg/dired-duplicate-files)
