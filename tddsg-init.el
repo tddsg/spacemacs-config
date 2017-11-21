@@ -906,6 +906,7 @@ If OTHER is t then scroll other window."
 
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
+  (setq pupo-split-active-window t)
 
   ;; scrolling
   (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
