@@ -1245,7 +1245,6 @@ If OTHER is t then scroll other window."
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "<escape>") 'keyboard-quit)
-  (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1264,7 +1263,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
   (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
-  (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
@@ -1447,7 +1445,6 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-z") nil)
   (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
   (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
   (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
@@ -1509,9 +1506,6 @@ If OTHER is t then scroll other window."
     (define-key magit-status-mode-map (kbd "M-0") nil))
 
   ;; god-mode
-  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
   (define-key god-local-mode-map (kbd "i") 'god-mode-all)
   (define-key god-local-mode-map (kbd "a") 'god-mode-all)
 
