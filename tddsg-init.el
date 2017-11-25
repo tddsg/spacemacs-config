@@ -719,15 +719,16 @@ after stripping extra whitespace and new lines"
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
-  ;; save editing buffers
-  (let ((root (projectile-project-root)))
-    (save-some-buffers (and root (not compilation-ask-about-save))
-                       (lambda ()
-                         (projectile-project-buffer-p (current-buffer) root))))
-  ;; compile
-  (if (string-match-p (regexp-quote "make -k -C") compile-command)
-      (recompile)
-    (call-interactively 'tddsg/compile)))
+  (when (derived-mode-p 'prog-mode)
+    ;; save editing buffers
+    (let ((root (projectile-project-root)))
+      (save-some-buffers
+       (and root (not compilation-ask-about-save))
+       (lambda () (projectile-project-buffer-p (current-buffer) root))))
+    ;; compile
+    (if (string-match-p (regexp-quote "make -k -C") compile-command)
+        (recompile)
+      (call-interactively 'tddsg/compile))))
 
 (defun tddsg/latex-compile ()
   "Run LaTex command from TeX Master commands."
