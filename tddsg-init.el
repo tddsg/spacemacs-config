@@ -717,15 +717,16 @@ after stripping extra whitespace and new lines"
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
-  ;; save editing buffers
-  (let ((root (projectile-project-root)))
-    (save-some-buffers (and root (not compilation-ask-about-save))
-                       (lambda ()
-                         (projectile-project-buffer-p (current-buffer) root))))
-  ;; compile
-  (if (string-match-p (regexp-quote "make -k -C") compile-command)
-      (recompile)
-    (call-interactively 'tddsg/compile)))
+  (when (derived-mode-p 'prog-mode)
+    ;; save editing buffers
+    (let ((root (projectile-project-root)))
+      (save-some-buffers
+       (and root (not compilation-ask-about-save))
+       (lambda () (projectile-project-buffer-p (current-buffer) root))))
+    ;; compile
+    (if (string-match-p (regexp-quote "make -k -C") compile-command)
+        (recompile)
+      (call-interactively 'tddsg/compile))))
 
 (defun tddsg/latex-compile ()
   "Run LaTex command from TeX Master commands."
@@ -1263,6 +1264,10 @@ If OTHER is t then scroll other window."
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
+<<<<<<< HEAD
+=======
+  (global-set-key (kbd "<escape>") 'keyboard-quit)
+>>>>>>> 0b159cf230958391a994573f40ac037f91e0d3c7
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1505,6 +1510,13 @@ If OTHER is t then scroll other window."
     (define-key magit-status-mode-map (kbd "M-9") nil)
     (define-key magit-status-mode-map (kbd "M-0") nil))
 
+<<<<<<< HEAD
+=======
+  ;; god-mode
+  (define-key god-local-mode-map (kbd "i") 'god-mode-all)
+  (define-key god-local-mode-map (kbd "a") 'god-mode-all)
+
+>>>>>>> 0b159cf230958391a994573f40ac037f91e0d3c7
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
   (global-set-key (kbd "S-<right>") 'windmove-right)
