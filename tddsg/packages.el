@@ -78,7 +78,6 @@
     monky
     sr-speedbar
     ;;; others
-    god-mode
     zone-sl
     ;;; local
     (songbird :location local)
@@ -463,29 +462,6 @@ Each entry is either:
 
 (defun tddsg/init-company-irony-c-headers ()
   (use-package company-irony-c-headers))
-
-(defun tddsg/init-god-mode ()
-  (require 'god-mode)
-  ;;; update cursor
-  (defun update-cursor ()
-    (cond ((or (bound-and-true-p god-mode)
-               (bound-and-true-p god-global-mode))
-           (set-cursor-color "lime green"))
-          ((eq spacemacs--cur-theme 'leuven)
-           (set-cursor-color "dark orange"))
-          ((eq spacemacs--cur-theme 'spacemacs-dark)
-           (set-cursor-color "dark orange"))))
-  (defun advice-update-cursor (orig-func &rest args)
-    (apply orig-func args)
-    (update-cursor))
-  (dolist (func (list 'windmove-do-window-select
-                      ;; 'select-window  ;; do not advise select-window
-                      'god-mode-isearch-activate
-                      'god-mode-isearch-disable
-                      'god-mode-all))
-    (advice-add func :around #'advice-update-cursor))
-  (add-hook 'god-mode-enabled-hook 'update-cursor)
-  (add-hook 'god-mode-disabled-hook 'update-cursor))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

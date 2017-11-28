@@ -17,8 +17,6 @@
 (require 'pdf-tools)
 (require 'face-remap)
 (require 'whitespace)
-(require 'god-mode)
-(require 'god-mode-isearch)
 (require 'expand-region)
 ;; (require 'rtags)
 (require 'engine-mode)
@@ -649,7 +647,7 @@ after stripping extra whitespace and new lines"
   (interactive)
   (when (region-active-p) (call-interactively 'kill-region)))
 
-(defun tddsg/yank-current-word-to-minibuffer ()
+(defun tddsg/yank-word-minibuffer ()
   "Get word at point in original buffer and insert it to minibuffer."
   (interactive)
   (let (word beg)
@@ -662,7 +660,7 @@ after stripping extra whitespace and new lines"
     (when word
       (insert word))))
 
-(defun tddsg/yank-current-word-to-isearch-buffer ()
+(defun tddsg/yank-current-word-isearch ()
   "Pull current word from buffer into search string."
   (interactive)
   (save-excursion
@@ -738,7 +736,7 @@ after stripping extra whitespace and new lines"
                          (projectile-project-buffer-p (current-buffer) root))))
   (TeX-command "LaTeX" 'TeX-master-file -1))
 
-(defun tddsg/latex-beamer-compile-current-frame ()
+(defun tddsg/latex-beamer-compile-frame ()
   "Run pdflatex on current beamer frame."
   (interactive)
   (save-buffer)
@@ -986,10 +984,7 @@ If OTHER is t then scroll other window."
 
   ;; themes
   (defun hook-update-cursor ()
-    (cond ((or (bound-and-true-p god-mode)
-               (bound-and-true-p god-global-mode))
-           (set-cursor-color "lime green"))
-          ((eq spacemacs--cur-theme 'leuven)
+    (cond ((eq spacemacs--cur-theme 'leuven)
            (set-cursor-color "dark orange"))
           ((eq spacemacs--cur-theme 'spacemacs-dark)
            (set-cursor-color "dark orange"))))
@@ -1120,6 +1115,30 @@ If OTHER is t then scroll other window."
   (setq resize-mini-windows t)
   (setq max-mini-window-height 30)
 
+  ;; magit
+  (require 'window-purpose-x)
+  (purpose-x-magit-single-on)
+
+  ;; dired-mode
+  (defun hook-dired-mode ()
+    (toggle-truncate-lines 1))
+  (add-hook 'dired-mode-hook 'hook-dired-mode)
+  (add-hook 'dired-after-readin-hook 'hook-dired-mode)
+
+  ;; web-mode
+  (with-eval-after-load 'web-mode
+    (setq web-mode-code-indent-offset 2
+          web-mode-indent-style 2
+          web-mode-css-indent-offset 2
+          web-mode-markup-indent-offset 2))
+
+  ;; python-mode
+  (defun hook-python-mode ()
+    (setq tab-width 4)
+    (setq python-indent 4)
+    (elpy-mode))
+  (add-hook 'python-mode-hook 'hook-python-mode)
+
   ;; reason-mode
   ;; (tddsg/config-reason-mode)
 
@@ -1184,7 +1203,6 @@ If OTHER is t then scroll other window."
   (spacemacs|diminish reftex-mode "")
   (spacemacs|diminish pdf-view-midnight-minor-mode "")
   (spacemacs|diminish auto-revert-mode " ↺")
-  (spacemacs|diminish god-local-mode " ⚡☢⚡☢⚡")
   (spacemacs|diminish abbrev-mode " ↹")
   (spacemacs|diminish smartparens-mode " ♓")
   (spacemacs|diminish rainbow-mode " ☔")
@@ -1245,8 +1263,6 @@ If OTHER is t then scroll other window."
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
-  (global-set-key (kbd "<escape>") 'keyboard-quit)
-  (global-set-key (kbd "C-z") 'god-mode-all)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1262,10 +1278,10 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
+  (global-set-key (kbd "C-z") nil)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
   (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
-  (global-set-key (kbd "C-z") 'save-buffer)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
@@ -1432,15 +1448,15 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x M-<left>") 'eyebrowse-prev-window-config)
 
   ;; isearch
-  (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-to-isearch-buffer)
-  (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward-current-match)
-  (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward-current-match)
+  (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-isearch)
+  (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward)
+  (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward)
 
   ;; swiper
-  (define-key swiper-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
+  (define-key swiper-map (kbd "C-.") 'tddsg/yank-word-minibuffer)
 
   ;; minibuffer
-  (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-current-word-to-minibuffer)
+  (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-word-minibuffer)
   (define-key minibuffer-local-map (kbd "C-M-i") nil)
 
   ;; elisp-mode
@@ -1449,7 +1465,6 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-z") nil)
   (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
   (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
   (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
@@ -1461,31 +1476,11 @@ If OTHER is t then scroll other window."
   (define-key undo-tree-map (kbd "M-_") nil)
   (define-key undo-tree-map (kbd "C-/") nil)
 
-  ;; dired-mode
-  (defun hook-dired-mode ()
-    (toggle-truncate-lines 1))
-  (add-hook 'dired-mode-hook 'hook-dired-mode)
-  (add-hook 'dired-after-readin-hook 'hook-dired-mode)
-
   ;; speedbar, make shortcut keys like dired mode
   (with-eval-after-load 'speedbar
     (define-key speedbar-key-map (kbd "+") 'speedbar-create-directory)
     (define-key speedbar-file-key-map (kbd "+") 'speedbar-create-directory)
     (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
-
-  ;; web-mode
-  (with-eval-after-load 'web-mode
-    (setq web-mode-code-indent-offset 2
-          web-mode-indent-style 2
-          web-mode-css-indent-offset 2
-          web-mode-markup-indent-offset 2))
-
-  ;; python-mode
-  (defun hook-python-mode ()
-    (setq tab-width 4)
-    (setq python-indent 4)
-    (elpy-mode))
-  (add-hook 'python-mode-hook 'hook-python-mode)
 
   ;; magit
   (with-eval-after-load 'magit
@@ -1509,13 +1504,6 @@ If OTHER is t then scroll other window."
     (define-key magit-status-mode-map (kbd "M-8") nil)
     (define-key magit-status-mode-map (kbd "M-9") nil)
     (define-key magit-status-mode-map (kbd "M-0") nil))
-
-  ;; god-mode
-  (define-key isearch-mode-map (kbd "C-z") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-z") 'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "C-z") 'god-mode-all)
-  (define-key god-local-mode-map (kbd "i") 'god-mode-all)
-  (define-key god-local-mode-map (kbd "a") 'god-mode-all)
 
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
@@ -1545,7 +1533,7 @@ If OTHER is t then scroll other window."
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-compile-sync-other-window)
-  (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-compile-current-frame)
+  (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
@@ -2174,7 +2162,7 @@ Set `spaceline-highlight-face-func' to
       (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
 
 ;;;;;; customize pdf-isearch for syncing backward
-(defun pdf-isearch-sync-backward-current-match ()
+(defun pdf-isearch-sync-backward ()
   "Sync backward to the LaTeX source of the current match."
   (interactive)
   (if pdf-isearch-current-match
