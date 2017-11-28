@@ -41,24 +41,15 @@
     math-symbol-lists
     company-math
     ;;; c/c++
-    cc-mode
-    llvm-mode
-    irony
-    company-irony
+    cc-mode llvm-mode irony company-irony
     company-irony-c-headers
-    rtags
-    company-rtags
-    helm-rtags
+    ;; rtags company-rtags helm-rtags
     ;;; writing, spelling
     langtool
     writegood-mode
     helm-ispell
     ;;; buffer, window, frame
-    buffer-move
-    windmove
-    framemove
-    transpose-frame
-    ace-popup-menu
+    buffer-move windmove framemove transpose-frame ace-popup-menu
     ;;; text search, editing
     anzu
     swiper
@@ -203,7 +194,7 @@ Each entry is either:
     (add-to-list 'company-backends '(company-irony-c-headers company-irony))
     (c-set-style "my-cc-style")
     (setq c-basic-offset 4)
-    (rtags-start-process-unless-running)  ;; using rtags
+    ;; (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
     (semantic-mode -1)
     (local-set-key (kbd "C-c C-c") nil))
@@ -428,24 +419,24 @@ Each entry is either:
       (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
     (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
 
-(defun tddsg/init-rtags ()
-  (use-package rtags
-    :config
-    (setq rtags-completions-enabled t)
-    (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
-    (which-key-add-major-mode-key-based-replacements
-      'c-mode "C-c t" "rtags-commands")
-    (which-key-add-major-mode-key-based-replacements
-      'c++-mode "C-c t" "rtags-commands")
-    (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
-    (setq rtags-autostart-diagnostics t)))
+;; (defun tddsg/init-rtags ()
+;;   (use-package rtags
+;;     :config
+;;     (setq rtags-completions-enabled t)
+;;     (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
+;;     (which-key-add-major-mode-key-based-replacements
+;;       'c-mode "C-c t" "rtags-commands")
+;;     (which-key-add-major-mode-key-based-replacements
+;;       'c++-mode "C-c t" "rtags-commands")
+;;     (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
+;;     (setq rtags-autostart-diagnostics t)))
 
-(defun tddsg/init-company-rtags ()
-  (use-package company-rtags))
+;; (defun tddsg/init-company-rtags ()
+;;   (use-package company-rtags))
 
-(defun tddsg/init-helm-rtags ()
-  (use-package helm-rtags
-    :config (setq rtags-display-result-backend 'helm)))
+;; (defun tddsg/init-helm-rtags ()
+;;   (use-package helm-rtags
+;;     :config (setq rtags-display-result-backend 'helm)))
 
 (defun tddsg/init-irony ()
   (use-package irony

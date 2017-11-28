@@ -983,14 +983,6 @@ If OTHER is t then scroll other window."
   ;; mode-line setting
   (setq powerline-default-separator 'bar)
 
-  ;; themes
-  (defun hook-update-cursor ()
-    (cond ((eq spacemacs--cur-theme 'leuven)
-           (set-cursor-color "dark orange"))
-          ((eq spacemacs--cur-theme 'spacemacs-dark)
-           (set-cursor-color "dark orange"))))
-  (add-hook 'buffer-list-update-hook 'hook-update-cursor)
-
   ;; isearch
   (defun tddsg--isearch-show-case-fold (orig-func &rest args)
     (apply orig-func args)
@@ -1264,10 +1256,6 @@ If OTHER is t then scroll other window."
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
-<<<<<<< HEAD
-=======
-  (global-set-key (kbd "<escape>") 'keyboard-quit)
->>>>>>> 0b159cf230958391a994573f40ac037f91e0d3c7
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
@@ -1510,13 +1498,6 @@ If OTHER is t then scroll other window."
     (define-key magit-status-mode-map (kbd "M-9") nil)
     (define-key magit-status-mode-map (kbd "M-0") nil))
 
-<<<<<<< HEAD
-=======
-  ;; god-mode
-  (define-key god-local-mode-map (kbd "i") 'god-mode-all)
-  (define-key god-local-mode-map (kbd "a") 'god-mode-all)
-
->>>>>>> 0b159cf230958391a994573f40ac037f91e0d3c7
   ;; windmove
   (global-set-key (kbd "S-<left>") 'windmove-left)
   (global-set-key (kbd "S-<right>") 'windmove-right)
@@ -1685,7 +1666,6 @@ If OTHER is t then scroll other window."
    '((bold ((t (:foreground "salmon4" :weight bold))))
      (bold-italic ((t (:foreground "salmon4" :slant italic :weight bold))))
      ;; cursors & line
-     (cursor ((t (:background "dark orange"))))
      (hl-line ((t (:background "honeydew2"))))
      ;; latex font face
      (font-latex-bold-face ((t (:foreground "gray26" :weight bold))))
@@ -1720,9 +1700,7 @@ If OTHER is t then scroll other window."
   (tddsg--read-custom-themes
    'tddsg-themes
    'spacemacs-dark
-   '(;; cursors & line
-     (cursor ((t (:background "dark orange"))))
-     ;; dired
+   '(;; dired
      (diredp-compressed-file-name ((t (:foreground "burlywood"))))
      (diredp-compressed-file-suffix ((t (:foreground "yellow green"))))
      (diredp-dir-name ((t (:foreground "medium sea green" :weight bold))))
