@@ -1106,6 +1106,9 @@ If OTHER is t then scroll other window."
   ;; magit
   (require 'window-purpose-x)
   (purpose-x-magit-single-on)
+  (defun hook-magit-mode ()
+    (evil-hybrid-state))
+  (add-hook 'magit-mode-hook 'hook-magit-mode)
 
   ;; dired-mode
   (defun hook-dired-mode ()
