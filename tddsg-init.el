@@ -1040,6 +1040,7 @@ If OTHER is t then scroll other window."
   ;; evil mode
   (setq-default evil-cross-lines t)
   (setq-default evil-default-state 'hybrid)
+  (add-hook 'with-editor-mode-hook 'evil-hybrid-state)
 
   ;; engine
   (defengine thefreedictionary
@@ -1107,6 +1108,8 @@ If OTHER is t then scroll other window."
   (defun hook-magit-mode ()
     (evil-hybrid-state))
   (add-hook 'magit-mode-hook 'hook-magit-mode)
+  (add-hook 'magit-status-mode-hook 'hook-magit-mode)
+
 
   ;; dired-mode
   (defun hook-dired-mode ()
