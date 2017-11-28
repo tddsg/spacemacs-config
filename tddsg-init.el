@@ -28,16 +28,11 @@
 ;; used to jump between faces
 (defconst tddsg--face-change-types-default
   '(;;--- merlin-faces
-    merlin-compilation-error-face
-    merlin-compilation-warning-face
+    merlin-compilation-error-face merlin-compilation-warning-face
     ;;--- rtags-faces
-    ;; rtags-fixitline
-    ;; rtags-warnline
-    ;; rtags-errline
+    ;; rtags-fixitline rtags-warnline rtags-errline
     ;;--- writegood-faces
-    writegood-weasels-face
-    writegood-duplicates-face
-    writegood-passive-voice-face
+    writegood-weasels-face writegood-duplicates-face writegood-passive-voice-face
     ;; langtools
     langtool-errline
     ;;--- isearch
@@ -717,7 +712,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/recompile ()
   "Find the closest Makefile and compile."
   (interactive)
-  (when (derived-mode-p 'prog-mode)
+  (when (derived-mode-p 'prog-mode 'tuareg-mode)
     ;; save editing buffers
     (let ((root (projectile-project-root)))
       (save-some-buffers
@@ -1045,8 +1040,8 @@ If OTHER is t then scroll other window."
         make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; evil mode
-  (evil-mode -1)
   (setq-default evil-cross-lines t)
+  (setq-default evil-default-state 'hybrid)
 
   ;; engine
   (defengine thefreedictionary
@@ -1256,6 +1251,7 @@ If OTHER is t then scroll other window."
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
+  (global-set-key (kbd "<esc>") 'evil-force-normal-state)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
