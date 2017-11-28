@@ -888,8 +888,8 @@ If OTHER is t then scroll other window."
   ;; visual interface setting
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
-  (blink-cursor-mode 0)             ;; turn off blinking
-  (setq blink-cursor-blinks 15)     ;; blink 15 times
+  (blink-cursor-mode 1)             ;; turn off blinking
+  (setq blink-cursor-blinks 0)     ;; blink 15 times
   (setq fill-column 75)             ;; max size of a line for fill-or-unfill
   (setq fast-but-imprecise-scrolling nil)
   (setq text-scale-mode-step 1.1)   ;; scale changing font size
@@ -991,11 +991,9 @@ If OTHER is t then scroll other window."
 
   ;; compilation
   (setq compilation-ask-about-save nil
-        compilation-window-height 16
+        compilation-window-height 12
         compilation-scroll-output t
         compilation-skip-threshold 2)
-  ;; pin the compilation buffer into 1 frame
-  ;; (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
   ;; reset all compilation hook, use the default one
   (setq compilation-mode-hook nil)
 
