@@ -1040,7 +1040,10 @@ If OTHER is t then scroll other window."
   ;; evil mode
   (setq-default evil-cross-lines t)
   (setq-default evil-default-state 'hybrid)
-  (add-hook 'with-editor-mode-hook 'evil-hybrid-state)
+  (defun update-evil-state ()
+    (cond ((derived-mode-p 'magit-mode)
+           (evil-hybrid-state))))
+  (add-hook 'buffer-list-update-hook 'update-evil-state)
 
   ;; engine
   (defengine thefreedictionary
