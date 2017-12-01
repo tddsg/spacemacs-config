@@ -1042,7 +1042,10 @@ If OTHER is t then scroll other window."
   (setq-default evil-default-state 'hybrid)
   (defun update-evil-state ()
     (cond ((derived-mode-p 'magit-mode)
-           (evil-hybrid-state))))
+           (evil-hybrid-state))
+          ((derived-mode-p 'pdf-view-mode)
+           (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
+           (set (make-local-variable 'evil-hybrid-state-cursor) (list nil)))))
   (add-hook 'buffer-list-update-hook 'update-evil-state)
 
   ;; engine
