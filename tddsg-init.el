@@ -753,13 +753,6 @@ after stripping extra whitespace and new lines"
   (call-interactively 'latex/compile-commands-until-done)
   (call-interactively 'pdf-sync-forward-search))
 
-(defun tddsg/latex-compile-sync-other-window ()
-  "Compile LaTex and synchronize the output, and jumpback."
-  (interactive)
-  (call-interactively 'latex/compile-commands-until-done)
-  (call-interactively 'pdf-sync-forward-search)
-  (call-interactively 'other-window -1))
-
 (defun tddsg/close-special-windows ()
   "Close all special windows such as compilation, ..."
   (interactive)
@@ -1531,8 +1524,7 @@ If OTHER is t then scroll other window."
 
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
   (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
-  (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-compile-sync-other-window)
-  (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-compile-frame)
+  (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
