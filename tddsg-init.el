@@ -1045,7 +1045,7 @@ If OTHER is t then scroll other window."
            (evil-hybrid-state))
           ((derived-mode-p 'pdf-view-mode)
            (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
-           (set (make-local-variable 'evil-hybrid-state-cursor) (list nil)))))
+           (evil-emacs-state))))
   (add-hook 'buffer-list-update-hook 'update-evil-state)
 
   ;; engine
@@ -1616,10 +1616,6 @@ If OTHER is t then scroll other window."
   (define-key smartparens-mode-map (kbd "M-S") nil)
 
   ;; evil mode
-  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
