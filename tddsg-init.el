@@ -736,7 +736,7 @@ after stripping extra whitespace and new lines"
   "Run pdflatex on current beamer frame."
   (interactive)
   (save-buffer)
-  (setq TeX-region "__current_frame")
+  (setq TeX-region "frame_beamer")
   (let (beg)
     (save-excursion
       (search-backward "\\begin{frame}")
@@ -1096,6 +1096,10 @@ If OTHER is t then scroll other window."
   (setq browse-url-browser-function 'browse-url-generic
         engine/browser-function 'browse-url-generic
         browse-url-generic-program "google-chrome")
+
+  ;; auctex
+  (with-eval-after-load 'latex-mode
+    (setq LaTeX-command "latex --synctex=1 -shell-escape"))
 
   ;; minibuffer
   (setq resize-mini-windows t)
