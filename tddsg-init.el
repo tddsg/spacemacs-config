@@ -118,7 +118,7 @@ If the new path's directories does not exist, create them."
     (if face (message "Face under the cursor: %s" face)
       (message "Face not found under the cursor at: %d" pos))))
 
-(defun tddsg/find-face-change-dwim (&optional direction)
+(defun tddsg/find-face-change (&optional direction)
   "Find face change dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
   (defun get-face (pos)
@@ -154,17 +154,17 @@ If the new path's directories does not exist, create them."
       (goto-char pos)
       (tddsg/describe-face-under-cursor))))
 
-(defun tddsg/next-face-change-dwim ()
-  "Find next face change dwim."
+(defun tddsg/next-face-change ()
+  "Find next face change"
   (interactive)
-  (tddsg/find-face-change-dwim 'forward))
+  (tddsg/find-face-change 'forward))
 
-(defun tddsg/previous-face-change-dwim ()
-  "Find previous face change dwim."
+(defun tddsg/previous-face-change ()
+  "Find previous face change"
   (interactive)
-  (tddsg/find-face-change-dwim 'backward))
+  (tddsg/find-face-change 'backward))
 
-(defun tddsg/traverse-upcase-dwim (&optional direction delete)
+(defun tddsg/traverse-upcase (&optional direction delete)
   "Traverse through character dwim. DIRECTION can be 'backward or 'forward."
   (interactive)
   (defun downcase-p (ch)
@@ -194,25 +194,25 @@ If the new path's directories does not exist, create them."
            (traverse-until 'not-downcase-p)))
     (if delete (delete-char (- origin-pos (point))))))
 
-(defun tddsg/next-upcase-dwim ()
+(defun tddsg/next-upcase ()
   "Go to next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-dwim 'forward))
+  (tddsg/traverse-upcase 'forward))
 
-(defun tddsg/previous-upcase-dwim ()
+(defun tddsg/previous-upcase ()
   "Go to previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-dwim 'backward))
+  (tddsg/traverse-upcase 'backward))
 
-(defun tddsg/delete-until-next-upcase-dwim ()
+(defun tddsg/delete-until-next-upcase ()
   "Delete until next contradict char."
   (interactive)
-  (tddsg/traverse-upcase-dwim 'forward t))
+  (tddsg/traverse-upcase 'forward t))
 
-(defun tddsg/delete-until-previous-upcase-dwim ()
+(defun tddsg/delete-until-previous-upcase ()
   "Delete until previous contradict char."
   (interactive)
-  (tddsg/traverse-upcase-dwim 'backward t))
+  (tddsg/traverse-upcase 'backward t))
 
 (defun tddsg/highlight-symbol-at-point-or-region ()
   "Highligh thing at point or region"
@@ -424,8 +424,8 @@ If the new path's directories does not exist, create them."
   (tddsg/mark-paragraph)
   (call-interactively 'comment-dwim-2))
 
-(defun tddsg/vc-status-dwim ()
-  "Show version control status (git, hg) of the project containing the current file."
+(defun tddsg/vc-status ()
+  "Show version control status (git, hg) of the current project."
   (interactive)
   (defun find-vc-tool (dir)
     (cond ((string-match-p (regexp-quote "..") dir) nil)
@@ -440,7 +440,7 @@ If the new path's directories does not exist, create them."
            (call-interactively 'magit-status))
           (t (message "Error: unknown version control tool")))))
 
-(defun tddsg/find-definition-dwim (&optional prefix)
+(defun tddsg/find-definition (&optional prefix)
   "Goto definition of a function or a variable."
   (interactive "P")
   (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
@@ -448,7 +448,7 @@ If the new path's directories does not exist, create them."
                   rtags-last-request-not-indexed)
              (gtags-find-tag)))))
 
-(defun tddsg/find-references-dwim (&optional prefix)
+(defun tddsg/find-references (&optional prefix)
   "Goto definition of a function or a variable."
   (interactive "P")
   (cond ((derived-mode-p 'cc-mode 'c-mode 'c++-mode)
@@ -665,7 +665,7 @@ after stripping extra whitespace and new lines"
        (skip-syntax-forward "w_")
        (point)))))
 
-(defun tddsg/beginning-of-line-dwim ()
+(defun tddsg/beginning-of-line ()
   "Goto beginning of line."
   (interactive)
   (let* ((pos-current (point))
@@ -760,7 +760,7 @@ after stripping extra whitespace and new lines"
     (let ((window (get-buffer-window buf-name)))
       (when window (delete-window window)))))
 
-(defun tddsg/scroll-window-dwim (&optional direction other)
+(defun tddsg/scroll-window (&optional direction other)
   "Scroll half window, DIRECTION can be 'upward or 'downward.
 If OTHER is t then scroll other window."
   (interactive)
@@ -781,25 +781,25 @@ If OTHER is t then scroll other window."
   (scroll-half)
   (if (and other (> (length (window-list)) 1)) (other-window -1)))
 
-(defun tddsg/scroll-window-upward-dwim ()
+(defun tddsg/scroll-window-upward ()
   "Scroll half window upward."
   (interactive)
-  (tddsg/scroll-window-dwim 'upward nil))
+  (tddsg/scroll-window 'upward nil))
 
-(defun tddsg/scroll-window-downward-dwim ()
+(defun tddsg/scroll-window-downward ()
   "Scroll half window downward."
   (interactive)
-  (tddsg/scroll-window-dwim 'downward nil))
+  (tddsg/scroll-window 'downward nil))
 
-(defun tddsg/scroll-other-window-upward-dwim ()
+(defun tddsg/scroll-other-window-upward ()
   "Scroll half window upward."
   (interactive)
-  (tddsg/scroll-window-dwim 'upward t))
+  (tddsg/scroll-window 'upward t))
 
-(defun tddsg/scroll-other-window-downward-dwim ()
+(defun tddsg/scroll-other-window-downward ()
   "Scroll half window downward."
   (interactive)
-  (tddsg/scroll-window-dwim 'downward t))
+  (tddsg/scroll-window 'downward t))
 
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
@@ -1257,7 +1257,7 @@ If OTHER is t then scroll other window."
 
 (defun tddsg/config-keys ()
   ;; unbind some weird keys
-  (global-set-key (kbd "<home>") 'tddsg/beginning-of-line-dwim)
+  (global-set-key (kbd "<home>") 'tddsg/beginning-of-line)
   (global-set-key (kbd "<esc>") 'evil-force-normal-state)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
 
@@ -1272,7 +1272,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-S-j") 'avy-goto-char)
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-a") 'tddsg/beginning-of-line-dwim)
+  (global-set-key (kbd "C-a") 'tddsg/beginning-of-line)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-z") nil)
   (global-set-key (kbd "C-q") 'goto-last-change)
@@ -1292,10 +1292,10 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
-  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-other-window-upward-dwim)
-  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-other-window-downward-dwim)
-  (global-set-key (kbd "C-M-S-v") 'tddsg/scroll-other-window-upward-dwim)
-  (global-set-key (kbd "C-M-v") 'tddsg/scroll-other-window-downward-dwim)
+  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-other-window-upward)
+  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-other-window-downward)
+  (global-set-key (kbd "C-M-S-v") 'tddsg/scroll-other-window-upward)
+  (global-set-key (kbd "C-M-v") 'tddsg/scroll-other-window-downward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
@@ -1304,7 +1304,7 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
-  (global-set-key (kbd "C-x g") 'tddsg/vc-status-dwim)
+  (global-set-key (kbd "C-x g") 'tddsg/vc-status)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
   (global-set-key (kbd "C-x }") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-x _") 'shrink-window)
@@ -1354,22 +1354,20 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-k") 'backward-kill-word)
   (global-set-key (kbd "M-p") 'backward-paragraph)
   (global-set-key (kbd "M-n") 'forward-paragraph)
-  (global-set-key (kbd "M-P") 'tddsg/previous-face-change-dwim)
-  (global-set-key (kbd "M-N") 'tddsg/next-face-change-dwim)
-  (global-set-key (kbd "M-B") 'tddsg/previous-upcase-dwim)
-  (global-set-key (kbd "M-F") 'tddsg/next-upcase-dwim)
+  (global-set-key (kbd "M-P") 'tddsg/previous-face-change)
+  (global-set-key (kbd "M-N") 'tddsg/next-face-change)
+  (global-set-key (kbd "M-B") 'tddsg/previous-upcase)
+  (global-set-key (kbd "M-F") 'tddsg/next-upcase)
   (global-set-key (kbd "M-S") 'save-buffer)
-  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase-dwim)
-  (global-set-key (kbd "M-K") 'tddsg/delete-until-previous-upcase-dwim)
+  (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase)
+  (global-set-key (kbd "M-K") 'tddsg/delete-until-previous-upcase)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
   (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "M-'") 'other-window)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-+") 'delete-other-windows)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-_") 'split-window-below)
   (global-set-key (kbd "M-|") 'split-window-right)
-  (global-set-key (kbd "M-=") 'transpose-frame)
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
   (global-set-key (kbd "M-?") 'company-complete)
@@ -1380,8 +1378,10 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "M-[") 'windmove-left)
   (global-set-key (kbd "M-]") 'windmove-right)
-  (global-set-key (kbd "H-[") 'windmove-up)
-  (global-set-key (kbd "C-]") 'windmove-down)
+  (global-set-key (kbd "M-=") 'windmove-up)
+  (global-set-key (kbd "M-'") 'windmove-down)
+  ;; (global-set-key (kbd "H-[") 'windmove-up)
+  ;; (global-set-key (kbd "C-]") 'windmove-down)
 
   (global-set-key (kbd "H-M-[") 'previous-buffer)
   (global-set-key (kbd "C-M-]") 'next-buffer)
@@ -1391,7 +1391,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'delete-blank-lines)
-  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase-dwim)
+  (global-set-key (kbd "M-S-<backspace>") 'tddsg/delete-until-previous-upcase)
 
   (define-key spacemacs-default-map-root-map (kbd "M-m l") nil)
   (global-set-key (kbd "M-m h g") 'helm-do-grep-ag)
@@ -1619,10 +1619,10 @@ If OTHER is t then scroll other window."
   ;; ggtags
   (with-eval-after-load 'ggtags
     (define-key ggtags-mode-map (kbd "M-]") nil)
-    (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition-dwim)
-    (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references-dwim)
+    (define-key ggtags-mode-map (kbd "M-.") 'tddsg/find-definition)
+    (define-key ggtags-mode-map (kbd "M-,") 'tddsg/find-references)
     (define-key ggtags-mode-map (kbd "C-M-,") 'rtags-find-references)
-    (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references-dwim))
+    (define-key ggtags-mode-map (kbd "C-c M-r") 'tddsg/find-references))
 
   ;; irony
   (with-eval-after-load 'irony
