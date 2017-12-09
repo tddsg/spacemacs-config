@@ -1376,8 +1376,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-]") 'windmove-right)
   (global-set-key (kbd "M-=") 'windmove-up)
   (global-set-key (kbd "M-'") 'windmove-down)
-  ;; (global-set-key (kbd "H-[") 'windmove-up)
-  ;; (global-set-key (kbd "C-]") 'windmove-down)
+  (global-set-key (kbd "H-[") 'windmove-up)
+  (global-set-key (kbd "C-]") 'windmove-down)
 
   (global-set-key (kbd "H-M-[") 'previous-buffer)
   (global-set-key (kbd "C-M-]") 'next-buffer)
