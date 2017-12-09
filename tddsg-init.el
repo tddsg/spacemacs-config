@@ -1097,10 +1097,6 @@ If OTHER is t then scroll other window."
         engine/browser-function 'browse-url-generic
         browse-url-generic-program "google-chrome")
 
-  ;; auctex
-  (with-eval-after-load 'latex-mode
-    (setq LaTeX-command "latex --synctex=1 -shell-escape"))
-
   ;; minibuffer
   (setq resize-mini-windows t)
   (setq max-mini-window-height 30)
@@ -2016,6 +2012,9 @@ Set `spaceline-highlight-face-func' to
        "*NeoTree*"
        "*ace-popup-menu*"
        "*compilation*")))
+   '(LaTeX-begin-regexp "begin\\b\\|\\[\\b\\|If\\b\\|For")
+   '(LaTeX-command "latex --synctex=1")
+   '(LaTeX-end-regexp "end\\b\\|\\]\\b\\|EndIf\\b\\|EndFor")
    '(LaTeX-indent-environment-list
      (quote
       (("verbatim" current-indentation)
