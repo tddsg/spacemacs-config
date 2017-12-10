@@ -1093,9 +1093,9 @@ If OTHER is t then scroll other window."
               :around #'advise-helm-split-active-window)
 
   ;; browser
-  (setq browse-url-browser-function 'browse-url-generic
-        engine/browser-function 'browse-url-generic
-        browse-url-generic-program "google-chrome")
+  (setq browse-url-generic-program "xdg-open"            ;; use default browser
+        browse-url-browser-function 'browse-url-generic
+        engine/browser-function 'browse-url-generic)
 
   ;; minibuffer
   (setq resize-mini-windows t)
@@ -1413,9 +1413,9 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-s r") 'ispell-region)
   (global-set-key (kbd "M-s w") 'ispell-word)
   (global-set-key (kbd "M-s s") 'ispell-continue)
-  (global-set-key (kbd "M-s f") 'flyspell-buffer)
+  (global-set-key (kbd "M-s f") 'flyspell-buffger)
   (global-set-key (kbd "M-s p") 'flyspell-correct-previous-word-generic)
-  (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
+  (global-set-key (kbd "M-s c") 'flyspell-corregct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
   (global-set-key (kbd "M-s l") 'langtool-check)
   (global-set-key (kbd "M-s M-l") 'langtool-check-done)
