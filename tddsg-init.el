@@ -1432,7 +1432,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-s s") 'ispell-continue)
   (global-set-key (kbd "M-s f") 'flyspell-buffger)
   (global-set-key (kbd "M-s p") 'flyspell-correct-previous-word-generic)
-  (global-set-key (kbd "M-s c") 'flyspell-corregct-word-before-point)
+  (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
   (global-set-key (kbd "M-s l") 'langtool-check)
   (global-set-key (kbd "M-s M-l") 'langtool-check-done)
