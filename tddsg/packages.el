@@ -227,6 +227,7 @@
   (push '("frametitle" . 3) reftex-section-levels)
   (push '("frametitle" 3) TeX-outline-extra)
   (defun latex/font-underline () (interactive) (TeX-font nil ?\C-l))
+  (defun latex/font-pack () (interactive) (TeX-font nil ?\C-p))
   ;; remove the outer environment
   (defun LaTeX-delete-environment ()
     (interactive)
