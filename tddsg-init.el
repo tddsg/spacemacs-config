@@ -1549,7 +1549,7 @@ If OTHER is t then scroll other window."
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
-    (define-key LaTeX-mode-map (kbd "C-c C-S-e") 'LaTeX-delete-environment)
+    (define-key LaTeX-mode-map (kbd "C-c C-M-e") 'LaTeX-delete-environment)
     (define-key LaTeX-mode-map (kbd "C-c C-t") 'TeX-remove-macro)
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
     (define-key LaTeX-mode-map (kbd "C-c b") 'helm-bibtex)
