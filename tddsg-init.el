@@ -723,14 +723,30 @@ after stripping extra whitespace and new lines"
         (recompile)
       (call-interactively 'tddsg/compile))))
 
-(defun tddsg/latex-compile ()
-  "Run LaTex command from TeX Master commands."
+(defun tddsg/latex-compile-project ()
+  "Compile the main file of a LaTeX project."
   (interactive)
+  ;; save files
   (let ((root (projectile-project-root)))
     (save-some-buffers (and root (not compilation-ask-about-save))
                        (lambda ()
                          (projectile-project-buffer-p (current-buffer) root))))
-  (TeX-command "LaTeX" 'TeX-master-file -1))
+  ;; set main
+  (let ((main-tex (concat (projectile-project-root) "main.tex")))
+    (if (and (eq TeX-master t) (file-exists-p main-tex))
+        (progn
+          (setq TeX-master main-tex)
+          (TeX-command "LaTeX" 'TeX-master-file -1))
+      (message "LaTeX compile project: `main.tex' not found"))))
+
+(defun tddsg/latex-compile-current ()
+  "Compile the current LaTeX file."
+  (interactive)
+  (save-buffer)
+  (if (s-suffix? ".tex" (buffer-file-name))
+      (progn (setq TeX-master (buffer-file-name))
+             (TeX-command "LaTeX" 'TeX-master-file -1))
+    (message "LaTeX compile current file: not a `.tex' file")))
 
 (defun tddsg/latex-beamer-compile-frame ()
   "Run pdflatex on current beamer frame."
@@ -747,10 +763,16 @@ after stripping extra whitespace and new lines"
       (letf (( (symbol-function 'TeX-command-query) (lambda (x) "LaTeX")))
         (TeX-command-region)))))
 
-(defun tddsg/latex-compile-sync-forward ()
-  "Compile LaTex and synchronize the output."
+(defun tddsg/latex-compile-sync-project ()
+  "Compile the main file of a LaTeX project and synchronize the output."
   (interactive)
   (call-interactively 'latex/compile-commands-until-done)
+  (call-interactively 'pdf-sync-forward-search))
+
+(defun tddsg/latex-compile-sync-current ()
+  "Compile the current LaTex file and synchronize the output."
+  (interactive)
+  (call-interactively 'tddsg/latex-compile-current)
   (call-interactively 'pdf-sync-forward-search))
 
 (defun tddsg/close-special-windows ()
@@ -1539,8 +1561,10 @@ If OTHER is t then scroll other window."
 
   ;; LaTeX-mode
 
-  (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile)
-  (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-forward)
+  (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
+  (define-key TeX-mode-map (kbd "S-<f5>") 'tddsg/latex-compile-current)
+  (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-project)
+  (define-key TeX-mode-map (kbd "S-<f6>") 'tddsg/latex-compile-sync-current)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
