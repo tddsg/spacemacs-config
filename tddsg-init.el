@@ -733,11 +733,10 @@ after stripping extra whitespace and new lines"
                          (projectile-project-buffer-p (current-buffer) root))))
   ;; set main
   (let ((main-tex (concat (projectile-project-root) "main.tex")))
-    (if (and (eq TeX-master t) (file-exists-p main-tex))
-        (progn
-          (setq TeX-master main-tex)
-          (TeX-command "LaTeX" 'TeX-master-file -1))
-      (message "LaTeX compile project: `main.tex' not found"))))
+    (if (not (file-exists-p main-tex))
+        (message "LaTeX compile project: `main.tex' not found")
+      (setq TeX-master main-tex)
+      (TeX-command "LaTeX" 'TeX-master-file -1))))
 
 (defun tddsg/latex-compile-current ()
   "Compile the current LaTeX file."
