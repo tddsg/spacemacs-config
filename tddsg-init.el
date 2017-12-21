@@ -733,11 +733,11 @@ after stripping extra whitespace and new lines"
                          (projectile-project-buffer-p (current-buffer) root))))
   ;; set main
   (let ((main-tex (concat (projectile-project-root) "main.tex")))
-    (if (and (eq TeX-master t) (file-exists-p main-tex))
+    (if (file-exists-p main-tex)
         (progn
           (setq TeX-master main-tex)
           (TeX-command "LaTeX" 'TeX-master-file -1))
-      (message "LaTeX compile project: `main.tex' not found"))))
+      (message "LaTeX compile project: file '%s' not found" main-tex))))
 
 (defun tddsg/latex-compile-current ()
   "Compile the current LaTeX file."
@@ -762,18 +762,6 @@ after stripping extra whitespace and new lines"
       (TeX-pin-region beg (point))
       (letf (( (symbol-function 'TeX-command-query) (lambda (x) "LaTeX")))
         (TeX-command-region)))))
-
-(defun tddsg/latex-compile-sync-project ()
-  "Compile the main file of a LaTeX project and synchronize the output."
-  (interactive)
-  (call-interactively 'latex/compile-commands-until-done)
-  (call-interactively 'pdf-sync-forward-search))
-
-(defun tddsg/latex-compile-sync-current ()
-  "Compile the current LaTex file and synchronize the output."
-  (interactive)
-  (call-interactively 'tddsg/latex-compile-current)
-  (call-interactively 'pdf-sync-forward-search))
 
 (defun tddsg/close-special-windows ()
   "Close all special windows such as compilation, ..."
@@ -1563,8 +1551,7 @@ If OTHER is t then scroll other window."
 
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
   (define-key TeX-mode-map (kbd "S-<f5>") 'tddsg/latex-compile-current)
-  (define-key TeX-mode-map (kbd "<f6>") 'tddsg/latex-compile-sync-project)
-  (define-key TeX-mode-map (kbd "S-<f6>") 'tddsg/latex-compile-sync-current)
+  (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)

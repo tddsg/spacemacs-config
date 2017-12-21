@@ -262,9 +262,6 @@
       t))
   (defun my-latex-hook ()
     ;; set tex master file
-    (let ((main-tex (concat (projectile-project-root) "main.tex")))
-      (when (and (eq TeX-master t) (file-exists-p main-tex))
-        (setq TeX-master main-tex)))
     (let ((main-bib (concat (projectile-project-root) "main.bib")))
       (when (file-exists-p main-bib)
         (setq bibtex-completion-bibliography (list main-bib))))
