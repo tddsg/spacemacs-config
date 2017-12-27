@@ -308,13 +308,6 @@
                    plain-tex-mode
                    latex-mode
                    LaTeX-mode)
-    ;; (sp-local-pair "{" nil :actions :rem)
-    (sp-local-pair "`" "'"
-                   :actions '(:rem autoskip)
-                   :skip-match 'sp-latex-skip-match-apostrophe
-                   :unless '(sp-latex-point-after-backslash))
-    (sp-local-pair "$" "$")
-    (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
     (sp-local-pair "\\begin{frame}" "\\end{frame}")
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
