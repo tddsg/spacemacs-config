@@ -1105,7 +1105,7 @@ If OTHER is t then scroll other window."
               :around #'advise-helm-split-active-window)
 
   ;; browser
-  (setq browse-url-generic-program "xdg-open"            ;; use default browser
+  (setq browse-url-generic-program "sensible-browser"     ;; use default browser
         browse-url-browser-function 'browse-url-generic
         engine/browser-function 'browse-url-generic)
 
