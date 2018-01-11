@@ -1384,6 +1384,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-B") 'tddsg/previous-upcase)
   (global-set-key (kbd "M-F") 'tddsg/next-upcase)
   (global-set-key (kbd "M-S") 'save-buffer)
+  (global-set-key (kbd "M-s M-s") 'save-buffer)
   (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase)
   (global-set-key (kbd "M-K") 'tddsg/delete-until-previous-upcase)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
@@ -1550,7 +1551,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m b c n") 'buf-clone-down)
 
   ;; LaTeX-mode
-
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
   (define-key TeX-mode-map (kbd "S-<f5>") 'tddsg/latex-compile-current)
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)

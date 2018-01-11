@@ -310,7 +310,9 @@
                    :skip-match 'sp-latex-skip-match-apostrophe
                    :unless '(sp-latex-point-after-backslash))
     (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
+    (sp-local-pair "\\,{" "}\\,")
     (sp-local-pair "\\begin{frame}" "\\end{frame}")
+    (sp-local-pair "\\begingroup" "\\endgroup")
     (sp-local-pair "\\begin" "\\end" :post-handlers
                    '(sp-latex-insert-spaces-inside-pair))
     (sp-local-pair "\\If" "\\EndIf" :post-handlers
