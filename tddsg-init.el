@@ -614,15 +614,31 @@ after stripping extra whitespace and new lines"
           (deactivate-mark))
       (call-interactively 'kill-ring-save))))
 
+;; (defun tddsg/pdf-view-kill-ring-save (arg)
+;;   "Save the current region (or line) to the `kill-ring'
+;; after stripping extra whitespace and new lines"
+;;   (interactive "P")
+;;   (if (null arg)
+;;       (call-interactively 'pdf-view-kill-ring-save)
+;;     (pdf-view-assert-active-region)
+;;     (let* ((text (pdf-view-active-region-text))
+;;            (text (mapconcat 'identity text " "))
+;;            (text (replace-regexp-in-string "\n" " " text))
+;;            (text (replace-regexp-in-string "\\s-+" " " text))
+;;            (text (string-trim text)))
+;;       (pdf-view-deactivate-region)
+;;       (kill-new text))))
+
 (defun tddsg/pdf-view-kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
 after stripping extra whitespace and new lines"
   (interactive "P")
-  (if (null arg)
+  (if (not (null arg))
       (call-interactively 'pdf-view-kill-ring-save)
     (pdf-view-assert-active-region)
     (let* ((text (pdf-view-active-region-text))
-           (text (mapconcat 'identity text " "))
+           (text (mapconcat 'identity text ""))
+           (text (replace-regexp-in-string "-\n" "" text)) ;; "-" at EOL
            (text (replace-regexp-in-string "\n" " " text))
            (text (replace-regexp-in-string "\\s-+" " " text))
            (text (string-trim text)))
