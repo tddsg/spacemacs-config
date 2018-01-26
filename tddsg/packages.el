@@ -305,10 +305,11 @@
                    plain-tex-mode
                    latex-mode
                    LaTeX-mode)
-    (sp-local-pair "`" "'"
-                   :actions '(:rem autoskip)
-                   :skip-match 'sp-latex-skip-match-apostrophe
-                   :unless '(sp-latex-point-after-backslash))
+    ;; (sp-local-pair "`" "'"
+    ;;                :actions '(:rem autoskip)
+    ;;                :skip-match 'sp-latex-skip-match-apostrophe
+    ;;                :unless '(sp-latex-point-after-backslash))
+    (sp-local-pair "`" "'" :actions nil)
     (sp-local-pair "``" "''" :trigger "\"" :actions :rem)
     (sp-local-pair "\\,{" "}\\,")
     (sp-local-pair "\\begin{frame}" "\\end{frame}")
