@@ -232,10 +232,24 @@ If the new path's directories does not exist, create them."
 (defun tddsg/open-with ()
   "Open the underlying file of a buffer in an external program."
   (interactive)
-  (when buffer-file-name
-    (let ((command (dired-guess-shell-command "Open current file with: "
-                          (list buffer-file-name))))
-      (call-process-shell-command (concat command " " buffer-file-name "&")))))
+  (defun ask-command (default)
+    (let* ((prompt (format "Open current file with: [%s]: " default))
+           (command (read-shell-command prompt nil
+                                        'dired-shell-command-history)))
+      (if (equal command "") default command)))
+  (defun get-favourite-command ()
+    (cond ((s-suffix? ".pdf" (buffer-file-name))
+           (if (derived-mode-p 'pdf-view-mode)
+               (ask-command (format "okular -p %d" (pdf-view-current-page)))
+             (ask-command "okular")))
+          (t "")))
+  (let* ((favourite-command (get-favourite-command))
+         (command
+          (if (equal favourite-command "")
+              (dired-guess-shell-command "Open current file with: "
+                                         (list buffer-file-name))
+            favourite-command)))
+    (call-process-shell-command (concat command " " buffer-file-name "&"))))
 
 (defun tddsg/golden-dict ()
   "Lookup in golden dict"
@@ -1091,7 +1105,7 @@ If OTHER is t then scroll other window."
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
   (setq dired-guess-shell-alist-user
         '(("\\.pdf\\'" "okular")
-          ("\\.html\\|\\.xml*" "google-chrome")
+          ("\\.html\\|\\.xml*" "sensible-browser")
           ("\\.txt\\|\\.log" "gedit")
           ("\\.el\\|\\.ml\\|\\.h*\\|\\.c*\\|\\.java" "gedit")
           ("\\.tex\\|\\.bib" "texstudio")
