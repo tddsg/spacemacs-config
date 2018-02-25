@@ -762,21 +762,14 @@ after stripping extra whitespace and new lines"
                        (lambda ()
                          (projectile-project-buffer-p (current-buffer) root))))
   ;; set main
-  (let ((main-tex (concat (projectile-project-root) "main.tex")))
+  (let ((main-tex
+         (if (stringp TeX-master) TeX-master
+           (concat (projectile-project-root) "main.tex"))))
     (if (file-exists-p main-tex)
         (progn
           (setq TeX-master main-tex)
           (TeX-command "LaTeX" 'TeX-master-file -1))
       (message "LaTeX compile project: file '%s' not found" main-tex))))
-
-(defun tddsg/latex-compile-current ()
-  "Compile the current LaTeX file."
-  (interactive)
-  (save-buffer)
-  (if (s-suffix? ".tex" (buffer-file-name))
-      (progn (setq TeX-master (buffer-file-name))
-             (TeX-command "LaTeX" 'TeX-master-file -1))
-    (message "LaTeX compile current file: not a `.tex' file")))
 
 (defun tddsg/latex-beamer-compile-frame ()
   "Run pdflatex on current beamer frame."
@@ -1152,11 +1145,9 @@ If OTHER is t then scroll other window."
   (add-hook 'magit-status-mode-hook 'hook-magit-mode)
 
   ;; monky
-  (require 'window-purpose-x)
-  (purpose-x-magit-single-on)
   (defun hook-monky-mode ()
     (evil-hybrid-state))
-  (add-hook 'monky-mode-hook 'hook-magit-mode)
+  (add-hook 'monky-mode-hook 'hook-monky-mode)
 
   ;; latex
   (with-eval-after-load 'latex-mode
@@ -1591,7 +1582,6 @@ If OTHER is t then scroll other window."
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
-  (define-key TeX-mode-map (kbd "S-<f5>") 'tddsg/latex-compile-current)
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
