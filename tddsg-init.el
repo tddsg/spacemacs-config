@@ -1151,6 +1151,13 @@ If OTHER is t then scroll other window."
   (add-hook 'magit-mode-hook 'hook-magit-mode)
   (add-hook 'magit-status-mode-hook 'hook-magit-mode)
 
+  ;; monky
+  (require 'window-purpose-x)
+  (purpose-x-magit-single-on)
+  (defun hook-monky-mode ()
+    (evil-hybrid-state))
+  (add-hook 'monky-mode-hook 'hook-magit-mode)
+
   ;; latex
   (with-eval-after-load 'latex-mode
     (setq LaTeX-font-list
@@ -1276,7 +1283,9 @@ If OTHER is t then scroll other window."
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
-    (flyspell-mode 1))
+    (rainbow-delimiters-mode-enable)
+    ;; (flyspell-mode 1)
+    )
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
