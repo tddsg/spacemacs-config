@@ -21,6 +21,7 @@
 ;; (require 'rtags)
 (require 'engine-mode)
 (require 'hi-lock)
+(require 'seq)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE VARIABLES
@@ -868,34 +869,17 @@ If OTHER is t then scroll other window."
       (cond ((string= path parent) '(path))
             ((file-directory-p path) (cons path (parent-dirs parent)))
             ((file-exists-p path) (parent-dirs parent)))))
-  (let* ((recentf-dirs (delete-dups
-                        (apply #'append (mapcar 'parent-dirs recentf-list))))
+  (let* ((recent-files (seq-remove (lambda (path)
+                                     (string-match-p (regexp-quote "/.") path))
+                                   recentf-list))
+         (recent-dirs (delete-dups
+                        (apply #'append (mapcar 'parent-dirs recent-files))))
          (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
                              dired-buffers))
-         (all-dirs (delete-dups (append recentf-dirs dired-dirs)))
+         (all-dirs (delete-dups (append recent-dirs dired-dirs)))
          (all-dirs (sort all-dirs 'string<))
          (selected-dir (completing-read "Dired buffer name: " all-dirs)))
-    (message selected-dir)
     (dired selected-dir)))
-
-(defun tddsg/yank-recent-dir-files ()
-  "Yank recent dir and files."
-  (interactive)
-  (defun parent-dirs (path)
-    (let* ((path (directory-file-name path))
-           (parent (directory-file-name (file-name-directory path))))
-      (cond ((string= path parent) '(path))
-            ((file-directory-p path) (cons path (parent-dirs parent)))
-            ((file-exists-p path) (parent-dirs parent)))))
-  (let* ((recent-files recentf-list)
-         (recent-dirs (delete-dups
-                       (apply #'append (mapcar 'parent-dirs recent-files))))
-         (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
-                             dired-buffers))
-         (all-dir-files (delete-dups (append recent-files recent-dirs dired-dirs)))
-         (all-dirs (sort all-dir-files 'string<))
-         (selected-dir-file (completing-read "Yank dir/file:" all-dir-files)))
-    (insert selected-dir-file)))
 
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -1367,7 +1351,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
-  (global-set-key (kbd "C-x C-y") 'tddsg/yank-recent-dir-files)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
@@ -1591,6 +1574,7 @@ If OTHER is t then scroll other window."
     (define-key LaTeX-mode-map (kbd "C-j") nil)
     (define-key LaTeX-mode-map (kbd "\"") nil)
     (define-key LaTeX-mode-map (kbd "C-c C-g") nil)
+    (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)  ;; temporarily bug fix for smartparens with LaTeX
     (define-key LaTeX-mode-map (kbd "C-c C-M-e") 'LaTeX-delete-environment)
     (define-key LaTeX-mode-map (kbd "C-c C-t") 'TeX-remove-macro)
     (define-key LaTeX-mode-map (kbd "C-o") 'helm-imenu)
