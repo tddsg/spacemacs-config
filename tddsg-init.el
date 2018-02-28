@@ -221,7 +221,8 @@ If the new path's directories does not exist, create them."
   (if (region-active-p)
       (let* ((begin (region-beginning))
              (end (region-end))
-             (regexp (concat "\\<" (buffer-substring-no-properties begin end) "\\>"))
+             (regexp (concat "\\<"
+                             (buffer-substring-no-properties begin end) "\\>"))
 	           (hi-lock-auto-select-face t)
 	           (face (hi-lock-read-face-name)))
         (or (facep face) (setq face 'hi-yellow))
@@ -760,17 +761,14 @@ after stripping extra whitespace and new lines"
   ;; save files
   (let ((root (projectile-project-root)))
     (save-some-buffers (and root (not compilation-ask-about-save))
-                       (lambda ()
-                         (projectile-project-buffer-p (current-buffer) root))))
+                       (lambda () (projectile-project-buffer-p (current-buffer)
+                                                               root))))
   ;; set main
-  (let ((main-tex
-         (if (stringp TeX-master) TeX-master
-           (concat (projectile-project-root) "main.tex"))))
-    (if (file-exists-p main-tex)
-        (progn
-          (setq TeX-master main-tex)
-          (TeX-command "LaTeX" 'TeX-master-file -1))
-      (message "LaTeX compile project: file '%s' not found" main-tex))))
+  (let ((main-tex (cond ((stringp TeX-master) TeX-master)
+                        (TeX-master (buffer-file-name))
+                        (t (concat (projectile-project-root) "main.tex")))))
+    (setq TeX-master main-tex)
+    (TeX-command "LaTeX" 'TeX-master-file -1)))
 
 (defun tddsg/latex-beamer-compile-frame ()
   "Run pdflatex on current beamer frame."
