@@ -221,6 +221,7 @@
    '(TeX-source-correlate-mode t)
    '(TeX-source-correlate-start-server t)
    '(LaTeX-command "latex --synctex=1")
+   '(TeX-command-extra-options "-shell-escape")
    '(TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
    '(TeX-view-program-selection '((output-pdf "pdf-tools"))))
   ;; add frametitle into outline of reftex and TeX
