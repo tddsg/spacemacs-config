@@ -1338,6 +1338,9 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
+  (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
+  (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
+
 
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
