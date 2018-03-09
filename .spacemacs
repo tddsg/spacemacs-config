@@ -467,7 +467,12 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-  )
+  (load-file "~/.emacs.d/private/tddsg-init.el")
+  (tddsg/config-packages)
+  (tddsg/config-keys)
+  (tddsg/config-themes)
+  (tddsg/config-spaceline)
+  (tddsg/config-custom-vars))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
