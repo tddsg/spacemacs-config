@@ -907,6 +907,7 @@ If OTHER is t then scroll other window."
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
 
   ;; windows setting
+  (purpose-mode -1)
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
 
