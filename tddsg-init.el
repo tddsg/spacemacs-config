@@ -1244,7 +1244,7 @@ If OTHER is t then scroll other window."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
     (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
     (smartparens-global-mode 1)
-    (column-marker-3 80)
+    ;; (column-marker-3 80)
     (whitespace-mode 1)
     (flyspell-mode -1)
     (linum-mode 1)
