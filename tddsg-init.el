@@ -907,7 +907,7 @@ If OTHER is t then scroll other window."
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
 
   ;; windows setting
-  (purpose-mode -1)
+  ;; (purpose-mode -1)
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
 
@@ -1120,8 +1120,8 @@ If OTHER is t then scroll other window."
   (setq max-mini-window-height 30)
 
   ;; magit
-  (require 'window-purpose-x)
-  (purpose-x-magit-single-on)
+  ;; (require 'window-purpose-x)
+  ;; (purpose-x-magit-single-on)
   (defun hook-magit-mode ()
     (evil-hybrid-state))
   (add-hook 'magit-mode-hook 'hook-magit-mode)
@@ -1187,7 +1187,6 @@ If OTHER is t then scroll other window."
   (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
   (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
   (push "\\*compilation\\*" spacemacs-useful-buffers-regexp)
-  (setq-default dotspacemacs-excluded-packages '(window-purpose))
 
   ;; whichkey
   (which-key-add-key-based-replacements "C-c !" "flycheck")
@@ -1235,7 +1234,7 @@ If OTHER is t then scroll other window."
       (add-to-list 'tddsg--face-change-types face))
     (tddsg--highlight-todos)
     (smartparens-global-mode 1)
-    (column-marker-3 80)
+    ;; (column-marker-3 80)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
     ;; (flyspell-mode 1)

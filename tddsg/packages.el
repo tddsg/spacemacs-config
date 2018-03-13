@@ -18,21 +18,24 @@
     tuareg merlin                                     ;; ocaml
     auctex helm-bibtex latex-extra math-symbol-lists  ;; latex
     company-math
-    cc-mode llvm-mode irony company-irony             ;; c/c++
+    cc-mode irony company-irony                       ;; c/c++
     company-irony-c-headers
     ;; rtags company-rtags helm-rtags
     langtool writegood-mode helm-ispell               ;; spelling
-    buffer-move windmove framemove                    ;; visualizing
+    buffer-move windmove                              ;; visualizing
     transpose-frame ace-popup-menu
     anzu swiper super-save autorevert comment-dwim-2  ;; editing
     smartparens goto-last-change
-    whitespace vline column-marker                    ;; visualization
-    dired+ helm-dired-history                         ;; files
+    whitespace                                        ;; visualization
+    helm-dired-history                                ;; files
     monky sr-speedbar imenu-anywhere                  ;; projects
     zone-sl                                           ;; random
     ;;; local
     (songbird :location local)
-    (buffer-clone :location local))
+    (buffer-clone :location local)
+    ;;; packages which cannot be loaded
+    ;; column-marker dired+ framemove llvm-mode vline
+    )
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
 
@@ -70,17 +73,20 @@
 (defun tddsg/init-writegood-mode ()
   (use-package writegood-mode))
 
-(defun tddsg/init-llvm-mode ()
-  (use-package llvm-mode))
+;; (defun tddsg/init-llvm-mode ()
+;;   (use-package llvm-mode))
 
-(defun tddsg/init-vline ()
-  (use-package vline))
+;; (defun tddsg/init-vline ()
+;;   (use-package vline))
 
-(defun tddsg/init-column-marker ()
-  (use-package column-marker))
+;; (defun tddsg/init-column-marker ()
+;;   (use-package column-marker))
 
-(defun tddsg/init-dired+ ()
-  (use-package dired+))
+;; (defun tddsg/init-dired+ ()
+;;   (use-package dired+))
+
+;; (defun tddsg/init-framemove ()
+;;   (framemove-default-keybindings))
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
@@ -106,11 +112,8 @@
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
 
-(defun tddsg/init-framemove ()
-  (framemove-default-keybindings))
-
 (defun tddsg/init-windmove ()
-  (require 'framemove)
+  ;; (require 'framemove)
   (windmove-default-keybindings)
   (setq framemove-hook-into-windmove t))
 
