@@ -2175,6 +2175,21 @@ Set `spaceline-highlight-face-func' to
     (setq-local helm-ag--search-this-file-p search-this-file-p))
   (setq-local helm-ag--default-directory default-directory))
 
+;;;;; MONKY MODE
+
+;; temporarily fix a bug with push to monky
+(defun monky-push ()
+  "Pushes current branch to the default path."
+  (interactive)
+  (let* ((branch (monky-current-branch))
+         (remote (if current-prefix-arg
+                     (monky-read-remote
+                      (format "Push branch %s to : " branch))
+                   monky-outgoing-repository)))
+    (if (string= "" remote)
+        (monky-run-hg-async "push" "--branch" branch)
+      (monky-run-hg-async "push" "--branch" branch remote))))
+
 ;;;;; PDF-VIEW MODE
 
 (require 'pdf-view)

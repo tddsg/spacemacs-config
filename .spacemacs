@@ -52,7 +52,7 @@ This function should only modify configuration layer settings."
      ocaml
      haskell
      yaml
-     perl5
+     ;; perl5
      csv
      python
      html
@@ -67,7 +67,7 @@ This function should only modify configuration layer settings."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     neotree
+     ;; neotree
      auto-completion
      git
      version-control
