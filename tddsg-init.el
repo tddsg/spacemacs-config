@@ -235,7 +235,7 @@ If the new path's directories does not exist, create them."
   "Open the underlying file of a buffer in an external program."
   (interactive)
   (defun ask-command (default)
-    (let* ((prompt (format "Open current file with: [%s]: " default))
+    (let* ((prompt (format "Open the current file with: [%s]: " default))
            (command (read-shell-command prompt nil
                                         'dired-shell-command-history)))
       (if (equal command "") default command)))
@@ -246,7 +246,8 @@ If the new path's directories does not exist, create them."
                     (if (derived-mode-p 'pdf-view-mode)
                         (format "okular -p %d" (pdf-view-current-page))
                       "okular"))
-                   ((string= extension "txt") "gedit")
+                   ((member extension '("txt" "el" "ml" "c" "cpp" "java"))
+                    "geany")
                    ((eq system-type 'darwin) "open")
                    ((member system-type '(gnu gnu/linux gnu/kfreebsd))
                     "xdg-open")
@@ -1081,15 +1082,6 @@ If OTHER is t then scroll other window."
 
   ;; dired
   (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
-  (setq dired-guess-shell-alist-user
-        '(("\\.pdf\\'" "okular")
-          ("\\.html\\|\\.xml*" "sensible-browser")
-          ("\\.txt\\|\\.log" "gedit")
-          ("\\.el\\|\\.ml\\|\\.h*\\|\\.c*\\|\\.java" "gedit")
-          ("\\.tex\\|\\.bib" "texstudio")
-          ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog")
-          ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice")
-          ("\\.ods*\\|\\.odt*" "libreoffice")))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
