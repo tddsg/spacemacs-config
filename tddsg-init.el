@@ -2250,6 +2250,72 @@ Set `spaceline-highlight-face-func' to
                           t))))))
       count)))
 
+;;;;;;; POPWIN MODE ;;;;;;;;
+
+;;; customize popwin to show it in a split window
+(defun* popwin:popup-buffer (buffer
+                             &key
+                             (width popwin:popup-window-width)
+                             (height popwin:popup-window-height)
+                             (position popwin:popup-window-position)
+                             noselect
+                             dedicated
+                             stick
+                             tail)
+  "Show BUFFER in a popup window and return the popup window. If
+NOSELECT is non-nil, the popup window will not be selected. If
+STICK is non-nil, the popup window will be stuck. If TAIL is
+non-nil, the popup window will show the last contents. Calling
+`popwin:popup-buffer' during `popwin:popup-buffer' is allowed. In
+that case, the buffer of the popup window will be replaced with
+BUFFER."
+  (interactive "BPopup buffer:\n")
+  (setq buffer (get-buffer buffer))
+  (popwin:push-context)
+  (run-hooks 'popwin:before-popup-hook)
+  (multiple-value-bind (context context-stack)
+      (popwin:find-context-for-buffer buffer :valid-only t)
+    (if context
+        (progn
+          (popwin:use-context context)
+          (setq popwin:context-stack context-stack))
+      (let ((win-outline (car (popwin:window-config-tree))))
+        (destructuring-bind (master-win popup-win win-map)
+            (let ((size (if (popwin:position-horizontal-p position) width height))
+                  (adjust popwin:adjust-other-windows))
+              (let* ((new-height (- popwin:popup-window-height))
+                     (orig-window (selected-window))
+                     (new-window (split-window orig-window new-height 'below)))
+                (set-window-buffer new-window buffer)
+                (list orig-window new-window nil)))
+          (setq popwin:popup-window popup-win
+                popwin:master-window master-win
+                popwin:window-outline win-outline
+                popwin:window-map win-map
+                popwin:window-config nil
+                popwin:selected-window (selected-window)))
+        (popwin:update-window-reference 'popwin:context-stack :recursive t)
+        (popwin:start-close-popup-window-timer))
+      (with-selected-window popwin:popup-window
+        (popwin:switch-to-buffer buffer)
+        (when tail
+          (set-window-point popwin:popup-window (point-max))
+          (recenter -2)))
+      (setq popwin:popup-buffer buffer
+            popwin:popup-last-config (list buffer
+                                           :width width :height height
+                                           :position position :noselect noselect
+                                           :dedicated dedicated :stick stick
+                                           :tail tail)
+            popwin:popup-window-dedicated-p dedicated
+            popwin:popup-window-stuck-p stick)))
+  (if noselect
+      (setq popwin:focus-window popwin:selected-window)
+    (setq popwin:focus-window popwin:popup-window)
+    (select-window popwin:popup-window))
+  (run-hooks 'popwin:after-popup-hook)
+  popwin:popup-window)
+
 ;;;;;;; REASON MODE ;;;;;;;;
 
 (defun tddsg/config-reason-mode ()
