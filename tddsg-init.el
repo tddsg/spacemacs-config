@@ -910,7 +910,6 @@ If OTHER is t then scroll other window."
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
 
   ;; windows setting
-  ;; (purpose-mode -1)
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
 
@@ -1058,7 +1057,8 @@ If OTHER is t then scroll other window."
            (evil-hybrid-state))
           ((derived-mode-p 'pdf-view-mode)
            (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
-           (evil-emacs-state))))
+           (evil-emacs-state))
+          (t (evil-hybrid-state))))
   (add-hook 'buffer-list-update-hook 'update-evil-state)
   (add-hook 'spacemacs-post-theme-change-hook 'update-evil-state)
 
