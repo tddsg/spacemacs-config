@@ -239,18 +239,20 @@ If the new path's directories does not exist, create them."
            (command (read-shell-command prompt nil
                                         'dired-shell-command-history)))
       (if (equal command "") default command)))
-  (defun get-favourite-command ()
-    (cond ((s-suffix? ".pdf" (buffer-file-name))
-           (if (derived-mode-p 'pdf-view-mode)
-               (ask-command (format "okular -p %d" (pdf-view-current-page)))
-             (ask-command "okular")))
-          (t "")))
-  (let* ((favourite-command (get-favourite-command))
-         (command
-          (if (equal favourite-command "")
-              (dired-guess-shell-command "Open current file with: "
-                                         (list buffer-file-name))
-            favourite-command)))
+  (defun get-shell-command ()
+    (let* ((extension (file-name-extension (buffer-file-name)))
+           (default-command
+             (cond ((string= extension "pdf")
+                    (if (derived-mode-p 'pdf-view-mode)
+                        (format "okular -p %d" (pdf-view-current-page))
+                      "okular"))
+                   ((string= extension "txt") "gedit")
+                   ((eq system-type 'darwin) "open")
+                   ((member system-type '(gnu gnu/linux gnu/kfreebsd))
+                    "xdg-open")
+                   (t ""))))
+      (ask-command default-command)))
+  (let* ((command (get-shell-command)))
     (call-process-shell-command (concat command " " buffer-file-name "&"))))
 
 (defun tddsg/golden-dict ()
