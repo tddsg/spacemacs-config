@@ -31,10 +31,13 @@
     monky sr-speedbar imenu-anywhere                  ;; projects
     zone-sl                                           ;; random
     ;;; local
+    (dired+ :location local)
+    (column-marker :location local)
+    (framemove :location local)
     (songbird :location local)
     (buffer-clone :location local)
     ;;; packages which cannot be loaded
-    ;; column-marker dired+ framemove llvm-mode vline
+    ;; llvm-mode vline
     )
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
@@ -67,9 +70,6 @@
 (defun tddsg/init-buffer-move ()
   (use-package buffer-move))
 
-(defun tddsg/init-buffer-clone ()
-  (use-package buffer-clone))
-
 (defun tddsg/init-writegood-mode ()
   (use-package writegood-mode))
 
@@ -78,15 +78,6 @@
 
 ;; (defun tddsg/init-vline ()
 ;;   (use-package vline))
-
-;; (defun tddsg/init-column-marker ()
-;;   (use-package column-marker))
-
-;; (defun tddsg/init-dired+ ()
-;;   (use-package dired+))
-
-;; (defun tddsg/init-framemove ()
-;;   (framemove-default-keybindings))
 
 (defun tddsg/init-helm-dired-history ()
   (use-package helm-dired-history))
@@ -113,7 +104,7 @@
   (global-auto-revert-mode t))
 
 (defun tddsg/init-windmove ()
-  ;; (require 'framemove)
+  (require 'framemove)
   (windmove-default-keybindings)
   (setq framemove-hook-into-windmove t))
 
@@ -412,5 +403,18 @@
     (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
       (modify-syntax-entry symbol "_" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
+
+(defun tddsg/init-dired+ ()
+  (use-package dired+))
+
+(defun tddsg/init-buffer-clone ()
+  (use-package buffer-clone))
+
+(defun tddsg/init-column-marker ()
+  (use-package column-marker))
+
+(defun tddsg/init-framemove ()
+  (use-package framemove)
+  (framemove-default-keybindings))
 
 ;;; packages.el ends here
