@@ -1052,12 +1052,17 @@ If OTHER is t then scroll other window."
   (setq-default evil-cross-lines t)
   (setq-default evil-default-state 'hybrid)
   (defun update-evil-state ()
-    (setq evil-hybrid-state-cursor '("Orange" (bar . 2)))
+    ;; cursor color
+    (cond ((eq spacemacs--cur-theme 'leuven)
+           (setq evil-hybrid-state-cursor '("DarkCyan" (bar . 2))))
+          (t (setq evil-hybrid-state-cursor '("Orange" (bar . 2)))))
+    ;; specific major mode
     (cond ((derived-mode-p 'magit-mode)
            (evil-hybrid-state))
           ((derived-mode-p 'pdf-view-mode)
            (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
            (evil-emacs-state))))
+  (add-hook 'buffer-list-update-hook 'update-evil-state)
   (add-hook 'spacemacs-post-theme-change-hook 'update-evil-state)
 
   ;; engine
@@ -1110,19 +1115,6 @@ If OTHER is t then scroll other window."
   ;; minibuffer
   (setq resize-mini-windows t)
   (setq max-mini-window-height 30)
-
-  ;; magit
-  ;; (require 'window-purpose-x)
-  ;; (purpose-x-magit-single-on)
-  (defun hook-magit-mode ()
-    (evil-hybrid-state))
-  (add-hook 'magit-mode-hook 'hook-magit-mode)
-  (add-hook 'magit-status-mode-hook 'hook-magit-mode)
-
-  ;; monky
-  (defun hook-monky-mode ()
-    (evil-hybrid-state))
-  (add-hook 'monky-mode-hook 'hook-monky-mode)
 
   ;; latex
   (with-eval-after-load 'latex-mode
