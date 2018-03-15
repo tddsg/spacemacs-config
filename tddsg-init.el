@@ -1051,19 +1051,20 @@ If OTHER is t then scroll other window."
   ;; evil mode
   (setq-default evil-cross-lines t)
   (setq-default evil-default-state 'hybrid)
-  (defun update-evil-state ()
+  (defun update-evil-hybrid-state ()
     ;; cursor color
     (cond ((eq spacemacs--cur-theme 'leuven)
            (setq evil-hybrid-state-cursor '("DarkCyan" (bar . 2))))
           (t (setq evil-hybrid-state-cursor '("Orange" (bar . 2)))))
-    ;; specific major mode
-    (cond ((derived-mode-p 'magit-mode)
+    ;; selectively force hybrid mode in some major mode
+    (cond ((derived-mode-p 'magit-mode 'monky-mode)
            (evil-hybrid-state))
           ((derived-mode-p 'pdf-view-mode)
-           (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
-           (evil-emacs-state))))
-  (add-hook 'buffer-list-update-hook 'update-evil-state)
-  (add-hook 'spacemacs-post-theme-change-hook 'update-evil-state)
+           ;; avoid blinking cursor in pdf-view-mode
+           (set (make-local-variable 'evil-hybrid-state-cursor) (list nil))
+           (evil-hybrid-state))))
+  (add-hook 'buffer-list-update-hook 'update-evil-hybrid-state)
+  (add-hook 'spacemacs-post-theme-change-hook 'update-evil-hybrid-state)
 
   ;; engine
   (defengine thefreedictionary
