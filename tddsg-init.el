@@ -1084,9 +1084,6 @@ If OTHER is t then scroll other window."
           try-complete-lisp-symbol-partially
           try-complete-lisp-symbol))
 
-  ;; dired
-  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
-
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
         helm-split-window-inside-p t
@@ -1136,10 +1133,23 @@ If OTHER is t then scroll other window."
             (?\C-d "" "" t)))))
 
   ;; dired-mode
+  (add-to-list 'savehist-additional-variables 'helm-dired-history-variable)
+  (setq dired-guess-shell-alist-user
+        '(("\\.pdf\\'" "okular")
+          ("\\.html\\|\\.xml*" "sensible-browser")
+          ("\\.txt\\|\\.log" "gedit")
+          ("\\.el\\|\\.ml\\|\\.h*\\|\\.c*\\|\\.java" "gedit")
+          ("\\.tex\\|\\.bib" "texstudio")
+          ("\\.jpg*\\|\\.png*\\|\\.gif*\\|\\.svg*" "eog")
+          ("\\.doc*\\|\\.xls*\\|\\.ppt*" "libreoffice")
+          ("\\.ods*\\|\\.odt*" "libreoffice")
+          ("\\..*" "xdg-open")))
   (defun hook-dired-mode ()
     (toggle-truncate-lines 1))
   (add-hook 'dired-mode-hook 'hook-dired-mode)
   (add-hook 'dired-after-readin-hook 'hook-dired-mode)
+
+
 
   ;; web-mode
   (with-eval-after-load 'web-mode
