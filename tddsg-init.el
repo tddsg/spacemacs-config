@@ -1286,7 +1286,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
-  (global-set-key (kbd "C-z") nil)
+  (global-set-key (kbd "C-z") 'evil-hybrid-state)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
   (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
