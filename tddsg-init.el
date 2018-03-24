@@ -985,6 +985,7 @@ If OTHER is t then scroll other window."
   ;; some Emacs threshold
   (setq max-lisp-eval-depth 50000)
   (setq max-specpdl-size 50000)
+  (setq dotspacemacs-large-file-size 10)   ;; large file of spacemacs is 10MB
 
   ;; mode-line setting
   (setq powerline-default-separator 'bar)
