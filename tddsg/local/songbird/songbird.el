@@ -95,33 +95,32 @@
   "Major mode for editing Songbird/Hip/Sleek files"
   :syntax-table songbird-syntax-table
 
+  ;; function to defined keywords in songbird-mode
+  (defun songbird-keywords (params)
+    (font-lock-add-keywords 'songbird params t))
+
   ;; code for syntax highlighting
   (setq font-lock-defaults '((songbird-font-lock-keywords)))
 
   ;; highlight syntax function and predicate
-  (font-lock-add-keywords 'songbird
-                          '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
-                             (1 font-lock-function-name-face))) t)
-  (font-lock-add-keywords 'songbird
-                          '(("::\\([a-zA-Z0-9_']+\\)\\s-*<"
-                             (1 font-lock-function-name-face))) t)
-  (font-lock-add-keywords 'songbird
-                          '(("pred\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
-                             (1 font-lock-function-name-face))) t)
-  (font-lock-add-keywords 'songbird
-                          '(("pred_prim\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
-                             (1 font-lock-function-name-face))) t)
+  (songbird-keywords '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
+                        (1 font-lock-function-name-face))))
+  (songbird-keywords '(("::\\([a-zA-Z0-9_']+\\)\\s-*<"
+                        (1 font-lock-function-name-face))))
+  (songbird-keywords '(("pred\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
+                        (1 font-lock-function-name-face))))
+  (songbird-keywords '(("pred_prim\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
+                        (1 font-lock-function-name-face))))
   ;; higlight syntax for data structure
-  (font-lock-add-keywords 'songbird
-                          '(("data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{"
-                             (1 font-lock-type-face))) t)
-  (font-lock-add-keywords 'songbird
-                          '(("\\([a-zA-Z0-9_']+\\)\\s-*\\([a-zA-Z0-9_']+\\);"
-                             (1 font-lock-type-face))) t)
+  (songbird-keywords '(("data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{"
+                        (1 font-lock-type-face))))
+  (songbird-keywords '(("\\([a-zA-Z0-9_']+\\)\\s-*\\([a-zA-Z0-9_']+\\);"
+                        (1 font-lock-type-face))))
+  (songbird-keywords '(("\\([a-zA-Z0-9_']+\\)\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\}"
+                        (1 font-lock-type-face))))
   ;; higlight syntax for data structure formula
-  (font-lock-add-keywords 'songbird
-                          '(("->\\([a-zA-Z0-9_']+\\)\\s-*{"
-                             (1 font-lock-type-face))) t)
+  (songbird-keywords '(("->\\([a-zA-Z0-9_']+\\)\\s-*{"
+                        (1 font-lock-type-face))))
 
   ;; indentation
   ;; indentation
