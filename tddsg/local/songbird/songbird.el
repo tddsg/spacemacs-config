@@ -26,9 +26,9 @@
 (setq songbird-keywords
       '("if" "else" "while" "return" "break" "catch" "try" "with" "static"
         "global" "or" "and" "exists" "forall" "ref" "class" "extends"
-        "this" "throws" "raise"
+        "this" "throws" "raise" "print" "residue"
         "data" "axiom" "relation" "expect" "simplify"
-        "pred" "pred_prim" "pred_prop" "inv"
+        "pred" "pred_prim" "pred_prop" "inv" "inv_exact" "inv_sat"
         "lemma" "lemma_prop" "lemma_split" "lemma_test" "lemma_unsafe"
         "lemma_infer" "lemma_safe"
         "checkentail" "checkentail_exact" "checkentail_inexact"
@@ -39,7 +39,7 @@
       '("float" "int" "bool" "void" "string"))
 
 (setq songbird-constants
-      '("null" "nil" "true" "false" "unknown"))
+      '("null" "nil" "true" "false" "unknown" "Valid" "Fail"))
 
 (setq songbird-predicates
       '("emp"))
@@ -101,6 +101,15 @@
   ;; highlight syntax function and predicate
   (font-lock-add-keywords 'songbird
                           '(("\\([a-zA-Z0-9_']+\\)\\s-*\("
+                             (1 font-lock-function-name-face))) t)
+  (font-lock-add-keywords 'songbird
+                          '(("::\\([a-zA-Z0-9_']+\\)\\s-*<"
+                             (1 font-lock-function-name-face))) t)
+  (font-lock-add-keywords 'songbird
+                          '(("pred\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
+                             (1 font-lock-function-name-face))) t)
+  (font-lock-add-keywords 'songbird
+                          '(("pred_prim\\s-*\\([a-zA-Z0-9_']+\\)\\s-*<"
                              (1 font-lock-function-name-face))) t)
   ;; higlight syntax for data structure
   (font-lock-add-keywords 'songbird
