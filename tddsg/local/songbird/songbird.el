@@ -81,9 +81,27 @@
 ;;; generic imenu for viewing outline
 
 (setq songbird-imenu-generic-expression
-      '(("Entailment"  "^\\s-*checkentail\\s-*\\([a-zA-Z0-9_']+\\)\\s-*;" 1)
-        ("Predicate"  "^\\s-*pred\\s-*\\(\.+\\)\\s-*:" 1)
-        ("Data"  "^\\s-*data\\s-*\\([a-zA-Z0-9_']+\\)\\s-*\{" 1)))
+      '(("Entailment"
+         "^\\s-*checkentail\\s-+\\([a-zA-Z0-9_']+\\)\\s-*;"
+         1)
+        ("Entailment (exact)"
+         "^\\s-*checkentail_exact\\s-+\\(.+\\)\\s-*\."
+         1)
+        ("Entailment"
+         "^\\s-*checkentail\\s-+\\(.+\\)\\s-*\."
+         1)
+        ("Predicate"
+         "^\\s-*pred\\s-+\\([a-zA-Z0-9_']+\\)\\s-*:"
+         1)
+        ("Predicate"
+         "^\\s-*pred\\s-+\\([a-zA-Z0-9_']+\\)\\s-*<"
+         1)
+        ("Predicate (primitive)"
+         "^\\s-*pred_prim\\s-+\\([a-zA-Z0-9_']+\\)\\s-*<"
+         1)
+        ("Data"
+         "^\\s-*data\\s-+\\([a-zA-Z0-9_']+\\)\\s-*\{"
+         1)))
 
 (defun songbird-imenu-create-index ()
   (save-excursion
@@ -135,7 +153,7 @@
   (set (make-local-variable 'comment-use-syntax) t)
 
   ;; imenu
-  (setq-local imenu-create-index-function 'proddag-imenu-create-index)
+  (setq-local imenu-create-index-function 'songbird-imenu-create-index)
 
   (run-hooks 'songbird-hook))
 
