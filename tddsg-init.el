@@ -248,9 +248,10 @@ If the new path's directories does not exist, create them."
                       "okular"))
                    ((member extension '("txt" "el" "ml" "c" "cpp" "java"))
                     "geany")
+                   ((member extension '("html" "htm" "xml" "md"))
+                    "google-chrome")
                    ((eq system-type 'darwin) "open")
-                   ((member system-type '(gnu gnu/linux gnu/kfreebsd))
-                    "xdg-open")
+                   ((member system-type '(gnu gnu/linux)) "xdg-open")
                    (t ""))))
       (ask-command default-command)))
   (let* ((command (get-shell-command)))
@@ -1055,7 +1056,7 @@ If OTHER is t then scroll other window."
   (defun update-evil-hybrid-state ()
     ;; cursor color
     (cond ((eq spacemacs--cur-theme 'leuven)
-           (setq evil-hybrid-state-cursor '("DarkCyan" (bar . 2))))
+           (setq evil-hybrid-state-cursor '("Orange" (bar . 2))))
           (t (setq evil-hybrid-state-cursor '("Orange" (bar . 2)))))
     ;; selectively force hybrid mode in some major mode
     (cond ((derived-mode-p 'magit-mode 'monky-mode)
