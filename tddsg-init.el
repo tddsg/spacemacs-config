@@ -1633,6 +1633,8 @@ If OTHER is t then scroll other window."
   (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward)
   (define-key evil-motion-state-map (kbd "C-^") nil)
   (define-key evil-motion-state-map (kbd "C-_") nil)
+  (define-key evil-emacs-state-map (kbd "C-z") nil)
+
 
   ;; ggtags
   (with-eval-after-load 'ggtags

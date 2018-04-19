@@ -162,7 +162,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'vim)
    ;; dotspacemacs-editing-style 'hybrid
    dotspacemacs-editing-style '(hybrid :variables
-                                       hybrid-mode-enable-evilified-state t
+                                       hybrid-mode-enable-evilified-state nil
                                        hybrid-mode-enable-hjkl-bindings nil
                                        hybrid-mode-use-evil-search-module nil
                                        hybrid-mode-default-state 'hybrid)
