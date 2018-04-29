@@ -881,7 +881,7 @@ If OTHER is t then scroll other window."
 (defun tddsg/update-cursor-color ()
   ;; cursor color
   (cond ((eq spacemacs--cur-theme 'leuven)
-         (set-cursor-color "ForestGreen"))
+         (set-cursor-color "Orange"))
         (t (set-cursor-color "Orange")))
   ;; avoid blinking cursor in pdf-view-mode
   (when (derived-mode-p 'pdf-view-mode)
