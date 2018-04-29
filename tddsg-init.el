@@ -634,21 +634,6 @@ after stripping extra whitespace and new lines"
           (deactivate-mark))
       (call-interactively 'kill-ring-save))))
 
-;; (defun tddsg/pdf-view-kill-ring-save (arg)
-;;   "Save the current region (or line) to the `kill-ring'
-;; after stripping extra whitespace and new lines"
-;;   (interactive "P")
-;;   (if (null arg)
-;;       (call-interactively 'pdf-view-kill-ring-save)
-;;     (pdf-view-assert-active-region)
-;;     (let* ((text (pdf-view-active-region-text))
-;;            (text (mapconcat 'identity text " "))
-;;            (text (replace-regexp-in-string "\n" " " text))
-;;            (text (replace-regexp-in-string "\\s-+" " " text))
-;;            (text (string-trim text)))
-;;       (pdf-view-deactivate-region)
-;;       (kill-new text))))
-
 (defun tddsg/pdf-view-kill-ring-save (arg)
   "Save the current region (or line) to the `kill-ring'
 after stripping extra whitespace and new lines"
@@ -893,6 +878,13 @@ If OTHER is t then scroll other window."
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
+(defun tddsg/update-cursor-color ()
+  ;; cursor color
+  (cond ((eq spacemacs--cur-theme 'leuven)
+         (set-cursor-color "ForestGreen"))
+        (t (set-cursor-color "Orange"))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
@@ -901,6 +893,7 @@ If OTHER is t then scroll other window."
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 1)             ;; turn off blinking
+  (tddsg/update-cursor-color)
   (setq blink-cursor-blinks 0)     ;; blink 15 times
   (setq fill-column 75)             ;; max size of a line for fill-or-unfill
   (setq fast-but-imprecise-scrolling nil)
@@ -1051,12 +1044,8 @@ If OTHER is t then scroll other window."
         make-backup-file-name-function 'tddsg--create-backup-file-name)
 
   ;; cursor color
-  (defun update-cursor-color ()
-    ;; cursor color
-    (cond ((eq spacemacs--cur-theme 'leuven)
-           (set-cursor-color "ForestGreen"))
-          (t (set-cursor-color "Orange"))))
-  (add-hook 'spacemacs-post-theme-change-hook 'update-cursor-color)
+  (add-hook 'spacemacs-post-theme-change-hook 'tddsg/update-cursor-color)
+  (add-hook 'buffer-list-update-hook 'tddsg/update-cursor-color)
 
   ;; evil mode
   ;; (setq-default evil-cross-lines t)

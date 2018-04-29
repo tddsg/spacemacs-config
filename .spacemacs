@@ -161,11 +161,12 @@ It should only modify the values of Spacemacs settings."
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
    ;; dotspacemacs-editing-style 'hybrid
-   dotspacemacs-editing-style '(hybrid :variables
-                                       hybrid-mode-enable-evilified-state nil
-                                       hybrid-mode-enable-hjkl-bindings nil
-                                       hybrid-mode-use-evil-search-module nil
-                                       hybrid-mode-default-state 'hybrid)
+   dotspacemacs-editing-style 'emacs
+   ;; dotspacemacs-editing-style '(hybrid :variables
+   ;;                                     hybrid-mode-enable-evilified-state nil
+   ;;                                     hybrid-mode-enable-hjkl-bindings nil
+   ;;                                     hybrid-mode-use-evil-search-module nil
+   ;;                                     hybrid-mode-default-state 'hybrid)
    ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
 
@@ -202,7 +203,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-themes '(spacemacs-dark leuven)
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
-   dotspacemacs-colorize-cursor-according-to-state t
+   ;; dotspacemacs-colorize-cursor-according-to-state t
+   dotspacemacs-colorize-cursor-according-to-state nil
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
