@@ -882,7 +882,10 @@ If OTHER is t then scroll other window."
   ;; cursor color
   (cond ((eq spacemacs--cur-theme 'leuven)
          (set-cursor-color "ForestGreen"))
-        (t (set-cursor-color "Orange"))))
+        (t (set-cursor-color "Orange")))
+  ;; avoid blinking cursor in pdf-view-mode
+  (when (derived-mode-p 'pdf-view-mode)
+    (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
