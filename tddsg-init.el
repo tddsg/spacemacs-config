@@ -774,6 +774,18 @@ after stripping extra whitespace and new lines"
       (letf (( (symbol-function 'TeX-command-query) (lambda (x) "LaTeX")))
         (TeX-command-region)))))
 
+(defun tddsg/latex-beamer-view-frame ()
+  "View PDF of the frame."
+  (interactive)
+  (let* ((file-path (if buffer-file-name
+                        (abbreviate-file-name buffer-file-name)
+                      (buffer-name)))
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (frame-beamer (concat dir-name "./frame_beamer.pdf")))
+    (other-window 1)
+    (find-file frame-beamer)))
+
 (defun tddsg/close-special-windows ()
   "Close all special windows such as compilation, ..."
   (interactive)
@@ -1545,6 +1557,7 @@ If OTHER is t then scroll other window."
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
+  (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-view-frame)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
