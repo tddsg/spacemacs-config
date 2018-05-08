@@ -548,6 +548,19 @@ or in a custom directory when prefix-argument is given <C-u>."
         (helm-do-ag (expand-file-name default-directory) text))
     (call-interactively 'helm-do-ag)))
 
+(defun tddsg/helm-do-replace (arg)
+  "Search by Helm-Ag in the current directory, \
+or in a custom directory when prefix-argument is given <C-u>."
+  (interactive "P")
+  (if (null arg)
+      (let* ((text (if (region-active-p)
+                       (buffer-substring (region-beginning) (region-end))
+                     (thing-at-point 'word)))
+             (text (if (null text) "" text))
+             (text (replace-regexp-in-string " " "\\\\ " (string-trim text))))
+        (helm-do-ag (expand-file-name default-directory) text))
+    (call-interactively 'helm-do-ag)))
+
 (defun tddsg/join-with-beneath-line ()
   "Join the current line to the line beneath it."
   (interactive)
@@ -777,12 +790,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg/latex-beamer-view-frame ()
   "View PDF of the frame."
   (interactive)
-  (let* ((file-path (if buffer-file-name
-                        (abbreviate-file-name buffer-file-name)
-                      (buffer-name)))
-         (dir-name  (if buffer-file-name
-                        (file-name-directory file-path) ""))
-         (frame-beamer (concat dir-name "./frame_beamer.pdf")))
+  (let* ((frame-beamer (concat default-directory "./frame_beamer.pdf")))
     (other-window 1)
     (find-file frame-beamer)))
 
@@ -1300,7 +1308,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-o") 'helm-semantic-or-imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
-  (global-set-key (kbd "C-z") 'evil-hybrid-state)
   (global-set-key (kbd "C-q") 'goto-last-change)
   (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
   (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
