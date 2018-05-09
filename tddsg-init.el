@@ -790,9 +790,15 @@ after stripping extra whitespace and new lines"
 (defun tddsg/latex-beamer-view-frame ()
   "View PDF of the frame."
   (interactive)
-  (let* ((frame-beamer (concat default-directory "./frame_beamer.pdf")))
-    (other-window 1)
-    (find-file frame-beamer)))
+  (let* ((frame-name "frame_beamer.pdf")
+         (frame-path (concat default-directory frame-name))
+         (frame-window (get-window-with-predicate
+                        (lambda (window)
+                          (let ((buff-name (buffer-name (window-buffer window))))
+                            (string-match-p frame-name buff-name))))))
+    (if frame-window (select-window frame-window)
+      (progn (other-window 1) (find-file frame-path)))
+    (pdf-view-first-page)))
 
 (defun tddsg/close-special-windows ()
   "Close all special windows such as compilation, ..."
@@ -1266,9 +1272,17 @@ If OTHER is t then scroll other window."
     (flyspell-mode -1)
     (linum-mode 1)
     (flycheck-mode 1))
-  (add-hook 'LaTeX-mode-hook 'hook-prog-mode)
-  (add-hook 'TeX-mode-hook 'hook-prog-mode)
-  (add-hook 'tex-mode-hook 'hook-prog-mode)
+  (defun hook-latex-mode ()
+    "Hook to run in 'latex-mode'."
+    (setq tddsg--face-change-types tddsg--face-change-types-default)
+    (smartparens-global-mode 1)
+    (column-marker-3 80)
+    (whitespace-mode 1)
+    (flyspell-mode 1)
+    (linum-mode 1))
+  (add-hook 'LaTeX-mode-hook 'hook-latex-mode)
+  (add-hook 'TeX-mode-hook 'hook-latex-mode)
+  (add-hook 'tex-mode-hook 'hook-latex-mode)
   (add-hook 'prog-mode-hook 'hook-prog-mode)
   (add-hook 'text-mode-hook 'hook-text-mode)
 
