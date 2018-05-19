@@ -1066,6 +1066,7 @@ If OTHER is t then scroll other window."
   (smartparens-global-mode)
 
   ;; auto-revert
+  (global-auto-revert-mode t)
   (setq auto-revert-check-vc-info nil)
 
   ;; backup
@@ -1132,6 +1133,9 @@ If OTHER is t then scroll other window."
   (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
   (advice-add 'flyspell-correct-previous-word-generic
               :around #'advise-helm-split-active-window)
+
+  ;; ag-search
+  (setq helm-ag-use-agignore t)
 
   ;; browser
   (setq browse-url-generic-program "sensible-browser"     ;; use default browser
