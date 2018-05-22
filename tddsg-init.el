@@ -215,6 +215,16 @@ If the new path's directories does not exist, create them."
   (interactive)
   (tddsg/traverse-upcase 'backward t))
 
+(defun tddsg/previous-line-fast ()
+  "Go to previous line fast."
+  (interactive)
+  (previous-line 8))
+
+(defun tddsg/next-line-fast ()
+  "Go to next line fast."
+  (interactive)
+  (next-line 8))
+
 (defun tddsg/highlight-symbol-at-point-or-region ()
   "Highligh thing at point or region"
   (interactive)
@@ -1338,6 +1348,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-S-p") 'tddsg/previous-line-fast)
+  (global-set-key (kbd "C-S-n") 'tddsg/next-line-fast)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
