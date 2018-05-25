@@ -2000,7 +2000,8 @@ in pdf-view mode (enabled by the `pdf-tools' package)."
       ;;  ;; (buffer-encoding-abbrev
       ;;  ;;  :when (and active (not (derived-mode-p 'pdf-view-mode))))
       ;;  (buffer-position :when active))
-      tddsg/current-time))
+      ;; tddsg/current-time ;; temporarily hide time
+      ))
   (if (null mode-line-format)
       (setq mode-line-format '("%e" (:eval (spaceline-ml-tddsg))))
     (setq-default mode-line-format '("%e" (:eval (spaceline-ml-tddsg))))))
