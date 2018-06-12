@@ -309,32 +309,33 @@ If the new path's directories does not exist, create them."
       (select-frame-set-input-focus (window-frame shellwin))
       (select-window shellwin))))
 
-';; swith between shell buffer
-(defun tddsg/switch-shell-buffer (direction)
-  "Jump to the next or previous shell buffer, DIRECTION is 'next or 'previous."
-  (defun next-shell-buffer (org-buff cur-buff)
+;; swith between shell buffer
+(defun tddsg/switch-buffer-of-mode (direction mode)
+  "Jump to the next or previous buffer of the same mode,
+DIRECTION is 'next or 'previous."
+  (defun change-buffer (org-buff cur-buff)
     (let ((new-buff (cond ((eq direction 'next) (next-buffer))
                           ((eq direction 'prev) (previous-buffer))
                           (t nil))))
       (if (equal new-buff org-buff) nil
         (with-current-buffer new-buff
-          (if (derived-mode-p 'shell-mode) new-buff
-            (next-shell-buffer org-buff new-buff))))))
+          (if (equal mode major-mode) new-buff
+            (change-buffer org-buff new-buff))))))
   (let* ((cur-buff (current-buffer))
-         (shellbuff (next-shell-buffer cur-buff cur-buff)))
-    (if (not shellbuff)
-        (message "Next shell buffer not found!")
-      (set-buffer shellbuff))))
+         (new-buff (change-buffer cur-buff cur-buff)))
+    (if (not new-buff)
+        (message "New buffer of mode '%s' not found!" mode)
+      (set-buffer new-buff))))
 
-(defun tddsg/next-shell-buffer ()
-  "Jump to the next shell buffer."
+(defun tddsg/next-buffer-same-mode ()
+  "Jump to the next buffer of the same mode."
   (interactive)
-  (tddsg/switch-shell-buffer 'next))
+  (tddsg/switch-buffer-of-mode 'next major-mode))
 
-(defun tddsg/previous-shell-buffer ()
-  "Jump to the previous shell buffer."
+(defun tddsg/previous-buffer-same-mode ()
+  "Jump to the previous buffer of the same mode."
   (interactive)
-  (tddsg/switch-shell-buffer 'prev))
+  (tddsg/switch-buffer-of-mode 'prev major-mode))
 
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
@@ -1307,6 +1308,7 @@ If OTHER is t then scroll other window."
     (keyboard-translate ?\C-m ?\H-m)
     (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
     (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
+    (define-key input-decode-map (kbd "C-M-s-[") (kbd "H-M-s-["))
     (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
     (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
     (if (tddsg--projectile-p)
@@ -1451,6 +1453,8 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "H-M-[") 'previous-buffer)
   (global-set-key (kbd "C-M-]") 'next-buffer)
+  (global-set-key (kbd "H-M-s-[") 'tddsg/previous-buffer-same-mode)
+  (global-set-key (kbd "C-M-s-]") 'tddsg/next-buffer-same-mode)
   (global-set-key (kbd "C-M-{") 'winner-undo)
   (global-set-key (kbd "C-M-}") 'winner-redo)
 
@@ -1527,8 +1531,6 @@ If OTHER is t then scroll other window."
 
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-  (define-key shell-mode-map (kbd "C-M-;") 'tddsg/previous-shell-buffer)
-  (define-key shell-mode-map (kbd "C-M-'") 'tddsg/next-shell-buffer)
   (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
   (define-key shell-mode-map (kbd "C-c C-s")
     'tddsg/toggle-shell-scroll-to-bottomon-on-output)
