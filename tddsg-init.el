@@ -1308,7 +1308,7 @@ If OTHER is t then scroll other window."
     (keyboard-translate ?\C-m ?\H-m)
     (define-key input-decode-map (kbd "C-M-m") (kbd "H-M-m"))
     (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
-    (define-key input-decode-map (kbd "C-M-s-[") (kbd "H-M-s-["))
+    (define-key input-decode-map (kbd "C-s-[") (kbd "H-s-["))
     (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
     (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
     (if (tddsg--projectile-p)
@@ -1453,8 +1453,8 @@ If OTHER is t then scroll other window."
 
   (global-set-key (kbd "H-M-[") 'previous-buffer)
   (global-set-key (kbd "C-M-]") 'next-buffer)
-  (global-set-key (kbd "H-M-s-[") 'tddsg/previous-buffer-same-mode)
-  (global-set-key (kbd "C-M-s-]") 'tddsg/next-buffer-same-mode)
+  (global-set-key (kbd "H-s-[") 'tddsg/previous-buffer-same-mode)
+  (global-set-key (kbd "C-s-]") 'tddsg/next-buffer-same-mode)
   (global-set-key (kbd "C-M-{") 'winner-undo)
   (global-set-key (kbd "C-M-}") 'winner-redo)
 
