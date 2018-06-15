@@ -1463,6 +1463,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
   (global-set-key (kbd "M-s h .") 'tddsg/highlight-symbol-at-point-or-region)
   (global-set-key (kbd "M-s g") 'engine/search-google)
+  (global-set-key (kbd "M-s G") 'browse-url)
   (global-set-key (kbd "M-s t") 'google-translate-at-point)
   (global-set-key (kbd "M-s T") 'google-translate-query-translate)
   (global-set-key (kbd "M-s k") 'evil-search-highlight-persist-remove-all)
