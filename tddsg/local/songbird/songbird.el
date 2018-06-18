@@ -39,7 +39,7 @@
       '("float" "int" "bool" "void" "string"))
 
 (setq songbird-constants
-      '("null" "nil" "true" "false" "unknown" "Valid" "Fail"))
+      '("null" "nil" "true" "false" "unknown" "valid" "invalid" "sat" "unsat"))
 
 (setq songbird-predicates
       '("emp"))

@@ -1259,8 +1259,7 @@ If OTHER is t then scroll other window."
     (column-marker-3 80)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
-    ;; (flyspell-mode 1)
-    )
+    (linum-mode 1))
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
