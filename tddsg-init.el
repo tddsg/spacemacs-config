@@ -1511,6 +1511,9 @@ If OTHER is t then scroll other window."
   (define-key emacs-lisp-mode-map (kbd "C-M-i") nil)
   (define-key emacs-lisp-mode-map (kbd "C-M-q") nil)
 
+  ;; clean-aindent-mode-map
+  (define-key clean-aindent-mode--keymap [remap backward-kill-word] nil)
+
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
   (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
