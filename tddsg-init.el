@@ -543,19 +543,6 @@ or in a custom directory when prefix-argument is given <C-u>."
         (helm-do-ag (expand-file-name default-directory) text))
     (call-interactively 'helm-do-ag)))
 
-(defun tddsg/helm-do-replace (arg)
-  "Search by Helm-Ag in the current directory, \
-or in a custom directory when prefix-argument is given <C-u>."
-  (interactive "P")
-  (if (null arg)
-      (let* ((text (if (region-active-p)
-                       (buffer-substring (region-beginning) (region-end))
-                     (thing-at-point 'word)))
-             (text (if (null text) "" text))
-             (text (replace-regexp-in-string " " "\\\\ " (string-trim text))))
-        (helm-do-ag (expand-file-name default-directory) text))
-    (call-interactively 'helm-do-ag)))
-
 (defun tddsg/join-with-beneath-line ()
   "Join the current line to the line beneath it."
   (interactive)
@@ -1107,6 +1094,10 @@ If OTHER is t then scroll other window."
           try-expand-line
           try-complete-lisp-symbol-partially
           try-complete-lisp-symbol))
+
+  ;; recent-mode
+  (add-to-list 'recentf-exclude ".sb")
+  (add-to-list 'recentf-exclude ".slk")
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
