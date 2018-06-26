@@ -1095,9 +1095,11 @@ If OTHER is t then scroll other window."
           try-complete-lisp-symbol-partially
           try-complete-lisp-symbol))
 
+
   ;; recent-mode
-  (add-to-list 'recentf-exclude ".sb")
-  (add-to-list 'recentf-exclude ".slk")
+  (with-eval-after-load 'recentf-mode
+    (add-to-list 'recentf-exclude ".sb")
+    (add-to-list 'recentf-exclude ".slk"))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag

@@ -20,7 +20,7 @@
     company-math
     cc-mode irony company-irony                       ;; c/c++
     company-irony-c-headers
-    ;; rtags company-rtags helm-rtags
+    rtags company-rtags helm-rtags
     langtool writegood-mode helm-ispell               ;; spelling
     buffer-move windmove                              ;; visualizing
     transpose-frame ace-popup-menu
@@ -351,24 +351,24 @@
       (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
     (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
 
-;; (defun tddsg/init-rtags ()
-;;   (use-package rtags
-;;     :config
-;;     (setq rtags-completions-enabled t)
-;;     (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
-;;     (which-key-add-major-mode-key-based-replacements
-;;       'c-mode "C-c t" "rtags-commands")
-;;     (which-key-add-major-mode-key-based-replacements
-;;       'c++-mode "C-c t" "rtags-commands")
-;;     (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
-;;     (setq rtags-autostart-diagnostics t)))
+(defun tddsg/init-rtags ()
+  (use-package rtags
+    :config
+    (setq rtags-completions-enabled t)
+    (eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
+    (which-key-add-major-mode-key-based-replacements
+      'c-mode "C-c t" "rtags-commands")
+    (which-key-add-major-mode-key-based-replacements
+      'c++-mode "C-c t" "rtags-commands")
+    (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
+    (setq rtags-autostart-diagnostics t)))
 
-;; (defun tddsg/init-company-rtags ()
-;;   (use-package company-rtags))
+(defun tddsg/init-company-rtags ()
+  (use-package company-rtags))
 
-;; (defun tddsg/init-helm-rtags ()
-;;   (use-package helm-rtags
-;;     :config (setq rtags-display-result-backend 'helm)))
+(defun tddsg/init-helm-rtags ()
+  (use-package helm-rtags
+    :config (setq rtags-display-result-backend 'helm)))
 
 (defun tddsg/init-irony ()
   (use-package irony
