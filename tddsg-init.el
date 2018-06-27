@@ -1098,6 +1098,7 @@ If OTHER is t then scroll other window."
 
   ;; recent-mode
   (with-eval-after-load 'recentf-mode
+    ;; (add-to-list 'recentf-exclude ".pdf")
     (add-to-list 'recentf-exclude ".sb")
     (add-to-list 'recentf-exclude ".slk"))
 
@@ -1358,6 +1359,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
+  (global-set-key (kbd "C-z") nil)
 
   (global-set-key [?\H-m] 'helm-mini)
   (global-set-key [?\H-M] 'tddsg/recent-dirs)
