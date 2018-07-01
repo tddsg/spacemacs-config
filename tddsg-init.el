@@ -1368,6 +1368,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
+  (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
   (global-set-key (kbd "C-z") nil)
