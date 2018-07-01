@@ -1358,7 +1358,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
   (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
 
-  (global-set-key (kbd "C-x b") 'switch-to-buffer)
+  (global-set-key (kbd "C-x b") 'helm-buffers-list)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x g") 'tddsg/vc-status)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
@@ -1368,7 +1368,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
   (global-set-key (kbd "C-z") nil)
