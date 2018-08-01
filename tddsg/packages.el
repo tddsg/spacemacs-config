@@ -146,16 +146,9 @@
      ("\\<\\(class\\|object\\|method\\|inherit\\)\\>" . font-lock-keyword-face)
      ("\\<\\(external\\|virtual\\)\\>" . font-lock-keyword-face)
      ("\\<[A-Z][A-Za-z0-9_']*\\>" . font-lock-constant-face)))
-  (defun disable-ocp-indent ()
-    (interactive)
-    (setq indent-line-function 'indent-relative))
-  (defun enable-ocp-indent ()
-    (interactive)
-    (setq indent-line-function 'ocp-indent-line))
   (defun my-tuareg-hook ()
     (merlin-mode)
     (eldoc-mode -1)
-    (enable-ocp-indent)
     (setq indent-line-function 'ocp-indent-line)   ;; ocp-indent
     ;; customize syntax table for forward/backward slurping/barfing sexp
     (dolist (symbol (list ?, ?\; ?: ?+ ?- ?/ ?@ ?! ?> ?<))
@@ -282,7 +275,8 @@
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   ;; smartparens for ocaml
   (sp-with-modes '(tuareg-mode)
-    (sp-local-pair "(*" "*)" ))
+    (sp-local-pair "(*" "*)" )
+    (sp-local-pair "'" "'" ))
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*"
                    :unless '(sp-point-after-word-p sp-point-at-bol-p)

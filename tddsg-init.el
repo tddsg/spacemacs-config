@@ -905,8 +905,23 @@ If OTHER is t then scroll other window."
   (when (derived-mode-p 'pdf-view-mode)
     (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
 
+(defun tddsg/disable-ocp-indent ()
+  (interactive)
+  (setq indent-line-function 'indent-relative))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun tddsg/enable-ocp-indent ()
+  (interactive)
+  (setq indent-line-function 'ocp-indent-line))
+
+(defun tddsg/config-buffer-specific ()
+  (cond ((derived-mode-p 'tuareg-mode)
+         ;; disable ocp-ident for specific files
+         (let ((extension (file-name-extension (buffer-file-name))))
+           (cond ((member extension '("mly" "mll"))
+                  (tddsg/disable-ocp-indent))
+                 (t (tddsg/enable-ocp-indent)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
 (defun tddsg/config-packages ()
@@ -1068,6 +1083,9 @@ If OTHER is t then scroll other window."
   ;; cursor color
   (add-hook 'spacemacs-post-theme-change-hook 'tddsg/update-cursor-color)
   (add-hook 'buffer-list-update-hook 'tddsg/update-cursor-color)
+
+  ;; buffer specific
+  (add-hook 'first-change-hook 'tddsg/config-buffer-specific)
 
   ;; evil mode
   ;; (setq-default evil-cross-lines t)
