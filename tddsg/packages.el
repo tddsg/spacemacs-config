@@ -15,30 +15,56 @@
 
 (defconst tddsg-packages
   '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    tuareg merlin                                     ;; ocaml
-    auctex helm-bibtex latex-extra math-symbol-lists  ;; latex
+    ;; ocaml
+    tuareg
+    merlin
+    ;; latex
+    auctex
+    helm-bibtex
+    latex-extra
+    math-symbol-lists
     company-math
-    cc-mode irony company-irony                       ;; c/c++
+    ;; c/c++
+    cc-mode
+    irony
+    company-irony
     company-irony-c-headers
-    rtags company-rtags helm-rtags
-    langtool writegood-mode helm-ispell               ;; spelling
-    buffer-move windmove                              ;; visualizing
-    transpose-frame ace-popup-menu
-    anzu swiper super-save autorevert comment-dwim-2  ;; editing
-    smartparens goto-last-change
-    whitespace                                        ;; visualization
+    rtags
+    company-rtags
+    helm-rtags
+    ;; programming languages
+    solidity-mode
+    ;; spelling
+    langtool
+    writegood-mode
+    helm-ispell
+    ;; visualizing
+    buffer-move
+    windmove
+    transpose-frame
+    ace-popup-menu
+    whitespace
+    smartparens
+    ;; editing
+    anzu
+    swiper
+    super-save
+    autorevert
+    comment-dwim-2
+    goto-last-change
     helm-dired-history                                ;; files
-    monky sr-speedbar imenu-anywhere                  ;; projects
-    zone-sl                                           ;; random
+    ;; projects
+    monky
+    sr-speedbar
+    imenu-anywhere
+    ;; random
+    zone-sl
     ;;; local
     (dired+ :location local)
     (column-marker :location local)
     (framemove :location local)
     (songbird :location local)
-    (buffer-clone :location local)
-    ;;; packages which cannot be loaded
-    ;; llvm-mode vline
-    )
+    (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
 
@@ -72,6 +98,9 @@
 
 (defun tddsg/init-writegood-mode ()
   (use-package writegood-mode))
+
+(defun tddsg/init-solidity-mode ()
+  (use-package solidity-mode))
 
 ;; (defun tddsg/init-llvm-mode ()
 ;;   (use-package llvm-mode))
@@ -368,8 +397,10 @@
   (use-package irony
     :config
     (defun my-irony-mode-hook ()
-      (define-key irony-mode-map [remap completion-at-point] 'irony-completion-at-point-async)
-      (define-key irony-mode-map [remap complete-symbol] 'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap completion-at-point]
+        'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol]
+        'irony-completion-at-point-async)
       (company-irony-setup-begin-commands))
     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))

@@ -919,7 +919,10 @@ If OTHER is t then scroll other window."
          (let ((extension (file-name-extension (buffer-file-name))))
            (cond ((member extension '("mly" "mll"))
                   (tddsg/disable-ocp-indent))
-                 (t (tddsg/enable-ocp-indent)))))))
+                 (t (tddsg/enable-ocp-indent)))))
+        ((derived-mode-p 'c-mode 'c++-mode)
+         (message "C-Mode")
+         (c-guess))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
