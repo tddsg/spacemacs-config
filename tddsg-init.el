@@ -921,7 +921,6 @@ If OTHER is t then scroll other window."
                   (tddsg/disable-ocp-indent))
                  (t (tddsg/enable-ocp-indent)))))
         ((derived-mode-p 'c-mode 'c++-mode)
-         (message "C-Mode")
          (c-guess))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
