@@ -914,14 +914,16 @@ If OTHER is t then scroll other window."
   (setq indent-line-function 'ocp-indent-line))
 
 (defun tddsg/config-buffer-specific ()
-  (cond ((derived-mode-p 'tuareg-mode)
-         ;; disable ocp-ident for specific files
-         (let ((extension (file-name-extension (buffer-file-name))))
-           (cond ((member extension '("mly" "mll"))
-                  (tddsg/disable-ocp-indent))
-                 (t (tddsg/enable-ocp-indent)))))
-        ((derived-mode-p 'c-mode 'c++-mode)
-         (c-guess))))
+  (when (buffer-file-name)
+    (cond ((derived-mode-p 'tuareg-mode)
+           ;; disable ocp-ident for specific files
+           (let ((extension (file-name-extension (buffer-file-name))))
+             (cond ((member extension '("mly" "mll"))
+                    (tddsg/disable-ocp-indent))
+                   (t (tddsg/enable-ocp-indent)))))
+          ;; ((derived-mode-p 'c-mode 'c++-mode)
+          ;;  (c-guess))
+          )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
