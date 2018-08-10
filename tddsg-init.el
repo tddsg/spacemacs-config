@@ -896,6 +896,27 @@ If OTHER is t then scroll other window."
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
+(defun tddsg/show-special-whitespaces ()
+  "Display special whitespace characters."
+  (interactive)
+  (whitespace-mode -1)
+  ;; Code is adopted from: http://ergoemacs.org/emacs/whitespace-mode.html
+  (setq whitespace-style
+        '(face spaces tabs newline space-mark tab-mark newline-mark ))
+  (setq whitespace-display-mappings
+        '((space-mark 32 [183] [46]) ; SPACE,「·」
+          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
+          (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
+          ))
+  (whitespace-mode 1))
+
+(defun tddsg/hide-special-whitespaces ()
+  "Do not display special whitespace characters."
+  (interactive)
+  (whitespace-mode -1)
+  (setq whitespace-style '(face tabs))
+  (whitespace-mode 1))
+
 (defun tddsg/update-cursor-color ()
   ;; cursor color
   (cond ((eq spacemacs--cur-theme 'leuven)
