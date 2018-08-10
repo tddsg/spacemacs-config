@@ -32,6 +32,7 @@
         "lemma" "lemma_prop" "lemma_split" "lemma_test" "lemma_unsafe"
         "lemma_infer" "lemma_safe"
         "checkentail" "checkentail_exact" "checkentail_inexact"
+        "normalize"
         "check_nondet" "checksat" "checkunsat" "checkeq"
         "inferlemma" "inferentail" "inferrels" "unify" "unifyheap"))
 
