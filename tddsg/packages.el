@@ -100,7 +100,8 @@
   (use-package writegood-mode))
 
 (defun tddsg/init-solidity-mode ()
-  (use-package solidity-mode))
+  (use-package solidity-mode)
+  (push 'solidity-mode irony-supported-major-modes))
 
 ;; (defun tddsg/init-llvm-mode ()
 ;;   (use-package llvm-mode))
