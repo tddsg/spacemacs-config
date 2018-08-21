@@ -94,9 +94,9 @@ If the new path's directories does not exist, create them."
 
 (defun tddsg--highlight-todos ()
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
-                                 1 (hl-todo-get-face) t)))
+                                 1 (hl-todo--get-face) t)))
   (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|TRUNG\\)\\b"
-                                 1 (hl-todo-get-face) t))))
+                                 1 (hl-todo--get-face) t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
