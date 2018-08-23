@@ -64,6 +64,7 @@
     (column-marker :location local)
     (framemove :location local)
     (songbird :location local)
+    (guess-style :location local)
     (buffer-clone :location local))
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
@@ -432,6 +433,12 @@
 
 (defun tddsg/init-dired+ ()
   (use-package dired+))
+
+(defun tddsg/init-guess-style ()
+  (use-package guess-style)
+  (autoload 'guess-style-set-variable "guess-style" nil t)
+  (autoload 'guess-style-guess-variable "guess-style")
+  (autoload 'guess-style-guess-all "guess-style" nil t))
 
 (defun tddsg/init-buffer-clone ()
   (use-package buffer-clone))
