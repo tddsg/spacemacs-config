@@ -101,6 +101,17 @@ If the new path's directories does not exist, create them."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
 
+;; TODO: implement this function
+(defun tddsg/guess-indentation ()
+  (interactive)
+  ;; guess tab mode: indent-tabs-mode
+
+  ;; guess tab size: tab-width
+
+  ;; guess indentation level:
+  )
+
+
 (defun tddsg/read-file-sexp ()
   (interactive)
   (let* ((config-file (concat (projectile-project-root) ".tddsg.el"))
