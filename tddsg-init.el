@@ -942,9 +942,8 @@ If OTHER is t then scroll other window."
              (cond ((member extension '("mly" "mll"))
                     (tddsg/disable-ocp-indent))
                    (t (tddsg/enable-ocp-indent)))))
-          ;; ((derived-mode-p 'c-mode 'c++-mode)
-          ;;  (c-guess))
-          )))
+          ((derived-mode-p 'c-mode 'c++-mode)
+           (guess-style-guess-all)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
