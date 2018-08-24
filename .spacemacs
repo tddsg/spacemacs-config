@@ -43,6 +43,22 @@ This function should only modify configuration layer settings."
      better-defaults
      spacemacs-layouts
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;;; utilities
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+     ;; neotree
+     auto-completion
+     git
+     version-control
+     spell-checking
+     syntax-checking
+     semantic
+     pdf
+     cscope
+     search-engine
+     (gtags :variables gtags-enable-by-default nil)
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;;; languages
      org
      markdown
@@ -57,28 +73,8 @@ This function should only modify configuration layer settings."
      python
      html
      javascript
-     ;; (reason-mode
-     ;;  :location (recipe
-     ;;             :repo "arichiardi/reason-mode"
-     ;;             :fetcher github
-     ;;             :files ("reason-mode.el" "refmt.el")))
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     ;;; utilities
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
-     ;; neotree
-     auto-completion
-     git
-     version-control
-     spell-checking
-     syntax-checking
-     semantic
-     pdf-tools
-     semantic
-     cscope
-     search-engine
-     (gtags :variables gtags-enable-by-default nil)
+     coq
+     clojure
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;;; personal
      tddsg)
@@ -498,7 +494,8 @@ This function is called at the very end of Spacemacs initialization."
  '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
  '(package-selected-packages
    (quote
-    (pipenv helm-xref zone-sl zenburn-theme yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writegood-mode winum which-key web-mode web-beautify volatile-highlights vline vi-tilde-fringe uuidgen utop use-package unfill tuareg transpose-frame toc-org tagedit symon super-save string-inflection stickyfunc-enhance srefactor sr-speedbar spaceline-all-the-icons soothe-theme smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs realgud rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pippel pip-requirements persp-mode pdf-tools pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ocp-indent neotree nameless mwim multi-term move-text monokai-theme monky mmm-mode merlin material-theme markdown-toc magit-gitflow macrostep lorem-ipsum llvm-mode livid-mode live-py-mode linum-relative link-hint latex-extra langtool json-mode js2-refactor js-doc intero indent-guide importmagic impatient-mode imenu-anywhere hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-numbers highlight-indentation helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-ispell helm-hoogle helm-gtags helm-gitignore helm-flx helm-dired-history helm-descbinds helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-bibtex helm-ag haskell-snippets goto-last-change google-translate google-c-style golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy framemove flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido flatui-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu espresso-theme eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav editorconfig dumb-jump disaster dired+ diminish diff-hl define-word dante cython-mode cyberpunk-theme csv-mode counsel-projectile company-web company-tern company-statistics company-rtags company-plsense company-math company-irony-c-headers company-irony company-ghci company-ghc company-cabal company-c-headers company-auctex company-anaconda comment-dwim-2 column-marker column-enforce-mode color-theme-sanityinc-tomorrow coffee-mode cmm-mode clean-aindent-mode clang-format centered-cursor-mode buffer-move browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ample-theme aggressive-indent afternoon-theme adaptive-wrap ace-window ace-popup-menu ace-link ace-jump-helm-line ac-ispell))))
+    (proof-general company-coq clojure-snippets clojure-cheatsheet clj-refactor inflections edn peg cider-eval-sexp-fu cider sesman queue clojure-mode yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writegood-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen utop use-package unfill tuareg transpose-frame toc-org tagedit symon super-save string-inflection stickyfunc-enhance srefactor sr-speedbar spaceline-all-the-icons solidity-mode smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements persp-mode pdf-tools pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ocp-indent neotree nameless mwim multi-term move-text monky mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode link-hint latex-extra langtool json-navigator json-mode js2-refactor js-doc intero indent-guide importmagic impatient-mode imenu-anywhere hungry-delete hlint-refactor hl-todo hindent highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-ispell helm-hoogle helm-gtags helm-gitignore helm-flx helm-dired-history helm-descbinds helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-bibtex helm-ag haskell-snippets goto-last-change google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-ocaml flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode disaster diminish diff-hl define-word dante cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-rtags company-math company-irony-c-headers company-irony company-ghci company-ghc company-cabal company-c-headers company-auctex company-anaconda comment-dwim-2 column-enforce-mode cmm-mode clean-aindent-mode clang-format centered-cursor-mode buffer-move browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-popup-menu ace-link ace-jump-helm-line ac-ispell)))
+ '(tramp-syntax (quote default) nil (tramp)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -506,3 +503,23 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  )
 )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(LaTeX-command "latex --synctex=1")
+ '(TeX-command-extra-options "-shell-escape")
+ '(TeX-save-query nil)
+ '(TeX-source-correlate-method (quote synctex))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
+ '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
+ '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
+ '(tramp-syntax (quote default) nil (tramp)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

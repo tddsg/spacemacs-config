@@ -2198,33 +2198,3 @@ Set `spaceline-highlight-face-func' to
        ("???" . "red")
        ("BUG" . "red")
        ("OK" . "red"))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; FINALLY, OVERRIDE OTHER EMACS'S FUNCTION
-
-
-(defun tddsg/config-reason-mode ()
-  (require 'reason-mode)
-  (require 'merlin)
-  (require 'merlin-imenu)
-  (defun chomp-end (str)
-    "Chomp tailing whitespace from STR."
-    (replace-regexp-in-string (rx (* (any " \t\n")) eos)
-                              ""
-                              str))
-  (defun my-reason-hook ()
-    (add-hook 'before-save-hook 'refmt-before-save)
-    (merlin-mode)
-    (merlin-use-merlin-imenu))
-
-  (let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
-        (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
-    ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
-    (add-to-list 'load-path (concat merlin-base-dir "/share/emacs/site-lisp/"))
-    (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin"))
-
-    ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
-    (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
-    (setq refmt-command (concat support-base-dir "/bin/refmt")))
-  (setq merlin-ac-setup t)
-  (add-hook 'reason-mode-hook 'my-reason-hook))
