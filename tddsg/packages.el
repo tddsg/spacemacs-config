@@ -15,51 +15,40 @@
 
 (defconst tddsg-packages
   '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; ocaml
     tuareg
+    pdf-tools
     merlin
-    ;; latex
     auctex
     helm-bibtex
     latex-extra
     math-symbol-lists
     company-math
-    ;; c/c++
     cc-mode
     irony
     company-irony
     company-irony-c-headers
-    rtags
-    company-rtags
-    helm-rtags
-    ;; programming languages
     solidity-mode
-    ;; spelling
     langtool
     writegood-mode
     helm-ispell
-    ;; visualizing
+    helm-ag
     buffer-move
     windmove
     transpose-frame
     ace-popup-menu
+    popwin
     whitespace
     smartparens
-    ;; editing
     anzu
     swiper
     super-save
     autorevert
     comment-dwim-2
     goto-last-change
-    helm-dired-history                                ;; files
-    ;; projects
+    helm-dired-history
     monky
     sr-speedbar
     imenu-anywhere
-    ;; random
-    zone-sl
-    ;;; local
     (dired+ :location local)
     (column-marker :location local)
     (framemove :location local)
@@ -94,6 +83,60 @@
 (defun tddsg/init-helm-ispell ()
   (use-package helm-ispell))
 
+(defun tddsg/post-init-helm-ag ()
+  ;;;###autoload
+  (defun helm-projectile-ag (&optional options)
+    "Helm version of projectile-ag."
+    (interactive (if current-prefix-arg (list (read-string "option: " "" 'helm-ag--extra-options-history))))
+    (if (require 'helm-ag nil t)
+        (if (projectile-project-p)
+            (let* ((ag-ignored-files (cl-union (projectile-ignored-files-rel)
+                                               (projectile-patterns-to-ignore)))
+                   (ag-ignored-dirs (projectile-ignored-directories-rel))
+                   (ignored (mapconcat (lambda (i) (concat "--ignore " i))
+                                       (append ag-ignored-files
+                                               ag-ignored-dirs)
+                                       " "))
+                   (helm-ag-command-option options)
+                   (helm-ag-base-command (concat helm-ag-base-command " " ignored))
+                   (current-prefix-arg nil))
+              (helm-do-ag (projectile-project-root) (car (projectile-parse-dirconfig-file))))
+          (error "You're not in a project"))
+      (when (yes-or-no-p "`helm-ag' is not installed. Install? ")
+        (condition-case nil
+            (progn
+              (package-install 'helm-ag)
+              (helm-projectile-ag options))
+          (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
+
+  (defun helm-ag-set-extra-option ()
+    "Set extra options for helm-ag"
+    (interactive)
+    (let ((option (read-string "Helm-ag: set extra options: "
+                               (or helm-ag--extra-options "")
+                               'helm-ag--extra-options-history)))
+      (setq helm-ag--extra-options option)))
+
+;;;;; show ag options in helm-ag buffer
+  (defun helm-ag--put-result-in-save-buffer (result search-this-file-p)
+    (setq buffer-read-only t)
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert "-*- mode: helm-ag -*-\n\n"
+              (format "Ag Results for `%s'%s:\n\n"
+                      helm-ag--last-query
+                      (if (string= helm-ag--extra-options "") ""
+                        (format ", with options `%s'" helm-ag--extra-options))))
+      (save-excursion
+        (insert result)))
+    (helm-ag-mode)
+    (unless (helm-ag--vimgrep-option)
+      (setq-local helm-ag--search-this-file-p search-this-file-p))
+    (setq-local helm-ag--default-directory default-directory))
+
+
+  )
+
 (defun tddsg/init-buffer-move ()
   (use-package buffer-move))
 
@@ -122,9 +165,6 @@
 (defun tddsg/init-monky ()
   (use-package monky))
 
-(defun tddsg/init-zone-sl ()
-  (use-package zone-sl))
-
 (defun tddsg/init-imenu-anywhere ()
   (use-package imenu-anywhere))
 
@@ -144,18 +184,48 @@
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face tabs)))
 
+(defun tddsg/post-init-pdf-tools ()
+  ;;; customize to jump to the pdf-view window and display tooltip
+  (defun pdf-sync-forward-search (&optional line column)
+    "Display the PDF location corresponding to LINE, COLUMN."
+    (interactive)
+    (cl-destructuring-bind (pdf page _x1 y1 _x2 _y2)
+        (pdf-sync-forward-correlate line column)
+      (let ((buffer (or (find-buffer-visiting pdf)
+                        (find-file-noselect pdf))))
+        (select-window (display-buffer buffer pdf-sync-forward-display-action))
+        (other-window -1)
+        (other-window 1)
+        (pdf-util-assert-pdf-window)
+        (pdf-view-goto-page page)
+        (let ((top (* y1 (cdr (pdf-view-image-size)))))
+          (run-at-time 0.02 nil
+                       (lambda (top)
+                         ;; display tooltip by a timer to avoid being cleared
+                         (when (derived-mode-p 'pdf-view-mode)
+                           (pdf-util-tooltip-arrow (round top) 20)))
+                       top)
+        ;;; old code
+          ;; (pdf-util-tooltip-arrow (round top) 20)
+          )
+        (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
+
+  ;;; customize pdf-isearch for syncing backward
+  (defun pdf-isearch-sync-backward ()
+    "Sync backward to the LaTeX source of the current match."
+    (interactive)
+    (if pdf-isearch-current-match
+        (let ((left (caar pdf-isearch-current-match))
+              (top (cadar pdf-isearch-current-match)))
+          (isearch-exit)
+          (funcall 'pdf-sync-backward-search left top)))))
+
 (defun tddsg/post-init-cc-mode ()
-  ;; coding style
-  (defconst my-cc-style
-    '("linux"
-      (c-offsets-alist . ((innamespace . [0]))) ;; no indent in namespace
-      ))
-  (c-add-style "my-cc-style" my-cc-style)
   ;; hook
   (defun my-cc-mode-hook ()
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends '(company-irony-c-headers company-irony))
-    (c-set-style "my-cc-style")
+    (c-set-offset 'innamespace 0)   ;; no indent in namespace
     (setq c-basic-offset 4)
     ;; (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
@@ -220,6 +290,71 @@
     (define-key merlin-mode-map (kbd "C-M-,") 'merlin-error-prev))
   (add-hook 'merlin-mode-hook 'my-merlin-hook 'append))
 
+(defun tddsg/post-init-popwin ()
+  ;;; customize popwin to show it in a split window
+  (defun* popwin:popup-buffer (buffer
+                               &key
+                               (width popwin:popup-window-width)
+                               (height popwin:popup-window-height)
+                               (position popwin:popup-window-position)
+                               noselect
+                               dedicated
+                               stick
+                               tail)
+    "Show BUFFER in a popup window and return the popup window. If
+    NOSELECT is non-nil, the popup window will not be selected. If
+    STICK is non-nil, the popup window will be stuck. If TAIL is
+    non-nil, the popup window will show the last contents. Calling
+    `popwin:popup-buffer' during `popwin:popup-buffer' is allowed. In
+    that case, the buffer of the popup window will be replaced with
+    BUFFER."
+    (interactive "BPopup buffer:\n")
+    (setq buffer (get-buffer buffer))
+    (popwin:push-context)
+    (run-hooks 'popwin:before-popup-hook)
+    (multiple-value-bind (context context-stack)
+        (popwin:find-context-for-buffer buffer :valid-only t)
+      (if context
+          (progn
+            (popwin:use-context context)
+            (setq popwin:context-stack context-stack))
+        (let ((win-outline (car (popwin:window-config-tree))))
+          (destructuring-bind (master-win popup-win win-map)
+              (let ((size (if (popwin:position-horizontal-p position) width height))
+                    (adjust popwin:adjust-other-windows))
+                (let* ((new-height (- popwin:popup-window-height))
+                       (orig-window (selected-window))
+                       (new-window (split-window orig-window new-height 'below)))
+                  (set-window-buffer new-window buffer)
+                  (list orig-window new-window nil)))
+            (setq popwin:popup-window popup-win
+                  popwin:master-window master-win
+                  popwin:window-outline win-outline
+                  popwin:window-map win-map
+                  popwin:window-config nil
+                  popwin:selected-window (selected-window)))
+          (popwin:update-window-reference 'popwin:context-stack :recursive t)
+          (popwin:start-close-popup-window-timer))
+        (with-selected-window popwin:popup-window
+          (popwin:switch-to-buffer buffer)
+          (when tail
+            (set-window-point popwin:popup-window (point-max))
+            (recenter -2)))
+        (setq popwin:popup-buffer buffer
+              popwin:popup-last-config (list buffer
+                                             :width width :height height
+                                             :position position :noselect noselect
+                                             :dedicated dedicated :stick stick
+                                             :tail tail)
+              popwin:popup-window-dedicated-p dedicated
+              popwin:popup-window-stuck-p stick)))
+    (if noselect
+        (setq popwin:focus-window popwin:selected-window)
+      (setq popwin:focus-window popwin:popup-window)
+      (select-window popwin:popup-window))
+    (run-hooks 'popwin:after-popup-hook)
+    popwin:popup-window))
+
 (defun tddsg/init-latex-extra ()
   (let ((byte-compile-warnings '(not free-vars)))
     (use-package latex-extra
@@ -253,7 +388,7 @@
     (when (LaTeX-current-environment)
       (save-excursion
         (let* ((begin-start (save-excursion (LaTeX-find-matching-begin)
-                              (point)))
+                                            (point)))
                (begin-end (save-excursion
                             (goto-char begin-start)
                             (search-forward-regexp "begin{.*?}")))
@@ -267,6 +402,27 @@
           ;; location of end
           (delete-region end-start end-end)
           (delete-region begin-start begin-end)))))
+  ;;; customize brace-count to allow indentation of square brackets
+  (defun TeX-brace-count-line ()
+    "Count number of open/closed braces."
+    (save-excursion
+      (let ((count 0) (limit (line-end-position)) char)
+        (while (progn
+                 (skip-chars-forward "^{}[]\\\\" limit)
+                 (when (and (< (point) limit) (not (TeX-in-comment)))
+                   (setq char (char-after))
+                   (forward-char)
+                   (cond ((eq char ?\{)
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((eq char ?\})
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\[)
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((eq char ?\])
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\\)
+                          (when (< (point) limit) (forward-char) t))))))
+        count)))
   ;; remove the outer macro
   (defun TeX-remove-macro ()
     "Remove current macro and return `t'.  If no macro at point, return `nil'."
@@ -425,10 +581,10 @@
   ;; customize syntax table for forward/backward slurping/barfing sexp
   (defun my-songbird-hook ()
     ;; customize syntax table for slurping/barfing parentheses
+    ;; (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
+    ;;   (modify-syntax-entry symbol "_" songbird-syntax-table))
     (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
-      (modify-syntax-entry symbol "'" songbird-syntax-table))
-    (dolist (symbol (list ?( ?) ?{ ?} ?[ ?]))
-      (modify-syntax-entry symbol "_" songbird-syntax-table)))
+      (modify-syntax-entry symbol "'" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
 
 (defun tddsg/init-dired+ ()

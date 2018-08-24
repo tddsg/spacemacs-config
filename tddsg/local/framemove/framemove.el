@@ -26,7 +26,7 @@
 ;;    (require 'framemove)
 ;;    (windmove-default-keybindings)
 ;;    (setq framemove-hook-into-windmove t)
-;; 
+;;
 ;; Compatibility: GNU Emacs 22.x, 23.x
 ;;
 
@@ -109,7 +109,7 @@
            (remove-if-not
             '(lambda (f) (fm-frame-is-to-dir-of f dir thisframe))
             (visible-frame-list))
-           '(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
+           #'(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
     (if possible-frames
         (let ((frames-in-line-of-cursor
                ;; try to find frame in line with cursor
@@ -123,7 +123,7 @@
                 (remove-if-not
                  '(lambda (f) (fm-range-overlap thisframe f dir))
                  possible-frames)
-                '(lambda (f1 f2)
+                #'(lambda (f1 f2)
                    (< (fm-dist-from-coords coords-projected-in-dir f1)
                       (fm-dist-from-coords coords-projected-in-dir f2))))))
           (select-frame-set-input-focus
@@ -150,7 +150,7 @@
            x-dist)
           ((sqrt (+ (expt x-dist 2)
                     (expt y-dist 2)))))))
-              
+
 (defun fm-v-in-range (v range)
   (and (> v (car range))
        (< v (cdr range))))
