@@ -9,13 +9,9 @@
 
 (require 'smartparens)
 (require 'company)
-(require 'powerline)
-(require 'spaceline-segments)
-(require 'spaceline)
 (require 'face-remap)
 (require 'whitespace)
 (require 'expand-region)
-;; (require 'rtags)
 (require 'engine-mode)
 (require 'hi-lock)
 (require 'seq)
@@ -1042,15 +1038,6 @@ If OTHER is t then scroll other window."
   ;; mode-line setting
   (setq powerline-default-separator 'bar)
 
-  ;; isearch
-  (defun tddsg--isearch-show-case-fold (orig-func &rest args)
-    (apply orig-func args)
-    (if isearch-case-fold-search
-        (spacemacs|diminish isearch-mode "⚡ISearch[ci]⚡")
-      (spacemacs|diminish isearch-mode "⚡ISearch[CS]⚡")))
-  (advice-add 'isearch-mode :around #'tddsg--isearch-show-case-fold)
-  (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
-  (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
   ;; (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
 
   ;; compilation
