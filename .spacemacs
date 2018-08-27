@@ -469,7 +469,6 @@ before packages are loaded."
   (tddsg/config-packages)
   (tddsg/config-keys)
   (tddsg/config-themes)
-  (tddsg/config-spaceline)
   (tddsg/config-custom-vars))
 
 ;; Do not write anything past this comment. This is where Emacs will
