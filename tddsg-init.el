@@ -936,8 +936,9 @@ If OTHER is t then scroll other window."
                     (tddsg/disable-ocp-indent))
                    (t (tddsg/enable-ocp-indent)))))
           ((derived-mode-p 'c-mode 'c++-mode)
-           ;; (guess-style-guess-all)
-           ))))
+           (guess-style-guess-all))
+          ((derived-mode-p 'python-mode)
+           (guess-style-guess-all)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -1206,8 +1207,6 @@ If OTHER is t then scroll other window."
 
   ;; python-mode
   (defun hook-python-mode ()
-    (setq tab-width 4)
-    (setq python-indent 4)
     (elpy-mode))
   (add-hook 'python-mode-hook 'hook-python-mode)
 
@@ -1807,6 +1806,7 @@ If OTHER is t then scroll other window."
      ;; vline
      (vline ((t (:background "#34424D"))))
      ;; font
+     (font-lock-keyword-face ((t (:inherit bold :foreground "#4f97d7"))))
      (font-latex-slide-title-face ((t (:inherit font-lock-type-face :weight bold :height 1.3))))
      (font-latex-script-char-face ((t (:foreground "orange red"))))
      (font-latex-verbatim-face ((t (:inherit fixed-pitch :foreground "olive drab"))))
