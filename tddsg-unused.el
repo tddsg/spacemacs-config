@@ -18,6 +18,13 @@
 (advice-add 'isearch-repeat :around #'tddsg--isearch-show-case-fold)
 (advice-add 'isearch-toggle-case-fold :around #'tddsg--isearch-show-case-fold)
 
+;; scrolling
+(spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
+(setq redisplay-dont-pause t
+      scroll-conservatively 101
+      scroll-margin 0                    ;; perfect setting for scrolling
+      next-screen-context-lines 0        ;; perfect setting for scrolling
+      scroll-preserve-screen-position 't)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT SPACELINE

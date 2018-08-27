@@ -961,14 +961,6 @@ If OTHER is t then scroll other window."
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
 
-  ;; scrolling
-  (spacemacs/toggle-smooth-scrolling-off)  ;; disable smooth-scrolling
-  (setq redisplay-dont-pause t
-        scroll-conservatively 101
-        scroll-margin 0                    ;; perfect setting for scrolling
-        next-screen-context-lines 0        ;; perfect setting for scrolling
-        scroll-preserve-screen-position 't)
-
   ;; mode paragraph setting
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
@@ -1063,8 +1055,6 @@ If OTHER is t then scroll other window."
     "Hook to run in shell mode."
     (add-hook 'window-configuration-change-hook
               'tddsg--fix-comint-window-size nil t)
-    (set (make-local-variable 'scroll-margin) 1)
-    (set (make-local-variable 'next-screen-context-lines ) 1)
     (rainbow-delimiters-mode-disable)
     (toggle-truncate-lines -1)
     (visual-line-mode 1))
