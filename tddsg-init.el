@@ -1408,6 +1408,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
+  (global-set-key (kbd "C-c @ w") 'tddsg/show-special-whitespaces)
+  (global-set-key (kbd "C-c @ W") 'tddsg/hide-special-whitespaces)
 
   ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
