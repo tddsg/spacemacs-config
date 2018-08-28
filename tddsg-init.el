@@ -1205,6 +1205,10 @@ If OTHER is t then scroll other window."
           web-mode-css-indent-offset 2
           web-mode-markup-indent-offset 2))
 
+  ;; spaceline
+  (spaceline-toggle-buffer-encoding-abbrev-off)
+  (spaceline-toggle-minor-modes-off)
+
   ;; python-mode
   (defun hook-python-mode ()
     (elpy-mode))
