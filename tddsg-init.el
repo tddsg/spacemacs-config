@@ -21,17 +21,12 @@
 
 ;; used to jump between faces
 (defconst tddsg--face-change-types-default
-  '(;;--- merlin-faces
-    merlin-compilation-error-face merlin-compilation-warning-face
-    ;;--- rtags-faces
+  '(merlin-compilation-error-face merlin-compilation-warning-face
+    flycheck-error
     ;; rtags-fixitline rtags-warnline rtags-errline
-    ;;--- writegood-faces
     writegood-weasels-face writegood-duplicates-face writegood-passive-voice-face
-    ;; langtools
     langtool-errline
-    ;;--- isearch
     evil-search-highlight-persist-highlight-face
-    ;;--- highlighting-faces
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 
@@ -936,7 +931,8 @@ If OTHER is t then scroll other window."
                     (tddsg/disable-ocp-indent))
                    (t (tddsg/enable-ocp-indent)))))
           ((derived-mode-p 'c-mode 'c++-mode)
-           (guess-style-guess-all))
+           ;; (guess-style-guess-all)
+           )
           ((derived-mode-p 'python-mode)
            (guess-style-guess-all)))))
 
@@ -1713,6 +1709,7 @@ If OTHER is t then scroll other window."
 
   ;; cc
   (with-eval-after-load 'cc-mode
+    (define-key c-mode-base-map (kbd "(") 'self-insert-command) ;; fix to make smartparens can enclose ()
     (define-key c-mode-base-map (kbd "C-M-q") nil)
     (define-key c-mode-base-map (kbd "C-M-j") nil)
     (define-key c-mode-map (kbd "C-M-j") nil)
