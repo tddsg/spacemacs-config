@@ -1213,10 +1213,6 @@ If OTHER is t then scroll other window."
   ;; reason-mode
   ;; (tddsg/config-reason-mode)
 
-  ;; pdf-tools
-  (with-eval-after-load 'pdf-tools
-    )
-
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
 
