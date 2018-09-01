@@ -1083,24 +1083,6 @@ If OTHER is t then scroll other window."
   ;; buffer specific
   (add-hook 'first-change-hook 'tddsg/config-buffer-specific)
 
-  ;; evil mode
-  ;; (setq-default evil-cross-lines t)
-  ;; (setq-default evil-default-state 'hybrid)
-  ;; (defun update-evil-hybrid-state ()
-  ;;   ;; cursor color
-  ;;   (cond ((eq spacemacs--cur-theme 'leuven)
-  ;;          (setq evil-hybrid-state-cursor '("Orange" (bar . 2))))
-  ;;         (t (setq evil-hybrid-state-cursor '("Orange" (bar . 2)))))
-  ;;   ;; selectively force hybrid mode in some major mode
-  ;;   (cond ((derived-mode-p 'magit-mode 'monky-mode)
-  ;;          (evil-hybrid-state))
-  ;;         ((derived-mode-p 'pdf-view-mode)
-  ;;          ;; avoid blinking cursor in pdf-view-mode
-  ;;          (set (make-local-variable 'evil-hybrid-state-cursor) (list nil))
-  ;;          (evil-hybrid-state))))
-  ;; (add-hook 'buffer-list-update-hook 'update-evil-hybrid-state)
-  ;; (add-hook 'spacemacs-post-theme-change-hook 'update-evil-hybrid-state)
-
   ;; engine
   (defengine thefreedictionary
     "http://www.thefreedictionary.com/%s"
@@ -1653,13 +1635,15 @@ If OTHER is t then scroll other window."
     (define-key python-mode-map (kbd "C-j") nil))
 
   ;; pdf-tools
-  (with-eval-after-load 'pdf-tools
+  (with-eval-after-load 'pdf-view
     (define-key pdf-view-mode-map (kbd "s d") 'tddsg/pdf-view-disable-auto-slice)
     (define-key pdf-view-mode-map (kbd "s e") 'tddsg/pdf-view-enable-auto-slice)
+    (define-key pdf-view-mode-map (kbd "M-s o") 'pdf-occur)
     (define-key pdf-view-mode-map (kbd "C-<home>") 'pdf-view-first-page)
     (define-key pdf-view-mode-map (kbd "C-<end>") 'pdf-view-last-page)
     (define-key pdf-view-mode-map (kbd "M-w") 'tddsg/pdf-view-kill-ring-save)
     (define-key pdf-view-mode-map (kbd "RET") 'pdf-view-scroll-up-or-next-page)
+    (define-key pdf-view-mode-map (kbd "C-<mouse-1>") 'pdf-sync-backward-search-mouse)
     (define-key pdf-view-mode-map (kbd "<mouse-8>") 'pdf-history-backward)
     (define-key pdf-view-mode-map (kbd "<mouse-9>") 'pdf-history-forward))
 

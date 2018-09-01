@@ -185,7 +185,8 @@
   (setq whitespace-style '(face tabs)))
 
 (defun tddsg/post-init-pdf-tools ()
-  (use-package pdf-tools)
+  (require 'pdf-sync)
+  (require 'pdf-isearch)
   ;;;;; customize to jump to the pdf-view window and display tooltip
   (defun pdf-sync-forward-search (&optional line column)
     "Display the PDF location corresponding to LINE, COLUMN."
