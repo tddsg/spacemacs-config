@@ -185,7 +185,8 @@
   (setq whitespace-style '(face tabs)))
 
 (defun tddsg/post-init-pdf-tools ()
-  ;;; customize to jump to the pdf-view window and display tooltip
+  (use-package pdf-tools)
+  ;;;;; customize to jump to the pdf-view window and display tooltip
   (defun pdf-sync-forward-search (&optional line column)
     "Display the PDF location corresponding to LINE, COLUMN."
     (interactive)
@@ -199,18 +200,16 @@
         (pdf-util-assert-pdf-window)
         (pdf-view-goto-page page)
         (let ((top (* y1 (cdr (pdf-view-image-size)))))
+          ;;; old code
+          ;; (pdf-util-tooltip-arrow (round top) 20)
           (run-at-time 0.02 nil
                        (lambda (top)
                          ;; display tooltip by a timer to avoid being cleared
                          (when (derived-mode-p 'pdf-view-mode)
                            (pdf-util-tooltip-arrow (round top) 20)))
-                       top)
-        ;;; old code
-          ;; (pdf-util-tooltip-arrow (round top) 20)
-          )
+                       top))
         (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
-
-  ;;; customize pdf-isearch for syncing backward
+  ;;;;; customize pdf-isearch for syncing backward
   (defun pdf-isearch-sync-backward ()
     "Sync backward to the LaTeX source of the current match."
     (interactive)
@@ -218,7 +217,12 @@
         (let ((left (caar pdf-isearch-current-match))
               (top (cadar pdf-isearch-current-match)))
           (isearch-exit)
-          (funcall 'pdf-sync-backward-search left top)))))
+          (funcall 'pdf-sync-backward-search left top))))
+  ;;;;; other settings
+  (setq pdf-view-resize-factor 1.05)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-auto-slice-minor-mode)
+  (custom-set-variables
+   '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
 
 (defun tddsg/post-init-cc-mode ()
   ;; hook

@@ -1215,10 +1215,7 @@ If OTHER is t then scroll other window."
 
   ;; pdf-tools
   (with-eval-after-load 'pdf-tools
-    (setq pdf-view-resize-factor 1.05)
-    (add-hook 'pdf-view-mode-hook 'pdf-view-auto-slice-minor-mode)
-    (custom-set-variables
-     '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
+    )
 
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
