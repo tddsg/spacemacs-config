@@ -996,20 +996,18 @@ If OTHER is t then scroll other window."
   (global-company-mode)
 
   ;; pdf-view
-  (defun update-pdf-view-theme ()
+  (defun update-pdf-view ()
     (when (derived-mode-p 'pdf-view-mode)
+      ;; enable minor modes
+      (pdf-tools-enable-minor-modes)
+      ;; update theme
       (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
              (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
                  (pdf-view-midnight-minor-mode)))
             ((eq spacemacs--cur-theme 'leuven)
              (if (bound-and-true-p pdf-view-midnight-minor-mode)
                  (pdf-view-midnight-minor-mode -1))))))
-  (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
-    (mapc (lambda (window)
-            (with-current-buffer (window-buffer window)
-              (update-pdf-view-theme)))
-          (window-list)))
-  (add-hook 'pdf-view-mode-hook 'update-pdf-view-theme)
+  (add-hook 'pdf-view-mode-hook 'update-pdf-view)
 
   ;; mode editing setting
   (electric-pair-mode -1)         ;; electric-pair may conflict with smartparens

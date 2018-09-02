@@ -186,7 +186,6 @@
 
 (defun tddsg/post-init-pdf-tools ()
   (require 'pdf-sync)
-  (require 'pdf-isearch)
   ;;;;; customize to jump to the pdf-view window and display tooltip
   (defun pdf-sync-forward-search (&optional line column)
     "Display the PDF location corresponding to LINE, COLUMN."
