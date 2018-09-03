@@ -319,6 +319,14 @@ DIRECTION is 'next or 'previous."
   (interactive)
   (tddsg/switch-buffer-of-mode 'prev major-mode))
 
+(defun tddsg/kill-temp-buffers ()
+  "Kill temp buffers"
+  (interactive)
+  (cl-loop for buffer in (buffer-list) do
+           (if (not (or (string= (buffer-name buffer) "*scratch*")
+                        (string= (buffer-name buffer) "*Messages*")))
+               (kill-buffer buffer))))
+
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -944,6 +952,7 @@ If OTHER is t then scroll other window."
   (display-time)                    ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 1)             ;; turn off blinking
+  (setq tab-width 4)
   (tddsg/update-cursor-color)
   (setq blink-cursor-blinks 0)     ;; blink 15 times
   (setq fill-column 75)             ;; max size of a line for fill-or-unfill
