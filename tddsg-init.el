@@ -1016,6 +1016,10 @@ If OTHER is t then scroll other window."
             ((eq spacemacs--cur-theme 'leuven)
              (if (bound-and-true-p pdf-view-midnight-minor-mode)
                  (pdf-view-midnight-minor-mode -1))))))
+  (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
+    (mapc (lambda (window) (with-current-buffer (window-buffer window)
+                             (update-pdf-view)))
+          (window-list)))
   (add-hook 'pdf-view-mode-hook 'update-pdf-view)
 
   ;; mode editing setting
