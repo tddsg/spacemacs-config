@@ -895,23 +895,29 @@ If OTHER is t then scroll other window."
 (defun tddsg/show-special-whitespaces ()
   "Display special whitespace characters."
   (interactive)
-  (whitespace-mode -1)
-  ;; Code is adopted from: http://ergoemacs.org/emacs/whitespace-mode.html
-  (setq whitespace-style
-        '(face spaces tabs newline space-mark tab-mark newline-mark ))
-  (setq whitespace-display-mappings
-        '((space-mark 32 [183] [46]) ; SPACE,「·」
-          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
-          (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
-          ))
-  (whitespace-mode 1))
+  (defun show-white-space ()
+    (whitespace-mode -1)
+    ;; Code is adopted from: http://ergoemacs.org/emacs/whitespace-mode.html
+    (setq whitespace-style
+          '(face spaces tabs newline space-mark tab-mark newline-mark ))
+    (setq whitespace-display-mappings
+          '((space-mark 32 [183] [46]) ; SPACE,「·」
+            (newline-mark 10 [182 10]) ; LINE FEED, “¶”
+            (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
+            ))
+    (whitespace-mode 1))
+  (cl-loop for buffer in (buffer-list) do
+           (with-current-buffer buffer (show-white-space))))
 
 (defun tddsg/hide-special-whitespaces ()
   "Do not display special whitespace characters."
   (interactive)
-  (whitespace-mode -1)
-  (setq whitespace-style '(face tabs))
-  (whitespace-mode 1))
+  (defun hide-white-space ()
+    (whitespace-mode -1)
+    (setq whitespace-style '(face tabs))
+    (whitespace-mode 1))
+  (cl-loop for buffer in (buffer-list) do
+           (with-current-buffer buffer (hide-white-space))))
 
 (defun tddsg/update-cursor-color ()
   ;; cursor color
@@ -949,7 +955,7 @@ If OTHER is t then scroll other window."
 
 (defun tddsg/config-packages ()
   ;; visual interface setting
-  (display-time)                    ;; show time in mode line
+  (display-time-mode 1)             ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 1)             ;; turn off blinking
   (setq tab-width 4)
