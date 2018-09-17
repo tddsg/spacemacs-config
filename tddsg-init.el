@@ -13,6 +13,7 @@
 (require 'whitespace)
 (require 'expand-region)
 (require 'engine-mode)
+(require 'recentf-mode)
 (require 'hi-lock)
 (require 'seq)
 
@@ -892,6 +893,12 @@ If OTHER is t then scroll other window."
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
+(defun tddsg/clean-recentf-list (pattern)
+  (interactive "sEnter a file pattern that will be cleaned: ")
+  (add-to-list 'recentf-exclude pattern)
+  (recentf-cleanup)
+  (setq recentf-exclude (remove pattern recentf-exclude)))
+
 (defun tddsg/show-special-whitespaces ()
   "Display special whitespace characters."
   (interactive)
@@ -1117,13 +1124,6 @@ If OTHER is t then scroll other window."
           try-expand-line
           try-complete-lisp-symbol-partially
           try-complete-lisp-symbol))
-
-
-  ;; recent-mode
-  (with-eval-after-load 'recentf-mode
-    ;; (add-to-list 'recentf-exclude ".pdf")
-    (add-to-list 'recentf-exclude ".sb")
-    (add-to-list 'recentf-exclude ".slk"))
 
   ;; helm setting
   (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
