@@ -13,7 +13,6 @@
 (require 'whitespace)
 (require 'expand-region)
 (require 'engine-mode)
-(require 'recentf-mode)
 (require 'hi-lock)
 (require 'seq)
 
