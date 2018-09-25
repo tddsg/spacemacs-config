@@ -1001,6 +1001,7 @@ If OTHER is t then scroll other window."
         ispell-extra-args '("--sug-mode=ultra")
         ispell-dictionary "english"
         ispell-personal-dictionary "~/.emacs.d/user.dict")
+  (setq spell-checking-enable-by-default nil)
 
   ;; mark ring
   (setq set-mark-command-repeat-pop t)
@@ -1125,25 +1126,26 @@ If OTHER is t then scroll other window."
           try-complete-lisp-symbol))
 
   ;; helm setting
-  (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
-        helm-split-window-inside-p t
-        projectile-completion-system 'helm
-        helm-ff-file-name-history-use-recentf t
-        helm-ff-transformer-show-only-basename nil)
-  (add-to-list 'helm-sources-using-default-as-input
-               'helm-source-grep-ag)
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  ;; make Helm split inside the active window in a few function
-  (defun advise-helm-split-active-window (orig-func &rest args)
-    (setq helm-display-function 'helm-default-display-buffer)
-    (apply orig-func args)
-    (setq helm-display-function 'spacemacs//display-helm-window))
-  (advice-add 'helm-company :around #'advise-helm-split-active-window)
-  (advice-add 'helm-semantic-or-imenu :around #'advise-helm-split-active-window)
-  (advice-add 'helm-imenu :around #'advise-helm-split-active-window)
-  (advice-add 'completion-at-point :around #'advise-helm-split-active-window)
-  (advice-add 'flyspell-correct-previous-word-generic
-              :around #'advise-helm-split-active-window)
+  (with-eval-after-load 'helm-mode
+    (setq helm-ag-insert-at-point 'symbol     ;; insert symbol in helm-ag
+          helm-split-window-inside-p t
+          projectile-completion-system 'helm
+          helm-ff-file-name-history-use-recentf t
+          helm-ff-transformer-show-only-basename nil)
+    (add-to-list 'helm-sources-using-default-as-input
+                 'helm-source-grep-ag)
+    (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+    ;; make Helm split inside the active window in a few function
+    (defun helm-split-active-window (orig-func &rest args)
+      (setq helm-display-function 'helm-default-display-buffer)
+      (apply orig-func args)
+      (setq helm-display-function 'spacemacs//display-helm-window))
+    (advice-add 'helm-company :around #'helm-split-active-window)
+    (advice-add 'helm-semantic-or-imenu :around #'helm-split-active-window)
+    (advice-add 'helm-imenu :around #'helm-split-active-window)
+    (advice-add 'completion-at-point :around #'helm-split-active-window)
+    (advice-add 'flyspell-correct-previous-word-generic
+                :around #'helm-split-active-window))
 
   ;; ag-search
   (setq helm-ag-use-agignore t)
@@ -1515,7 +1517,8 @@ If OTHER is t then scroll other window."
   (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward)
 
   ;; swiper
-  (define-key swiper-map (kbd "C-.") 'tddsg/yank-word-minibuffer)
+  (with-eval-after-load 'swiper-mode
+    (define-key swiper-map (kbd "C-.") 'tddsg/yank-word-minibuffer))
 
   ;; minibuffer
   (define-key minibuffer-local-map (kbd "C-.") 'tddsg/yank-word-minibuffer)

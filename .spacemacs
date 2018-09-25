@@ -64,6 +64,7 @@ This function should only modify configuration layer settings."
      markdown
      emacs-lisp
      (c-c++ :variables c-c++-enable-clang-support t)
+     cmake
      latex
      ocaml
      haskell
@@ -85,7 +86,23 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages
+   '(goto-last-change
+     transpose-frame
+     comment-dwim-2
+     helm-bibtex
+     helm-ispell
+     company-math
+     math-symbol-lists
+     monky
+     imenu-anywhere
+     swiper
+     helm-dired-history
+     buffer-move
+     writegood-mode
+     company-irony
+     company-irony-c-headers
+     company-rtags)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()

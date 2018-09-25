@@ -19,39 +19,25 @@
     pdf-tools
     merlin
     auctex
-    helm-bibtex
     latex-extra
-    math-symbol-lists
-    company-math
     cc-mode
     irony
-    company-irony
-    company-irony-c-headers
     solidity-mode
     langtool
-    writegood-mode
-    helm-ispell
     helm-ag
-    buffer-move
     windmove
-    transpose-frame
     ace-popup-menu
     popwin
     whitespace
     smartparens
     anzu
-    swiper
     super-save
     autorevert
-    comment-dwim-2
-    goto-last-change
-    helm-dired-history
-    monky
     sr-speedbar
-    imenu-anywhere
     (dired+ :location local)
     (column-marker :location local)
     (framemove :location local)
+    (llvm-mode :location local)
     (songbird :location local)
     (guess-style :location local)
     (buffer-clone :location local))
@@ -62,26 +48,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT PACKAGES
 
-(defun tddsg/init-comment-dwim-2 ()
-  (use-package comment-dwim-2))
-
-(defun tddsg/init-goto-last-change ()
-  (use-package goto-last-change))
-
-(defun tddsg/init-transpose-frame ()
-  (use-package transpose-frame))
-
 (defun tddsg/init-ace-popup-menu ()
   (ace-popup-menu-mode 1))
 
 (defun tddsg/init-super-save ()
   (super-save-mode 1))
-
-(defun tddsg/init-helm-bibtex ()
-  (use-package helm-bibtex))
-
-(defun tddsg/init-helm-ispell ()
-  (use-package helm-ispell))
 
 (defun tddsg/post-init-helm-ag ()
   ;;;###autoload
@@ -132,44 +103,14 @@
     (helm-ag-mode)
     (unless (helm-ag--vimgrep-option)
       (setq-local helm-ag--search-this-file-p search-this-file-p))
-    (setq-local helm-ag--default-directory default-directory))
-
-
-  )
-
-(defun tddsg/init-buffer-move ()
-  (use-package buffer-move))
-
-(defun tddsg/init-writegood-mode ()
-  (use-package writegood-mode))
+    (setq-local helm-ag--default-directory default-directory)))
 
 (defun tddsg/init-solidity-mode ()
   (use-package solidity-mode)
   (push 'solidity-mode irony-supported-major-modes))
 
-;; (defun tddsg/init-llvm-mode ()
-;;   (use-package llvm-mode))
-
 ;; (defun tddsg/init-vline ()
 ;;   (use-package vline))
-
-(defun tddsg/init-helm-dired-history ()
-  (use-package helm-dired-history))
-
-(defun tddsg/init-company-math ()
-  (use-package company-math))
-
-(defun tddsg/init-math-symbol-lists ()
-  (use-package math-symbol-lists))
-
-(defun tddsg/init-monky ()
-  (use-package monky))
-
-(defun tddsg/init-imenu-anywhere ()
-  (use-package imenu-anywhere))
-
-(defun tddsg/init-swiper ()
-  (use-package swiper))
 
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
@@ -465,7 +406,7 @@
   (define-key smartparens-mode-map (kbd "M-s") nil)
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   ;; smartparens for ocaml
-  (sp-with-modes '(tuareg-mode)
+  (sp-with-modes '(tuareg-mode coq-mode)
     (sp-local-pair "(*" "*)" )
     (sp-local-pair "'" "'" ))
   (sp-with-modes 'org-mode
@@ -548,9 +489,6 @@
     (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
     (setq rtags-autostart-diagnostics t)))
 
-(defun tddsg/init-company-rtags ()
-  (use-package company-rtags))
-
 (defun tddsg/init-helm-rtags ()
   (use-package helm-rtags
     :config (setq rtags-display-result-backend 'helm)))
@@ -566,12 +504,6 @@
       (company-irony-setup-begin-commands))
     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
-
-(defun tddsg/init-company-irony ()
-  (use-package company-irony))
-
-(defun tddsg/init-company-irony-c-headers ()
-  (use-package company-irony-c-headers))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -609,5 +541,8 @@
 (defun tddsg/init-framemove ()
   (use-package framemove)
   (framemove-default-keybindings))
+
+(defun tddsg/init-llvm-mode ()
+  (use-package llvm-mode))
 
 ;;; packages.el ends here
