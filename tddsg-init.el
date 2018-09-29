@@ -1366,6 +1366,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
 
   (global-set-key (kbd "C-x b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x p") 'purpose-mode)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
   (global-set-key (kbd "C-x g") 'tddsg/vc-status)
   (global-set-key (kbd "C-x {") 'shrink-window-horizontally)
