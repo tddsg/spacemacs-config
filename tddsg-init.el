@@ -961,7 +961,6 @@ If OTHER is t then scroll other window."
 
 (defun tddsg/config-packages ()
   ;; visual interface setting
-  (display-time-mode 1)             ;; show time in mode line
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 1)             ;; turn off blinking
   (setq tab-width 4)
