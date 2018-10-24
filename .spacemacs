@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -39,11 +39,9 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     ;;; spacemacs
      better-defaults
      spacemacs-layouts
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     ;;; utilities
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -59,7 +57,6 @@ This function should only modify configuration layer settings."
      search-engine
      (gtags :variables gtags-enable-by-default nil)
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     ;;; languages
      org
      markdown
      emacs-lisp
@@ -70,6 +67,7 @@ This function should only modify configuration layer settings."
      haskell
      yaml
      ;; perl5
+     ruby
      csv
      python
      html
@@ -77,8 +75,8 @@ This function should only modify configuration layer settings."
      coq
      clojure
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     ;;; personal
      tddsg)
+
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -93,16 +91,17 @@ This function should only modify configuration layer settings."
      helm-bibtex
      helm-ispell
      company-math
+     company-solidity
+     company-irony
+     company-irony-c-headers
+     company-rtags
      math-symbol-lists
      monky
      imenu-anywhere
      swiper
      helm-dired-history
      buffer-move
-     writegood-mode
-     company-irony
-     company-irony-c-headers
-     company-rtags)
+     writegood-mode)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
