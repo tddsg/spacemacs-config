@@ -1196,36 +1196,8 @@ If OTHER is t then scroll other window."
           web-mode-markup-indent-offset 2))
 
   ;; spaceline
-  (defun powerline-project-id (&optional face pad)
-    (let ((location-name (if (tddsg--projectile-p) (projectile-project-name)
-                           (file-name-nondirectory
-                            (directory-file-name default-directory))))
-          (location-message (directory-file-name default-directory)))
-      (powerline-raw
-       (format-mode-line
-        (concat " "
-                (propertize
-		             (format-mode-line location-name)
-		             'face face
-		             'mouse-face 'mode-line-highlight
-		             'help-echo location-message)))
-       face pad)))
-  (spaceline-define-segment buffer-id
-    "Name of buffer."
-    (let ((face-format (if active 'mode-line-buffer-id
-                         'mode-line-buffer-id-inactive)))
-      (concat
-       (s-trim (spaceline--string-trim-from-center
-                (powerline-buffer-id face-format)
-                spaceline-buffer-id-max-length))
-       (if (buffer-file-name)
-           (concat (if (tddsg--projectile-p) " @ " " ~ ")
-                   (s-trim (spaceline--string-trim-from-center
-                            (powerline-project-id face-format)
-                            spaceline-buffer-id-max-length)))))))
   (spaceline-toggle-buffer-encoding-abbrev-off)
   (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-projectile-root-on)
 
   ;; python-mode
   (defun hook-python-mode ()
