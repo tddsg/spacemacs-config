@@ -29,6 +29,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT SPACELINE
 
+
+(defvar tddsg--show-mode-line t)
+
 ;;; spaceline segments
 
 (spaceline-define-segment tddsg/line-column
@@ -159,3 +162,107 @@ Set `spaceline-highlight-face-func' to
 
 ;; update mode line after every 60 seconds
 (run-at-time 60 60 #'force-mode-line-update)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SHOW HEADER LINE
+
+;; https://www.emacswiki.org/emacs/HeaderLine
+
+(defvar tddsg--show-header-line t)
+
+(defmacro with-face (str &rest properties)
+  `(propertize ,str 'face (list ,@properties)))
+
+(defun tddsg--header-file-path ()
+  "Create file path for the header line."
+  (let* ((file-path (if buffer-file-name
+                        (abbreviate-file-name buffer-file-name)
+                      (buffer-name)))
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (file-name  (if buffer-file-name
+                         (file-name-nondirectory buffer-file-name)
+                       (buffer-name)))
+         (path-len (length file-path))
+         (name-len (length file-name))
+         (dir-len (length dir-name))
+         (drop-str "[...]")
+         (path-display-len (- (window-body-width)
+                              (length (projectile-project-name)) 3))
+         (dir-display-len (- path-display-len (length drop-str) name-len 2)))
+    (cond ((< path-len path-display-len)
+           (concat "▷ "
+                   (with-face dir-name :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          ((and (> dir-len dir-display-len) (> dir-display-len 3))
+           (concat "▷ "
+                   (with-face (substring dir-name 0 (/ dir-display-len 2))
+                              :foreground "DeepSkyBlue3")
+                   (with-face drop-str :foreground "DeepSkyBlue3")
+                   (with-face (substring dir-name
+                                         (- dir-len (/ dir-display-len 2))
+                                         (- dir-len 1))
+                              :foreground "DeepSkyBlue3")
+                   (with-face "/" :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          (t (concat "▷ " (with-face file-name :foreground "DarkOrange3"))))))
+
+(defun tddsg--header-project-path ()
+  "Create project path for the header line."
+  (if (tddsg--projectile-p)
+      (concat "♖ "
+              (with-face (projectile-project-name) :foreground "DarkOrange3")
+              " ")
+    ""))
+
+;; set font of header line
+(custom-set-faces
+ '(header-line
+   ((default :inherit mode-line)
+    (((type tty))
+     :foreground "black" :background "yellow" :inverse-video nil)
+    (((class color grayscale) (background light))
+     :background "grey90" :foreground "grey20" :box nil)
+    (((class color grayscale) (background dark))
+     :background "#212026" :foreground "gainsboro" :box nil)
+    (((class mono) (background light))
+     :background "white" :foreground "black"
+     :inverse-video nil :box nil :underline t)
+    (((class mono) (background dark))
+     :background "black" :foreground "white"
+     :inverse-video nil :box nil :underline t))))
+
+(defun tddsg--create-header-line ()
+  "Create the header line of a buffer."
+  '("" ;; invocation-name
+    (:eval
+     (concat (tddsg--header-project-path)
+             (tddsg--header-file-path)))))
+
+(defun tddsg--update-header-line ()
+  "Update header line of the active buffer and remove from all other."
+  (defun exclude-buffer-p (buffer-name)
+    (cl-loop for buffer-prefix in (list "*helm" "*spacemacs*")
+             thereis (string-match-p (regexp-quote buffer-prefix) buffer-name)))
+  (cl-loop for window in (window-list) do
+           (with-current-buffer (window-buffer window)
+             (when (not (exclude-buffer-p (buffer-name (window-buffer window))))
+               (cond ((not tddsg--show-header-line)
+                      (setq header-line-format nil))
+                     ;; activate header-line of the active buffer
+                     ((eq (window-buffer window) (window-buffer (selected-window)))
+                      (setq header-line-format (tddsg--create-header-line)))
+                     ;; dim header-line of inactive buffers
+                     (t (setq header-line-format
+                              `(:propertize ,(tddsg--create-header-line)
+                                            face (:foreground "grey55")))))))))
+
+(defun tddsg/toggle-header-line ()
+  (interactive)
+  (setq tddsg--show-header-line (not tddsg--show-header-line))
+  (tddsg--update-header-line))
+
+;; update header line of each buffer
+(add-hook 'buffer-list-update-hook 'tddsg--update-header-line)
+(add-hook 'window-configuration-change-hook 'tddsg--update-header-line)
