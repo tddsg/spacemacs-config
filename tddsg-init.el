@@ -1509,7 +1509,7 @@ If OTHER is t then scroll other window."
   (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward)
 
   ;; swiper
-  (with-eval-after-load 'swiper-mode
+  (with-eval-after-load 'swiper
     (define-key swiper-map (kbd "C-.") 'tddsg/yank-word-minibuffer))
 
   ;; minibuffer
