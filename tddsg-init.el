@@ -979,7 +979,6 @@ If OTHER is t then scroll other window."
         paragraph-start "\f\\|[ \t]*$")
 
   ;; save
-  ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
   ;; zoom frame
