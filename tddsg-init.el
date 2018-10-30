@@ -921,15 +921,6 @@ If OTHER is t then scroll other window."
   (cl-loop for buffer in (buffer-list) do
            (with-current-buffer buffer (hide-white-space))))
 
-(defun tddsg/update-cursor-color ()
-  ;; cursor color
-  (cond ((eq spacemacs--cur-theme 'leuven)
-         (set-cursor-color "Orange"))
-        (t (set-cursor-color "Orange")))
-  ;; avoid blinking cursor in pdf-view-mode
-  (when (derived-mode-p 'pdf-view-mode)
-    (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
-
 (defun tddsg/disable-ocp-indent ()
   (interactive)
   (setq indent-line-function 'indent-relative))
@@ -960,7 +951,6 @@ If OTHER is t then scroll other window."
   (global-hl-todo-mode 1)           ;; highlight todo mode
   (blink-cursor-mode 1)             ;; turn off blinking
   (setq tab-width 4)
-  (tddsg/update-cursor-color)
   (setq blink-cursor-blinks 0)     ;; blink 15 times
   (setq fill-column 75)             ;; max size of a line for fill-or-unfill
   (setq fast-but-imprecise-scrolling nil)
@@ -969,6 +959,9 @@ If OTHER is t then scroll other window."
         '("" invocation-name " - "
           (:eval (if (buffer-file-name)
                      (abbreviate-file-name (buffer-file-name)) "%b"))))
+
+  ;; customize cursor's colors
+  (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
 
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
@@ -1045,8 +1038,6 @@ If OTHER is t then scroll other window."
   ;; mode-line setting
   (setq powerline-default-separator 'bar)
 
-  ;; (add-hook 'isearch-update-post-hook 'update-pdf-view-theme)
-
   ;; compilation
   (setq compilation-ask-about-save nil
         compilation-window-height 12
@@ -1093,10 +1084,6 @@ If OTHER is t then scroll other window."
   ;; backup
   (setq make-backup-files t
         make-backup-file-name-function 'tddsg--create-backup-file-name)
-
-  ;; cursor color
-  (add-hook 'spacemacs-post-theme-change-hook 'tddsg/update-cursor-color)
-  (add-hook 'buffer-list-update-hook 'tddsg/update-cursor-color)
 
   ;; buffer specific
   (add-hook 'first-change-hook 'tddsg/config-buffer-specific)
