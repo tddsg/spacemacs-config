@@ -1915,3 +1915,70 @@ If OTHER is t then scroll other window."
        ("???" . "red")
        ("BUG" . "red")
        ("OK" . "red"))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SHOW HEADER LINE
+
+;; https://www.emacswiki.org/emacs/HeaderLine
+
+(defmacro with-face (str &rest properties)
+  `(propertize ,str 'face (list ,@properties)))
+
+(defun header-file-path ()
+  "Create file path for the header line."
+  (let* ((file-path (if buffer-file-name
+                        (abbreviate-file-name buffer-file-name)
+                      (buffer-name)))
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (file-name  (if buffer-file-name
+                         (file-name-nondirectory buffer-file-name)
+                       (buffer-name)))
+         (path-len (length file-path))
+         (name-len (length file-name))
+         (dir-len (length dir-name))
+         (drop-str "[...]")
+         (path-display-len (window-body-width))
+         (dir-display-len (- path-display-len (length drop-str) name-len 2)))
+    (cond ((< path-len path-display-len)
+           (concat "▷ "
+                   (with-face dir-name :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          ((and (> dir-len dir-display-len) (> dir-display-len 3))
+           (concat "▷ "
+                   (with-face (substring dir-name 0 (/ dir-display-len 2))
+                              :foreground "DeepSkyBlue3")
+                   (with-face drop-str :foreground "DeepSkyBlue3")
+                   (with-face (substring dir-name
+                                         (- dir-len (/ dir-display-len 2))
+                                         (- dir-len 1))
+                              :foreground "DeepSkyBlue3")
+                   (with-face "/" :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          (t (concat "▷ " (with-face file-name :foreground "DarkOrange3"))))))
+
+(defun create-active-header-line ()
+  "Create the header line of a buffer."
+  (setq header-line-format '("" ;; invocation-name
+                             (:eval (header-file-path)))))
+
+(defun create-inactive-header-line ()
+  (setq header-line-format
+        `(:propertize ,header-line-format
+                      face (:foreground "grey55"))))
+
+(defun update-header-line ()
+  "Update header line of the active buffer and dim all others."
+  (message "NUM OF WINDOWS: %d" (length (window-list)))
+  (mapc
+   (lambda (window)
+     (with-current-buffer (window-buffer window)
+       (when (buffer-file-name)
+         (cond ((eq window (selected-window)) (create-active-header-line))
+               (t (create-inactive-header-line))))))
+   (window-list))
+  (force-mode-line-update))
+
+;; update header line of each buffer
+(add-hook 'buffer-list-update-hook 'update-header-line)
+(add-hook 'window-configuration-change-hook 'update-header-line)
