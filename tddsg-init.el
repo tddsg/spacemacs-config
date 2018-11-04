@@ -1919,7 +1919,7 @@ If OTHER is t then scroll other window."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SHOW HEADER LINE
 
-;; https://www.emacswiki.org/emacs/HeaderLine
+;; Reference: https://www.emacswiki.org/emacs/HeaderLine
 
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
@@ -1959,12 +1959,11 @@ If OTHER is t then scroll other window."
 
 (defun create-active-header-line ()
   "Create the header line of a buffer."
-  (setq header-line-format '("" ;; invocation-name
-                             (:eval (header-file-path)))))
+  (setq header-line-format '("" (:eval (header-file-path)))))
 
 (defun create-inactive-header-line ()
   (setq header-line-format
-        `(:propertize ,header-line-format
+        `(:propertize ,(header-file-path)
                       face (:foreground "grey55"))))
 
 (defun update-header-line ()
@@ -1974,10 +1973,10 @@ If OTHER is t then scroll other window."
    (lambda (window)
      (with-current-buffer (window-buffer window)
        (when (buffer-file-name)
-         (cond ((eq window (selected-window)) (create-active-header-line))
+         (cond ((eq (window-buffer window) (window-buffer (selected-window)))
+                (create-active-header-line))
                (t (create-inactive-header-line))))))
-   (window-list))
-  (force-mode-line-update))
+   (window-list)))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook 'update-header-line)
