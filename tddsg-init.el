@@ -1968,15 +1968,15 @@ If OTHER is t then scroll other window."
 
 (defun update-header-line ()
   "Update header line of the active buffer and dim all others."
-  (message "NUM OF WINDOWS: %d" (length (window-list)))
-  (mapc
-   (lambda (window)
-     (with-current-buffer (window-buffer window)
-       (when (buffer-file-name)
-         (cond ((eq (window-buffer window) (window-buffer (selected-window)))
-                (create-active-header-line))
-               (t (create-inactive-header-line))))))
-   (window-list)))
+  (when (buffer-file-name) 
+    (mapc
+     (lambda (window)
+       (with-current-buffer (window-buffer window)
+         (when (buffer-file-name)
+           (cond ((eq (window-buffer window) (window-buffer (selected-window)))
+                  (create-active-header-line))
+                 (t (create-inactive-header-line))))))
+     (window-list))))
 
 ;; update header line of each buffer
 (add-hook 'buffer-list-update-hook 'update-header-line)
