@@ -406,9 +406,11 @@
   (define-key smartparens-mode-map (kbd "M-s") nil)
   (define-key smartparens-mode-map (kbd "M-s s") 'sp-splice-sexp)
   ;; smartparens for ocaml
-  (sp-with-modes '(tuareg-mode coq-mode)
-    (sp-local-pair "(*" "*)" )
-    (sp-local-pair "'" "'" ))
+  (sp-with-modes 'tuareg-mode
+    (sp-local-pair "(*" "*)")
+    (sp-local-pair "'" "'"))
+  (sp-with-modes 'coq-mode
+    (sp-local-pair "(*" "*)"))
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*"
                    :unless '(sp-point-after-word-p sp-point-at-bol-p)
