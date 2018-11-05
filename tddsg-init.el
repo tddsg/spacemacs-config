@@ -1943,31 +1943,34 @@ If OTHER is t then scroll other window."
   (let* ((file-path (if buffer-file-name
                         (abbreviate-file-name buffer-file-name)
                       (buffer-name)))
-         (dname  (if buffer-file-name (file-name-directory file-path) ""))
-         (fname  (if buffer-file-name
+         (dir-name  (if buffer-file-name
+                        (file-name-directory file-path) ""))
+         (file-name  (if buffer-file-name
                          (file-name-nondirectory buffer-file-name)
                        (buffer-name)))
-         (plen (length file-path))
-         (nlen (length fname))
-         (dlen (length dname))
+         (path-len (length file-path))
+         (name-len (length file-name))
+         (dir-len (length dir-name))
          (drop-str "[...]")
-         (path-display-len (window-body-width))
-         (dir-display-len (- path-display-len (length drop-str) nlen 2)))
-    (cond ((< plen path-display-len)
-           (concat "▷ " dname fname))
-          ((and (> dlen dir-display-len) (> dir-display-len 3))
+         (path-display-len (- (window-body-width)
+                              (length (projectile-project-name)) 3))
+         (dir-display-len (- path-display-len (length drop-str) name-len 2)))
+    (cond ((< path-len path-display-len)
            (concat "▷ "
-                   (substring dname 0 (/ dir-display-len 2))
-                   drop-str
-                   (substring dname (- dlen (/ dir-display-len 2)) (- dlen 1))
-                   "/"
-                   fname))
-          (t (concat "▷ " fname)))))
-
-(defun create-header-line ()
-  (setq header-line-format
-        `(:propertize ,(header-file-path)
-                      face (:foreground "DeepSkyBlue3"))))
+                   (with-face dir-name :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          ((and (> dir-len dir-display-len) (> dir-display-len 3))
+           (concat "▷ "
+                   (with-face (substring dir-name 0 (/ dir-display-len 2))
+                              :foreground "DeepSkyBlue3")
+                   (with-face drop-str :foreground "DeepSkyBlue3")
+                   (with-face (substring dir-name
+                                         (- dir-len (/ dir-display-len 2))
+                                         (- dir-len 1))
+                              :foreground "DeepSkyBlue3")
+                   (with-face "/" :foreground "DeepSkyBlue3")
+                   (with-face file-name :foreground "DarkOrange3")))
+          (t (concat "▷ " (with-face file-name :foreground "DarkOrange3"))))))
 
 (defun update-header-line ()
   "Update header line of the active buffer and dim all others."
@@ -1977,15 +1980,11 @@ If OTHER is t then scroll other window."
           (string-prefix-p "*helm" buffname)
           (string-prefix-p "*Minibuf" buffname)
           (string-prefix-p "*spacemacs" buffname))))
-  (message "Num of windows: %d" (length (window-list)))
-  (mapc (lambda (window)
-          (message "window name: %s" (buffer-name (window-buffer window))))
-        (window-list))
   (mapc
    (lambda (window)
      (with-current-buffer (window-buffer window)
        (cond ((exclude-window-p window)) ;; do nothing
-             (t (create-header-line)))))
+             (t (setq header-line-format (header-file-path))))))
    (window-list)))
 
 ;; update header line of each buffer
