@@ -1804,7 +1804,21 @@ If OTHER is t then scroll other window."
   (custom-set-faces
    '(sp-pair-overlay-face ((t nil)))
    '(sp-wrap-overlay-face ((t nil)))
-   '(sp-wrap-tag-overlay-face ((t nil)))))
+   '(sp-wrap-tag-overlay-face ((t nil)))
+   '(header-line
+     ((default :inherit mode-line)
+      (((type tty))
+       :foreground "black" :background "yellow" :inverse-video nil)
+      (((class color grayscale) (background light))
+       :background "grey90" :foreground "grey20" :box nil)
+      (((class color grayscale) (background dark))
+       :background "#212026" :foreground "gainsboro" :box nil)
+      (((class mono) (background light))
+       :background "white" :foreground "black"
+       :inverse-video nil :box nil :underline t)
+      (((class mono) (background dark))
+       :background "black" :foreground "white"
+       :inverse-video nil :box nil :underline t)))))
 
 (defun tddsg--override-theme ()
   (dolist (theme-settings tddsg-themes)
@@ -1968,7 +1982,7 @@ If OTHER is t then scroll other window."
 
 (defun update-header-line ()
   "Update header line of the active buffer and dim all others."
-  (when (buffer-file-name) 
+  (when (buffer-file-name)
     (mapc
      (lambda (window)
        (with-current-buffer (window-buffer window)
