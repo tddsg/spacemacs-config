@@ -1989,3 +1989,4 @@ If OTHER is t then scroll other window."
 
 ;; update header line of each buffer
 (add-hook 'window-configuration-change-hook 'update-header-line)
+(add-hook 'change-major-mode-hook 'update-header-line)
