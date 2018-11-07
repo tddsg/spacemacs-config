@@ -57,7 +57,8 @@ This function should only modify configuration layer settings."
      search-engine
      (gtags :variables gtags-enable-by-default nil)
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     org
+     ;;; languages
+     (org :variables org-enable-reveal-js-support t)
      markdown
      emacs-lisp
      (c-c++ :variables c-c++-enable-clang-support t)
