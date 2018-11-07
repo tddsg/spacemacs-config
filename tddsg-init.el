@@ -45,12 +45,6 @@
 (defun tddsg--set-mark ()
   (push-mark (point) t nil))
 
-(defun tddsg--projectile-p ()
-  "Check if a projectile exists in the current buffer."
-  (and projectile-mode
-       (not (string= (projectile-project-name) ""))
-       (not (string= (projectile-project-name) "-"))))
-
 (defun tddsg--fix-comint-window-size ()
   "Change process window size."
   (when (derived-mode-p 'comint-mode)
@@ -1285,10 +1279,7 @@ If OTHER is t then scroll other window."
     (define-key input-decode-map (kbd "C-M-[") (kbd "H-M-["))
     (define-key input-decode-map (kbd "C-s-[") (kbd "H-s-["))
     (define-key input-decode-map (kbd "C-S-I") (kbd "H-I"))
-    (define-key input-decode-map (kbd "C-S-M") (kbd "H-M"))
-    (if (tddsg--projectile-p)
-        (setq ispell-personal-dictionary (concat (projectile-project-root)
-                                                 "user.dict"))))
+    (define-key input-decode-map (kbd "C-S-M") (kbd "H-M")))
   (add-hook 'change-major-mode-hook 'hook-change-major-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1494,6 +1485,9 @@ If OTHER is t then scroll other window."
   (define-key isearch-mode-map (kbd "C-.") 'tddsg/yank-current-word-isearch)
   (define-key isearch-mode-map (kbd "C-c C-v") 'pdf-isearch-sync-backward)
   (define-key isearch-mode-map (kbd "<f6>") 'pdf-isearch-sync-backward)
+
+  ;; org
+  (setq org-reveal-root "file:///home/trungtq/workspace/misc/reveal.js/js/reveal.js")
 
   ;; swiper
   (with-eval-after-load 'swiper
@@ -1952,8 +1946,7 @@ If OTHER is t then scroll other window."
          (name-len (length file-name))
          (dir-len (length dir-name))
          (drop-str "[...]")
-         (path-display-len (- (window-body-width)
-                              (length (projectile-project-name)) 3))
+         (path-display-len (- (window-body-width) 3))
          (dir-display-len (- path-display-len (length drop-str) name-len 2)))
     (cond ((< path-len path-display-len)
            (concat "▷ "
