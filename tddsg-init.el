@@ -993,6 +993,9 @@ If OTHER is t then scroll other window."
   (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
   (defadvice kill-region (after set-mark activate) (tddsg--set-mark))
 
+  ;; isearch
+  (setq lazy-highlight-cleanup nil)
+
   ;; company-mode
   (setq company-idle-delay 300)
   (setq company-tooltip-idle-delay 300)
