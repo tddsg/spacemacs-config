@@ -1536,16 +1536,6 @@ If OTHER is t then scroll other window."
     (global-set-key (kbd "C-S-<up>") 'buf-move-up)
     (global-set-key (kbd "C-S-<down>") 'buf-move-down))
 
-  ;; buffer-clone
-  (global-set-key (kbd "C-M-S-<left>") 'buf-clone-left)
-  (global-set-key (kbd "C-M-S-<right>") 'buf-clone-right)
-  (global-set-key (kbd "C-M-S-<up>") 'buf-clone-up)
-  (global-set-key (kbd "C-M-S-<down>") 'buf-clone-down)
-  (global-set-key (kbd "M-m b c b") 'buf-clone-left)
-  (global-set-key (kbd "M-m b c f") 'buf-clone-right)
-  (global-set-key (kbd "M-m b c p") 'buf-clone-up)
-  (global-set-key (kbd "M-m b c n") 'buf-clone-down)
-
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)

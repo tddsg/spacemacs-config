@@ -39,8 +39,7 @@
     (framemove :location local)
     (llvm-mode :location local)
     (songbird :location local)
-    (guess-style :location local)
-    (buffer-clone :location local))
+    (guess-style :location local))
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
 
