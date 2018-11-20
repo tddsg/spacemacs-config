@@ -1299,6 +1299,8 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-S-p") 'backward-paragraph)
+  (global-set-key (kbd "C-S-n") 'forward-paragraph)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
