@@ -27,6 +27,7 @@
     writegood-weasels-face writegood-duplicates-face writegood-passive-voice-face
     langtool-errline
     evil-search-highlight-persist-highlight-face
+    lazy-highlight
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
 
