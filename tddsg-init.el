@@ -987,6 +987,7 @@ If OTHER is t then scroll other window."
     (when (derived-mode-p 'pdf-view-mode)
       ;; enable minor modes
       (pdf-tools-enable-minor-modes)
+      (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
       ;; update theme
       (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
              (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
@@ -1649,7 +1650,8 @@ If OTHER is t then scroll other window."
 
   ;; cc
   (with-eval-after-load 'cc-mode
-    (define-key c-mode-base-map (kbd "(") 'self-insert-command) ;; fix to make smartparens can enclose ()
+    ;; fix to make smartparens can enclose ()
+    (define-key c-mode-base-map (kbd "(") 'self-insert-command) 
     (define-key c-mode-base-map (kbd "C-M-q") nil)
     (define-key c-mode-base-map (kbd "C-M-j") nil)
     (define-key c-mode-map (kbd "C-M-j") nil)
@@ -1660,9 +1662,10 @@ If OTHER is t then scroll other window."
   (define-key company-active-map (kbd "M-.") 'company-show-location)
 
   ;; flycheck
-  (define-key flycheck-mode-map (kbd "M-g M-n") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "M-g M-p") 'flycheck-previous-error)
-  (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error))
+  (with-eval-after-load 'flycheck-mode
+    (define-key flycheck-mode-map (kbd "M-g M-n") 'flycheck-next-error)
+    (define-key flycheck-mode-map (kbd "M-g M-p") 'flycheck-previous-error)
+    (define-key flycheck-mode-map (kbd "M-g M-f") 'flycheck-first-error)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
