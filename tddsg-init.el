@@ -1941,19 +1941,19 @@ If OTHER is t then scroll other window."
 
 (defun update-header-line ()
   "Update header line of the active buffer and dim all others."
-  (defun exclude-window-p (window)
-    (let ((buffname (buffer-name (window-buffer window))))
-      (or (string-prefix-p "*Helm" buffname)
-          (string-prefix-p "*helm" buffname)
-          (string-prefix-p "*Minibuf" buffname)
-          (string-prefix-p "*spacemacs" buffname))))
-  (mapc
-   (lambda (window)
-     (with-current-buffer (window-buffer window)
-       (cond ((exclude-window-p window)) ;; do nothing
-             (t (setq header-line-format (header-file-path))))))
-   (window-list)))
+  (defun exclude-buffer-p (buffname)
+    (or (string-prefix-p "*Helm" buffname)
+        (string-prefix-p "*helm" buffname)
+        (string-prefix-p "*Minibuf" buffname)
+        (string-prefix-p "*spacemacs" buffname)))
+  (when (not (exclude-buffer-p (buffer-name)))
+    (mapc
+     (lambda (window)
+       (with-current-buffer (window-buffer window)
+         (cond ((exclude-buffer-p (buffer-name))) ;; do nothing
+               (t (setq header-line-format (header-file-path))))))
+     (window-list))))
 
 ;; update header line of each buffer
 (add-hook 'window-configuration-change-hook 'update-header-line)
-(add-hook 'change-major-mode-hook 'update-header-line)
+(add-hook 'buffer-list-update-hook 'update-header-line)
