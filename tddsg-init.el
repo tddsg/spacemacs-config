@@ -2,6 +2,9 @@
 
 ;;; Commentary:
 
+;;; Some note:
+;;  1. Using `buffer-list-update-hook` is costly, due to helm interfaces
+
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -800,6 +803,8 @@ If OTHER is t then scroll other window."
 (defun tddsg/scroll-other-window-upward ()
   "Scroll half window upward."
   (interactive)
+  ;; FIXME when the buffer in the other window is at the beginning of the file,
+  ;; running this function will move the cursor to the other window
   (tddsg/scroll-window 'upward t))
 
 (defun tddsg/scroll-other-window-downward ()
@@ -945,6 +950,8 @@ If OTHER is t then scroll other window."
   ;; mode paragraph setting
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
+
+  (setq header-line-format "%f")
 
   ;; save
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
@@ -1651,7 +1658,7 @@ If OTHER is t then scroll other window."
   ;; cc
   (with-eval-after-load 'cc-mode
     ;; fix to make smartparens can enclose ()
-    (define-key c-mode-base-map (kbd "(") 'self-insert-command) 
+    (define-key c-mode-base-map (kbd "(") 'self-insert-command)
     (define-key c-mode-base-map (kbd "C-M-q") nil)
     (define-key c-mode-base-map (kbd "C-M-j") nil)
     (define-key c-mode-map (kbd "C-M-j") nil)
@@ -1947,13 +1954,10 @@ If OTHER is t then scroll other window."
         (string-prefix-p "*Minibuf" buffname)
         (string-prefix-p "*spacemacs" buffname)))
   (when (not (exclude-buffer-p (buffer-name)))
-    (mapc
-     (lambda (window)
-       (with-current-buffer (window-buffer window)
-         (cond ((exclude-buffer-p (buffer-name))) ;; do nothing
-               (t (setq header-line-format (header-file-path))))))
-     (window-list))))
+    (setq header-line-format (header-file-path))))
 
 ;; update header line of each buffer
 (add-hook 'window-configuration-change-hook 'update-header-line)
-(add-hook 'buffer-list-update-hook 'update-header-line)
+(defadvice rename-buffer (before header-line activate) (update-header-line))
+
+;;; tddsg-init.el ends here
