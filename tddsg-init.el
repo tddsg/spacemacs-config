@@ -837,27 +837,6 @@ If OTHER is t then scroll other window."
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
-(defun tddsg/recent-dirs ()
-  "Open recent dirs."
-  (interactive)
-  (defun parent-dirs (path)
-    (let* ((path (directory-file-name path))
-           (parent (directory-file-name (file-name-directory path))))
-      (cond ((string= path parent) '(path))
-            ((file-directory-p path) (cons path (parent-dirs parent)))
-            ((file-exists-p path) (parent-dirs parent)))))
-  (let* ((recent-files (seq-remove (lambda (path)
-                                     (string-match-p (regexp-quote "/.") path))
-                                   recentf-list))
-         (recent-dirs (delete-dups
-                        (apply #'append (mapcar 'parent-dirs recent-files))))
-         (dired-dirs (mapcar (lambda (item) (directory-file-name (car item)))
-                             dired-buffers))
-         (all-dirs (delete-dups (append recent-dirs dired-dirs)))
-         (all-dirs (sort all-dirs 'string<))
-         (selected-dir (completing-read "Dired buffer name: " all-dirs)))
-    (dired selected-dir)))
-
 (defun tddsg/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   (interactive)
@@ -1337,7 +1316,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
 
-  (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
+  (global-set-key (kbd "C-x C-d") 'purpose-toggle-window-purpose-dedicated)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
