@@ -126,29 +126,6 @@
 
 (defun tddsg/post-init-pdf-tools ()
   (require 'pdf-sync)
-  ;;;;; customize to jump to the pdf-view window and display tooltip
-  (defun pdf-sync-forward-search (&optional line column)
-    "Display the PDF location corresponding to LINE, COLUMN."
-    (interactive)
-    (cl-destructuring-bind (pdf page _x1 y1 _x2 _y2)
-        (pdf-sync-forward-correlate line column)
-      (let ((buffer (or (find-buffer-visiting pdf)
-                        (find-file-noselect pdf))))
-        (select-window (display-buffer buffer pdf-sync-forward-display-action))
-        (other-window -1)
-        (other-window 1)
-        (pdf-util-assert-pdf-window)
-        (pdf-view-goto-page page)
-        (let ((top (* y1 (cdr (pdf-view-image-size)))))
-          ;;; old code
-          ;; (pdf-util-tooltip-arrow (round top) 20)
-          (run-at-time 0.02 nil
-                       (lambda (top)
-                         ;; display tooltip by a timer to avoid being cleared
-                         (when (derived-mode-p 'pdf-view-mode)
-                           (pdf-util-tooltip-arrow (round top) 20)))
-                       top))
-        (with-current-buffer buffer (run-hooks 'pdf-sync-forward-hook)))))
   ;;;;; customize pdf-isearch for syncing backward
   (defun pdf-isearch-sync-backward ()
     "Sync backward to the LaTeX source of the current match."

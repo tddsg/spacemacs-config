@@ -1323,7 +1323,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-z") nil)
 
   (global-set-key [?\H-m] 'helm-mini)
-  (global-set-key [?\H-M] 'tddsg/recent-dirs)
   (global-set-key (kbd "H-M-m") 'projectile-find-file)
   (global-set-key [?\H-i] 'swiper)
   (global-set-key [?\H-I] 'swiper)
