@@ -728,9 +728,13 @@ after stripping extra whitespace and new lines"
                        (lambda () (projectile-project-buffer-p (current-buffer)
                                                                root))))
   ;; set main
-  (let ((main-tex (cond ((stringp TeX-master) TeX-master)
-                        (TeX-master (buffer-file-name))
-                        (t (concat (projectile-project-root) "main.tex")))))
+  (let* ((extension (file-name-extension (buffer-file-name)))
+         (main-tex (cond ((and (string= extension "tex") (stringp TeX-master))
+                          TeX-master)
+                         ((and (string= extension "tex") TeX-master)
+                          (buffer-file-name))
+                         (t (concat default-directory "main.tex")))))
+    (message "main-tex: %s" main-tex)
     (setq TeX-master main-tex)
     (TeX-command "LaTeX" 'TeX-master-file -1)))
 
