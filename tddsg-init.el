@@ -734,7 +734,6 @@ after stripping extra whitespace and new lines"
                          ((and (string= extension "tex") TeX-master)
                           (buffer-file-name))
                          (t (concat default-directory "main.tex")))))
-    (message "main-tex: %s" main-tex)
     (setq TeX-master main-tex)
     (TeX-command "LaTeX" 'TeX-master-file -1)))
 
