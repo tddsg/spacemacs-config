@@ -1352,6 +1352,7 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
   (global-set-key (kbd "C-c C-g") 'helm-projectile-ag)
   (global-set-key (kbd "C-c C-k") 'kill-matching-buffers)
+  (global-set-key (kbd "C-c C-s") 'projectile-save-project-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
 
   (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
