@@ -34,6 +34,7 @@
     super-save
     autorevert
     sr-speedbar
+    (smooth-scrolling2 :location local) ;; set to local since spacemacs cannot install it from melpa
     (dired+ :location local)
     (column-marker :location local)
     (framemove :location local)
@@ -539,6 +540,11 @@
 
 (defun tddsg/init-column-marker ()
   (use-package column-marker))
+
+(defun tddsg/init-smooth-scrolling2 ()
+  (use-package smooth-scrolling2)
+  (smooth-scrolling2-mode)
+  (setq smooth-scroll-margin 5))
 
 (defun tddsg/init-framemove ()
   (use-package framemove)
