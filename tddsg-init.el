@@ -859,10 +859,10 @@ If OTHER is t then scroll other window."
   (setq blink-cursor-blinks 0)
   (setq tab-width 2)
   (setq fill-column 75)
-  (setq fast-but-imprecise-scrolling nil)
+  ;; (setq fast-but-imprecise-scrolling nil)
   (setq text-scale-mode-step 1.1)
-  (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
   (setq powerline-default-separator 'bar)
+  (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
 
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
