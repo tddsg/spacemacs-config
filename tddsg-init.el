@@ -56,24 +56,6 @@
       (when process
         (set-process-window-size process (window-height) (window-width))))))
 
-(defun tddsg--create-backup-file-name (fpath)
-  "Return a new file path of a given file path.
-If the new path's directories does not exist, create them."
-  (let* ((backup-root "~/.emacs.d/private/backup/")
-         ;; remove Windows driver letter in path, for example: “C:”
-         (file-path (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
-         (backup-filepath (replace-regexp-in-string
-                          "//" "/" (concat backup-root file-path "~"))))
-    (make-directory (file-name-directory backup-filepath)
-                    (file-name-directory backup-filepath))
-    backup-filepath))
-
-(defun tddsg--save-buffer ()
-  "Save current buffer."
-  (if (and (not buffer-read-only)
-           (derived-mode-p 'text-mode 'prog-mode))
-      (save-buffer)))
-
 (defun tddsg--highlight-todos ()
   (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
                                  1 (hl-todo--get-face) t)))
@@ -82,15 +64,6 @@ If the new path's directories does not exist, create them."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
-
-(defun tddsg/read-file-sexp ()
-  (interactive)
-  (let* ((config-file (concat (projectile-project-root) ".tddsg.el"))
-         (configuration
-          (with-temp-buffer
-            (insert-file-contents-literally config-file)
-            (read (current-buffer)))))
-    (message (cdar configuration))))
 
 (defun tddsg/describe-face-under-cursor ()
   "Describe the face information under the cursor."
@@ -239,14 +212,6 @@ If the new path's directories does not exist, create them."
   (let* ((command (get-shell-command)))
     (call-process-shell-command (concat command " " buffer-file-name "&"))))
 
-(defun tddsg/golden-dict ()
-  "Lookup in golden dict"
-  (interactive)
-  (let* ((text (if (region-active-p)
-                   (buffer-substring (region-beginning) (region-end))
-                 (thing-at-point 'word))))
-    (call-process-shell-command (concat "goldendict " text " &"))))
-
 (defun tddsg/shell-current-window (&optional buffer)
   "Open a `shell' in the current window."
   (interactive)
@@ -293,14 +258,6 @@ DIRECTION is 'next or 'previous."
   (interactive)
   (tddsg/switch-buffer-of-mode 'prev major-mode))
 
-(defun tddsg/kill-temp-buffers ()
-  "Kill temp buffers"
-  (interactive)
-  (cl-loop for buffer in (buffer-list) do
-           (if (not (or (string= (buffer-name buffer) "*scratch*")
-                        (string= (buffer-name buffer) "*Messages*")))
-               (kill-buffer buffer))))
-
 ;; TODO: create a full request to Spacemacs
 (defun tddsg/save-file-as-and-open (filename)
   "Save current buffer into file FILENAME and open it in a new buffer."
@@ -334,12 +291,6 @@ DIRECTION is 'next or 'previous."
           ((eq current-char (downcase current-char))
            (delete-char 1)
            (insert (upcase current-char))))))
-
-(defun tddsg/dired-duplicate-files ()
-  "Duplicate files to the current folder by adding suffix \" - COPY\"."
-  (interactive)
-  ;; TODO: how to deal with file names having no \".\". For example: TODO files
-  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 - (COPY).\\2"))
 
 (defun tddsg/duplicate-region-or-line ()
   "Duplicate a selected region or a line."
@@ -765,13 +716,6 @@ after stripping extra whitespace and new lines"
       (progn (other-window 1) (find-file frame-path)))
     (pdf-view-first-page)))
 
-(defun tddsg/close-special-windows ()
-  "Close all special windows such as compilation, ..."
-  (interactive)
-  (dolist (buf-name '("*compilation*")) ;; list more windows here
-    (let ((window (get-buffer-window buf-name)))
-      (when window (delete-window window)))))
-
 (defun tddsg/scroll-window (&optional direction other)
   "Scroll half window, DIRECTION can be 'upward or 'downward.
 If OTHER is t then scroll other window."
@@ -910,20 +854,15 @@ If OTHER is t then scroll other window."
 
 (defun tddsg/config-packages ()
   ;; visual interface setting
-  (global-hl-todo-mode 1)           ;; highlight todo mode
-  (blink-cursor-mode 1)             ;; turn off blinking
-  (setq tab-width 4)
-  (setq blink-cursor-blinks 0)     ;; blink 15 times
-  (setq fill-column 75)             ;; max size of a line for fill-or-unfill
+  (global-hl-todo-mode 1)
+  (blink-cursor-mode 1)
+  (setq blink-cursor-blinks 0)
+  (setq tab-width 2)
+  (setq fill-column 75)
   (setq fast-but-imprecise-scrolling nil)
-  (setq text-scale-mode-step 1.1)   ;; scale changing font size
-  (setq frame-title-format          ;; frame title
-        '("" invocation-name " - "
-          (:eval (if (buffer-file-name)
-                     (abbreviate-file-name (buffer-file-name)) "%b"))))
-
-  ;; customize cursor's colors
+  (setq text-scale-mode-step 1.1)
   (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
+  (setq powerline-default-separator 'bar)
 
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
@@ -932,8 +871,6 @@ If OTHER is t then scroll other window."
   ;; mode paragraph setting
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
-
-  (setq header-line-format "%f")
 
   ;; save
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
@@ -971,25 +908,6 @@ If OTHER is t then scroll other window."
   (setq company-tooltip-idle-delay 300)
   (global-company-mode)
 
-  ;; pdf-view
-  (defun update-pdf-view ()
-    (when (derived-mode-p 'pdf-view-mode)
-      ;; enable minor modes
-      (pdf-tools-enable-minor-modes)
-      (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
-      ;; update theme
-      (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
-             (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
-                 (pdf-view-midnight-minor-mode)))
-            ((eq spacemacs--cur-theme 'leuven)
-             (if (bound-and-true-p pdf-view-midnight-minor-mode)
-                 (pdf-view-midnight-minor-mode -1))))))
-  (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
-    (mapc (lambda (window) (with-current-buffer (window-buffer window)
-                             (update-pdf-view)))
-          (window-list)))
-  (add-hook 'pdf-view-mode-hook 'update-pdf-view)
-
   ;; mode editing setting
   (electric-pair-mode -1)         ;; electric-pair may conflict with smartparens
   (delete-selection-mode t)       ;; delete selection by keypress
@@ -997,14 +915,10 @@ If OTHER is t then scroll other window."
   (defadvice newline (after indent activate) (indent-according-to-mode))
   (ad-unadvise 'kill-region)
 
-
   ;; some Emacs threshold
   (setq max-lisp-eval-depth 50000)
   (setq max-specpdl-size 50000)
   (setq dotspacemacs-large-file-size 10)   ;; large file of spacemacs is 10MB
-
-  ;; mode-line setting
-  (setq powerline-default-separator 'bar)
 
   ;; compilation
   (setq compilation-ask-about-save nil
@@ -1034,11 +948,6 @@ If OTHER is t then scroll other window."
     (visual-line-mode 1))
   (add-hook 'shell-mode-hook 'hook-shell-mode)
 
-  ;; automatically save buffer
-  (defadvice magit-status (before save-buffer activate) (tddsg--save-buffer))
-  (defadvice winum-select-window-by-number
-      (before save-buffer activate) (tddsg--save-buffer))
-
   ;; which-key
   (setq which-key-idle-delay 1.2)
 
@@ -1049,17 +958,8 @@ If OTHER is t then scroll other window."
   (global-auto-revert-mode t)
   (setq auto-revert-check-vc-info nil)
 
-  ;; backup
-  (setq make-backup-files t
-        make-backup-file-name-function 'tddsg--create-backup-file-name)
-
   ;; buffer specific
   (add-hook 'first-change-hook 'tddsg/config-buffer-specific)
-
-  ;; engine
-  (defengine thefreedictionary
-    "http://www.thefreedictionary.com/%s"
-    :keybinding "d")
 
   ;; hippie expand
   (setq hippie-expand-try-functions-list
@@ -1415,8 +1315,6 @@ If OTHER is t then scroll other window."
   (global-set-key (kbd "M-m f C") 'tddsg/save-file-as-and-open)
   (global-set-key (kbd "M-m f o") 'tddsg/open-with)
 
-  (global-set-key (kbd "M-s d") 'tddsg/golden-dict)
-  (global-set-key (kbd "M-s D") 'engine/search-thefreedictionary)
   (global-set-key (kbd "M-s h .") 'tddsg/highlight-symbol-at-point-or-region)
   (global-set-key (kbd "M-s g") 'engine/search-google)
   (global-set-key (kbd "M-s G") 'browse-url)
@@ -1613,7 +1511,6 @@ If OTHER is t then scroll other window."
   (define-key dired-mode-map (kbd "M-+") 'nil)
   (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
   (define-key dired-mode-map (kbd "<backspace>") 'dired-up-directory)
-  (define-key dired-mode-map (kbd "M-C") 'tddsg/dired-duplicate-files)
 
   ;; smartparens
   (define-key smartparens-mode-map (kbd "M-s") nil)

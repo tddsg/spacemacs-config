@@ -124,8 +124,30 @@
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face tabs)))
 
+
+;;; PDF-TOOLS
 (defun tddsg/post-init-pdf-tools ()
   (require 'pdf-sync)
+
+  ;; pdf-view
+  (defun update-pdf-view ()
+    (when (derived-mode-p 'pdf-view-mode)
+      ;; enable minor modes
+      (pdf-tools-enable-minor-modes)
+      (set (make-local-variable 'evil-emacs-state-cursor) (list nil))
+      ;; update theme
+      (cond ((eq spacemacs--cur-theme 'spacemacs-dark)
+             (if (not (bound-and-true-p pdf-view-midnight-minor-mode))
+                 (pdf-view-midnight-minor-mode)))
+            ((eq spacemacs--cur-theme 'leuven)
+             (if (bound-and-true-p pdf-view-midnight-minor-mode)
+                 (pdf-view-midnight-minor-mode -1))))))
+  (defadvice spacemacs/cycle-spacemacs-theme (after pdf-view activate)
+    (mapc (lambda (window) (with-current-buffer (window-buffer window)
+                             (update-pdf-view)))
+          (window-list)))
+  (add-hook 'pdf-view-mode-hook 'update-pdf-view)
+
   ;;;;; customize pdf-isearch for syncing backward
   (defun pdf-isearch-sync-backward ()
     "Sync backward to the LaTeX source of the current match."
@@ -135,12 +157,14 @@
               (top (cadar pdf-isearch-current-match)))
           (isearch-exit)
           (funcall 'pdf-sync-backward-search left top))))
+
   ;;;;; other settings
   (setq pdf-view-resize-factor 1.05)
   (add-hook 'pdf-view-mode-hook 'pdf-view-auto-slice-minor-mode)
   (custom-set-variables
    '(pdf-view-midnight-colors  (quote ("#D3D3D3" . "#292B2E")))))
 
+;;; CC-MODE
 (defun tddsg/post-init-cc-mode ()
   ;; hook
   (defun my-cc-mode-hook ()
