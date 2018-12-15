@@ -864,7 +864,7 @@ If OTHER is t then scroll other window."
   (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
 
   ;; scrolling
-  (setq scroll-margin 5)
+  (setq scroll-margin 0)
   (setq scroll-step 0)
   (setq fast-but-imprecise-scrolling t)
 
