@@ -44,9 +44,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
 
-(defun tddsg--set-mark ()
-  (push-mark (point) t nil))
-
 (defun tddsg--fix-comint-window-size ()
   "Change process window size."
   (when (derived-mode-p 'comint-mode)
@@ -596,16 +593,6 @@ after stripping extra whitespace and new lines"
            (goto-char pos-begin-line))
           (t (goto-char pos-first-nonblank)))))
 
-(defun tddsg/unpop-to-mark-command ()
-  "Unpop off mark ring. Does nothing if mark ring is empty."
-  (interactive)
-  (when mark-ring
-    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-    (when (null (mark t)) (ding))
-    (setq mark-ring (nbutlast mark-ring))
-    (goto-char (marker-position (car (last mark-ring))))))
-
 (defun tddsg/compile ()
   "Find the closest Makefile and compile."
   (interactive)
@@ -711,16 +698,6 @@ after stripping extra whitespace and new lines"
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
-(defun tddsg/unpop-to-mark-command ()
-  "Unpop off mark ring. Does nothing if mark ring is empty."
-  (interactive)
-  (when mark-ring
-    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-    (when (null (mark t)) (ding))
-    (setq mark-ring (nbutlast mark-ring))
-    (goto-char (marker-position (car (last mark-ring))))))
-
 (defun tddsg/clean-recentf-list (pattern)
   (interactive "sEnter a file pattern that will be cleaned: ")
   (add-to-list 'recentf-exclude pattern)
@@ -821,15 +798,6 @@ after stripping extra whitespace and new lines"
         ispell-dictionary "english"
         ispell-personal-dictionary "~/.emacs.d/user.dict")
   (setq spell-checking-enable-by-default nil)
-
-  ;; mark ring
-  (setq set-mark-command-repeat-pop t)
-  (defadvice find-file (before set-mark activate) (tddsg--set-mark))
-  (defadvice isearch-update (before set-mark activate) (tddsg--set-mark))
-  (defadvice beginning-of-buffer (before set-mark activate) (tddsg--set-mark))
-  (defadvice end-of-buffer (before set-mark activate) (tddsg--set-mark))
-  (defadvice merlin-locate (before set-mark activate) (tddsg--set-mark))
-  (defadvice kill-region (after set-mark activate) (tddsg--set-mark))
 
   ;; isearch
   (setq lazy-highlight-cleanup nil)
@@ -1091,8 +1059,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-q") 'goto-last-change)
-  (global-set-key (kbd "C-M-q") (kbd "C-u C-SPC"))   ;; traverse mark ring
-  (global-set-key (kbd "C-S-q") 'tddsg/unpop-to-mark-command)
   (global-set-key (kbd "C-/") 'undo)
   (global-set-key (kbd "C-;") 'iedit-mode)
   (global-set-key (kbd "C-^") 'tddsg/join-with-beneath-line)
