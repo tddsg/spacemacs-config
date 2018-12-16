@@ -888,12 +888,12 @@ after stripping extra whitespace and new lines"
       (setq helm-display-function 'helm-default-display-buffer)
       (apply orig-func args)
       (setq helm-display-function 'spacemacs//display-helm-window))
-    (advice-add 'helm-company :around #'helm-split-active-window)
-    (advice-add 'helm-semantic-or-imenu :around #'helm-split-active-window)
-    (advice-add 'helm-imenu :around #'helm-split-active-window)
-    (advice-add 'completion-at-point :around #'helm-split-active-window)
-    (advice-add 'flyspell-correct-previous-word-generic
-                :around #'helm-split-active-window))
+    (cl-loop for function in `(helm-company
+                               helm-semantic-or-imenu
+                               helm-imenu
+                               completion-at-point
+                               flyspell-correct-previous-word-generic)
+             do (advice-add function :around #'helm-split-active-window)))
 
   ;; ag-search
   (setq helm-ag-use-agignore t)
