@@ -768,7 +768,7 @@ after stripping extra whitespace and new lines"
   (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
 
   ;; scrolling
-  (setq scroll-margin 0)
+  (setq scroll-margin 5)
   (setq scroll-step 0)
   (setq fast-but-imprecise-scrolling t)
 

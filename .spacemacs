@@ -53,7 +53,7 @@ This function should only modify configuration layer settings."
      version-control
      spell-checking
      (syntax-checking :variables syntax-checking-enable-by-default nil)
-     semantic
+     ;; semantic
      pdf
      cscope
      search-engine
