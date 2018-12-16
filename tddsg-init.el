@@ -212,24 +212,6 @@
   (let* ((command (get-shell-command)))
     (call-process-shell-command (concat command " " buffer-file-name "&"))))
 
-(defun tddsg/shell-current-window (&optional buffer)
-  "Open a `shell' in the current window."
-  (interactive)
-  (let ((window (selected-window))
-        (window-config (current-window-configuration))
-        (shell-buffer (call-interactively 'shell)))
-    (set-window-configuration window-config)
-    (select-window window)
-    (switch-to-buffer shell-buffer)))
-
-(defun tddsg/shell-other-window (&optional buffer)
-  "Open a `shell' in a new window."
-  (interactive)
-  (when (equal (length (window-list)) 1)
-    (call-interactively 'split-window-right))
-  (call-interactively 'other-window)
-  (call-interactively 'tddsg/shell-current-window))
-
 ;; swith between shell buffer
 (defun tddsg/switch-buffer-of-mode (direction mode)
   "Jump to the next or previous buffer of the same mode,
@@ -730,7 +712,7 @@ after stripping extra whitespace and new lines"
   (irony--mode-exit)
   (irony--mode-enter))
 
-(defun tddsg/toggle-shell-scroll-to-bottomon-on-output ()
+(defun tddsg/toggle-shell-scroll-output ()
   "Toggle shell scroll to the last line on output."
   (interactive)
   (if (derived-mode-p 'shell-mode)
@@ -1204,7 +1186,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c m") 'tddsg/shell-current-window)
+  (global-set-key (kbd "C-c m") 'shell)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
   (global-set-key (kbd "C-c @ s") 'tddsg/show-special-whitespaces)
   (global-set-key (kbd "C-c @ h") 'tddsg/hide-special-whitespaces)
@@ -1338,8 +1320,7 @@ after stripping extra whitespace and new lines"
   ;; shell
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
   (define-key shell-mode-map (kbd "C-c d") 'comint-clear-buffer)
-  (define-key shell-mode-map (kbd "C-c C-s")
-    'tddsg/toggle-shell-scroll-to-bottomon-on-output)
+  (define-key shell-mode-map (kbd "C-c C-s") 'tddsg/toggle-shell-scroll-output)
 
   ;; undo tree
   (define-key undo-tree-map (kbd "C-_") nil)
