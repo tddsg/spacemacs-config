@@ -1656,27 +1656,41 @@ after stripping extra whitespace and new lines"
        ("OK" . "red"))))))
 
 ;;; Override SPACELINE to show file path in mode-line
-(defun shorten-left (str len)
-  (message "length: %s" len)
-  (if (> (length str) len)
-      (let ((pos (/ len 4)))
-        (concat (apply #'propertize "[...]" (text-properties-at (- pos 1) str))
-                (substring str (- (- len 10)) nil)))
-    str))
+(defmacro with-face (str &rest properties)
+  `(propertize ,str
+               'face (list ,@properties)
+               'mouse-face 'mode-line-highlight
+               'help-echo "Buffer name\n\ mouse-1: Previous buffer\n\ mouse-3: Next buffer"
+               'local-map (let ((map (make-sparse-keymap)))
+               			        (define-key map [mode-line mouse-1] 'mode-line-previous-buffer)
+               			        (define-key map [mode-line mouse-3] 'mode-line-next-buffer)
+               			        map)))
+
+(defun shorten-left (name len)
+  (if (> (length name) len)
+      (concat (apply #'propertize "[...]" (text-properties-at 1 name))
+              (substring name (- (- len 10)) nil))
+    name))
+
+(defun shorten-right (name len)
+  (if (> (length name) len)
+      (concat (apply #'propertize "[...]" (text-properties-at (- (length name) 1) name))
+              (substring name 0 (- len 10) ))
+    name))
+
 (spaceline-define-segment buffer-id
   "Name of buffer."
   (let* ((max-name-length (- (window-body-width) 10))
-         (display-length (max 50 (- (window-body-width) 40)))
-         (file-name (if (buffer-file-name)
-                        (abbreviate-file-name (buffer-file-name))
-                      nil))
-         (buffer-id (if (and file-name (< (length file-name) max-name-length))
-                        file-name
-                      (powerline-buffer-id)))
-         (mode-line-buffer-identification buffer-id))
-    (s-trim (shorten-left
-             (powerline-buffer-id (if active 'mode-line-buffer-id
-                                    'mode-line-buffer-id-inactive))
-             display-length))))
+         (display-length (max 50 (- (window-body-width) 45)))
+         (path (if (buffer-file-name) (abbreviate-file-name (buffer-file-name)) ""))
+         (face (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+         (default-buffer-id (with-face (powerline-buffer-id) face))
+         (buffer-id (if (and (buffer-file-name) (< (length path) max-name-length))
+                        (let* ((file-name (with-face (file-name-nondirectory path) face))
+                               (dir-name (with-face (file-name-directory path) :foreground "gray"))
+                               (buffer-name (concat dir-name file-name)))
+                          (shorten-left buffer-name display-length))
+                      (shorten-right default-buffer-id display-length))))
+    (s-trim buffer-id)))
 
 ;;; tddsg-init.el ends here
