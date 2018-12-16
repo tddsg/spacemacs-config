@@ -952,6 +952,10 @@ after stripping extra whitespace and new lines"
   ;; spaceline
   (spaceline-toggle-buffer-encoding-abbrev-off)
   (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-buffer-position-off)
+  (spaceline-toggle-hud-off)
+  (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-version-control-off)
 
   ;; python-mode
   (defun hook-python-mode ()
@@ -1652,19 +1656,27 @@ after stripping extra whitespace and new lines"
        ("OK" . "red"))))))
 
 ;;; Override SPACELINE to show file path in mode-line
+(defun shorten-left (str len)
+  (message "length: %s" len)
+  (if (> (length str) len)
+      (let ((pos (/ len 4)))
+        (concat (apply #'propertize "[...]" (text-properties-at (- pos 1) str))
+                (substring str (- (- len 10)) nil)))
+    str))
 (spaceline-define-segment buffer-id
   "Name of buffer."
-  (let* ((display-length (- (window-body-width) 18))
+  (let* ((max-name-length (- (window-body-width) 10))
+         (display-length (max 50 (- (window-body-width) 40)))
          (file-name (if (buffer-file-name)
                         (abbreviate-file-name (buffer-file-name))
                       nil))
-         (buffer-id (if (and file-name (< (length file-name) display-length))
+         (buffer-id (if (and file-name (< (length file-name) max-name-length))
                         file-name
                       (powerline-buffer-id)))
          (mode-line-buffer-identification buffer-id))
-    (s-trim (spaceline--string-trim-from-center
+    (s-trim (shorten-left
              (powerline-buffer-id (if active 'mode-line-buffer-id
                                     'mode-line-buffer-id-inactive))
-             spaceline-buffer-id-max-length))))
+             display-length))))
 
 ;;; tddsg-init.el ends here
