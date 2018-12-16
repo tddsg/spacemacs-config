@@ -41,7 +41,9 @@ This function should only modify configuration layer settings."
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      better-defaults
      spacemacs-layouts
+     tddsg
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;;; utility settings
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -50,7 +52,7 @@ This function should only modify configuration layer settings."
      git
      version-control
      spell-checking
-     syntax-checking
+     (syntax-checking :variables syntax-checking-enable-by-default nil)
      semantic
      pdf
      cscope
@@ -68,15 +70,13 @@ This function should only modify configuration layer settings."
      haskell
      yaml
      ;; perl5
-     ruby
+     ;; ruby
      csv
      python
      html
      javascript
      coq
-     clojure
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     tddsg)
+     clojure)
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these

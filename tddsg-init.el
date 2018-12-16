@@ -259,10 +259,6 @@ DIRECTION is 'next or 'previous."
         (write-region (point-min) (point-max) filename )
         (find-file filename))))
 
-(defun tddsg/dired-home ()
-  (interactive)
-  (dired "~/"))
-
 (defun tddsg/toggle-case-current-character ()
   "Toggle case of the current character."
   (interactive)
@@ -1072,7 +1068,7 @@ after stripping extra whitespace and new lines"
     (whitespace-mode 1)
     (flyspell-mode -1)
     (linum-mode 1)
-    (flycheck-mode 1))
+    (flycheck-mode -1))
   (defun hook-latex-mode ()
     "Hook to run in 'latex-mode'."
     (setq tddsg--face-change-types tddsg--face-change-types-default)
@@ -1451,7 +1447,6 @@ after stripping extra whitespace and new lines"
 
   ;; dired mode
   (define-key dired-mode-map (kbd "M-+") 'nil)
-  (define-key dired-mode-map (kbd "C-^") 'tddsg/dired-home)
   (define-key dired-mode-map (kbd "<backspace>") 'dired-up-directory)
 
   ;; smartparens
