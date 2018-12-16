@@ -33,8 +33,7 @@
     anzu
     super-save
     autorevert
-    sr-speedbar
-    (smooth-scrolling2 :location local) ;; set to local since spacemacs cannot install it from melpa
+    ;; set to local since spacemacs cannot install it from melpa
     (dired+ :location local)
     (column-marker :location local)
     (framemove :location local)
@@ -78,39 +77,11 @@
             (progn
               (package-install 'helm-ag)
               (helm-projectile-ag options))
-          (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?"))))))
-
-  (defun helm-ag-set-extra-option ()
-    "Set extra options for helm-ag"
-    (interactive)
-    (let ((option (read-string "Helm-ag: set extra options: "
-                               (or helm-ag--extra-options "")
-                               'helm-ag--extra-options-history)))
-      (setq helm-ag--extra-options option)))
-
-;;;;; show ag options in helm-ag buffer
-  (defun helm-ag--put-result-in-save-buffer (result search-this-file-p)
-    (setq buffer-read-only t)
-    (let ((inhibit-read-only t))
-      (erase-buffer)
-      (insert "-*- mode: helm-ag -*-\n\n"
-              (format "Ag Results for `%s'%s:\n\n"
-                      helm-ag--last-query
-                      (if (string= helm-ag--extra-options "") ""
-                        (format ", with options `%s'" helm-ag--extra-options))))
-      (save-excursion
-        (insert result)))
-    (helm-ag-mode)
-    (unless (helm-ag--vimgrep-option)
-      (setq-local helm-ag--search-this-file-p search-this-file-p))
-    (setq-local helm-ag--default-directory default-directory)))
+          (error (error "`helm-ag' is not available. Is MELPA in your `package-archives'?")))))))
 
 (defun tddsg/init-solidity-mode ()
   (use-package solidity-mode)
   (push 'solidity-mode irony-supported-major-modes))
-
-;; (defun tddsg/init-vline ()
-;;   (use-package vline))
 
 (defun tddsg/init-autorevert ()
   (global-auto-revert-mode t))
@@ -124,7 +95,6 @@
   (add-hook 'before-save-hook #'whitespace-cleanup)
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face tabs)))
-
 
 ;;; PDF-TOOLS
 (defun tddsg/post-init-pdf-tools ()
@@ -470,16 +440,6 @@
         langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
 
-(defun tddsg/init-sr-speedbar ()
-  (use-package sr-speedbar
-    :config
-    (defun select-next-window ()
-      (other-window 1))
-    (defun my-sr-speedbar-open-hook ()
-      (add-hook 'speedbar-visiting-file-hook 'select-next-window t)
-      (add-hook 'speedbar-visiting-tag-hook 'select-next-window t))
-    (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)))
-
 (defun tddsg/init-rtags ()
   (use-package rtags
     :config
@@ -540,11 +500,6 @@
 
 (defun tddsg/init-column-marker ()
   (use-package column-marker))
-
-(defun tddsg/init-smooth-scrolling2 ()
-  (use-package smooth-scrolling2)
-  (smooth-scrolling2-mode)
-  (setq smooth-scroll-margin 5))
 
 (defun tddsg/init-framemove ()
   (use-package framemove)
