@@ -23,7 +23,7 @@
 ;;; PRIVATE VARIABLES
 
 ;; used to jump between faces
-(defconst tddsg--face-change-types-default
+(defvar tddsg--face-change-types
   '(merlin-compilation-error-face merlin-compilation-warning-face
     flycheck-error
     ;; rtags-fixitline rtags-warnline rtags-errline
@@ -33,8 +33,6 @@
     lazy-highlight
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
-
-(defvar tddsg--face-change-types tddsg--face-change-types-default)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UTILITY FUNCTIONS
@@ -55,12 +53,6 @@
     (let ((process (get-buffer-process (current-buffer))))
       (when process
         (set-process-window-size process (window-height) (window-width))))))
-
-(defun tddsg--highlight-todos ()
-  (font-lock-add-keywords nil '(("\\b\\(TODO\\|FIXME\\|BUG\\)\\b"
-                                 1 (hl-todo--get-face) t)))
-  (font-lock-add-keywords nil '(("\\b\\(NOTE\\|DONE\\|TRUNG\\)\\b"
-                                 1 (hl-todo--get-face) t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INTERACTIVE FUNCTIONS
@@ -998,9 +990,6 @@ after stripping extra whitespace and new lines"
     (elpy-mode))
   (add-hook 'python-mode-hook 'hook-python-mode)
 
-  ;; reason-mode
-  ;; (tddsg/config-reason-mode)
-
   ;; ggtags
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
 
@@ -1047,41 +1036,25 @@ after stripping extra whitespace and new lines"
   (spacemacs|diminish projectile-mode "")
   (spacemacs|diminish compilation-minor-mode "⚡⚡⚡COMPILING⚡⚡⚡")
 
-  ;; hooks, finally hook
+  ;; hook text mode
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
-    (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (dolist (face '(flyspell-incorrect flyspell-duplicate))
-      (add-to-list 'tddsg--face-change-types face))
-    (tddsg--highlight-todos)
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
     (linum-mode 1))
+  (add-hook 'text-mode-hook 'hook-text-mode)
+
+  ;; hook prog mode
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
-    (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (when (derived-mode-p 'c-mode 'c++-mode) (ggtags-mode 1))
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
-    (flyspell-mode -1)
     (linum-mode 1)
     (flycheck-mode -1))
-  (defun hook-latex-mode ()
-    "Hook to run in 'latex-mode'."
-    (setq tddsg--face-change-types tddsg--face-change-types-default)
-    (smartparens-global-mode 1)
-    (column-marker-3 80)
-    (whitespace-mode 1)
-    (flyspell-mode 1)
-    (linum-mode 1))
-  (add-hook 'LaTeX-mode-hook 'hook-latex-mode)
-  (add-hook 'TeX-mode-hook 'hook-latex-mode)
-  (add-hook 'tex-mode-hook 'hook-latex-mode)
   (add-hook 'prog-mode-hook 'hook-prog-mode)
-  (add-hook 'text-mode-hook 'hook-text-mode)
 
   (defun hook-change-major-mode ()
     ;; change some weird keys
