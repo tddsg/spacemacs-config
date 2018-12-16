@@ -1118,7 +1118,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
-  (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'shell)
@@ -1261,12 +1260,6 @@ after stripping extra whitespace and new lines"
   (define-key undo-tree-map (kbd "C-_") nil)
   (define-key undo-tree-map (kbd "M-_") nil)
   (define-key undo-tree-map (kbd "C-/") nil)
-
-  ;; speedbar, make shortcut keys like dired mode
-  (with-eval-after-load 'speedbar
-    (define-key speedbar-key-map (kbd "+") 'speedbar-create-directory)
-    (define-key speedbar-file-key-map (kbd "+") 'speedbar-create-directory)
-    (define-key speedbar-key-map (kbd "^") 'speedbar-up-directory))
 
   ;; magit
   (with-eval-after-load 'magit
@@ -1509,8 +1502,6 @@ after stripping extra whitespace and new lines"
      ;; isearch
      (isearch ((t (:background "dark orange" :foreground "#292b2e"))))
      (lazy-highlight ((t (:background "LightGoldenrod3" :foreground "gray10" :weight normal))))
-     ;; speedbar
-     (speedbar-file-face ((t (:foreground "PeachPuff3"))))
      ;; vline
      (vline ((t (:background "#34424D"))))
      ;; font
