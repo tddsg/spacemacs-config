@@ -1674,8 +1674,8 @@ after stripping extra whitespace and new lines"
 
 (defun shorten-right (name len)
   (if (> (length name) len)
-      (concat (apply #'propertize "[...]" (text-properties-at (- (length name) 1) name))
-              (substring name 0 (- len 10) ))
+      (concat (substring name 0 (- len 10) )
+              (apply #'propertize "[...]" (text-properties-at (- (length name) 1) name)))
     name))
 
 (spaceline-define-segment buffer-id
