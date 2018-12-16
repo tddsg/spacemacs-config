@@ -716,49 +716,6 @@ after stripping extra whitespace and new lines"
       (progn (other-window 1) (find-file frame-path)))
     (pdf-view-first-page)))
 
-(defun tddsg/scroll-window (&optional direction other)
-  "Scroll half window, DIRECTION can be 'upward or 'downward.
-If OTHER is t then scroll other window."
-  (interactive)
-  (defun scroll-half ()
-    (defun scroll-height ()
-      (let ((height (window-height (selected-window))))
-        (if (> height 20) (- height 5) height)))
-    (if (derived-mode-p 'pdf-view-mode)
-        (cond ((eq direction 'upward)
-               (pdf-view-scroll-down-or-previous-page))
-              ((eq direction 'downward)
-               (pdf-view-scroll-up-or-next-page)))
-      (cond ((eq direction 'upward)
-             (scroll-down (scroll-height)))
-            ((eq direction 'downward)
-             (scroll-up (scroll-height))))))
-  (if (and other (> (length (window-list)) 1)) (other-window 1))
-  (scroll-half)
-  (if (and other (> (length (window-list)) 1)) (other-window -1)))
-
-(defun tddsg/scroll-window-upward ()
-  "Scroll half window upward."
-  (interactive)
-  (tddsg/scroll-window 'upward nil))
-
-(defun tddsg/scroll-window-downward ()
-  "Scroll half window downward."
-  (interactive)
-  (tddsg/scroll-window 'downward nil))
-
-(defun tddsg/scroll-other-window-upward ()
-  "Scroll half window upward."
-  (interactive)
-  ;; FIXME when the buffer in the other window is at the beginning of the file,
-  ;; running this function will move the cursor to the other window
-  (tddsg/scroll-window 'upward t))
-
-(defun tddsg/scroll-other-window-downward ()
-  "Scroll half window downward."
-  (interactive)
-  (tddsg/scroll-window 'downward t))
-
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -864,7 +821,7 @@ If OTHER is t then scroll other window."
   (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
 
   ;; scrolling
-  (setq scroll-margin 5)
+  (setq scroll-margin 0)
   (setq scroll-step 0)
   (setq fast-but-imprecise-scrolling t)
 
