@@ -772,6 +772,9 @@ after stripping extra whitespace and new lines"
   (setq scroll-step 0)
   (setq fast-but-imprecise-scrolling t)
 
+  ;; purpose mode
+  (purpose-mode -1)
+
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
@@ -1119,6 +1122,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c l") 'helm-locate)
   (global-set-key (kbd "C-c e") 'ediff)
+  (global-set-key (kbd "C-c c") 'flycheck-mode)
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
   (global-set-key (kbd "C-c h") 'helm-resume)
