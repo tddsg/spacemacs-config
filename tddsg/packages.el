@@ -39,6 +39,7 @@
     (framemove :location local)
     (llvm-mode :location local)
     (songbird :location local)
+    (hummingbird :location local)
     (guess-style :location local))
   "The list of Lisp packages required by the tddsg layer.
    See: https://github.com/milkypostman/melpa#recipe-format")
@@ -485,6 +486,16 @@
     (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
       (modify-syntax-entry symbol "'" songbird-syntax-table)))
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
+
+(defun tddsg/init-hummingbird ()
+  (require 'songbird)
+  (add-to-list 'auto-mode-alist '("\\.hb\\'" . hummingbird))
+  ;; customize syntax table for forward/backward slurping/barfing sexp
+  (defun my-hummingbird-hook ()
+    ;; customize syntax table for slurping/barfing parentheses
+    (dolist (symbol (list ?. ?, ?\; ?: ?+ ?- ?@ ?! ?> ?<))
+      (modify-syntax-entry symbol "'" hummingbird-syntax-table)))
+  (add-hook 'hummingbird-hook 'my-hummingbird-hook 'append))
 
 (defun tddsg/init-dired+ ()
   (use-package dired+))
