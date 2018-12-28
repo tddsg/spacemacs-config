@@ -960,10 +960,13 @@ after stripping extra whitespace and new lines"
           web-mode-css-indent-offset 2
           web-mode-markup-indent-offset 2))
 
+  ;; pdf-tools
+  (defadvice pdf-sync-forward-search (after comint activate) (other-window 1))
+
   ;; spaceline
   (spaceline-toggle-buffer-encoding-abbrev-off)
   (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-buffer-position-off)
+  (spaceline-toggle-buffer-position-on)
   (spaceline-toggle-hud-off)
   (spaceline-toggle-minor-modes-off)
   (spaceline-toggle-version-control-off)
