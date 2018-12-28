@@ -698,6 +698,14 @@ after stripping extra whitespace and new lines"
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
+(defun tddsg/scroll-up-half ()
+  (interactive)
+  (scroll-up-command 15))
+
+(defun tddsg/scroll-down-half ()
+  (interactive)
+  (scroll-down-command 15))
+
 (defun tddsg/clean-recentf-list (pattern)
   (interactive "sEnter a file pattern that will be cleaned: ")
   (add-to-list 'recentf-exclude pattern)
@@ -1080,15 +1088,13 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-S-p") 'backward-paragraph)
   (global-set-key (kbd "C-S-n") 'forward-paragraph)
+  (global-set-key (kbd "C-S-v") 'tddsg/scroll-up-half)
+  (global-set-key (kbd "M-V") 'tddsg/scroll-down-half)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
-  (global-set-key (kbd "C-M-S-p") 'tddsg/scroll-other-window-upward)
-  (global-set-key (kbd "C-M-S-n") 'tddsg/scroll-other-window-downward)
-  (global-set-key (kbd "C-M-S-v") 'tddsg/scroll-other-window-upward)
-  (global-set-key (kbd "C-M-v") 'tddsg/scroll-other-window-downward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
