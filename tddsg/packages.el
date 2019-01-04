@@ -488,7 +488,7 @@
   (add-hook 'songbird-hook 'my-songbird-hook 'append))
 
 (defun tddsg/init-hummingbird ()
-  (require 'songbird)
+  (require 'hummingbird)
   (add-to-list 'auto-mode-alist '("\\.hb\\'" . hummingbird))
   ;; customize syntax table for forward/backward slurping/barfing sexp
   (defun my-hummingbird-hook ()
