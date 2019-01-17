@@ -1131,6 +1131,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c l") 'helm-locate)
   (global-set-key (kbd "C-c e") 'ediff)
+  (global-set-key (kbd "C-c s") 'projectile-save-project-buffers)
   (global-set-key (kbd "C-c c") 'flycheck-mode)
   (global-set-key (kbd "C-c i") 'ivy-resume)
   (global-set-key (kbd "C-c j") 'avy-resume)
