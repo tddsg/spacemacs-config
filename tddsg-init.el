@@ -1115,6 +1115,7 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-x C-d") 'purpose-toggle-window-purpose-dedicated)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
+  (global-set-key (kbd "C-x C-p") 'popwin-mode)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-z") nil)
   (global-set-key (kbd "C-z") nil)
