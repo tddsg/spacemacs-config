@@ -693,6 +693,20 @@ after stripping extra whitespace and new lines"
              (setq comint-scroll-to-bottom-on-output t)
              (setq mode-name "Shell")))))
 
+(defun tddsg/open-shell (arg)
+  "Open a new shell or the most recent shell."
+  (interactive "P")
+  (if (not (null arg)) (call-interactively 'shell)
+    (let ((has-shell nil))
+      (cl-loop for buffer in (buffer-list)
+               until (with-current-buffer buffer
+                       (if (equal major-mode 'shell-mode)
+                           (progn (other-window 1)
+                                  (switch-to-buffer buffer)
+                                  (setq has-shell t)
+                                  t))))
+      (if (not has-shell) (call-interactively 'shell)))))
+
 (defun tddsg/scroll-up-half ()
   (interactive)
   (scroll-up-command 15))
@@ -1134,7 +1148,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c h") 'helm-resume)
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
-  (global-set-key (kbd "C-c m") 'shell)
+  (global-set-key (kbd "C-c m") 'tddsg/open-shell)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
   (global-set-key (kbd "C-c @ s") 'tddsg/show-special-whitespaces)
   (global-set-key (kbd "C-c @ h") 'tddsg/hide-special-whitespaces)
