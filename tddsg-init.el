@@ -696,12 +696,16 @@ after stripping extra whitespace and new lines"
 (defun tddsg/open-shell (arg)
   "Open a new shell or the most recent shell."
   (interactive "P")
+  (defun select-new-window ()
+    (other-window 1)
+    (while (equal popwin:popup-window (selected-window))
+      (other-window 1)))
   (if (not (null arg)) (call-interactively 'shell)
     (let ((has-shell nil))
       (cl-loop for buffer in (buffer-list)
                until (with-current-buffer buffer
                        (if (equal major-mode 'shell-mode)
-                           (progn (other-window 1)
+                           (progn (select-new-window)
                                   (switch-to-buffer buffer)
                                   (setq has-shell t)
                                   t))))
