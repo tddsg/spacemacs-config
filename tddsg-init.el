@@ -311,7 +311,7 @@ DIRECTION is 'next or 'previous."
       (beginning-of-line)
       (while (looking-at "[[:space:]]*$") (next-line 1))
       (backward-paragraph 1)
-      (next-line)
+      (if (not (eq (point) (point-min))) (next-line))
       (beginning-of-line)
       (set-mark-command nil)
       (forward-paragraph 1))))
