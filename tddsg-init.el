@@ -825,6 +825,15 @@ after stripping extra whitespace and new lines"
 
   ;; isearch
   (setq lazy-highlight-cleanup nil)
+  (defun isearch-yank-marked-text ()
+    (when (region-active-p)
+      (let* ((begin (region-beginning))
+             (end (region-end))
+             (searched-text (buffer-substring-no-properties begin end)))
+        (deactivate-mark)
+        (goto-char begin)
+        (isearch-yank-string searched-text))))
+  (add-hook 'isearch-mode-hook 'isearch-yank-marked-text)
 
   ;; company-mode
   (setq company-idle-delay 300)
