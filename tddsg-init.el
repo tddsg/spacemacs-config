@@ -1084,6 +1084,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "<home>") 'tddsg/beginning-of-line)
   (global-set-key (kbd "<esc>") 'evil-force-normal-state)
   (global-set-key (kbd "<f5>") 'tddsg/recompile)
+  (global-set-key (kbd "<f6>") 'tddsg/open-shell)
 
   (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "C-<delete>") 'kill-word)
