@@ -783,7 +783,6 @@ after stripping extra whitespace and new lines"
   (blink-cursor-mode 1)
   (setq blink-cursor-blinks 0)
   (setq tab-width 2)
-  (setq fill-column 75)
   (setq text-scale-mode-step 1.1)
   (setq powerline-default-separator 'bar)
   (spacemacs/add-evil-cursor "emacs" "Orange" 'box)
@@ -1047,6 +1046,7 @@ after stripping extra whitespace and new lines"
   ;; hook text mode
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
+    (setq fill-column 72)
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
@@ -1057,6 +1057,7 @@ after stripping extra whitespace and new lines"
   ;; hook prog mode
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
+    (setq fill-column 72)
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
