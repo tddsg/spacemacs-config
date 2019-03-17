@@ -711,6 +711,21 @@ after stripping extra whitespace and new lines"
                                   t))))
       (if (not has-shell) (call-interactively 'shell)))))
 
+(defun tddsg/recent-dirs ()
+  "Open a directory from a list of recent dirs"
+  (interactive)
+  (let ((recent-dirs
+         (delete-dups
+          (mapcar (lambda (f)
+                    (if (file-directory-p f) f (file-name-directory f)))
+                  recentf-list))))
+    (let ((dir (ivy-read "Choose a directory: "
+                         recent-dirs
+                         :re-builder #'ivy--regex
+                         :sort nil
+                         :initial-input nil)))
+      (dired dir))))
+
 (defun tddsg/scroll-up-half ()
   (interactive)
   (scroll-up-command 15))
@@ -1136,8 +1151,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
+  (global-set-key (kbd "C-x w d") 'purpose-toggle-window-purpose-dedicated)
 
-  (global-set-key (kbd "C-x C-d") 'purpose-toggle-window-purpose-dedicated)
+  (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
   (global-set-key (kbd "C-x C-p") 'popwin-mode)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
