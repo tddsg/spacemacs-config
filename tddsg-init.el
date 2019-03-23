@@ -810,6 +810,9 @@ after stripping extra whitespace and new lines"
   ;; purpose mode
   (purpose-mode -1)
 
+  ;; popwin mode
+  (popwin-mode 1)
+
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
   (setq pupo-split-active-window t)
