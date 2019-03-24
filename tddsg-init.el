@@ -1744,7 +1744,7 @@ after stripping extra whitespace and new lines"
 (spaceline-define-segment buffer-id
   "Name of buffer."
   (let* ((max-length (- (window-body-width) 10))
-         (display-length (max 50 (- (window-body-width) 45)))
+         (display-length (max 45 (- max-length 30)))
          (path (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
                  ""))
