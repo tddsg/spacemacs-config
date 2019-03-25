@@ -69,8 +69,8 @@ This function should only modify configuration layer settings."
      ocaml
      haskell
      yaml
-     ;; perl5
-     ;; ruby
+     perl5
+     ruby
      csv
      python
      html
