@@ -434,11 +434,20 @@
 
 (defun tddsg/init-langtool ()
   (require 'langtool)
+  (defun langtool-autoshow-detail-popup (overlays)
+    (when (require 'popup nil t)
+      ;; Do not interrupt current popup
+      (unless (or popup-instances
+                  ;; suppress popup after type `C-g` .
+                  (memq last-command '(keyboard-quit)))
+        (let ((msg (langtool-details-error-message overlays)))
+          (popup-tip msg)))))
   (setq langtool-default-language "en-US"
         langtool-disabled-rules '("WHITESPACE_RULE"
                                   "EN_UNPAIRED_BRACKETS"
                                   "COMMA_PARENTHESIS_WHITESPACE"
                                   "EN_QUOTES")
+        langtool-autoshow-message-function 'langtool-autoshow-detail-popup
         langtool-language-tool-jar
         "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
 
