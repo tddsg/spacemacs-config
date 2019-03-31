@@ -1153,7 +1153,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x _") 'shrink-window)
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
-  (global-set-key (kbd "C-x w d") 'purpose-toggle-window-purpose-dedicated)
+  (global-set-key (kbd "C-x w d") 'spacemacs/toggle-current-window-dedication)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
