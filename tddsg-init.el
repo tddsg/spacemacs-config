@@ -726,13 +726,13 @@ after stripping extra whitespace and new lines"
                          :initial-input nil)))
       (dired dir))))
 
-(defun tddsg/scroll-up-half ()
+(defun tddsg/scroll-up-fast ()
   (interactive)
-  (scroll-up-command 15))
+  (scroll-up-command 10))
 
-(defun tddsg/scroll-down-half ()
+(defun tddsg/scroll-down-fast ()
   (interactive)
-  (scroll-down-command 15))
+  (scroll-down-command 10))
 
 (defun tddsg/clean-recentf-list (pattern)
   (interactive "sEnter a file pattern that will be cleaned: ")
@@ -1128,10 +1128,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
-  (global-set-key (kbd "C-S-p") 'backward-paragraph)
-  (global-set-key (kbd "C-S-n") 'forward-paragraph)
-  (global-set-key (kbd "C-S-v") 'tddsg/scroll-up-half)
-  (global-set-key (kbd "M-V") 'tddsg/scroll-down-half)
+  (global-set-key (kbd "C-S-p") 'tddsg/scroll-down-fast)
+  (global-set-key (kbd "C-S-n") 'tddsg/scroll-up-fast)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
