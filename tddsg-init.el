@@ -1128,8 +1128,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
-  (global-set-key (kbd "C-S-p") 'tddsg/scroll-down-fast)
-  (global-set-key (kbd "C-S-n") 'tddsg/scroll-up-fast)
+  (global-set-key (kbd "C-S-p") 'backward-paragraph)
+  (global-set-key (kbd "C-S-n") 'forward-paragraph)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
