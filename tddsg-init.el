@@ -1392,7 +1392,9 @@ after stripping extra whitespace and new lines"
   ;; markdown
   (with-eval-after-load 'markdown-mode
     (define-key markdown-mode-map (kbd "M-l") nil)
-    (define-key markdown-mode-map (kbd "M-h") nil))
+    (define-key markdown-mode-map (kbd "M-h") nil)
+    (define-key markdown-mode-map (kbd "M-g b") 'markdown-insert-bold)
+    (define-key markdown-mode-map (kbd "M-g i") 'markdown-insert-italic))
 
   ;; org-mode
   (with-eval-after-load 'org
