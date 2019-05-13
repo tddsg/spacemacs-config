@@ -87,7 +87,12 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages
-   '(goto-last-change
+   '(academic-phrases
+     ace-popup-menu
+     anzu
+     artbollocks-mode
+     autorevert
+     goto-last-change
      transpose-frame
      comment-dwim-2
      helm-bibtex
@@ -104,11 +109,7 @@ This function should only modify configuration layer settings."
      helm-dired-history
      buffer-move
      writegood-mode
-     artbollocks-mode
-     super-save
-     anzu
-     autorevert
-     ace-popup-menu)
+     super-save)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
