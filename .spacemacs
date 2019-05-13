@@ -55,6 +55,7 @@ This function should only modify configuration layer settings."
      (syntax-checking :variables syntax-checking-enable-by-default nil)
      ;; semantic
      pdf
+     asciidoc
      cscope
      search-engine
      (gtags :variables gtags-enable-by-default nil)
