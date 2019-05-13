@@ -26,13 +26,9 @@
     langtool
     helm-ag
     windmove
-    ace-popup-menu
     popwin
     whitespace
     smartparens
-    anzu
-    super-save
-    autorevert
     ;; set to local since spacemacs cannot install it from melpa
     (dired+ :location local)
     (column-marker :location local)
@@ -47,12 +43,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT PACKAGES
-
-(defun tddsg/init-ace-popup-menu ()
-  (ace-popup-menu-mode 1))
-
-(defun tddsg/init-super-save ()
-  (super-save-mode 1))
 
 (defun tddsg/post-init-helm-ag ()
   ;;;###autoload
@@ -83,9 +73,6 @@
 (defun tddsg/init-solidity-mode ()
   (use-package solidity-mode)
   (push 'solidity-mode irony-supported-major-modes))
-
-(defun tddsg/init-autorevert ()
-  (global-auto-revert-mode t))
 
 (defun tddsg/init-windmove ()
   (require 'framemove)
@@ -360,6 +347,7 @@
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
+    (artbollocks-mode)
     (writegood-mode)
     (latex-extra-mode)
     (turn-on-auto-fill)
@@ -420,17 +408,6 @@
                    '(sp-latex-insert-spaces-inside-pair)))
   ;; enable smartparens
   (smartparens-global-mode 1))
-
-(defun tddsg/init-anzu ()
-  (global-set-key  (kbd "M-%") 'anzu-query-replace)
-  (global-set-key  (kbd "C-M-%") 'anzu-query-replace-regexp)
-  (defadvice anzu-query-replace (around wrap-query-replace activate)
-    (save-excursion
-      (goto-char (anzu--thing-begin t))
-      ad-do-it
-      (goto-char (point-min))
-      ad-do-it))
-  (global-anzu-mode))
 
 (defun tddsg/init-langtool ()
   (require 'langtool)

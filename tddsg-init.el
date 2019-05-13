@@ -605,7 +605,7 @@ after stripping extra whitespace and new lines"
                          (projectile-project-buffer-p (current-buffer) root))))
   (when (string-match-p (regexp-quote "make") compile-command)
     (setq compile-command
-          (format "make -k -C %s -j4" (find-make-dir default-directory))))
+          (format "make -k -C %s" (find-make-dir default-directory))))
   (call-interactively 'compile))
 
 (defun tddsg/recompile ()
@@ -999,6 +999,21 @@ after stripping extra whitespace and new lines"
           web-mode-css-indent-offset 2
           web-mode-markup-indent-offset 2))
 
+  ;; anzu
+  (defadvice anzu-query-replace (around wrap-query-replace activate)
+    (save-excursion
+      (goto-char (anzu--thing-begin t))
+      ad-do-it
+      (goto-char (point-min))
+      ad-do-it))
+  (global-anzu-mode)
+
+  ;; super-save
+  (super-save-mode 1)
+
+  ;; ace-popup
+  (ace-popup-menu-mode 1)
+
   ;; pdf-tools
   (defadvice pdf-sync-forward-search (after comint activate) (other-window 1))
 
@@ -1142,6 +1157,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
   (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
   (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
+  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
 
   (global-set-key (kbd "C-x p") 'purpose-mode)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
@@ -1194,6 +1211,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-<delete>") 'kill-word)
+  (global-set-key (kbd "M-%") 'anzu-query-replace)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-k") 'backward-kill-word)
