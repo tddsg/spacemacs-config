@@ -90,7 +90,6 @@ This function should only modify configuration layer settings."
    '(academic-phrases
      ace-popup-menu
      anzu
-     artbollocks-mode
      autorevert
      goto-last-change
      transpose-frame

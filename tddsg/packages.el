@@ -347,7 +347,6 @@
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
-    (artbollocks-mode)
     (writegood-mode)
     (latex-extra-mode)
     (turn-on-auto-fill)
