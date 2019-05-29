@@ -874,12 +874,16 @@ after stripping extra whitespace and new lines"
         compilation-window-height 12
         compilation-scroll-output t
         compilation-skip-threshold 2)
-  (defun notify-compilation-finish (buffer status)
-    ;; (message "Compilation: %s" status)
-    (message-box "Compilation: %s" status))
+  (defun notify-compilation-output (buffer status)
+    (let ((has-compilation-window
+           (cl-loop for window in (window-list)
+                    thereis (string-equal (buffer-name (window-buffer window))
+                                          "*compilation*"))))
+      (when (not has-compilation-window) 
+        (message-box "Compilation output: %s" status))))
   (setq compilation-finish-functions
         (append compilation-finish-functions
-                '(notify-compilation-finish)))
+                '(notify-compilation-output)))
   (setq compilation-mode-hook nil)            ;; reset all compilation hook
 
   ;; undo tree
