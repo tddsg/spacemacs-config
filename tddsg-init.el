@@ -874,8 +874,13 @@ after stripping extra whitespace and new lines"
         compilation-window-height 12
         compilation-scroll-output t
         compilation-skip-threshold 2)
-  ;; reset all compilation hook, use the default one
-  (setq compilation-mode-hook nil)
+  (defun notify-compilation-finish (buffer status)
+    ;; (message "Compilation: %s" status)
+    (message-box "Compilation: %s" status))
+  (setq compilation-finish-functions
+        (append compilation-finish-functions
+                '(notify-compilation-finish)))
+  (setq compilation-mode-hook nil)            ;; reset all compilation hook
 
   ;; undo tree
   (global-undo-tree-mode 0)
