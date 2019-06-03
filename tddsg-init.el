@@ -1381,6 +1381,10 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<right>") 'buf-move-right)
   (global-set-key (kbd "C-S-<up>") 'buf-move-up)
   (global-set-key (kbd "C-S-<down>") 'buf-move-down)
+  (global-set-key (kbd "C-M-9") 'buf-move-left)
+  (global-set-key (kbd "C-M-0") 'buf-move-right)
+  (global-set-key (kbd "C-x M-9") 'buf-move-up)
+  (global-set-key (kbd "C-x M-0") 'buf-move-down)
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
