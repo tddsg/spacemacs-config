@@ -68,12 +68,14 @@ This function should only modify configuration layer settings."
      cmake
      latex
      ocaml
+     sml
      haskell
      yaml
      perl5
      ruby
      csv
      python
+     go
      html
      javascript
      coq
