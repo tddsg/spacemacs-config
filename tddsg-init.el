@@ -1023,6 +1023,10 @@ after stripping extra whitespace and new lines"
   ;; ace-popup
   (ace-popup-menu-mode 1)
 
+  ;; time-stamp
+  (require 'time-stamp)
+  (add-hook 'write-file-hooks 'time-stamp)
+
   ;; pdf-tools
   (defadvice pdf-sync-forward-search (after comint activate) (other-window 1))
 
