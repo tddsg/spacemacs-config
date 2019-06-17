@@ -21,6 +21,7 @@
     auctex
     latex-extra
     cc-mode
+    go-mode
     irony
     solidity-mode
     langtool
@@ -139,6 +140,12 @@
   (add-hook 'c++-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'objc-mode-hook 'my-cc-mode-hook 'append)
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook 'append))
+
+(defun tddsg/post-init-go-mode ()
+  (defun my-go-mode-hook ()
+    (setq tab-width 4)
+    (setq indent-tabs-mode 1))
+  (add-hook 'go-mode-hook 'my-go-mode-hook 'append))
 
 (defun tddsg/post-init-tuareg ()
   ;; fix syntax highlight for OCaml

@@ -1307,8 +1307,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-m 9") 'eyebrowse-switch-to-window-config-9)
   (global-set-key (kbd "M-m 0") 'eyebrowse-switch-to-window-config-0)
   (global-set-key (kbd "C-M-*") 'eyebrowse-rename-window-config)
-  (global-set-key (kbd "C-M-(") 'eyebrowse-prev-window-config)
-  (global-set-key (kbd "C-M-)") 'eyebrowse-next-window-config)
   (global-set-key (kbd "C-M-_") 'eyebrowse-close-window-config)
   (global-set-key (kbd "C-M-+") 'eyebrowse-create-window-config)
   (global-set-key (kbd "C-x M-<right>") 'eyebrowse-next-window-config)
@@ -1383,8 +1381,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<down>") 'buf-move-down)
   (global-set-key (kbd "C-M-9") 'buf-move-left)
   (global-set-key (kbd "C-M-0") 'buf-move-right)
-  (global-set-key (kbd "C-x M-9") 'buf-move-up)
-  (global-set-key (kbd "C-x M-0") 'buf-move-down)
+  (global-set-key (kbd "C-M-(") 'buf-move-up)
+  (global-set-key (kbd "C-M-)") 'buf-move-down)
 
   ;; LaTeX-mode
   (define-key TeX-mode-map (kbd "<f5>") 'tddsg/latex-compile-project)
