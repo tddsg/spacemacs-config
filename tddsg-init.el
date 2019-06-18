@@ -886,15 +886,20 @@ after stripping extra whitespace and new lines"
   (global-undo-tree-mode 0)
 
   ;; advice the message function
-  (defun notify-success (program &optional flag)
-    (when flag (setq flag nil))
+  (defvar notify-git-pull nil)
+  (defvar notify-git-push nil)
+  (defun reset-notify-flags ()
+    (setq notify-git-push nil)
+    (setq notify-git-pull nil))
+  (defun notify-success (program)
+    (reset-notify-flags)
     (notifications-notify
      :title (format "SUCCESS: %s" program)
      :timeout 5000
      :urgency: 'normal
      :body (format "The last %s command was successful!" program)))
-  (defun notify-error (program &optional flag)
-    (when flag (setq flag nil))
+  (defun notify-error (program)
+    (reset-notify-flags)
     (notifications-notify
      :title (propertize (format "ERROR: %s" program)
                         'font-lock-face '(:foreground "red"))
@@ -902,8 +907,6 @@ after stripping extra whitespace and new lines"
      :urgency: 'critical
      :body (format "The last %s command was unsuccessful!" program)))
   ;; for notification
-  (defvar notify-git-pull nil)
-  (defvar notify-git-push nil)
   (defun notify-message (orig-fun &rest args)
     (let ((output-msg (apply orig-fun args)))
       (cond
@@ -916,11 +919,11 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "Running git pull" output-msg)
         (setq notify-git-pull t))
        ((check-sub-string "Git finished" output-msg)
-        (when notify-git-push (notify-success "Git Push" notify-git-push))
-        (when notify-git-pull (notify-success "Git Pull" notify-git-pull)))
+        (when notify-git-push (notify-success "Git Push"))
+        (when notify-git-pull (notify-success "Git Pull")))
        ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
-        (when notify-git-push (notify-error "Git Push" notify-git-push))
-        (when notify-git-pull (notify-error "Git Pull" notify-git-pull)))
+        (when notify-git-push (notify-error "Git Push"))
+        (when notify-git-pull (notify-error "Git Pull")))
        ;; Compilation
        ((check-sub-string "Compilation finished" output-msg)
         (notify-success "Compilation"))
