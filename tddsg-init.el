@@ -893,9 +893,8 @@ after stripping extra whitespace and new lines"
   ;; magit
   (defun notify-magit-output (orig-fun &rest args)
     (let ((res (apply orig-fun args)))
-      (if (= res 1)
-          (message-box "Error: the last magit call was failed!")
-        (message-box "The last magit call was successful!"))))
+      (when (= res 1)
+        (message-box "Error: the last magit call was unsuccessful!"))))
   (advice-add 'magit-process-finish :around #'notify-magit-output)
 
   (defun notify-magit-run (orig-fun &rest args)
