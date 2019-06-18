@@ -891,15 +891,15 @@ after stripping extra whitespace and new lines"
   (defun reset-notify-flags ()
     (setq notify-git-push nil)
     (setq notify-git-pull nil))
-  (defun notify-success (program)
-    (reset-notify-flags)
+  (defun notify-success (program &optional reset-flags)
+    (when reset-flags (reset-notify-flags))
     (notifications-notify
      :title (format "SUCCESS: %s" program)
      :timeout 5000
      :urgency: 'normal
      :body (format "The last %s command was successful!" program)))
-  (defun notify-error (program)
-    (reset-notify-flags)
+  (defun notify-error (program &optional reset-flags)
+    (when reset-flags (reset-notify-flags))
     (notifications-notify
      :title (propertize (format "ERROR: %s" program)
                         'font-lock-face '(:foreground "red"))
@@ -919,11 +919,11 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "Running git pull" output-msg)
         (setq notify-git-pull t))
        ((check-sub-string "Git finished" output-msg)
-        (when notify-git-push (notify-success "Git Push"))
-        (when notify-git-pull (notify-success "Git Pull")))
+        (when notify-git-push (notify-success "Git Push" t))
+        (when notify-git-pull (notify-success "Git Pull" t)))
        ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
-        (when notify-git-push (notify-error "Git Push"))
-        (when notify-git-pull (notify-error "Git Pull")))
+        (when notify-git-push (notify-error "Git Push" t))
+        (when notify-git-pull (notify-error "Git Pull" t)))
        ;; Compilation
        ((check-sub-string "Compilation finished" output-msg)
         (notify-success "Compilation"))
