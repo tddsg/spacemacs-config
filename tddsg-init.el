@@ -881,7 +881,9 @@ after stripping extra whitespace and new lines"
                     thereis (string-equal (buffer-name (window-buffer window))
                                           "*compilation*"))))
       (when (not has-compilation-window)
-        (message-box "Compilation output: %s" status))))
+        (notifications-notify :title (format "Compilation")
+                              :timeout 5000
+                              :body (format "Output: %s!" status)))))
   (setq compilation-finish-functions
         (append compilation-finish-functions
                 '(notify-compilation-output)))
@@ -894,7 +896,11 @@ after stripping extra whitespace and new lines"
   (defun notify-magit-output (orig-fun &rest args)
     (let ((res (apply orig-fun args)))
       (when (= res 1)
-        (message-box "Error: the last magit call was unsuccessful!"))))
+        (notifications-notify
+         :title (format "Magit: Error!")
+         :timeout 5000
+         :urgency: 'critical
+         :body (format "The last magit call was unsuccessful!")))))
   (advice-add 'magit-process-finish :around #'notify-magit-output)
 
   (defun notify-magit-run (orig-fun &rest args)

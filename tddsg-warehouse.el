@@ -357,22 +357,35 @@ Set `spaceline-highlight-face-func' to
 ;;; VARIOUS FUNCTIONS
 
 
-(defun demo-of-various-functions () 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; show a message box:
+(message-box "Compilation output: %s" status)
 
-  ;;; show a message box:
-  (message-box "Compilation output: %s" status)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; show notifications using freedesktop.org, but
-  ;; currently, there is an error: (dbus-error "call timed out")
-  (notifications-notify
-   :title (format "Compilation finish on buffer: %s" buffer)
-   ;; :urgency (if (= res 1) 'critical 'normal)
-   :urgency 'normal
-   :body (format "message: %S" status))
+;; show notifications using freedesktop.org
 
-  ;; advice add and remove:
-  (advice-add 'magit-process-finish :around #'magit-notify)
-  (advice-remove 'magit-process-finish #'magit-notify)
+;; 1. Need to install the notification packages:
+;;       sudo apt-get install notification-daemon
+;;       sudo apt-get install xfce4-notifyd
 
-  ;;
-  )
+;; 2. And run the notification service:
+;;       systemctl --user enable xfce4-notifyd
+;;       systemctl --user start xfce4-notifyd
+
+(require 'notifications)
+
+(notifications-notify :title (format "Title: %s" "this is the title!")
+                      :urgency 'normal      ;; or 'critical
+                      :timeout 3000
+                      ;; :replaces-id nil
+                      ;; :app-icon nil
+                      :body (format "Message: %S" "This is the message!"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; add and remove advices
+
+(advice-add 'magit-process-finish :around #'magit-notify)
+(advice-remove 'magit-process-finish #'magit-notify)
+
+
