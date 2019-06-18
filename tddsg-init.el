@@ -44,6 +44,10 @@
   "Check if CHAR is a SPACE or TAB character."
   (or (equal char ?\s) (equal char ?\t)))
 
+(defun check-sub-string (sub-string super-string)
+  (and super-string
+       sub-string
+       (string-match-p (regexp-quote sub-string) super-string)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE FUNCTIONS
 
@@ -339,7 +343,7 @@ DIRECTION is 'next or 'previous."
   "Show version control status (git, hg) of the current project."
   (interactive)
   (defun find-vc-tool (dir)
-    (cond ((string-match-p (regexp-quote "..") dir) nil)
+    (cond ((check-sub-string ".." dir) nil)
           ((file-exists-p (expand-file-name ".git/config" dir)) 'Git)
           ((file-exists-p (expand-file-name ".hg/hgrc" dir)) 'Hg)
           (t (find-vc-tool (expand-file-name ".." dir)))))
@@ -596,7 +600,7 @@ after stripping extra whitespace and new lines"
   (interactive)
   ;; (when (get-buffer "*compilation*") (kill-buffer "*compilation*"))
   (defun find-make-dir (dir)
-    (cond ((string-match-p (regexp-quote "..") dir) "./")
+    (cond ((check-sub-string ".." dir) "./")
           ((file-exists-p (expand-file-name "Makefile" dir)) dir)
           ((file-exists-p (expand-file-name "build/Makefile" dir))
            (expand-file-name "build" dir))
@@ -606,7 +610,7 @@ after stripping extra whitespace and new lines"
     (save-some-buffers (and root (not compilation-ask-about-save))
                        (lambda ()
                          (projectile-project-buffer-p (current-buffer) root))))
-  (when (string-match-p (regexp-quote "make") compile-command)
+  (when (check-sub-string "make" compile-command)
     (setq compile-command
           (format "make -k -C %s" (find-make-dir default-directory))))
   (call-interactively 'compile))
@@ -621,7 +625,7 @@ after stripping extra whitespace and new lines"
        (and root (not compilation-ask-about-save))
        (lambda () (projectile-project-buffer-p (current-buffer) root))))
     ;; compile
-    (if (string-match-p (regexp-quote "make -k -C") compile-command)
+    (if (check-sub-string "make -k -C" compile-command)
         (recompile)
       (call-interactively 'tddsg/compile))))
 
@@ -666,7 +670,7 @@ after stripping extra whitespace and new lines"
          (frame-window (get-window-with-predicate
                         (lambda (window)
                           (let ((buff-name (buffer-name (window-buffer window))))
-                            (string-match-p frame-name buff-name))))))
+                            (check-sub-string frame-name buff-name))))))
     (if frame-window (select-window frame-window)
       (progn (other-window 1) (find-file frame-path)))
     (pdf-view-first-page)))
@@ -893,11 +897,10 @@ after stripping extra whitespace and new lines"
      :title (format "ERROR: %s" program)
      :timeout 8000
      :urgency: 'critical
-     :body (format "The last %s command was unsuccessful!" program)))
-  (defun check-sub-string (sub-string super-string)
-    (and super-string
-         sub-string
-         (string-match-p (regexp-quote sub-string) super-string)))
+     :body (format "The last %s command was unsuccessful!" program)))  
+  ;; for notification
+  (defvar notify-git-pull nil)
+  (defvar notify-git-push nil)
   (defun notify-message (orig-fun &rest args)
     (let ((output-msg (apply orig-fun args)))
       (cond
@@ -905,10 +908,24 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "LaTeX errors" output-msg)
         (notify-error "LaTeX"))
        ;; magit
+       ((check-sub-string "Running git push" output-msg)
+        (setq notify-git-push t))
+       ((check-sub-string "Running git pull" output-msg)
+        (setq notify-git-pull t))
        ((check-sub-string "Git finished" output-msg)
-        (notify-success "Magit"))
+        (when notify-git-push
+          (setq notify-git-push nil)
+          (notify-success "Git Push"))
+        (when notify-git-pull
+          (setq notify-git-pull nil)
+          (notify-success "Git Pull")))
        ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
-        (notify-error "Magit"))
+        (when notify-git-push
+          (setq notify-git-push nil)
+          (notify-error "Git Push"))
+        (when notify-git-pull
+          (setq notify-git-pull nil)
+          (notify-error "Git Pull")))
        ;; Compilation
        ((check-sub-string "Compilation finished" output-msg)
         (notify-success "Compilation"))
