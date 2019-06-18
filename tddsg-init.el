@@ -877,46 +877,45 @@ after stripping extra whitespace and new lines"
         compilation-window-height 12
         compilation-scroll-output t
         compilation-skip-threshold 2)
-  (defun notify-compilation-output (buffer status)
-    (let ((has-compilation-window
-           (cl-loop for window in (window-list)
-                    thereis (string-equal (buffer-name (window-buffer window))
-                                          "*compilation*"))))
-      (when (not has-compilation-window)
-        (notifications-notify :title (format "Compilation")
-                              :timeout 5000
-                              :body (format "Output: %s!" status)))))
-  (setq compilation-finish-functions
-        (append compilation-finish-functions
-                '(notify-compilation-output)))
-  (setq compilation-mode-hook nil)            ;; reset all compilation hook
 
   ;; undo tree
   (global-undo-tree-mode 0)
 
-  ;; magit
-  (defun notify-magit-output (orig-fun &rest args)
-    (let ((res (apply orig-fun args)))
-      (when (= res 1)
-        (notifications-notify
-         :title (format "Magit: Error!")
-         :timeout 5000
-         :urgency: 'critical
-         :body (format "The last magit call was unsuccessful!")))))
-  (advice-add 'magit-process-finish :around #'notify-magit-output)
-
   ;; advice the message function
+  (defun notify-success (program)
+    (notifications-notify
+     :title (format "SUCCESS: %s" program)
+     :timeout 5000
+     :urgency: 'normal
+     :body (format "The last %s command was successful!" program)))
+  (defun notify-error (program)
+    (notifications-notify
+     :title (format "ERROR: %s" program)
+     :timeout 5000
+     :urgency: 'critical
+     :body (format "The last %s command was unsuccessful!" program)))
+  (defun check-sub-string (sub-string super-string)
+    (and super-string
+         sub-string
+         (string-match-p (regexp-quote sub-string) super-string)))
   (defun notify-message (orig-fun &rest args)
-    (defun display-error (title msg)
-        (notifications-notify
-         :title (format title)
-         :timeout 5000
-         :urgency: 'critical
-         :body (format msg)))
-    (let ((msg (apply orig-fun args)))
-      (when (string-match-p (regexp-quote "LaTeX errors in") msg)
-        (display-error "Error on LaTeX compilation!"
-                      "The last LaTeX compilation was unsuccessful!"))))
+    (let ((output-msg (apply orig-fun args)))
+      (cond
+       ;; LaTeX
+       ((check-sub-string "LaTeX errors" output-msg)
+        (notify-error "LaTeX"))
+       ;; magit
+       ((check-sub-string "Git finished" output-msg)
+        (notify-success "Magit"))
+       ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
+        (notify-error "Magit"))
+       ;; Compilation
+       ((check-sub-string "Compilation finished" output-msg)
+        (notify-success "Compilation"))
+       ((check-sub-string "Compilation exited abnormally" output-msg)
+        (notify-error "Compilation"))
+       ;;
+       )))
   (advice-add 'message :around #'notify-message)
 
   ;; shell
