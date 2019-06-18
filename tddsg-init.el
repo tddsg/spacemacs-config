@@ -21,6 +21,8 @@
 (require 'notifications)
 
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE VARIABLES
 
@@ -903,10 +905,19 @@ after stripping extra whitespace and new lines"
          :body (format "The last magit call was unsuccessful!")))))
   (advice-add 'magit-process-finish :around #'notify-magit-output)
 
-  (defun notify-magit-run (orig-fun &rest args)
-    (message-box "magit called with args %s" args)
-    (apply orig-fun args))
-  (advice-remove 'magit-run-git-async #'notify-magit-run)
+  ;; advice the message function
+  (defun notify-message (orig-fun &rest args)
+    (defun display-error (title msg)
+        (notifications-notify
+         :title (format title)
+         :timeout 5000
+         :urgency: 'critical
+         :body (format msg)))
+    (let ((msg (apply orig-fun args)))
+      (when (string-match-p (regexp-quote "LaTeX errors in") msg)
+        (display-error "Error on LaTeX compilation!"
+                      "The last LaTeX compilation was unsuccessful!"))))
+  (advice-add 'message :around #'notify-message)
 
   ;; shell
   (setq comint-prompt-read-only nil
