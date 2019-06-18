@@ -888,47 +888,48 @@ after stripping extra whitespace and new lines"
   ;; advice the message function
   (defvar notify-git-pull nil)
   (defvar notify-git-push nil)
-  (defun reset-notify-flags ()
-    (setq notify-git-push nil)
-    (setq notify-git-pull nil))
-  (defun notify-success (program &optional reset-flags)
-    (when reset-flags (reset-notify-flags))
+  (defun notify-output (type program &optional reset-flags)
+    (when reset-flags
+      (setq notify-git-push nil)
+      (setq notify-git-pull nil))
     (notifications-notify
-     :title (format "SUCCESS: %s" program)
+     :title (format "%s: %s" (if (equal type 'success) "SUCCESS" "ERROR")
+                    program)
      :timeout 5000
      :urgency: 'normal
-     :body (format "The last %s command was successful!" program)))
-  (defun notify-error (program &optional reset-flags)
-    (when reset-flags (reset-notify-flags))
-    (notifications-notify
-     :title (propertize (format "ERROR: %s" program)
-                        'font-lock-face '(:foreground "red"))
-     :timeout 8000
-     :urgency: 'critical
-     :body (format "The last %s command was unsuccessful!" program)))
+     :body (format "The last %s command %s!" program
+                   (if (equal type 'success) "succeeded!" "failed!"))))
   ;; for notification
   (defun notify-message (orig-fun &rest args)
     (let ((output-msg (apply orig-fun args)))
       (cond
        ;; LaTeX
        ((check-sub-string "LaTeX errors" output-msg)
-        (notify-error "LaTeX"))
+        (notify-output 'error "LaTeX"))
+       ((check-sub-string "You should run LaTeX again" output-msg)
+        (notify-output 'success "LaTeX"))
+       ((check-sub-string "LaTeX: there were unresolved citations" output-msg)
+        (notify-output 'success "LaTeX"))
+       ((check-sub-string "LaTeX: successfully formatted" output-msg)
+        (notify-output 'success "LaTeX"))
+       ((check-sub-string "BibTeX finished" output-msg)
+        (notify-output 'success "BibTeX"))
        ;; magit
        ((check-sub-string "Running git push" output-msg)
         (setq notify-git-push t))
        ((check-sub-string "Running git pull" output-msg)
         (setq notify-git-pull t))
        ((check-sub-string "Git finished" output-msg)
-        (when notify-git-push (notify-success "Git Push" t))
-        (when notify-git-pull (notify-success "Git Pull" t)))
+        (when notify-git-push (notify-output 'success "Git Push" t))
+        (when notify-git-pull (notify-output 'success "Git Pull" t)))
        ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
-        (when notify-git-push (notify-error "Git Push" t))
-        (when notify-git-pull (notify-error "Git Pull" t)))
+        (when notify-git-push (notify-output 'error "Git Push" t))
+        (when notify-git-pull (notify-output 'error "Git Pull" t)))
        ;; Compilation
        ((check-sub-string "Compilation finished" output-msg)
-        (notify-success "Compilation"))
+        (notify-output 'success "Compilation"))
        ((check-sub-string "Compilation exited abnormally" output-msg)
-        (notify-error "Compilation"))
+        (notify-output 'error "Compilation"))
        ;;
        )))
   (advice-add 'message :around #'notify-message)
