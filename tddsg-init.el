@@ -891,7 +891,7 @@ after stripping extra whitespace and new lines"
   (defun notify-error (program)
     (notifications-notify
      :title (format "ERROR: %s" program)
-     :timeout 5000
+     :timeout 8000
      :urgency: 'critical
      :body (format "The last %s command was unsuccessful!" program)))
   (defun check-sub-string (sub-string super-string)
