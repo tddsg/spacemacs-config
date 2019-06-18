@@ -351,3 +351,28 @@ Set `spaceline-highlight-face-func' to
 
 ;; update header line of each buffer
 (add-hook 'window-configuration-change-hook 'update-header-line)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; VARIOUS FUNCTIONS
+
+
+(defun demo-of-various-functions () 
+
+  ;;; show a message box:
+  (message-box "Compilation output: %s" status)
+
+  ;; show notifications using freedesktop.org, but
+  ;; currently, there is an error: (dbus-error "call timed out")
+  (notifications-notify
+   :title (format "Compilation finish on buffer: %s" buffer)
+   ;; :urgency (if (= res 1) 'critical 'normal)
+   :urgency 'normal
+   :body (format "message: %S" status))
+
+  ;; advice add and remove:
+  (advice-add 'magit-process-finish :around #'magit-notify)
+  (advice-remove 'magit-process-finish #'magit-notify)
+
+  ;;
+  )

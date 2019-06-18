@@ -18,6 +18,8 @@
 (require 'engine-mode)
 (require 'hi-lock)
 (require 'seq)
+(require 'notifications)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PRIVATE VARIABLES
@@ -29,7 +31,6 @@
     ;; rtags-fixitline rtags-warnline rtags-errline
     writegood-weasels-face writegood-duplicates-face writegood-passive-voice-face
     langtool-errline
-    evil-search-highlight-persist-highlight-face
     lazy-highlight
     hi-yellow hi-pink hi-green hi-blue hi-black-b
     hi-blue-b hi-green-b hi-red-b hi-black-hb))
@@ -879,7 +880,7 @@ after stripping extra whitespace and new lines"
            (cl-loop for window in (window-list)
                     thereis (string-equal (buffer-name (window-buffer window))
                                           "*compilation*"))))
-      (when (not has-compilation-window) 
+      (when (not has-compilation-window)
         (message-box "Compilation output: %s" status))))
   (setq compilation-finish-functions
         (append compilation-finish-functions
@@ -888,6 +889,19 @@ after stripping extra whitespace and new lines"
 
   ;; undo tree
   (global-undo-tree-mode 0)
+
+  ;; magit
+  (defun notify-magit-output (orig-fun &rest args)
+    (let ((res (apply orig-fun args)))
+      (if (= res 1)
+          (message-box "Error: the last magit call was failed!")
+        (message-box "The last magit call was successful!"))))
+  (advice-add 'magit-process-finish :around #'notify-magit-output)
+
+  (defun notify-magit-run (orig-fun &rest args)
+    (message-box "magit called with args %s" args)
+    (apply orig-fun args))
+  (advice-remove 'magit-run-git-async #'notify-magit-run)
 
   ;; shell
   (setq comint-prompt-read-only nil
