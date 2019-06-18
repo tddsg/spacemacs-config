@@ -886,18 +886,21 @@ after stripping extra whitespace and new lines"
   (global-undo-tree-mode 0)
 
   ;; advice the message function
-  (defun notify-success (program)
+  (defun notify-success (program &optional flag)
+    (when flag (setq flag nil))
     (notifications-notify
      :title (format "SUCCESS: %s" program)
      :timeout 5000
      :urgency: 'normal
      :body (format "The last %s command was successful!" program)))
-  (defun notify-error (program)
+  (defun notify-error (program &optional flag)
+    (when flag (setq flag nil))
     (notifications-notify
-     :title (format "ERROR: %s" program)
+     :title (propertize (format "ERROR: %s" program)
+                        'font-lock-face '(:foreground "red"))
      :timeout 8000
      :urgency: 'critical
-     :body (format "The last %s command was unsuccessful!" program)))  
+     :body (format "The last %s command was unsuccessful!" program)))
   ;; for notification
   (defvar notify-git-pull nil)
   (defvar notify-git-push nil)
@@ -913,19 +916,11 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "Running git pull" output-msg)
         (setq notify-git-pull t))
        ((check-sub-string "Git finished" output-msg)
-        (when notify-git-push
-          (setq notify-git-push nil)
-          (notify-success "Git Push"))
-        (when notify-git-pull
-          (setq notify-git-pull nil)
-          (notify-success "Git Pull")))
+        (when notify-git-push (notify-success "Git Push" notify-git-push))
+        (when notify-git-pull (notify-success "Git Pull" notify-git-pull)))
        ((check-sub-string "Hit $ to see buffer magit-process" output-msg)
-        (when notify-git-push
-          (setq notify-git-push nil)
-          (notify-error "Git Push"))
-        (when notify-git-pull
-          (setq notify-git-pull nil)
-          (notify-error "Git Pull")))
+        (when notify-git-push (notify-error "Git Push" notify-git-push))
+        (when notify-git-pull (notify-error "Git Pull" notify-git-pull)))
        ;; Compilation
        ((check-sub-string "Compilation finished" output-msg)
         (notify-success "Compilation"))
