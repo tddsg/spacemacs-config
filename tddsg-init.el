@@ -894,11 +894,11 @@ after stripping extra whitespace and new lines"
   (defvar notify-compilation-command nil)
   (defun notify-output (type program output)
     (notifications-notify
-     :title (format "%s: %s" (if (equal type 'success) "SUCCESS" "ERROR")
-                    program)
+     :title (format "%s" program)
      :timeout 6000
      :urgency: 'normal
-     :body (format "%s" output)))
+     :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
+                   output)))
   ;; for notification
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
