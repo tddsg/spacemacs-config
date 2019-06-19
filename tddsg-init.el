@@ -891,7 +891,7 @@ after stripping extra whitespace and new lines"
     (notifications-notify
      :title (format "%s: %s" (if (equal type 'success) "SUCCESS" "ERROR")
                     program)
-     :timeout 5000
+     :timeout 6000
      :urgency: 'normal
      :body (format "%s" output)))
   ;; for notification
