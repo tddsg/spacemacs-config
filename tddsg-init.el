@@ -882,7 +882,7 @@ after stripping extra whitespace and new lines"
         compilation-scroll-output t
         compilation-skip-threshold 2)
   (defun advise-compilation (orig-fun &rest args)
-    (message "Compilation: %s" (car args))
+    (message "Compiling: %s" (car args))
     (apply orig-fun args))
   (advice-add 'compilation-start :around #'advise-compilation)
 
@@ -920,7 +920,7 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "Hit $ to see buffer magit-process" output)
         (notify-output 'error notify-git-command output))
        ;; Compilation
-       ((check-sub-string "Compilation: make" output)
+       ((check-sub-string "Compiling: make" output)
         (setq notify-compilation-command output))
        ((check-sub-string "Compilation finished" output)
         (notify-output 'success notify-compilation-command output))
