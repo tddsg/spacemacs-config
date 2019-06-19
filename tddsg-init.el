@@ -611,8 +611,8 @@ after stripping extra whitespace and new lines"
                        (lambda ()
                          (projectile-project-buffer-p (current-buffer) root))))
   (when (check-sub-string "make" compile-command)
-    (setq compile-command
-          (format "make -k -C %s" (find-make-dir default-directory))))
+    (let ((make-dir (expand-file-name (find-make-dir default-directory))))
+      (setq compile-command (format "make -k -C %s" make-dir))))
   (call-interactively 'compile))
 
 (defun tddsg/recompile ()
@@ -881,12 +881,17 @@ after stripping extra whitespace and new lines"
         compilation-window-height 12
         compilation-scroll-output t
         compilation-skip-threshold 2)
+  (defun advise-compilation (orig-fun &rest args)
+    (message "Compilation: %s" (car args))
+    (apply orig-fun args))
+  (advice-add 'compilation-start :around #'advise-compilation)
 
   ;; undo tree
   (global-undo-tree-mode 0)
 
   ;; advice the message function
   (defvar notify-git-command nil)
+  (defvar notify-compilation-command nil)
   (defun notify-output (type program output)
     (notifications-notify
      :title (format "%s: %s" (if (equal type 'success) "SUCCESS" "ERROR")
@@ -911,16 +916,16 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "Running git" output)
         (setq notify-git-command output))
        ((check-sub-string "Git finished" output)
-        (notify-output 'success notify-git-command output)
-        (setq notify-git-command nil))
+        (notify-output 'success notify-git-command output))
        ((check-sub-string "Hit $ to see buffer magit-process" output)
-        (notify-output 'error notify-git-command output)
-        (setq notify-git-command nil))
+        (notify-output 'error notify-git-command output))
        ;; Compilation
+       ((check-sub-string "Compilation: make" output)
+        (setq notify-compilation-command output))
        ((check-sub-string "Compilation finished" output)
-        (notify-output 'success "Compilation" output))
+        (notify-output 'success notify-compilation-command output))
        ((check-sub-string "Compilation exited abnormally" output)
-        (notify-output 'error "Compilation" output))
+        (notify-output 'error notify-compilation-command output))
        ;;
        )))
   (advice-add 'message :around #'notify-message)
