@@ -893,11 +893,12 @@ after stripping extra whitespace and new lines"
   (defvar notify-git-command nil)
   (defvar notify-compilation-command nil)
   (defun notify-output (type program output)
-    (notifications-notify
-     :title (format "%s" program)
-     :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
-                   output))
-    (setq program nil))
+    (when program
+      (notifications-notify
+       :title (format "%s" program)
+       :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
+                     output))
+      (setq program nil)))
   ;; for notification
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
