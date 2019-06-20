@@ -907,7 +907,7 @@ after stripping extra whitespace and new lines"
        ((check-sub-string "LaTeX errors" output)
         (notify-output 'error "LaTeX" output))
        ((or (check-sub-string "You should run LaTeX again" output)
-            (check-sub-string "LaTeX: there were unresolved citations" output)
+            (check-sub-string "LaTeX: there were unresolved" output)
             (check-sub-string "LaTeX: successfully formatted" output))
         (notify-output 'success "LaTeX" output))
        ((check-sub-string "BibTeX finished" output)
