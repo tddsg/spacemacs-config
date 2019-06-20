@@ -896,7 +896,8 @@ after stripping extra whitespace and new lines"
     (notifications-notify
      :title (format "%s" program)
      :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
-                   output)))
+                   output))
+    (setq program nil))
   ;; for notification
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
