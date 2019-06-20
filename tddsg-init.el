@@ -895,8 +895,6 @@ after stripping extra whitespace and new lines"
   (defun notify-output (type program output)
     (notifications-notify
      :title (format "%s" program)
-     :timeout 6000
-     :urgency: 'normal
      :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
                    output)))
   ;; for notification
