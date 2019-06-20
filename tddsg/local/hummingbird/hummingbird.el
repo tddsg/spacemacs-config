@@ -24,8 +24,7 @@
 
 ;; define several category of keywords
 (setq hummingbird-keywords
-      '("data" "pred" "view" "rel"
-        "prove_horn_clauses"))
+      '("data" "pred" "view" "rel" "checkentails"))
 
 (setq hummingbird-types
       '("float" "int" "bool" "void" "string"))
