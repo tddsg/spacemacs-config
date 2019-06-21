@@ -895,6 +895,7 @@ after stripping extra whitespace and new lines"
     (when command
       (notifications-notify
        :title (format "%s" command)
+       :urgency 'critical
        :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
                      output)))
     (when notify-command
