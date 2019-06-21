@@ -890,15 +890,15 @@ after stripping extra whitespace and new lines"
   (global-undo-tree-mode 0)
 
   ;; advice the message function
-  (defvar notify-git-command nil)
-  (defvar notify-compilation-command nil)
+  (defvar notify-command nil)
   (defun notify-output (type command output)
     (when command
       (notifications-notify
        :title (format "%s" command)
        :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
-                     output))
-      (setq command nil)))
+                     output)))
+    (when notify-command
+      (setq notify-command nil)))
   ;; for notification
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
@@ -914,18 +914,18 @@ after stripping extra whitespace and new lines"
         (notify-output 'success "BibTeX" output))
        ;; magit
        ((check-sub-string "Running git" output)
-        (setq notify-git-command output))
+        (setq notify-command output))
        ((check-sub-string "Git finished" output)
-        (notify-output 'success notify-git-command output))
+        (notify-output 'success notify-command output))
        ((check-sub-string "Hit $ to see buffer magit-process" output)
-        (notify-output 'error notify-git-command output))
+        (notify-output 'error notify-command output))
        ;; Compilation
        ((check-sub-string "Compiling: make" output)
-        (setq notify-compilation-command output))
+        (setq notify-command output))
        ((check-sub-string "Compilation finished" output)
-        (notify-output 'success notify-compilation-command output))
+        (notify-output 'success notify-command output))
        ((check-sub-string "Compilation exited abnormally" output)
-        (notify-output 'error notify-compilation-command output))
+        (notify-output 'error notify-command output))
        ;;
        )))
   (advice-add 'message :around #'notify-message)
