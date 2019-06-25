@@ -1039,7 +1039,8 @@ after stripping extra whitespace and new lines"
           ("\\.ods*\\|\\.odt*" "libreoffice")
           ("\\..*" "xdg-open")))
   (defun hook-dired-mode ()
-    (toggle-truncate-lines 1))
+    ;; (toggle-truncate-lines 1) ;; this affects the latex-compile command
+    )
   (add-hook 'dired-mode-hook 'hook-dired-mode)
   (add-hook 'dired-after-readin-hook 'hook-dired-mode)
 
