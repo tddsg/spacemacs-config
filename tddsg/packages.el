@@ -348,9 +348,8 @@
       t))
   (defun my-latex-hook ()
     ;; set tex master file
-    (let ((main-bib (concat (projectile-project-root) "main.bib")))
-      (when (file-exists-p main-bib)
-        (setq bibtex-completion-bibliography (list main-bib))))
+    (let ((file-bibs (directory-files (projectile-project-root) nil "\\.bib$")))
+      (setq bibtex-completion-bibliography file-bibs))
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
