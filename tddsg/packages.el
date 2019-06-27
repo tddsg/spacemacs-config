@@ -347,9 +347,9 @@
         (delete-region (car bounds) (1+ brace)))
       t))
   (defun my-latex-hook ()
-    ;; set tex master file
-    (let ((file-bibs (directory-files (projectile-project-root) nil "\\.bib$")))
-      (setq bibtex-completion-bibliography file-bibs))
+    ;; find bibtex files
+    (setq bibtex-completion-bibliography
+          (directory-files (projectile-project-root) nil "\\.bib$"))
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
