@@ -828,8 +828,9 @@ after stripping extra whitespace and new lines"
   (setq paragraph-separate "[ \t\f]*$"
         paragraph-start "\f\\|[ \t]*$")
 
-  ;; save
-  (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+  ;; whitespace
+  (setq whitespace-line-column 80)
+  (setq whitespace-style '(face tabs))
 
   ;; zoom frame
   (require 'zoom-frm)
@@ -1140,6 +1141,7 @@ after stripping extra whitespace and new lines"
     (column-marker-3 80)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
+    (visual-line-mode 1)
     (linum-mode 1))
   (add-hook 'text-mode-hook 'hook-text-mode)
 
@@ -1150,6 +1152,7 @@ after stripping extra whitespace and new lines"
     (smartparens-global-mode 1)
     (column-marker-3 80)
     (whitespace-mode 1)
+    (visual-line-mode 1)
     (linum-mode 1)
     (flycheck-mode -1))
   (add-hook 'prog-mode-hook 'hook-prog-mode)

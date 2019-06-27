@@ -28,7 +28,6 @@
     helm-ag
     windmove
     popwin
-    whitespace
     smartparens
     ;; set to local since spacemacs cannot install it from melpa
     (dired+ :location local)
@@ -79,11 +78,6 @@
   (require 'framemove)
   (windmove-default-keybindings)
   (setq framemove-hook-into-windmove t))
-
-(defun tddsg/post-init-whitespace ()
-  (add-hook 'before-save-hook #'whitespace-cleanup)
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face tabs)))
 
 ;;; PDF-TOOLS
 (defun tddsg/post-init-pdf-tools ()
