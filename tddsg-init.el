@@ -1217,6 +1217,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
   (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
   (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+  (global-set-key (kbd "C-M-/") 'helm-company)
 
 
   (global-set-key (kbd "C-x p") 'purpose-mode)
@@ -1271,6 +1272,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-%") 'anzu-query-replace)
+  (global-set-key (kbd "M-'") 'indent-region)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-k") 'backward-kill-word)
@@ -1294,15 +1296,12 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-\\") 'sp-splice-sexp)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
   (global-set-key (kbd "M-?") 'company-complete)
-  (global-set-key (kbd "C-M-/") 'helm-company)
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
   (global-set-key (kbd "M-g |") 'vline-mode)
 
   (global-set-key (kbd "M-[") 'windmove-left)
   (global-set-key (kbd "M-]") 'windmove-right)
-  (global-set-key (kbd "M-=") 'windmove-up)
-  (global-set-key (kbd "M-'") 'windmove-down)
   (global-set-key (kbd "H-[") 'windmove-up)
   (global-set-key (kbd "C-]") 'windmove-down)
 
