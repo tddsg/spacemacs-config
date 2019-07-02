@@ -342,7 +342,7 @@
   (defun my-latex-hook ()
     ;; find bibtex files
     (setq bibtex-completion-bibliography
-          (directory-files (projectile-project-root) nil "\\.bib$"))
+          (directory-files "." nil "\\.bib$"))
     ;; other setting
     (setq TeX-newline-function 'newline-and-indent)
     (LaTeX-add-environments "small" "footnotesize" "scriptsize" "tiny")
