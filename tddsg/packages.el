@@ -31,7 +31,6 @@
     smartparens
     ;; set to local since spacemacs cannot install it from melpa
     (dired+ :location local)
-    (column-marker :location local)
     (framemove :location local)
     (llvm-mode :location local)
     (songbird :location local)
@@ -494,9 +493,6 @@
 
 (defun tddsg/init-buffer-clone ()
   (use-package buffer-clone))
-
-(defun tddsg/init-column-marker ()
-  (use-package column-marker))
 
 (defun tddsg/init-framemove ()
   (use-package framemove)

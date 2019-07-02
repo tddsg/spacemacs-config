@@ -1138,7 +1138,6 @@ after stripping extra whitespace and new lines"
     "Hook to run in 'text-mode'."
     (setq fill-column 72)
     (smartparens-global-mode 1)
-    (column-marker-3 80)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
     (visual-line-mode 1)
@@ -1150,7 +1149,6 @@ after stripping extra whitespace and new lines"
     "Hook to run in 'prog-mode'."
     (setq fill-column 72)
     (smartparens-global-mode 1)
-    (column-marker-3 80)
     (whitespace-mode 1)
     (visual-line-mode 1)
     (linum-mode 1)
@@ -1229,6 +1227,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-x ^") 'enlarge-window)
   (global-set-key (kbd "C-x w s") 'tddsg/save-file-as-and-open)
   (global-set-key (kbd "C-x w d") 'spacemacs/toggle-current-window-dedication)
+  (global-set-key (kbd "C-x w r") 'delete-trailing-whitespace)
 
   (global-set-key (kbd "C-x C-d") 'tddsg/recent-dirs)
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
