@@ -675,6 +675,12 @@ after stripping extra whitespace and new lines"
       (progn (other-window 1) (find-file frame-path)))
     (pdf-view-first-page)))
 
+(defun tddsg/latex-new-sentence ()
+  (interactive)
+  (TeX-newline)
+  (insert "%")
+  (TeX-newline))
+
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -682,6 +688,14 @@ after stripping extra whitespace and new lines"
 (defun tddsg/disable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 300))
+
+(defun tddsg/enable-delete-trailing-whitespace-on-save ()
+  (interactive)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace))
+
+(defun tddsg/disable-delete-trailing-whitespace-on-save ()
+  (interactive)
+  (remove-hook 'before-save-hook 'delete-trailing-whitespace))
 
 (defun tddsg/restart-irony-mode ()
   (interactive)
@@ -1437,6 +1451,7 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f6>") 'pdf-sync-forward-search)
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-view-frame)
+  (define-key TeX-mode-map (kbd "S-<return>") 'tddsg/latex-new-sentence)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
