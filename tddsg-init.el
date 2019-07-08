@@ -681,6 +681,14 @@ after stripping extra whitespace and new lines"
   (insert "%")
   (TeX-newline))
 
+(defun tddsg/latex-new-paragraph ()
+  (interactive)
+  (TeX-newline)
+  (TeX-newline)
+  (insert "%%")
+  (TeX-newline)
+  (TeX-newline))
+
 (defun tddsg/enable-company-auto-suggest ()
   (interactive)
   (setq company-idle-delay 0.5))
@@ -1452,6 +1460,7 @@ after stripping extra whitespace and new lines"
   (define-key TeX-mode-map (kbd "<f7>") 'tddsg/latex-beamer-compile-frame)
   (define-key TeX-mode-map (kbd "<f8>") 'tddsg/latex-beamer-view-frame)
   (define-key TeX-mode-map (kbd "S-<return>") 'tddsg/latex-new-sentence)
+  (define-key TeX-mode-map (kbd "C-<return>") 'tddsg/latex-new-paragraph)
   (define-key TeX-mode-map (kbd "C-j") nil)
   (define-key TeX-mode-map (kbd "C-M-i") nil)
   (with-eval-after-load 'latex
