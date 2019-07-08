@@ -110,6 +110,9 @@ This function should only modify configuration layer settings."
      helm-dired-history
      buffer-move
      writegood-mode
+     wgrep
+     wgrep-ag
+     wgrep-helm
      super-save)
 
    ;; A list of packages that cannot be updated.
@@ -508,7 +511,65 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(LaTeX-begin-regexp "begin\\b\\|\\[\\b\\|If\\b\\|For")
  '(LaTeX-command "latex --synctex=1")
+ '(LaTeX-end-regexp "end\\b\\|\\]\\b\\|EndIf\\b\\|EndFor")
+ '(LaTeX-font-list
+   (quote
+    ((100 "" "" t)
+     (117 "\\textup{" "}")
+     (108 "\\underline{" "}")
+     (116 "\\texttt{" "}" "\\mathtt{" "}")
+     (115 "\\textsl{" "}" "\\mathbb{" "}")
+     (114 "\\textrm{" "}" "\\mathrm{" "}")
+     (110 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (109 "\\textmd{" "}")
+     (112 "\\,{" "}\\,")
+     (105 "\\textit{" "}" "\\mathit{" "}")
+     (102 "\\textsf{" "}" "\\mathsf{" "}")
+     (101 "\\emph{" "}")
+     (99 "\\textsc{" "}")
+     (98 "\\textbf{" "}" "\\mathbf{" "}")
+     (97 "" "" "\\mathcal{" "}")
+     (100 "" "" t)
+     (1 "" "" "\\mathcal{" "}")
+     (2 "\\textbf{" "}" "\\mathbf{" "}")
+     (3 "\\textsc{" "}")
+     (5 "\\emph{" "}")
+     (6 "\\textsf{" "}" "\\mathsf{" "}")
+     (9 "\\textit{" "}" "\\mathit{" "}")
+     (16 "\\,{" "}\\,")
+     (13 "\\textmd{" "}")
+     (14 "\\textnormal{" "}" "\\mathnormal{" "}")
+     (18 "\\textrm{" "}" "\\mathrm{" "}")
+     (19 "\\textsl{" "}" "\\mathbb{" "}")
+     (20 "\\texttt{" "}" "\\mathtt{" "}")
+     (21 "\\textup{" "}")
+     (12 "\\underline{" "}")
+     (4 "" "" t))))
+ '(LaTeX-indent-environment-list
+   (quote
+    (("verbatim" current-indentation)
+     ("verbatim*" current-indentation)
+     ("longtable" LaTeX-indent-tabular)
+     ("Form" current-indentation)
+     ("tabular")
+     ("tabular*")
+     ("align")
+     ("align*")
+     ("array")
+     ("eqnarray")
+     ("eqnarray*")
+     ("displaymath")
+     ("equation")
+     ("equation*")
+     ("picture")
+     ("tabbing")
+     ("figure")
+     ("center")
+     ("flushleft")
+     ("flushright")
+     ("small"))))
  '(TeX-command-extra-options "-shell-escape")
  '(TeX-save-query nil)
  '(TeX-source-correlate-method (quote synctex))
@@ -516,17 +577,43 @@ This function is called at the very end of Spacemacs initialization."
  '(TeX-source-correlate-start-server t)
  '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
  '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
+ '(evil-want-Y-yank-to-eol nil)
+ '(golden-ratio-exclude-buffer-names
+   (quote
+    ("*which-key*" "*LV*" "*NeoTree*" "*ace-popup-menu*" "*compilation*")))
+ '(hl-todo-keyword-faces
+   (quote
+    (("HOLD" . "red")
+     ("TODO" . "red")
+     ("NEXT" . "red")
+     ("OKAY" . "red")
+     ("DONT" . "red")
+     ("FAIL" . "red")
+     ("DONE" . "red")
+     ("NOTE" . "red")
+     ("TRUNG" . "red")
+     ("HACK" . "red")
+     ("FIXME" . "red")
+     ("XXX" . "red")
+     ("XXXX" . "red")
+     ("BUG" . "red")
+     ("OK" . "red"))))
  '(package-selected-packages
    (quote
     (orgit org-brain yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode writegood-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen utop use-package unfill tuareg transpose-frame toc-org tagedit symon super-save string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general prettier-js popwin pippel pipenv pip-requirements persp-mode pdf-tools pcre2el password-generator paradox ox-reveal overseer org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file ocp-indent neotree nameless mwim multi-term move-text monky mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode link-hint latex-extra langtool json-navigator json-mode js2-refactor js-doc indent-guide importmagic impatient-mode imenu-anywhere hungry-delete hlint-refactor hl-todo hindent highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-ispell helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-dired-history helm-descbinds helm-ctest helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-bibtex helm-ag haskell-snippets goto-last-change google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-ocaml flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish diff-hl define-word cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-solidity company-rtags company-irony-c-headers company-irony company-ghci company-coq company-cabal company-c-headers company-auctex company-anaconda comment-dwim-2 column-enforce-mode cmm-mode cmake-mode cmake-ide clojure-snippets clojure-cheatsheet clean-aindent-mode clang-format cider-eval-sexp-fu centered-cursor-mode buffer-move browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-popup-menu ace-link ace-jump-helm-line ac-ispell)))
+ '(pdf-view-continuous nil)
  '(pdf-view-midnight-colors (quote ("#D3D3D3" . "#292B2E")))
+ '(sp-highlight-wrap-overlay nil)
  '(tramp-syntax (quote default) nil (tramp)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(header-line ((default :inherit mode-line) (((type tty)) :foreground "black" :background "yellow" :inverse-video nil) (((class color grayscale) (background light)) :background "grey90" :foreground "grey20" :box nil) (((class color grayscale) (background dark)) :background "#212026" :foreground "gainsboro" :box nil) (((class mono) (background light)) :background "white" :foreground "black" :inverse-video nil :box nil :underline t) (((class mono) (background dark)) :background "black" :foreground "white" :inverse-video nil :box nil :underline t)))
+ '(sp-pair-overlay-face ((t nil)))
+ '(sp-wrap-overlay-face ((t nil)))
+ '(sp-wrap-tag-overlay-face ((t nil))))
 )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -541,6 +628,9 @@ This function is called at the very end of Spacemacs initialization."
  '(TeX-source-correlate-start-server t)
  '(TeX-view-program-list (quote (("pdf-tools" "TeX-pdf-tools-sync-view"))))
  '(TeX-view-program-selection (quote ((output-pdf "pdf-tools"))))
+ '(package-selected-packages
+   (quote
+    (yapfify yaml-mode xterm-color ws-butler writegood-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen utop use-package unfill tuareg caml transpose-frame toc-org tagedit swiper ivy super-save spaceline powerline smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restart-emacs rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox ox-reveal orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file ocp-indent neotree mwim multi-term move-text monky mmm-mode minitest merlin markdown-toc markdown-mode magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint latex-extra langtool json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc intero indent-guide imenu-anywhere hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-mode-manager helm-make helm-ispell helm-hoogle helm-gtags helm-gitignore request helm-flx helm-dired-history helm-descbinds helm-css-scss helm-cscope xcscope helm-company helm-c-yasnippet helm-bibtex biblio parsebib biblio-core helm-ag haskell-snippets haml-mode goto-last-change google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md ggtags fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu evil goto-chg undo-tree eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav dumb-jump disaster diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-solidity solidity-mode company-rtags rtags company-math math-symbol-lists company-irony-c-headers company-irony irony company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company comment-dwim-2 column-enforce-mode coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit peg lv clean-aindent-mode clang-format cider-eval-sexp-fu eval-sexp-fu cider sesman spinner queue pkg-info parseedn clojure-mode parseclj a epl chruby bundler inf-ruby buffer-move bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed auctex-latexmk auctex anzu anaconda-mode pythonic f aggressive-indent adoc-mode markup-faces adaptive-wrap ace-window ace-popup-menu avy-menu ace-link ace-jump-helm-line helm avy helm-core async academic-phrases ht s dash ac-ispell auto-complete popup)))
  '(tramp-syntax (quote default) nil (tramp)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
