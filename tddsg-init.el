@@ -310,18 +310,31 @@ DIRECTION is 'next or 'previous."
   (interactive)
   (tddsg/mark-sexp t))
 
+(defun tddsg/forward-paragraph ()
+  (interactive)
+  ;; find forward the first empty line
+  (while (not (looking-at "^[[:space:]]*$")) (next-line 1))
+  ;; skip forward all empty lines
+  (while (looking-at "^[[:space:]]*$") (next-line 1))
+  (beginning-of-line))
+
+(defun tddsg/backward-paragraph ()
+  (interactive)
+  ;; find backward the first empty line
+  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
+  ;; skip backward all empty lines
+  (while (looking-at "^[[:space:]]*$") (previous-line 1))
+  (beginning-of-line))
+
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
   (interactive)
-  (if (region-active-p) (forward-paragraph 1)
+  (if (region-active-p) (tddsg/forward-paragraph)
     (progn
-      (beginning-of-line)
-      (while (looking-at "[[:space:]]*$") (next-line 1))
-      (backward-paragraph 1)
-      (if (not (eq (point) (point-min))) (next-line))
-      (beginning-of-line)
+      (tddsg/backward-paragraph)
+      (tddsg/forward-paragraph)
       (set-mark-command nil)
-      (forward-paragraph 1))))
+      (tddsg/forward-paragraph))))
 
 (defun tddsg/mark-environment ()
   "Mark the environment, depending on the major mode."
@@ -685,7 +698,9 @@ after stripping extra whitespace and new lines"
   (interactive)
   (TeX-newline)
   (TeX-newline)
-  (insert "%%")
+  (TeX-newline)
+  (insert "%%%")
+  (TeX-newline)
   (TeX-newline)
   (TeX-newline))
 
@@ -1222,8 +1237,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
-  (global-set-key (kbd "C-S-p") 'backward-paragraph)
-  (global-set-key (kbd "C-S-n") 'forward-paragraph)
+  (global-set-key (kbd "C-S-p") 'tddsg/backward-paragraph)
+  (global-set-key (kbd "C-S-n") 'tddsg/forward-paragraph)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
@@ -1297,8 +1312,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-k") 'backward-kill-word)
-  (global-set-key (kbd "M-p") 'backward-paragraph)
-  (global-set-key (kbd "M-n") 'forward-paragraph)
+  (global-set-key (kbd "M-p") 'tddsg/backward-paragraph)
+  (global-set-key (kbd "M-n") 'tddsg/forward-paragraph)
   (global-set-key (kbd "M-P") 'tddsg/previous-face-change)
   (global-set-key (kbd "M-N") 'tddsg/next-face-change)
   (global-set-key (kbd "M-B") 'tddsg/previous-upcase)
