@@ -698,10 +698,6 @@ after stripping extra whitespace and new lines"
   (interactive)
   (TeX-newline)
   (TeX-newline)
-  (TeX-newline)
-  (insert "%%%")
-  (TeX-newline)
-  (TeX-newline)
   (TeX-newline))
 
 (defun tddsg/enable-company-auto-suggest ()
