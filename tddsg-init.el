@@ -320,21 +320,35 @@ DIRECTION is 'next or 'previous."
 
 (defun tddsg/backward-paragraph ()
   (interactive)
-  ;; find backward the first empty line
-  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
-  ;; skip backward all empty lines
+  ;; go backward one line
+  (previous-line 1)
+  ;; find backward the first non-empty line
   (while (looking-at "^[[:space:]]*$") (previous-line 1))
+  ;; skip backward all non-empty lines
+  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
+  ;; adjustment 
+  (next-line 1)
+  (beginning-of-line))
+
+(defun tddsg/beginning-of-paragraph ()
+  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
+  (next-line 1)
+  (beginning-of-line))
+
+(defun tddsg/end-of-paragraph ()
+  (while (not (looking-at "^[[:space:]]*$")) (next-line 1))
   (beginning-of-line))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
   (interactive)
-  (if (region-active-p) (tddsg/forward-paragraph)
+  (if (region-active-p)
+      (progn (tddsg/forward-paragraph)
+             (tddsg/end-of-paragraph))
     (progn
-      (tddsg/backward-paragraph)
-      (tddsg/forward-paragraph)
+      (tddsg/beginning-of-paragraph)
       (set-mark-command nil)
-      (tddsg/forward-paragraph))))
+      (tddsg/end-of-paragraph))))
 
 (defun tddsg/mark-environment ()
   "Mark the environment, depending on the major mode."
@@ -639,7 +653,7 @@ after stripping extra whitespace and new lines"
        (lambda () (projectile-project-buffer-p (current-buffer) root)))
       ;; compile
       (if (and (check-sub-string "make -k -C" compile-command)
-               (check-sub-string root compile-command))
+               (and root (check-sub-string root compile-command)))
           (recompile)
         (call-interactively 'tddsg/compile)))))
 
