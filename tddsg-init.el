@@ -645,14 +645,15 @@ after stripping extra whitespace and new lines"
   "Find the closest Makefile and compile."
   (interactive)
   (when (derived-mode-p 'prog-mode 'tuareg-mode)
-    (let ((root (projectile-project-root)))
+    (let ((project-root (projectile-project-root))
+          (project-name (projectile-project-name)))
       ;; save editing buffers
       (save-some-buffers
-       (and root (not compilation-ask-about-save))
-       (lambda () (projectile-project-buffer-p (current-buffer) root)))
+       (and project-root (not compilation-ask-about-save))
+       (lambda () (projectile-project-buffer-p (current-buffer) project-root)))
       ;; compile
       (if (and (check-sub-string "make -k -C" compile-command)
-               (and root (check-sub-string root compile-command)))
+               (check-sub-string project-name compile-command))
           (recompile)
         (call-interactively 'tddsg/compile)))))
 
