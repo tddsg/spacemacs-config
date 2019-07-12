@@ -632,15 +632,16 @@ after stripping extra whitespace and new lines"
   "Find the closest Makefile and compile."
   (interactive)
   (when (derived-mode-p 'prog-mode 'tuareg-mode)
-    ;; save editing buffers
     (let ((root (projectile-project-root)))
+      ;; save editing buffers
       (save-some-buffers
        (and root (not compilation-ask-about-save))
-       (lambda () (projectile-project-buffer-p (current-buffer) root))))
-    ;; compile
-    (if (check-sub-string "make -k -C" compile-command)
-        (recompile)
-      (call-interactively 'tddsg/compile))))
+       (lambda () (projectile-project-buffer-p (current-buffer) root)))
+      ;; compile
+      (if (and (check-sub-string "make -k -C" compile-command)
+               (check-sub-string root compile-command))
+          (recompile)
+        (call-interactively 'tddsg/compile)))))
 
 (defun tddsg/latex-compile-project ()
   "Compile the main file of a LaTeX project."
