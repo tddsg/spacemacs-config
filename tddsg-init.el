@@ -310,6 +310,18 @@ DIRECTION is 'next or 'previous."
   (interactive)
   (tddsg/mark-sexp t))
 
+(defun tddsg/beginning-of-paragraph ()
+  ;; skip backward all non-empty lines
+  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
+  ;; adjustment
+  (next-line 1)
+  (beginning-of-line))
+
+(defun tddsg/end-of-paragraph ()
+  ;; skip forward all non-empty lines
+  (while (not (looking-at "^[[:space:]]*$")) (next-line 1))
+  (beginning-of-line))
+
 (defun tddsg/forward-paragraph ()
   (interactive)
   ;; find forward the first empty line
@@ -324,20 +336,7 @@ DIRECTION is 'next or 'previous."
   (previous-line 1)
   ;; find backward the first non-empty line
   (while (looking-at "^[[:space:]]*$") (previous-line 1))
-  ;; skip backward all non-empty lines
-  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
-  ;; adjustment 
-  (next-line 1)
-  (beginning-of-line))
-
-(defun tddsg/beginning-of-paragraph ()
-  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
-  (next-line 1)
-  (beginning-of-line))
-
-(defun tddsg/end-of-paragraph ()
-  (while (not (looking-at "^[[:space:]]*$")) (next-line 1))
-  (beginning-of-line))
+  (tddsg/beginning-of-paragraph))
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
