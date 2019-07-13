@@ -311,13 +311,18 @@ DIRECTION is 'next or 'previous."
   (tddsg/mark-sexp t))
 
 (defun tddsg/beginning-of-paragraph ()
+  (interactive)
+  (beginning-of-line)
   ;; skip backward all non-empty lines
-  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
+  (while (and (> (point) (point-min))
+              (not (looking-at "^[[:space:]]*$")))
+    (previous-line 1))
   ;; adjustment
-  (next-line 1)
+  (when (> (point) (point-min)) (next-line 1))
   (beginning-of-line))
 
 (defun tddsg/end-of-paragraph ()
+  (interactive)
   ;; skip forward all non-empty lines
   (while (not (looking-at "^[[:space:]]*$")) (next-line 1))
   (beginning-of-line))
@@ -1125,10 +1130,11 @@ after stripping extra whitespace and new lines"
   ;; spaceline
   (spaceline-toggle-buffer-encoding-abbrev-off)
   (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-buffer-position-on)
   (spaceline-toggle-hud-off)
   (spaceline-toggle-minor-modes-off)
   (spaceline-toggle-version-control-off)
+  (spaceline-toggle-buffer-position-on)
+  (spaceline-toggle-projectile-root-on)
 
   ;; python-mode
   (defun hook-python-mode ()
