@@ -946,42 +946,40 @@ after stripping extra whitespace and new lines"
   ;; advice the message function
   (defvar notify-command nil)
   (defun notify-output (type command output)
-    (when command
-      (notifications-notify
-       :title (format "%s" command)
-       :urgency 'normal
-       :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
-                     output)))
-    (when notify-command
-      (setq notify-command nil)))
-  ;; for notification
+    (notifications-notify
+     :title (format "%s" command)
+     :urgency 'normal
+     :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
+                   output))
+    (when notify-command (setq notify-command nil)))
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
       (cond
-       ;; LaTeX
-       ((check-sub-string "LaTeX errors" output)
-        (notify-output 'error "LaTeX" output))
-       ((or (check-sub-string "You should run LaTeX again" output)
-            (check-sub-string "LaTeX: there were unresolved" output)
-            (check-sub-string "LaTeX: successfully formatted" output))
-        (notify-output 'success "LaTeX" output))
-       ((check-sub-string "BibTeX finished" output)
-        (notify-output 'success "BibTeX" output))
-       ;; magit
+       ;;; LaTeX
+       ;; ((check-sub-string "LaTeX errors" output)
+       ;;  (notify-output 'error "LaTeX" output))
+       ;; ((or (check-sub-string "You should run LaTeX again" output)
+       ;;      (check-sub-string "LaTeX: there were unresolved" output)
+       ;;      (check-sub-string "LaTeX: successfully formatted" output))
+       ;;  (notify-output 'success "LaTeX" output))
+       ;; ((check-sub-string "BibTeX finished" output)
+       ;;  (notify-output 'success "BibTeX" output))
+       ;;; magit
        ((check-sub-string "Running git" output)
         (setq notify-command output))
        ((check-sub-string "Git finished" output)
         (notify-output 'success notify-command output))
        ((check-sub-string "Hit $ to see buffer magit-process" output)
         (notify-output 'error notify-command output))
-       ;; Compilation
+
+       ;;; Compilation
        ((check-sub-string "Compiling: make" output)
         (setq notify-command output))
        ((check-sub-string "Compilation finished" output)
         (notify-output 'success notify-command output))
        ((check-sub-string "Compilation exited abnormally" output)
         (notify-output 'error notify-command output))
-       ;;
+       
        )))
   (advice-add 'message :around #'notify-message)
 
