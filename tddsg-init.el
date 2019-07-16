@@ -1323,7 +1323,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-%") 'anzu-query-replace)
-  (global-set-key (kbd "M-'") 'indent-region)
   (global-set-key (kbd "M-w") 'tddsg/kill-ring-save)
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-k") 'backward-kill-word)
@@ -1362,6 +1361,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-s-]") 'tddsg/next-buffer-same-mode)
   (global-set-key (kbd "C-M-{") 'winner-undo)
   (global-set-key (kbd "C-M-}") 'winner-redo)
+  (global-set-key (kbd "C-M-'") 'indent-region)
 
   (global-set-key (kbd "M-S-<up>") 'move-text-up)
   (global-set-key (kbd "M-S-<down>") 'move-text-down)
