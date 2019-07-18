@@ -946,11 +946,12 @@ after stripping extra whitespace and new lines"
   ;; advice the message function
   (defvar notify-command nil)
   (defun notify-output (type command output)
-    (notifications-notify
-     :title (format "%s" command)
-     :urgency 'normal
-     :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
-                   output))
+    (when command
+      (notifications-notify
+       :title (format "%s" command)
+       :urgency 'normal
+       :body (format "%s%s" (if (equal type 'error) "ERROR OCCURS!!!\n" "")
+                     output)))
     (when notify-command (setq notify-command nil)))
   (defun notify-message (orig-fun &rest args)
     (let ((output (apply orig-fun args)))
@@ -964,6 +965,7 @@ after stripping extra whitespace and new lines"
        ;;  (notify-output 'success "LaTeX" output))
        ;; ((check-sub-string "BibTeX finished" output)
        ;;  (notify-output 'success "BibTeX" output))
+
        ;;; magit
        ((check-sub-string "Running git" output)
         (setq notify-command output))
@@ -1052,9 +1054,10 @@ after stripping extra whitespace and new lines"
   (setq helm-ag-use-agignore t)
 
   ;; browser
-  (setq browse-url-generic-program "sensible-browser"     ;; use default browser
+  (setq browse-url-generic-program "sensible-browser"   ;; use default browser
         browse-url-browser-function 'browse-url-generic
-        engine/browser-function 'browse-url-generic)
+        ;; engine/browser-function 'browse-url-generic
+        engine/browser-function 'eww-browse-url)
 
   ;; minibuffer
   (setq resize-mini-windows t)
