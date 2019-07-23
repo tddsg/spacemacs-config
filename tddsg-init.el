@@ -339,9 +339,12 @@ DIRECTION is 'next or 'previous."
   (interactive)
   ;; go backward one line
   (previous-line 1)
+  ;; skip backward all non-empty lines
+  (while (not (looking-at "^[[:space:]]*$")) (previous-line 1))
   ;; find backward the first non-empty line
   (while (looking-at "^[[:space:]]*$") (previous-line 1))
-  (tddsg/beginning-of-paragraph))
+  ;; (tddsg/beginning-of-paragraph)
+  )
 
 (defun tddsg/mark-paragraph ()
   "Mark the paragraph."
