@@ -475,6 +475,7 @@
 (defun tddsg/init-hummingbird ()
   (require 'hummingbird)
   (add-to-list 'auto-mode-alist '("\\.hb\\'" . hummingbird))
+  (add-to-list 'auto-mode-alist '("\\.sc\\'" . hummingbird))
   ;; customize syntax table for forward/backward slurping/barfing sexp
   (defun my-hummingbird-hook ()
     ;; customize syntax table for slurping/barfing parentheses
