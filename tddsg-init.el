@@ -276,6 +276,8 @@ DIRECTION is 'next or 'previous."
       (call-interactively 'kill-ring-save)
       (when duplicate-line (newline-and-indent))
       (yank)
+      (pop kill-ring)
+      (setq kill-ring-yank-pointer kill-ring)
       (indent-region new-region (+ new-region size)))))
 
 (defun tddsg/mark-line ()
