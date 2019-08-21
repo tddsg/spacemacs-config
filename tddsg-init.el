@@ -1007,11 +1007,12 @@ after stripping extra whitespace and new lines"
       (apply orig-func args)
       (setq helm-display-function 'spacemacs//display-helm-window))
     (cl-loop for function in `(helm-company
-                               helm-semantic-or-imenu
-                               helm-imenu
                                completion-at-point
                                flyspell-correct-previous-word-generic)
              do (advice-add function :around #'helm-split-active-window)))
+
+  ;; imenu
+  (setq imenu-max-item-length 200)
 
   ;; ag-search
   (setq helm-ag-use-agignore t)
