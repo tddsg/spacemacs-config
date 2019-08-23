@@ -1227,7 +1227,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
-  (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
