@@ -107,6 +107,7 @@ This function should only modify configuration layer settings."
      monky
      imenu-anywhere
      swiper
+     counsel
      helm-dired-history
      buffer-move
      writegood-mode
