@@ -193,17 +193,20 @@
   (defun get-shell-command ()
     (let* ((extension (file-name-extension (buffer-file-name)))
            (default-command
-             (cond ((string= extension "pdf")
-                    (if (derived-mode-p 'pdf-view-mode)
-                        (format "okular -p %d" (pdf-view-current-page))
-                      "okular"))
-                   ((member extension '("txt" "el" "ml" "c" "cpp" "java"))
-                    "geany")
-                   ((member extension '("html" "htm" "xml" "md"))
-                    "google-chrome")
-                   ((eq system-type 'darwin) "open")
-                   ((member system-type '(gnu gnu/linux)) "xdg-open")
-                   (t ""))))
+             (cond ((eq system-type 'darwin)
+                    (cond ((string= extension "pdf")
+                           "open -a Preview")
+                          (t "open")))
+                   ((member system-type '(gnu gnu/linux))
+                    (cond ((string= extension "pdf")
+                           (if (derived-mode-p 'pdf-view-mode)
+                               (format "okular -p %d" (pdf-view-current-page))
+                             "okular"))
+                          ((member extension '("txt" "el" "ml" "c" "cpp" "java"))
+                           "geany")
+                          ((member extension '("html" "htm" "xml" "md"))
+                           "google-chrome")
+                          (t "xdg-open"))))))
       (ask-command default-command)))
   (let* ((command (get-shell-command)))
     (call-process-shell-command (concat command " " buffer-file-name "&"))))
@@ -858,6 +861,12 @@ after stripping extra whitespace and new lines"
 ;;; INIT CONFIGS
 
 (defun tddsg/config-packages ()
+  ;; config PATH
+  (exec-path-from-shell-initialize)
+
+  ;; prevent Emacs Mac Port from bypassing Emacs keybinding
+  (setq mac-pass-command-to-system nil)
+
   ;; visual interface setting
   (global-hl-todo-mode 1)
   (blink-cursor-mode 1)
@@ -1228,7 +1237,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
-  (global-set-key (kbd "C-M-i") 'tddsg/join-to-above-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)

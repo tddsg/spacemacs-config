@@ -107,12 +107,14 @@ This function should only modify configuration layer settings."
      monky
      imenu-anywhere
      swiper
+     counsel
      helm-dired-history
      buffer-move
      writegood-mode
      wgrep
      wgrep-ag
      wgrep-helm
+     exec-path-from-shell
      super-save)
 
    ;; A list of packages that cannot be updated.
