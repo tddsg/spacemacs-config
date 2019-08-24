@@ -864,6 +864,9 @@ after stripping extra whitespace and new lines"
   ;; config PATH
   (exec-path-from-shell-initialize)
 
+  ;; prevent Emacs Mac Port from bypassing Emacs keybinding
+  (setq mac-pass-command-to-system nil)
+
   ;; visual interface setting
   (global-hl-todo-mode 1)
   (blink-cursor-mode 1)
