@@ -955,7 +955,8 @@ after stripping extra whitespace and new lines"
         comint-input-ignoredups t
         comint-completion-addsuffix nil
         shell-default-shell 'ansi-term)
-  (defadvice comint-clear-buffer (before comint activate) (end-of-buffer))
+  (defadvice comint-clear-buffer (before comint activate)
+    (goto-char (point-max)))
   (defun hook-shell-mode ()
     "Hook to run in shell mode."
     (add-hook 'window-configuration-change-hook
