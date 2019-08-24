@@ -114,6 +114,7 @@ This function should only modify configuration layer settings."
      wgrep
      wgrep-ag
      wgrep-helm
+     exec-path-from-shell
      super-save)
 
    ;; A list of packages that cannot be updated.

@@ -858,6 +858,9 @@ after stripping extra whitespace and new lines"
 ;;; INIT CONFIGS
 
 (defun tddsg/config-packages ()
+  ;; config PATH
+  (exec-path-from-shell-initialize)
+
   ;; visual interface setting
   (global-hl-todo-mode 1)
   (blink-cursor-mode 1)
