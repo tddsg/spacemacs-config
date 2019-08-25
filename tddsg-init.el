@@ -867,6 +867,9 @@ after stripping extra whitespace and new lines"
   ;; prevent Emacs Mac Port from bypassing Emacs keybinding
   (setq mac-pass-command-to-system nil)
 
+  (when (eq system-type 'darwin)
+    (setq mac-option-modifier 'meta))
+
   ;; visual interface setting
   (global-hl-todo-mode 1)
   (blink-cursor-mode 1)
@@ -1648,7 +1651,7 @@ after stripping extra whitespace and new lines"
 (defun tddsg--custom-theme-spacemacs-dark ()
   (tddsg--read-custom-themes
    'tddsg-themes
-   'spacemacs-dark
+   'spacemacs-dark 
    '(;; dired
      (diredp-compressed-file-name ((t (:foreground "burlywood"))))
      (diredp-compressed-file-suffix ((t (:foreground "yellow green"))))
