@@ -868,7 +868,8 @@ after stripping extra whitespace and new lines"
   (setq mac-pass-command-to-system nil)
 
   (when (eq system-type 'darwin)
-    (setq mac-option-modifier 'meta))
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'meta))
 
   ;; visual interface setting
   (global-hl-todo-mode 1)
@@ -1288,6 +1289,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/open-shell)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
+  (global-set-key (kbd "C-c SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "C-c @ s") 'tddsg/show-special-whitespaces)
   (global-set-key (kbd "C-c @ h") 'tddsg/hide-special-whitespaces)
 
@@ -1298,7 +1300,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c C-s") 'projectile-save-project-buffers)
   (global-set-key (kbd "C-c C-SPC") 'helm-all-mark-rings)
 
-  (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-<delete>") 'kill-word)
   (global-set-key (kbd "M-%") 'anzu-query-replace)
