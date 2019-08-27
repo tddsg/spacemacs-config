@@ -422,9 +422,17 @@
                                   "EN_UNPAIRED_BRACKETS"
                                   "COMMA_PARENTHESIS_WHITESPACE"
                                   "EN_QUOTES")
-        langtool-autoshow-message-function 'langtool-autoshow-detail-popup
-        langtool-language-tool-jar
-        "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"))
+        langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
+  (when (eq system-type 'gnu/linux)
+    (setq langtool-language-tool-jar
+          "/home/trungtq/Programs/LanguageTool/languagetool-commandline.jar"
+          langtool-user-arguments
+          '("--languagemodel" "/home/trungtq/Programs/LanguageTool/")))
+  (when (eq system-type 'darwin)
+    (setq langtool-language-tool-jar
+          "/Users/trungtq/Applications/LanguageTool/languagetool-commandline.jar"
+          langtool-user-arguments
+          '("--languagemodel" "/Users/trungtq/Applications/LanguageTool/"))))
 
 (defun tddsg/init-rtags ()
   (use-package rtags
