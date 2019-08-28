@@ -1289,7 +1289,6 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/open-shell)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
-  (global-set-key (kbd "C-c SPC") 'tddsg/one-space-or-blank-line)
   (global-set-key (kbd "C-c @ s") 'tddsg/show-special-whitespaces)
   (global-set-key (kbd "C-c @ h") 'tddsg/hide-special-whitespaces)
 
@@ -1329,6 +1328,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-H") 'tddsg/mark-line)
   (global-set-key (kbd "M-h") 'tddsg/mark-paragraph)
   (global-set-key (kbd "M-g |") 'vline-mode)
+  (global-set-key (kbd "M-SPC") 'tddsg/one-space-or-blank-line)
 
   (global-set-key (kbd "M-[") 'windmove-left)
   (global-set-key (kbd "M-]") 'windmove-right)
