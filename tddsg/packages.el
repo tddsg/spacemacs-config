@@ -119,13 +119,14 @@
 
 ;;; CC-MODE
 (defun tddsg/post-init-cc-mode ()
+  (require 'rtags)
   ;; hook
   (defun my-cc-mode-hook ()
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends '(company-irony-c-headers company-irony))
     (c-set-offset 'innamespace 0)   ;; no indent in namespace
     (setq c-basic-offset 4)
-    ;; (rtags-start-process-unless-running)  ;; using rtags
+    (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
     (semantic-mode -1)
     (local-set-key (kbd "C-c C-c") nil))
@@ -444,7 +445,8 @@
     (which-key-add-major-mode-key-based-replacements
       'c++-mode "C-c t" "rtags-commands")
     (rtags-enable-standard-keybindings c-mode-base-map "\C-c t")
-    (setq rtags-autostart-diagnostics t)))
+    (setq rtags-autostart-diagnostics t
+          rtags-use-helm t)))
 
 (defun tddsg/init-helm-rtags ()
   (use-package helm-rtags
