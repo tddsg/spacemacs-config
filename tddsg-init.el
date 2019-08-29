@@ -1587,7 +1587,10 @@ after stripping extra whitespace and new lines"
     (define-key c-mode-base-map (kbd "C-M-q") nil)
     (define-key c-mode-base-map (kbd "C-M-j") nil)
     (define-key c-mode-map (kbd "C-M-j") nil)
-    (define-key c++-mode-map (kbd "C-M-j") nil))
+    (define-key c++-mode-map (kbd "C-M-j") nil)
+    ;;
+    (define-key c-mode-map (kbd "M-.") 'tddsg/find-definition)
+    (define-key c++-mode-map (kbd "M-.") 'tddsg/find-definition))
 
   ;; company mode
   (define-key company-active-map (kbd "M-d") 'company-show-doc-buffer)
