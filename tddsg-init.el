@@ -1169,7 +1169,7 @@ after stripping extra whitespace and new lines"
   ;; hook text mode
   (defun hook-text-mode ()
     "Hook to run in 'text-mode'."
-    (setq fill-column 72)
+    (setq fill-column 80)
     (smartparens-global-mode 1)
     (whitespace-mode 1)
     (rainbow-delimiters-mode-enable)
@@ -1180,7 +1180,7 @@ after stripping extra whitespace and new lines"
   ;; hook prog mode
   (defun hook-prog-mode ()
     "Hook to run in 'prog-mode'."
-    (setq fill-column 72)
+    (setq fill-column 80)
     (smartparens-global-mode 1)
     (whitespace-mode 1)
     (visual-line-mode 1)
