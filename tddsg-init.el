@@ -811,20 +811,15 @@ after stripping extra whitespace and new lines"
 (defun tddsg/toggle-show-whitespace ()
   "Display special whitespace characters."
   (interactive)
-  (setq whitespace-display-mappings
-        '((space-mark 32 [183] [46]) ; SPACE,「·」
-          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
-          (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
-          ))
-  (defun show-whitespace ()
+  (setq whitespace-style
+        (if (memq 'tab-mark whitespace-style)
+            '(face tabs)
+          '(face spaces tabs newline space-mark tab-mark newline-mark )))
+  (defun refresh-whitespace ()
     (whitespace-mode -1)
-    (setq whitespace-style
-          (if (memq 'tab-mark whitespace-style)
-              '(face tabs)
-            '(face spaces tabs newline space-mark tab-mark newline-mark )))
     (whitespace-mode 1))
   (cl-loop for buffer in (buffer-list) do
-           (with-current-buffer buffer (show-whitespace))))
+           (with-current-buffer buffer (refresh-whitespace))))
 
 (defun tddsg/disable-ocp-indent ()
   (interactive)
@@ -909,6 +904,11 @@ after stripping extra whitespace and new lines"
   ;; whitespace
   (setq whitespace-line-column 80)
   (setq whitespace-style '(face tabs))
+  (setq whitespace-display-mappings
+        '((space-mark 32 [183] [46]) ; SPACE,「·」
+          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
+          (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
+          ))
 
   ;; zoom frame
   (require 'zoom-frm)
