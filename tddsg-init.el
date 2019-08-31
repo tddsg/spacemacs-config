@@ -853,7 +853,7 @@ after stripping extra whitespace and new lines"
                     ;; Also handle undocumented (<active> <inactive>) form.
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
-         '(95 . 90) '(100 . 100)))))
+         '(96 . 95) '(100 . 100)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -863,8 +863,8 @@ after stripping extra whitespace and new lines"
   (exec-path-from-shell-initialize)
 
   ;; transparency
-  (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-  (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
+  (set-frame-parameter (selected-frame) 'alpha '(96 . 95))
+  (add-to-list 'default-frame-alist '(alpha . (96 . 95)))
 
   ;; prevent Emacs Mac Port from bypassing Emacs keybinding
   (setq mac-pass-command-to-system nil)
