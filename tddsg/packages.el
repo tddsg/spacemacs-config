@@ -125,7 +125,8 @@
     (setq company-backends (delete 'company-semantic company-backends))
     (add-to-list 'company-backends '(company-irony-c-headers company-irony))
     (c-set-offset 'innamespace 0)   ;; no indent in namespace
-    (setq c-basic-offset 4)
+    (setq c-basic-offset 2)
+    (setq tab-width 2)
     (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
     (semantic-mode -1)
