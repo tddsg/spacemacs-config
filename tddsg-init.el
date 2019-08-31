@@ -853,7 +853,7 @@ after stripping extra whitespace and new lines"
                     ;; Also handle undocumented (<active> <inactive>) form.
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
-         '(95 . 95) '(100 . 100)))))
+         '(95 . 90) '(100 . 100)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -863,8 +863,8 @@ after stripping extra whitespace and new lines"
   (exec-path-from-shell-initialize)
 
   ;; transparency
-  (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
-  (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
+  (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
+  (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
 
   ;; prevent Emacs Mac Port from bypassing Emacs keybinding
   (setq mac-pass-command-to-system nil)
@@ -906,7 +906,7 @@ after stripping extra whitespace and new lines"
   (setq whitespace-style '(face tabs))
   (setq whitespace-display-mappings
         '((space-mark 32 [183] [46]) ; SPACE,「·」
-          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
+          ;; (newline-mark 10 [182 10]) ; LINE FEED, “¶”
           (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
           ))
 
@@ -1295,6 +1295,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c g") 'tddsg/helm-do-ag)
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/open-shell)
+  (global-set-key (kbd "C-c t") 'tddsg/toggle-transparency)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
   (global-set-key (kbd "C-c SPC") 'tddsg/toggle-show-whitespace)
 
