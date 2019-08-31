@@ -857,12 +857,29 @@ after stripping extra whitespace and new lines"
           ((derived-mode-p 'python-mode)
            (guess-style-guess-all)))))
 
+(defun tddsg/toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(95 . 90) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
 (defun tddsg/config-packages ()
   ;; config PATH
   (exec-path-from-shell-initialize)
+
+  ;; transparency
+  (set-frame-parameter (selected-frame) 'alpha '(95 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (95 . 90)))
 
   ;; prevent Emacs Mac Port from bypassing Emacs keybinding
   (setq mac-pass-command-to-system nil)
@@ -1373,7 +1390,9 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-s c") 'flyspell-correct-word-before-point)
   (global-set-key (kbd "M-s n") 'flyspell-goto-next-error)
   (global-set-key (kbd "M-s l") 'langtool-check)
+  (global-set-key (kbd "M-s i") 'set-input-method)
   (global-set-key (kbd "M-s M-l") 'langtool-check-done)
+  (global-set-key (kbd "M-s M-d") 'ispell-change-dictionary)
 
   ;; workspaces transient
   (global-set-key (kbd "M-m 1") 'eyebrowse-switch-to-window-config-1)
