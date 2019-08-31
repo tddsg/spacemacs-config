@@ -1240,6 +1240,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-<backspace>") 'kill-whole-line)
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
+  (global-set-key (kbd "C-S-q") 'goto-last-change-reverse)
   (global-set-key (kbd "C-S-p") 'tddsg/backward-paragraph)
   (global-set-key (kbd "C-S-n") 'tddsg/forward-paragraph)
 
