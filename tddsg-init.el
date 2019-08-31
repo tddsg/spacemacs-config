@@ -808,32 +808,23 @@ after stripping extra whitespace and new lines"
   (recentf-cleanup)
   (setq recentf-exclude (remove pattern recentf-exclude)))
 
-(defun tddsg/show-special-whitespaces ()
+(defun tddsg/toggle-show-whitespace ()
   "Display special whitespace characters."
   (interactive)
-  (defun show-white-space ()
+  (setq whitespace-display-mappings
+        '((space-mark 32 [183] [46]) ; SPACE,「·」
+          (newline-mark 10 [182 10]) ; LINE FEED, “¶”
+          (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
+          ))
+  (defun show-whitespace ()
     (whitespace-mode -1)
-    ;; Code is adopted from: http://ergoemacs.org/emacs/whitespace-mode.html
     (setq whitespace-style
-          '(face spaces tabs newline space-mark tab-mark newline-mark ))
-    (setq whitespace-display-mappings
-          '((space-mark 32 [183] [46]) ; SPACE,「·」
-            (newline-mark 10 [182 10]) ; LINE FEED, “¶”
-            (tab-mark 9 [9655 9] [92 9]) ; tab, “▷”
-            ))
+          (if (memq 'tab-mark whitespace-style)
+              '(face tabs)
+            '(face spaces tabs newline space-mark tab-mark newline-mark )))
     (whitespace-mode 1))
   (cl-loop for buffer in (buffer-list) do
-           (with-current-buffer buffer (show-white-space))))
-
-(defun tddsg/hide-special-whitespaces ()
-  "Do not display special whitespace characters."
-  (interactive)
-  (defun hide-white-space ()
-    (whitespace-mode -1)
-    (setq whitespace-style '(face tabs))
-    (whitespace-mode 1))
-  (cl-loop for buffer in (buffer-list) do
-           (with-current-buffer buffer (hide-white-space))))
+           (with-current-buffer buffer (show-whitespace))))
 
 (defun tddsg/disable-ocp-indent ()
   (interactive)
@@ -867,8 +858,7 @@ after stripping extra whitespace and new lines"
                     ;; Also handle undocumented (<active> <inactive>) form.
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
-         '(95 . 90) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
+         '(95 . 95) '(100 . 100)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
@@ -878,8 +868,8 @@ after stripping extra whitespace and new lines"
   (exec-path-from-shell-initialize)
 
   ;; transparency
-  (set-frame-parameter (selected-frame) 'alpha '(95 . 90))
-  (add-to-list 'default-frame-alist '(alpha . (95 . 90)))
+  (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+  (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
 
   ;; prevent Emacs Mac Port from bypassing Emacs keybinding
   (setq mac-pass-command-to-system nil)
@@ -1306,8 +1296,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-c d") 'tddsg/duplicate-region-or-line)
   (global-set-key (kbd "C-c m") 'tddsg/open-shell)
   (global-set-key (kbd "C-c v") 'tddsg/describe-face-under-cursor)
-  (global-set-key (kbd "C-c @ s") 'tddsg/show-special-whitespaces)
-  (global-set-key (kbd "C-c @ h") 'tddsg/hide-special-whitespaces)
+  (global-set-key (kbd "C-c SPC") 'tddsg/toggle-show-whitespace)
 
   ;; (global-set-key (kbd "C-c C-c") nil)
   (global-set-key (kbd "C-c C-c") 'tddsg/compile)
