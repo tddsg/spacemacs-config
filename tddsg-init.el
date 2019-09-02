@@ -794,13 +794,13 @@ after stripping extra whitespace and new lines"
                          :initial-input nil)))
       (dired dir))))
 
-(defun tddsg/scroll-up-fast ()
+(defun tddsg/previous-some-lines ()
   (interactive)
-  (scroll-up-command 10))
+  (previous-line 5))
 
-(defun tddsg/scroll-down-fast ()
+(defun tddsg/next-some-lines ()
   (interactive)
-  (scroll-down-command 10))
+  (next-line 5))
 
 (defun tddsg/clean-recentf-list (pattern)
   (interactive "sEnter a file pattern that will be cleaned: ")
@@ -892,6 +892,7 @@ after stripping extra whitespace and new lines"
 
   ;; popwin mode
   (popwin-mode 1)
+  (setq popwin:popup-window-height 20)
 
   ;; windows setting
   (setq window-combination-resize nil)   ;; stop automatically resize windows
@@ -957,7 +958,7 @@ after stripping extra whitespace and new lines"
 
   ;; compilation
   (setq compilation-ask-about-save nil
-        compilation-window-height 12
+        compilation-window-height 20
         compilation-scroll-output t
         compilation-skip-threshold 2)
   (defun advise-compilation (orig-fun &rest args)
@@ -1247,15 +1248,18 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
   (global-set-key (kbd "C-M-k") 'tddsg/smart-kill-sexp-forward)
-  (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-j") 'tddsg/join-with-beneath-line)
   (global-set-key (kbd "C-M-SPC") 'tddsg/mark-sexp-forward)
-  (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
   (global-set-key (kbd "C-M-;") 'tddsg/comment-paragraph)
   (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
   (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
   (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
   (global-set-key (kbd "C-M-/") 'helm-company)
+
+  (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
+  (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
+  (global-set-key (kbd "C-M-S-n") 'tddsg/next-some-lines)
+  (global-set-key (kbd "C-M-S-p") 'tddsg/previous-some-lines)
 
 
   (global-set-key (kbd "C-x p") 'purpose-mode)
