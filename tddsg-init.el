@@ -855,6 +855,13 @@ after stripping extra whitespace and new lines"
               100)
          '(96 . 95) '(100 . 100)))))
 
+(defun tddsg/imenu ()
+  (interactive)
+  (cond ((and (derived-mode-p 'cc-mode 'c-mode 'c++-mode) rtags-enabled)
+         (rtags-imenu))
+        (t (counsel-semantic-or-imenu)))) 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INIT CONFIGS
 
@@ -1228,7 +1235,7 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-j") 'avy-goto-word-1)
   (global-set-key (kbd "M-j") 'avy-goto-word-1)
   (global-set-key (kbd "C-S-j") 'avy-goto-char)
-  (global-set-key (kbd "C-o") 'counsel-semantic-or-imenu)
+  (global-set-key (kbd "C-o") 'tddsg/imenu)
   (global-set-key (kbd "C-a") 'tddsg/beginning-of-line)
   (global-set-key (kbd "C-w") 'tddsg/kill-active-region)
   (global-set-key (kbd "C-q") 'goto-last-change)
