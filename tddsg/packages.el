@@ -129,6 +129,7 @@
     (setq tab-width 2)
     (rtags-start-process-unless-running)  ;; using rtags
     (irony-mode)                          ;; using irony
+    (rtags-activate-imenu)
     (semantic-mode -1)
     (local-set-key (kbd "C-c C-c") nil))
   (add-hook 'c-mode-hook 'my-cc-mode-hook 'append)
