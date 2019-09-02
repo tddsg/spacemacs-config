@@ -1249,8 +1249,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
   (global-set-key (kbd "C-S-/") 'undo-tree-redo)
   (global-set-key (kbd "C-S-q") 'goto-last-change-reverse)
-  (global-set-key (kbd "C-S-p") 'tddsg/backward-paragraph)
-  (global-set-key (kbd "C-S-n") 'tddsg/forward-paragraph)
+  (global-set-key (kbd "C-S-n") 'tddsg/next-some-lines)
+  (global-set-key (kbd "C-S-p") 'tddsg/previous-some-lines)
 
   (global-set-key (kbd "C-M-o") 'helm-imenu-anywhere)
   (global-set-key (kbd "C-M-h") 'tddsg/mark-environment)
@@ -1265,9 +1265,6 @@ after stripping extra whitespace and new lines"
 
   (global-set-key (kbd "C-M-S-k") 'tddsg/smart-kill-sexp-backward)
   (global-set-key (kbd "C-M-S-SPC") 'tddsg/mark-sexp-backward)
-  (global-set-key (kbd "C-M-S-n") 'tddsg/next-some-lines)
-  (global-set-key (kbd "C-M-S-p") 'tddsg/previous-some-lines)
-
 
   (global-set-key (kbd "C-x p") 'purpose-mode)
   (global-set-key (kbd "C-x t") 'transpose-paragraphs)
@@ -1335,6 +1332,8 @@ after stripping extra whitespace and new lines"
   (global-set-key (kbd "M-D") 'tddsg/delete-until-next-upcase)
   (global-set-key (kbd "M-K") 'tddsg/delete-until-previous-upcase)
   (global-set-key (kbd "M-C") 'tddsg/toggle-case-current-character)
+  (global-set-key (kbd "M-{") 'tddsg/backward-paragraph)
+  (global-set-key (kbd "M-}") 'tddsg/forward-paragraph)
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "M--") 'delete-window)
   (global-set-key (kbd "M-+") 'delete-other-windows)
