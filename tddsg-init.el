@@ -1139,9 +1139,10 @@ after stripping extra whitespace and new lines"
   (setq ggtags-process-environment '("GTAGSLIBPATH=/home/trungtq/.gtags"))
 
   ;; spacemacs
-  (push "\\*magit\.\+" spacemacs-useful-buffers-regexp)
-  (push "\\*monky\.\+\\*" spacemacs-useful-buffers-regexp)
-  (push "\\*compilation\\*" spacemacs-useful-buffers-regexp)
+  (setq spacemacs-useless-buffers-regexp '("\\*RTags\.\+"))
+  (setq spacemacs-useful-buffers-regexp '("\\*magit\.\+"
+                                          "\\*monky\.\+\\*"
+                                          "\\*compilation\\*"))
 
   ;; whichkey
   (which-key-add-key-based-replacements "C-c !" "flycheck")
